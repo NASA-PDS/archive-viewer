@@ -1,12 +1,61 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { render } from 'react-snapshot';
+import 'index.css';
+import Dataset from 'components/Dataset.js'
+import {lookupDataset} from 'api.js';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+class Main extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            loaded: false,
+            dataset: null,
+        }
+    }
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    componentDidMount() {
+
+        // FIXME: no dataset parameter
+        let params = new URLSearchParams(window.location.search);
+        let lidvid = params.get('dataset');
+
+        lookupDataset(lidvid).then(result => {
+            if(result.length === 0) {
+                this.setState({
+                    error: { message: 'No dataset found for lidvid ' + lidvid}
+                })
+            } else if(result.length > 1) {
+                this.setState({
+                    error: { message: 'More than one dataset found for lidvid ' + lidvid}
+                })
+            } else {
+                this.setState({
+                    dataset: result,
+                    loaded: true
+                })
+            }
+        })
+    }
+    render() {
+        const { error, loaded } = this.state
+        if(error) {
+            return <div className="error">Error: { error.message }</div>
+        } else if (!loaded) {
+            return <Loading />
+        } else {
+            return <Dataset dataset={this.state.dataset} />
+        }
+    }
+}
+
+function Loading() {
+    return <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+}
+
+// ========================================
+
+render(
+    <Main />,
+    document.getElementById('root')
+);
