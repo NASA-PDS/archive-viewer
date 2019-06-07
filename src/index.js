@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-snapshot';
 import 'main.scss';
 import Dataset from 'components/Dataset.js'
+import Error from 'components/Error.js'
 import {lookupDataset} from 'api.js';
 
 class Main extends React.Component {
@@ -16,7 +17,6 @@ class Main extends React.Component {
 
     componentDidMount() {
 
-        // FIXME: no dataset parameter
         let params = new URLSearchParams(window.location.search);
         let lidvid = params.get('dataset');
 
@@ -35,12 +35,16 @@ class Main extends React.Component {
                     loaded: true
                 })
             }
+        }, error => {
+            this.setState({
+                error
+            })
         })
     }
     render() {
         const { error, loaded } = this.state
         if(error) {
-            return <div className="error">Error: { error.message }</div>
+            return <Error error={error} />
         } else if (!loaded) {
             return <Loading />
         } else {

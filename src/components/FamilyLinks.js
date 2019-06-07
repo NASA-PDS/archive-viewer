@@ -1,5 +1,6 @@
 import React from 'react';
 import {getBundles} from 'api.js';
+import Error from 'components/Error.js'
 
 export default class Main extends React.Component {
 
@@ -22,7 +23,10 @@ export default class Main extends React.Component {
     }
 
     render() {
-        const {isBundle, dataset, bundles} = this.state
+        const {isBundle, dataset, bundles, error} = this.state
+        if(error && !isBundle) {
+            return <Error error={error}></Error>
+        } else
         return (
             <div className="family-links">
                 {!isBundle && bundles.length > 0 &&

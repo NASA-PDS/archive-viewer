@@ -1,5 +1,6 @@
 import React from 'react';
 import {getCollections} from 'api.js';
+import Error from 'components/Error.js'
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -19,10 +20,9 @@ export default class Main extends React.Component {
                     collections: result,
                     loaded: true
                 })
-                // FIXME: zero datasets returned
             } else {
                 this.setState({
-                    error: { message: 'Could not find specified webui'}
+                    error: { message: 'Unexpected error searching for collections in this bundle'}
                 })
             }
         })
@@ -31,10 +31,9 @@ export default class Main extends React.Component {
     render() {
         const { error, collections, loaded } = this.state
         if(error) {
-            return <div className="error">Error: { error.message }</div>
-        } else {
-            return <CollectionList collections={collections} loaded={loaded} />
-        }
+            return <Error error={error} />
+        } else
+        return <CollectionList collections={collections} loaded={loaded} />
     }
 }
 
