@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-snapshot';
-import 'index.css';
+import 'main.scss';
 import Dataset from 'components/Dataset.js'
 import {lookupDataset} from 'api.js';
 
