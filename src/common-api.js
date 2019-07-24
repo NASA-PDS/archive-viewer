@@ -1,9 +1,14 @@
 import web from 'axios';
 import desolrize from 'desolrize.js'
 
+const defaultParameters = () => { return {
+    wt: 'json'
+}}
+
 export function httpGet(endpoint, params) {
+    const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
     return new Promise((resolve, reject) => 
-        web.get(endpoint, {params}).then(response => resolve(desolrize(response.data)), reject)
+        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data)), reject)
     )
 }
 

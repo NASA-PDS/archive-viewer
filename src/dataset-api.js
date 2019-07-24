@@ -13,7 +13,6 @@ export function lookupDataset(lidvid) {
             url: router.datasetCore,
             params: {
                 q: `lid:"${escapedLid}"`,
-                wt: 'json'
             }
         },
         {
