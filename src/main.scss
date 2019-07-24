@@ -207,7 +207,7 @@ main aside {
     }
 }
 
-.mission-header {
+.mission-header, .target-header, .instrument-header {
     color: white;
     margin-left: -$main-padding;
     margin-right: -$main-padding;
@@ -219,6 +219,9 @@ main aside {
     padding: 20px;
     img {
         max-height: 150px;
+        ~ h1 {
+            margin-left: 20px;
+        }
     }
     h1 {
         font-size: 2.5em;
@@ -226,6 +229,28 @@ main aside {
     & ~ aside {
         margin-top: -40px;
     }
+
+}
+
+.target-header {
+    background-color: black;
+}
+
+.instrument-header {
+    background-color: $superDarkGrey;
+}
+
+.target-mission-datatypes {
+    padding: 10px 0 0 10px;
+    border-left: 8px solid $blue;
+    .target-mission-datatype-datasets {
+        padding-left: 10px;
+    }
+}
+
+.embedded-list {
+    margin-left: 10px;
+    font-size: 0.9em;
 }
 
 table {
