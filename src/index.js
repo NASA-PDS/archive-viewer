@@ -3,7 +3,18 @@ import { render } from 'react-snapshot';
 import 'main.scss';
 import Dataset from 'components/Dataset.js'
 import Error from 'components/Error.js'
-import {lookupDataset} from 'dataset-api.js';
+import { lookupDataset } from 'dataset-api.js';
+import { lookupTarget } from 'target-api';
+
+const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
+const lookup = (type, lidvid) => {
+    let func = () => new Promise((_, reject) => reject(new Error("Invalid lookup")));
+    switch (type) {
+        case 'dataset': func = lookupDataset; break;
+        case 'target': func = lookupTarget; break;
+    }
+    return func(lidvid)
+}
 
 class Main extends React.Component {
     constructor(props) {
@@ -11,44 +22,62 @@ class Main extends React.Component {
         this.state = {
             error: null,
             loaded: false,
-            dataset: null,
+            model: null,
         }
     }
 
     componentDidMount() {
 
         let params = new URLSearchParams(window.location.search);
-        let lidvid = params.get('dataset');
 
-        lookupDataset(lidvid).then(result => {
-            if(result.length === 0) {
-                this.setState({
-                    error: { message: 'No dataset found for lidvid ' + lidvid}
+        for(let type of pageTypes) {
+            let lidvid = params.get(type);
+            if(lidvid) {
+                this.setState({ type })
+                lookup(type, lidvid).then(result => {
+                    if(result.length === 0) {
+                        this.setState({
+                            error: new Error(`No ${type} found for lidvid ${lidvid}`)
+                        })
+                    } else if(result.length > 1) {
+                        this.setState({
+                            error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
+                        })
+                    } else {
+                        console.log(result)
+                        this.setState({
+                            model: result,
+                            loaded: true
+                        })
+                    }
+                }, error => {
+                    this.setState({
+                        error: error
+                    })
                 })
-            } else if(result.length > 1) {
-                this.setState({
-                    error: { message: 'More than one dataset found for lidvid ' + lidvid}
-                })
-            } else {
-                this.setState({
-                    dataset: result,
-                    loaded: true
-                })
+                break;
             }
-        }, error => {
-            this.setState({
-                error
-            })
-        })
+        }
+        
     }
     render() {
-        const { error, loaded } = this.state
+        const { error, loaded, type, model } = this.state
         if(error) {
             return <Error error={error} />
         } else if (!loaded) {
             return <Loading />
+        } else if (type === 'dataset') {
+            return <Dataset dataset={model} />
+        } else if (type === 'target') {
+            return 'Super fancy target page'
+        } else if (type === 'instrument') {
+            return 'Super fancy instrument page'
+        } else if (type === 'mission') {
+            return 'Super fancy target page'
+        } else if (type === 'spacecraft') {
+            return 'Super fancy target page'
         } else {
-            return <Dataset dataset={this.state.dataset} />
+            return <Error error={new Error("Couldn't render anything")} />
         }
     }
 }
