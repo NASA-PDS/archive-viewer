@@ -1,5 +1,5 @@
 import React from 'react';
-import {getBundles} from 'api.js';
+import {getBundles} from 'dataset-api.js';
 import Error from 'components/Error.js'
 
 export default class Main extends React.Component {
@@ -16,10 +16,8 @@ export default class Main extends React.Component {
                     bundles: result,
                     loaded: true
                 })
-            }, 
-            this.setState({
-                error: { message: 'Error looking for related bundles'}
-            }))
+            }, error => 
+            this.setState({ error }))
     }
 
     render() {

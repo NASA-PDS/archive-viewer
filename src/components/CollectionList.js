@@ -1,5 +1,5 @@
 import React from 'react';
-import {getCollections} from 'api.js';
+import {getCollections} from 'dataset-api.js';
 import Error from 'components/Error.js'
 
 export default class Main extends React.Component {

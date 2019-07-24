@@ -3,7 +3,7 @@ import { render } from 'react-snapshot';
 import 'main.scss';
 import Dataset from 'components/Dataset.js'
 import Error from 'components/Error.js'
-import {lookupDataset} from 'api.js';
+import {lookupDataset} from 'dataset-api.js';
 
 class Main extends React.Component {
     constructor(props) {
