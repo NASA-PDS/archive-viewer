@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-snapshot';
 import 'main.scss';
 import Dataset from 'components/Dataset.js'
+import Target from 'components/Target.js'
 import Error from 'components/Error.js'
 import { lookupDataset } from 'dataset-api.js';
 import { lookupTarget } from 'target-api';
@@ -69,7 +70,7 @@ class Main extends React.Component {
         } else if (type === 'dataset') {
             return <Dataset dataset={model} />
         } else if (type === 'target') {
-            return 'Super fancy target page'
+            return <Target target={model} />
         } else if (type === 'instrument') {
             return 'Super fancy instrument page'
         } else if (type === 'mission') {
