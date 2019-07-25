@@ -1,5 +1,5 @@
 import React from 'react';
-import {getBundles} from 'dataset-api.js';
+import {getBundles} from 'api/dataset.js';
 import Error from 'components/Error.js'
 
 export default class Main extends React.Component {

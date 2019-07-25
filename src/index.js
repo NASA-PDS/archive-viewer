@@ -3,9 +3,15 @@ import { render } from 'react-snapshot';
 import 'main.scss';
 import Dataset from 'components/Dataset.js'
 import Target from 'components/Target.js'
+import Mission from 'components/Mission.js'
+import Spacecraft from 'components/Spacecraft.js'
+import Instrument from 'components/Instrument.js'
 import Error from 'components/Error.js'
-import { lookupDataset } from 'dataset-api.js';
-import { lookupTarget } from 'target-api';
+import { lookupDataset } from 'api/dataset.js';
+import { lookupTarget } from 'api/target.js';
+import { lookupMission } from 'api/mission.js';
+import { lookupSpacecraft } from 'api/spacecraft.js';
+import { lookupInstrument } from 'api/instrument.js';
 
 const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
 const lookup = (type, lidvid) => {
@@ -13,6 +19,9 @@ const lookup = (type, lidvid) => {
     switch (type) {
         case 'dataset': func = lookupDataset; break;
         case 'target': func = lookupTarget; break;
+        case 'mission': func = lookupMission; break;
+        case 'instrument': func = lookupInstrument; break;
+        case 'spacecraft': func = lookupSpacecraft; break;
     }
     return func(lidvid)
 }
@@ -72,11 +81,11 @@ class Main extends React.Component {
         } else if (type === 'target') {
             return <Target target={model} />
         } else if (type === 'instrument') {
-            return 'Super fancy instrument page'
+            return <Instrument instrument={model} />
         } else if (type === 'mission') {
-            return 'Super fancy target page'
+            return <Mission mission={model} />
         } else if (type === 'spacecraft') {
-            return 'Super fancy target page'
+            return <Spacecraft spacecraft={model} />
         } else {
             return <Error error={new Error("Couldn't render anything")} />
         }

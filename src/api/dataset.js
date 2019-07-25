@@ -1,5 +1,5 @@
-import router from 'router.js'
-import {httpGetAll, httpGet} from 'common-api.js'
+import router from 'api/router.js'
+import {httpGetAll, httpGet} from 'api/common.js'
 
 export function lookupDataset(lidvid) {
     let [lid, vid] = lidvid ? lidvid.split('::') : [null,null]

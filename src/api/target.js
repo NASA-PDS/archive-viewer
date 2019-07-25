@@ -1,5 +1,5 @@
-import router from 'router.js'
-import {httpGetAll, httpGet} from 'common-api.js'
+import router from 'api/router.js'
+import {httpGetAll, httpGet} from 'api/common.js'
 
 export function lookupTarget(lidvid) {
     let [lid, vid] = lidvid ? lidvid.split('::') : [null,null]
@@ -12,7 +12,7 @@ export function lookupTarget(lidvid) {
         {
             url: router.targetsCore,
             params: {
-                q: `identifier:"${escapedLid}"`,
+                q: `identifier:"${escapedLid}" AND data_class:"Target"`,
             }
         },
         {
@@ -26,7 +26,14 @@ export function lookupTarget(lidvid) {
 
 export function missionsForTarget(lid) {
     let params = {
-        q: `(target_ref:"${lid}" +data_class:"Investigation")`
+        q: `target_ref:"${lid}" AND data_class:"Investigation"`
+    }
+    return httpGet(router.targetsCore, params)
+}
+
+export function datasetsForTarget(lid) {
+    let params = {
+        q: `(target_ref:"${lid}" AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
     return httpGet(router.targetsCore, params)
 }

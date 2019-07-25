@@ -207,7 +207,7 @@ main aside {
     }
 }
 
-.mission-header, .target-header, .instrument-header {
+.mission-header, .target-header, .instrument-header, .spacecraft-header {
     color: white;
     margin-left: -$main-padding;
     margin-right: -$main-padding;
@@ -232,7 +232,7 @@ main aside {
 
 }
 
-.target-header {
+.target-header, .spacecraft-header, .mission-header {
     background-color: black;
 }
 
