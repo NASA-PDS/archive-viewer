@@ -1,13 +1,32 @@
 import React from 'react';
+import {missionsForTarget} from 'target-api'
 
-export default function Target({target}) {
-    return (
-        <div>
-            <Header model={target} />
-            <Description model={target} />
+export default class Target extends React.Component {
+    constructor(props) {
+        super(props)
+        const target = props.target
+        this.state = {
+            target: target,
+            loaded: false,
+        }
+    }
 
-        </div>
-    )
+    componentDidMount() {
+        missionsForTarget(this.state.target.identifier).then(function(val) {
+            console.log(val)
+        })
+    }
+
+    render() {
+        const {target} = this.state
+        return (
+            <div>
+                <Header model={target} />
+                <Description model={target} />
+
+            </div>
+        )
+    }
 }
 
 function Header({model}) {
