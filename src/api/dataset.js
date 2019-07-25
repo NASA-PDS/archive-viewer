@@ -1,18 +1,20 @@
 import router from 'api/router.js'
+import LID from 'services/LogicalIdentifier.js'
 import {httpGetAll, httpGet} from 'api/common.js'
 
 export function lookupDataset(lidvid) {
-    let [lid, vid] = lidvid ? lidvid.split('::') : [null,null]
-    if(!lid) {
+    if(!lidvid) {
         return new Promise((_, reject) => reject(new Error("Expected dataset parameter")))
     }
-    let escapedLid = lid.replace(/:/g, '\\:')
+    if(lidvid.constructor === String) {
+        lidvid = new LID(lidvid)
+    }
 
     return httpGetAll([
         {
             url: router.datasetCore,
             params: {
-                q: `lid:"${escapedLid}"`,
+                q: `identifier:"${lidvid.escaped}"`,
             }
         },
         {
@@ -20,7 +22,7 @@ export function lookupDataset(lidvid) {
             params: {
                 fl: '*,[child parentFilter=attrname:dataset]',
                 wt: 'ujson',
-                q: `logical_identifier:"${escapedLid}${vid ? '\\:\\:' + vid : ''}"`
+                q: `logical_identifier:"${lidvid.escaped}"`
             }
         }
     ])
@@ -30,7 +32,7 @@ export function getCollections(lids) {
     let params = {
             fl: '*,[child parentFilter=attrname:dataset]',
             wt: 'ujson',
-            q: lids.reduce((query, lid) => query + "logical_identifier:" + lid.replace(/:/g, '\\:') + ' ', '')
+            q: lids.reduce((query, lid) => query + "logical_identifier:" + new LID(lid).escaped + ' ', '')
         }
     
     return httpGet(router.datasetWeb, params)
@@ -39,7 +41,7 @@ export function getCollections(lids) {
 export function getBundles(lid) {
     let params = {
             wt: 'json',
-            q: 'objectType:Product_Bundle +collection_ref:' + lid.replace(/:/g, '\\:')
+            q: 'objectType:Product_Bundle +collection_ref:' + new LID(lid).escaped
         }
     
     return httpGet(router.datasetCore, params)

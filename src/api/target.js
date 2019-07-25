@@ -1,24 +1,26 @@
 import router from 'api/router.js'
+import LID from 'services/LogicalIdentifier.js'
 import {httpGetAll, httpGet} from 'api/common.js'
 
 export function lookupTarget(lidvid) {
-    let [lid, vid] = lidvid ? lidvid.split('::') : [null,null]
-    if(!lid) {
+    if(!lidvid) {
         return new Promise((_, reject) => reject(new Error("Expected target parameter")))
     }
-    let escapedLid = lid.replace(/:/g, '\\:')
+    if(lidvid.constructor === String) {
+        lidvid = new LID(lidvid)
+    }
 
     return httpGetAll([
         {
             url: router.targetsCore,
             params: {
-                q: `identifier:"${escapedLid}" AND data_class:"Target"`,
+                q: `identifier:"${lidvid.escaped}" AND data_class:"Target"`,
             }
         },
         {
             url: router.targetsWeb,
             params: {
-                q: `logical_identifier:"${escapedLid}${vid ? '\\:\\:' + vid : ''}"`
+                q: `logical_identifier:"${lidvid.escapedLid}"`
             }
         }
     ])
