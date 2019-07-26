@@ -1,4 +1,5 @@
 import React from 'react';
+import {getSpacecraftForInstrument} from 'api/instrument.js'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -11,6 +12,9 @@ export default class Instrument extends React.Component {
     }
 
     componentDidMount() {
+        getSpacecraftForInstrument(this.state.instrument).then(thing => {
+            console.log(thing)
+        })
     }
 
     render() {

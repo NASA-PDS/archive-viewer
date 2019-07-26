@@ -1,5 +1,5 @@
 import React from 'react';
-import {missionsForTarget} from 'api/target.js'
+import {getSpacecraftForTarget, getDatasetsForTarget} from 'api/target.js'
 
 export default class Target extends React.Component {
     constructor(props) {
@@ -12,7 +12,10 @@ export default class Target extends React.Component {
     }
 
     componentDidMount() {
-        missionsForTarget(this.state.target.identifier).then(function(val) {
+        getSpacecraftForTarget(this.state.target).then(function(val) {
+            console.log(val)
+        })
+        getDatasetsForTarget(this.state.target).then(function(val) {
             console.log(val)
         })
     }

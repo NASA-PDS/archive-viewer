@@ -1,4 +1,5 @@
 import React from 'react';
+import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -11,6 +12,18 @@ export default class Spacecraft extends React.Component {
     }
 
     componentDidMount() {
+        getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
+            console.log(missions)
+        })
+        getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
+            console.log(targets)
+        })
+        getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
+            console.log(instruments)
+        })
+        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => {
+            console.log(datasets)
+        })
     }
 
     render() {

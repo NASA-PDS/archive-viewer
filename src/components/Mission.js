@@ -1,4 +1,5 @@
 import React from 'react';
+import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -11,6 +12,12 @@ export default class Mission extends React.Component {
     }
 
     componentDidMount() {
+        getSpacecraftForMission(this.state.mission).then(spacecraft => {
+            console.log(spacecraft)
+        })
+        getTargetsForMission(this.state.mission).then(targets => {
+            console.log(targets)
+        })
     }
 
     render() {
