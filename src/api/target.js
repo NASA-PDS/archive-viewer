@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetAll, httpGet} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated} from 'api/common.js'
 
 export function lookupTarget(lidvid) {
     if(!lidvid) {
@@ -10,7 +10,7 @@ export function lookupTarget(lidvid) {
         lidvid = new LID(lidvid)
     }
 
-    return httpGetAll([
+    return httpGetFull([
         {
             url: router.targetsCore,
             params: {
@@ -26,16 +26,19 @@ export function lookupTarget(lidvid) {
     ])
 }
 
-export function missionsForTarget(lid) {
+export function getSpacecraftForTarget(target) {
+    let targetLid = new LID(target.identifier)
     let params = {
-        q: `target_ref:"${lid}" AND data_class:"Investigation"`
+        q: `target_ref:*${targetLid.lastSegment}* AND data_class:"Instrument_Host"`
     }
-    return httpGet(router.targetsCore, params)
+    return httpGetRelated(params, router.spacecraftCore, [])
 }
 
-export function datasetsForTarget(lid) {
+export function getDatasetsForTarget(target) {
+    let targetLid = new LID(target.identifier)
+
     let params = {
-        q: `(target_ref:"${lid}" AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
+        q: `(target_ref:*${targetLid.lastSegment}* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
-    return httpGet(router.targetsCore, params)
+    return httpGet(router.datasetCore, params)
 }

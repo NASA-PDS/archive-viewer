@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetAll, httpGet} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated} from 'api/common.js'
 
 export function lookupSpacecraft(lidvid) {
     if(!lidvid) {
@@ -10,7 +10,7 @@ export function lookupSpacecraft(lidvid) {
         lidvid = new LID(lidvid)
     }
 
-    return httpGetAll([
+    return httpGetFull([
         {
             url: router.spacecraftCore,
             params: {
@@ -24,4 +24,40 @@ export function lookupSpacecraft(lidvid) {
             }
         }
     ])
+}
+
+export function getMissionsForSpacecraft(spacecraft) {
+    let spacecraftLid = new LID(spacecraft.identifier)
+    let knownMissions = spacecraft.investigation_ref
+    let params = {
+        q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Investigation"`
+    }
+    return httpGetRelated(params, router.missionsCore, knownMissions)
+}
+
+export function getInstrumentsForSpacecraft(spacecraft) {
+    let spacecraftLid = new LID(spacecraft.identifier)
+    let knownInstruments = spacecraft.instrument_ref
+    let params = {
+        q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Instrument"`
+    }
+    return httpGetRelated(params, router.instrumentsCore, knownInstruments)
+}
+
+export function getTargetsForSpacecraft(spacecraft) {
+    let spacecraftLid = new LID(spacecraft.identifier)
+    let knownTargets = spacecraft.target_ref
+    let params = {
+        q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Target"`
+    }
+    return httpGetRelated(params, router.targetsCore, knownTargets)
+}
+
+export function getDatasetsForSpacecraft(spacecraft) {
+    let spacecraftLid = new LID(spacecraft.identifier)
+
+    let params = {
+        q: `(instrument_host_ref:*${spacecraftLid.lastSegment}* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
+    }
+    return httpGet(router.datasetCore, params)
 }

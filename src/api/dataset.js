@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetAll, httpGet} from 'api/common.js'
+import {httpGetFull, httpGet} from 'api/common.js'
 
 export function lookupDataset(lidvid) {
     if(!lidvid) {
@@ -10,7 +10,7 @@ export function lookupDataset(lidvid) {
         lidvid = new LID(lidvid)
     }
 
-    return httpGetAll([
+    return httpGetFull([
         {
             url: router.datasetCore,
             params: {

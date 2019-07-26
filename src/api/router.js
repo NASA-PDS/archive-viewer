@@ -11,7 +11,8 @@ const coreCollection = 'pds'
 
 export default {
     datasetWeb: `${localSolr}/${datasetsCollection}/select`,
-    datasetCore: `${localSolr}/${coreCollection}/select`,
+    // datasetCore: `${localSolr}/${coreCollection}/select`,
+    datasetCore: `${remoteSolr}/search`,
     targetsWeb: `${localSolr}/${targetsCollection}/select`,
     targetsCore: `${remoteSolr}/search`,
     instrumentsWeb: `${localSolr}/${instrumentsCollection}/select`,

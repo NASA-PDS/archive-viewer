@@ -7,6 +7,10 @@ export default class LogicalIdentifier {
         let [lid, vid] = lidvid.split('::')
         this.lid = lid
         this.vid = vid
+        if(lid) {
+            let segments = lid.split(':')
+            this.lastSegment = segments[segments.length - 1]
+        }
     }
 
     get escapedLid() {
@@ -18,7 +22,6 @@ export default class LogicalIdentifier {
     get escapedVid() {
         return escape(this.vid)
     }
-
 }
 function escape(str) {
     return str.replace(/:/g, '\\:')
