@@ -18,7 +18,7 @@ export default class Target extends React.Component {
             <div>
                 <Header model={target} />
                 <Main model={target} />
-                <Aside target={target} />
+                <Aside model={target} />
             </div>
         )
     }
@@ -125,18 +125,11 @@ class Datasets extends React.Component {
 class Aside extends React.Component {
     constructor(props) {
         super(props)
-        const target = props.target
+        const target = props.model
         this.state = {
             target: target,
             loaded: false
         }
-    }
-    
-    componentDidMount() {
-        const that = this;
-        getSpacecraftForTarget(this.state.target).then(function(val) {
-            console.log('SPACECRAFT: ',val)
-        })
     }
     
     render() {
@@ -144,8 +137,46 @@ class Aside extends React.Component {
         
         return (
             <aside>
-                <h2>THIS IS A TEST</h2>
+                <Spacecraft model={target} />
             </aside>
+        )
+    }
+}
+
+class Spacecraft extends React.Component {
+    constructor(props) {
+        super(props)
+        const target = props.model
+        this.state = {
+            target: target,
+            spacecraft: [],
+            loaded: false
+        }
+    }
+    
+    componentDidMount() {
+        let self = this;
+        getSpacecraftForTarget(this.state.target).then(function(vals) {
+            self.setState({
+                spacecraft: vals
+            })
+        })
+    }
+    
+    render() {
+        const {spacecraft} = this.state
+        let arr = Array.from(spacecraft)
+        
+        let elements = [];
+        for (const [idx,val] of arr.entries()) {
+            elements.push(<li>{ val.title }</li>)
+        }
+        
+        return (
+            <div className="co-section target-spacecraft">
+                <h4>Spacecraft</h4>
+                { elements }
+            </div>
         )
     }
 }
