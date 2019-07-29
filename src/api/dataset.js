@@ -14,7 +14,7 @@ export function lookupDataset(lidvid) {
         {
             url: router.datasetCore,
             params: {
-                q: `identifier:"${lidvid.escaped}"`,
+                q: `identifier:"${lidvid.escapedLid}"`,
             }
         },
         {
@@ -32,16 +32,17 @@ export function getCollections(lids) {
     let params = {
             fl: '*,[child parentFilter=attrname:dataset]',
             wt: 'ujson',
-            q: lids.reduce((query, lid) => query + "logical_identifier:" + new LID(lid).escaped + ' ', '')
+            q: lids.reduce((query, lid) => query + "logical_identifier:" + new LID(lid).escapedLid + ' ', '')
         }
     
     return httpGet(router.datasetWeb, params)
 }
 
-export function getBundles(lid) {
+export function getBundlesForCollection(dataset) {
+    let lid = new LID(dataset.logical_identifier)
     let params = {
             wt: 'json',
-            q: 'objectType:Product_Bundle +collection_ref:' + new LID(lid).escaped
+            q: `product_class:"Product_Bundle" AND collection_ref:"${lid.lidvid}"`
         }
     
     return httpGet(router.datasetCore, params)

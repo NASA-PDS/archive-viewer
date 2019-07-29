@@ -18,8 +18,8 @@ function shouldComeOutOfArray(key, value) {
         || (!keysThatAreActuallyObjectArrays.includes(key) && value.constructor === Array && value.length === 1 && value[0].constructor === Object)
 }
 
-const keysThatAreActuallyStringArrays = ['target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref']
-const keysThatAreActuallyObjectArrays = ['tags', 'related_tools', 'related_data', 'superseded_data', 'download_packages']
+const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref']
+const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'superseded_data', 'download_packages']
 
 export default function(fromSolr) {
     if(!!fromSolr.response.docs) {

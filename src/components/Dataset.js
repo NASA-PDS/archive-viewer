@@ -3,7 +3,7 @@ import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 
 export default function Dataset({dataset}) {
-    const isBundle = dataset.lid.split(':').length === 4
+    const isBundle = dataset.identifier.split(':').length === 4
     return (
         <div>
             <Taxonomy dataset={dataset} />
