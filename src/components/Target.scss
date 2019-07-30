@@ -1,0 +1,33 @@
+@import '../variables';
+
+@mixin list-box {
+    padding: 0 0.5em;
+    border-left: 2px solid $blue;
+    align-self: flex-start;
+}
+
+.co-main {
+    padding: 0.5em 1em;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.co-aside {
+    max-width: 300px;
+}
+.co-section {
+    ul {
+        @include list-box;
+        padding: 0.3em 1em;
+        
+        li {
+            list-style: inside;
+            list-style: none;
+            text-indent: -0.5em;
+        }
+    }
+}
+
+.target-datasets {
+    max-width: 60%;
+}
