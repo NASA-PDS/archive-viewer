@@ -1,5 +1,5 @@
 import React from 'react';
-import {getSpacecraftForInstrument} from 'api/instrument.js'
+import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -12,9 +12,11 @@ export default class Instrument extends React.Component {
     }
 
     componentDidMount() {
-        getSpacecraftForInstrument(this.state.instrument).then(thing => {
-            console.log(thing)
+        getSpacecraftForInstrument(this.state.instrument).then(spacecraft => {
+            console.log(spacecraft)
+            getRelatedInstrumentsForInstrument(this.state.instrument, spacecraft).then(console.log)
         })
+        getDatasetsForInstrument(this.state.instrument).then(console.log)
     }
 
     render() {

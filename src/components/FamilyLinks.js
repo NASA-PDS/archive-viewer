@@ -1,5 +1,5 @@
 import React from 'react';
-import {getBundles} from 'api/dataset.js';
+import {getBundlesForCollection} from 'api/dataset.js';
 import Error from 'components/Error.js'
 
 export default class Main extends React.Component {
@@ -11,13 +11,15 @@ export default class Main extends React.Component {
     }
 
     componentDidMount() {
-        getBundles(this.state.dataset.lid).then(result => {
-                this.setState({
-                    bundles: result,
-                    loaded: true
-                })
-            }, error => 
-            this.setState({ error }))
+        if(!this.state.isBundle) {
+            getBundlesForCollection(this.state.dataset).then(result => {
+                    this.setState({
+                        bundles: result,
+                        loaded: true
+                    })
+                }, error => 
+                this.setState({ error }))
+        }
     }
 
     render() {
@@ -32,7 +34,7 @@ export default class Main extends React.Component {
                         <img src="/images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
-                            <a key={bundle.lid} className="ignore-a-styling" href={'?dataset=' + bundle.lid}><span>{bundle.title}</span></a>
+                            <a key={bundle.identifier} className="ignore-a-styling" href={'?dataset=' + bundle.identifier}><span>{bundle.title}</span></a>
                         )}
                     </div>
                 }

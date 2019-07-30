@@ -1,35 +1,52 @@
 import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
+import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 
-export default function Dataset({dataset}) {
-    const isBundle = dataset.lid.split(':').length === 4
-    return (
-        <div>
-            <Taxonomy dataset={dataset} />
-            <FamilyLinks dataset={dataset} isBundle={isBundle}/>
-            <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
-                <Title dataset={dataset} />
-                <DeliveryInfo dataset={dataset} />
-                <Metadata dataset={dataset} isBundle={isBundle} />
-                <Description dataset={dataset} />
+export default class Dataset extends React.Component {
 
-                { isBundle && 
-                    <CollectionList dataset={dataset} />
-                }
-                <CollectionQuickLinks dataset={dataset} />
-                <CollectionDownloads dataset={dataset} />
+    constructor(props) {
+        super(props)
+        const {dataset} = props
+        const isBundle = dataset.identifier.split(':').length === 4
+        this.state = { dataset, isBundle }
+    }
 
-                <Citation dataset={dataset} />
+    componentDidMount() {
+        getInstrumentsForDataset(this.state.dataset).then(console.log)
+        getSpacecraftForDataset(this.state.dataset).then(console.log)
+        getTargetsForDataset(this.state.dataset).then(console.log)
+    }   
+
+    render() {    
+        const {dataset, isBundle} = this.state
+        return (
+            <div>
+                <Taxonomy dataset={dataset} />
+                <FamilyLinks dataset={dataset} isBundle={isBundle}/>
+                <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
+                    <Title dataset={dataset} />
+                    <DeliveryInfo dataset={dataset} />
+                    <Metadata dataset={dataset} isBundle={isBundle} />
+                    <Description dataset={dataset} />
+
+                    { isBundle && 
+                        <CollectionList dataset={dataset} />
+                    }
+                    <CollectionQuickLinks dataset={dataset} />
+                    <CollectionDownloads dataset={dataset} />
+
+                    <Citation dataset={dataset} />
+                </div>
+                <div className="related-references">
+                    <RelatedPDS3 dataset={dataset} />
+                    <Superseded dataset={dataset} />
+                    <RelatedTools dataset={dataset} />
+                    <RelatedData dataset={dataset} />
+                </div>
             </div>
-            <div className="related-references">
-                <RelatedPDS3 dataset={dataset} />
-                <Superseded dataset={dataset} />
-                <RelatedTools dataset={dataset} />
-                <RelatedData dataset={dataset} />
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 function Taxonomy(props) {

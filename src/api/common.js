@@ -14,6 +14,15 @@ export function httpGet(endpoint, params) {
     )
 }
 
+export function httpGetIdentifiers(route, identifiers) {
+    if(!identifiers) return new Promise((resolve, _) => { resolve([])})
+    let lids = identifiers.constructor === String ? [identifiers] : identifiers
+    let params = {
+        q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
+    }
+    return httpGet(route, params)
+}
+
 export function httpGetFull(endpoints) {
 
     if(!endpoints || endpoints.constructor !== Array) fail("Expected array of API calls")
@@ -52,10 +61,7 @@ export function httpGetRelated(initialQuery, route, knownLids) {
                 resolve(results)
             } else {
                 // otherwise, perform another query to get the other 
-                let params = {
-                    q: knownLids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
-                }
-                httpGet(route, params).then(otherResults => {
+                httpGetIdentifiers(route, knownLids).then(otherResults => {
                     // and combine them with the original list
                     let combined = [...results, ...otherResults]
                     resolve(combined.filter((item, index) => combined.findIndex(otherItem => item.identifier === otherItem.identifier) === index))
@@ -67,3 +73,4 @@ export function httpGetRelated(initialQuery, route, knownLids) {
 function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }
+
