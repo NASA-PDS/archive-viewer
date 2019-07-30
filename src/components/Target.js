@@ -69,13 +69,40 @@ class DatasetList extends React.Component {
         })
     }
     
+    sortBy() {
+        return {
+            mission: function(datasets) {
+                // takes an array of datasets and
+                    // returns an object containing mission names
+                    // and a list of associated datasets
+                
+                let missions = {}
+                
+                datasets.map((dataset, idx) => {
+                    const mission = dataset['investigation_name']
+                    
+                    if (!missions[mission]) missions[mission] = [dataset]
+                    else missions[mission].push(dataset)
+                })
+                
+                return missions
+            }
+        }
+    }
+    
     render() {
         let self = this
         const {datasets} = this.state
-        let arr = Array.from(datasets);
+        let arr = Array.from(datasets)
+        
+        // TODO: Apply various sorting methods
+        const datasetsByMission = self.sortBy().mission(datasets)
         
         for (const [idx,val] of arr.entries()) {
-            self.state.elements.push(<li key={val.title}>{ val.title }</li>)
+            const el = (
+                <li key={val.title}>{ val.title }</li>
+            )
+            self.state.elements.push(el)
         } 
         
         return (
