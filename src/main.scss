@@ -15,18 +15,18 @@ h1 {
     height: 1.5em;
 }
 
-main aside {
-    float: right;
-    max-width: 35%;
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-    section {
-        margin-bottom: 1em;
-        margin-right: 15px;
-        box-shadow: 1px 1px 2px #dadada;
-    }
-}
+// main aside {
+//     float: right;
+//     max-width: 35%;
+//     display: flex;
+//     flex-direction: column;
+//     margin-left: 10px;
+//     section {
+//         margin-bottom: 1em;
+//         margin-right: 15px;
+//         box-shadow: 1px 1px 2px #dadada;
+//     }
+// }
 
 .download-size {
     font-size: 0.7em;
@@ -169,26 +169,25 @@ main aside {
 #taxonomy {
     display: flex;
     flex-flow: row wrap;
-    
+
     .banner {
         height: 60px;
         margin: 5px 10px;
         box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         transform: skewX(-25deg);    
         background-color: $link;
-        
+
         a {
             transform: skewX(25deg);
             padding: 5px 15px;
-            // text-decoration: underline;
             color: white;
             height: 60px;
             box-sizing: border-box;
-            
+
             display: flex;
             flex-direction: row;
             align-items: center;
-            
+
             img {
                 max-height: 50px;
                 margin-right: 1em;
@@ -209,25 +208,22 @@ main aside {
 
 .mission-header, .target-header, .instrument-header, .spacecraft-header {
     color: white;
-    margin-left: -$main-padding;
-    margin-right: -$main-padding;
-    
+    padding: 0.5em;
     display: flex;
-    text-align: center;
     flex-flow: row wrap;
     align-items: center;
-    padding: 20px;
+
     img {
-        max-height: 150px;
+        max-height: 10em;
         ~ h1 {
-            margin-left: 20px;
+            margin-left: 1em;
         }
     }
     h1 {
-        font-size: 2.5em;
+        font-size: 2em;
     }
     & ~ aside {
-        margin-top: -40px;
+        margin-top: -2em;
     }
 
 }
@@ -323,7 +319,7 @@ table {
     }
     .actions {
         flex-grow: 1;
-        
+
         font-size: 0.9em;
 
         display: flex;
@@ -407,11 +403,11 @@ table {
         padding-left: 4px;
         height: 60px;
         box-sizing: border-box;
-        
+
         display: flex;
         flex-direction: row;
         align-items: center;
-        
+
     }
     img {
         max-height: 48px;
@@ -476,7 +472,7 @@ table {
 
         margin-left: 0;
         padding: 1em;
-        
+
         img {
             height: 1.5em;
             margin-right: 0.8em;
@@ -499,7 +495,7 @@ table {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+
 }
 
 .error {
