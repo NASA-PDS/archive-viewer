@@ -5,6 +5,15 @@
     border-left: 2px solid $blue;
     align-self: flex-start;
 }
+@mixin button {
+    margin: 0.5em;
+    padding: 0.5em;
+    cursor: pointer;
+    border: 1px solid darken($link,10%);
+    color: white;
+    background: $link;
+    border-radius: 0.25em;
+}
 
 .co-main {
     padding: 0.5em 1em;
@@ -30,4 +39,7 @@
 
 .target-datasets {
     max-width: 60%;
+}
+.button {
+    @include button;
 }

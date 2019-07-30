@@ -92,6 +92,7 @@ class DatasetList extends React.Component {
         this.state = {
             target: target,
             datasets: [],
+            elements: [],
             loaded: false
         }
     }
@@ -106,19 +107,18 @@ class DatasetList extends React.Component {
     }
     
     render() {
+        let self = this
         const {datasets} = this.state
         let arr = Array.from(datasets);
-        let elements = [];
+        
         for (const [idx,val] of arr.entries()) {
-            elements.push(<li key={val.title}>{ val.title }</li>)
+            self.state.elements.push(<li key={val.title}>{ val.title }</li>)
         } 
         
         return (
             <section className="co-section target-datasets">
                 <h2>Datasets</h2>
-                <ul className="list-box">
-                    { elements }
-                </ul>
+                <ListBox itemList={self.state.elements} />
             </section>
         )
     }
@@ -152,6 +152,7 @@ class SpacecraftList extends React.Component {
         this.state = {
             target: target,
             spacecraft: [],
+            elements: [],
             loaded: false
         }
     }
@@ -166,21 +167,59 @@ class SpacecraftList extends React.Component {
     }
     
     render() {
-        const {spacecraft} = this.state
+        let self = this
+        const {spacecraft} = self.state
         let arr = Array.from(spacecraft)
         
-        let elements = [];
         for (const [idx,val] of arr.entries()) {
-            elements.push(<li key={val.title}>{ val.title }</li>)
-        }
+            const el = <li key={val.title}>{ val.title }</li>;
+            
+            self.state.elements.push(el);
+        };
         
         return (
             <section className="co-section target-spacecraft">
                 <h2>Spacecraft</h2>
-                <ul className="list-box">
-                    { elements }
-                </ul>
+                <ListBox itemList={self.state.elements} />
             </section>
+        )
+    }
+}
+
+class ListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            list: props.itemList,
+            previewLength: props.previewLength || 10,
+            showAll: false
+        }
+    }
+    
+    render() {
+        let self = this
+        const itemList = self.state.list
+        
+        function toggleList(e) {
+            e.preventDefault();
+            
+            self.showAll = !self.showAll;
+            self.setState({ showAll: self.showAll });
+        }
+        
+        function commandText() {
+            return (self.showAll) ? "Show Less" : "Show All";
+        }
+        
+        function makeList(list) {
+            return (self.state.showAll) ? list : list.slice(0,self.state.previewLength);
+        }
+        
+        return (
+            <ul className="list-box">
+                { makeList(itemList) }
+                <div className="button" onClick={toggleList}>{ commandText() } ({itemList.length})</div>
+            </ul>
         )
     }
 }
