@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated, httpGetIdentifiers} from 'api/common.js'
 
 export function lookupInstrument(lidvid) {
     if(!lidvid) {
@@ -63,7 +63,7 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
             let params = {
                 q: childrenLids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
             }
-            httpGet(router.instrumentsCore, params).then(children => {
+            httpGetIdentifiers(router.instrumentsCore, childrenLids).then(children => {
                 resolve(children.filter(child => child.identifier !== instrument.identifier))
             }, reject)
         })

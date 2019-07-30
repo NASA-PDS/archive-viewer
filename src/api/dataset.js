@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetIdentifiers} from 'api/common.js'
 
 export function lookupDataset(lidvid) {
     if(!lidvid) {
@@ -46,4 +46,14 @@ export function getBundlesForCollection(dataset) {
         }
     
     return httpGet(router.datasetCore, params)
+}
+
+export function getTargetsForDataset(dataset) {
+    return httpGetIdentifiers(router.targetsCore, dataset.target_ref)
+}
+export function getSpacecraftForDataset(dataset) {
+    return httpGetIdentifiers(router.spacecraftCore, dataset.instrument_host_ref)
+}
+export function getInstrumentsForDataset(dataset) {
+    return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref)
 }
