@@ -67,9 +67,10 @@ class SpacecraftList extends React.Component {
         let arr = Array.from(spacecraft)
         
         for (const [idx,val] of arr.entries()) {
-            const el = <li key={val.title}>{ val.title }</li>;
+            const lid = val.identifier
+            const link = `/?instrument=${lid}`
             
-            self.state.elements.push(el);
+            self.state.elements.push(<li key={val.title}><a href={link}>{ val.title }</a></li>);
         };
         
         return (
