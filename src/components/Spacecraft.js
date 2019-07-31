@@ -5,6 +5,7 @@ import ListBox from 'components/ListBox'
 import {DatasetList} from 'components/Dataset'
 import {MissionList} from 'components/Mission'
 import {InstrumentList} from 'components/Instrument'
+import {TargetList} from 'components/Target'
 import {Header, Description} from 'components/ContextObjects'
 
 export default class Spacecraft extends React.Component {
@@ -14,34 +15,34 @@ export default class Spacecraft extends React.Component {
             spacecraft: props.spacecraft,
             missions: null,
             instruments: null,
+            targets: null,
             datasets: null,
             loaded: false,
         }
     }
 
     componentDidMount() {
-        // getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
-        //     console.log(targets)
-        // })
+        getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
+            this.setState({targets})
+        })
         getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
-            console.log(instruments)
             this.setState({instruments})
         })
         getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
             this.setState({missions})
         })
         getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => {
-            console.log(datasets);
             this.setState({datasets})
         })
     }
 
     render() {
-        const {spacecraft,missions,datasets,instruments} = this.state
+        const {spacecraft,missions,datasets,instruments,targets} = this.state
         
         const showMissionList = mission => (!missions) ? <p>Loading...</p> : <MissionList missions={missions} />;
         const showDatasetList = dataset => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
         const showInstrumentList = instrument => (!instruments) ? <p>Loading...</p> : <InstrumentList instruments={instruments} />;
+        const showTargetList = target => (!targets) ? <p>Loading...</p> : <TargetList targets={targets} />;
         
         return (
             <div>
@@ -51,6 +52,7 @@ export default class Spacecraft extends React.Component {
                     {showMissionList(missions)}
                     {showDatasetList(datasets)}
                     {showInstrumentList(instruments)}
+                    {showTargetList(targets)}
                 </main>
             </div>
         )
