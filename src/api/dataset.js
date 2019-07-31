@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetIdentifiers} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
 
 export function lookupDataset(lidvid) {
     if(!lidvid) {
@@ -45,15 +45,15 @@ export function getBundlesForCollection(dataset) {
             q: `product_class:"Product_Bundle" AND collection_ref:"${lid.lidvid}"`
         }
     
-    return httpGet(router.datasetCore, params)
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name'], router.datasetWeb))
 }
 
 export function getTargetsForDataset(dataset) {
-    return httpGetIdentifiers(router.targetsCore, dataset.target_ref)
+    return httpGetIdentifiers(router.targetsCore, dataset.target_ref).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
 }
 export function getSpacecraftForDataset(dataset) {
-    return httpGetIdentifiers(router.spacecraftCore, dataset.instrument_host_ref)
+    return httpGetIdentifiers(router.spacecraftCore, dataset.instrument_host_ref).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
 }
 export function getInstrumentsForDataset(dataset) {
-    return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref)
+    return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
 }

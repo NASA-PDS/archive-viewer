@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated, httpGetIdentifiers} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
 
 export function lookupInstrument(lidvid) {
     if(!lidvid) {
@@ -31,7 +31,7 @@ export function getSpacecraftForInstrument(instrument) {
     let params = {
         q: `instrument_ref:*${instrumentLid.lastSegment}* AND data_class:"Instrument_Host"`
     }
-    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft)
+    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
 }
 
 export function getDatasetsForInstrument(instrument) {
@@ -40,7 +40,7 @@ export function getDatasetsForInstrument(instrument) {
     let params = {
         q: `(instrument_ref:*${instrumentLid.lastSegment}* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
-    return httpGet(router.datasetCore, params)
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
 
 export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecraft) {
@@ -60,10 +60,7 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
     function gatherInstruments(spacecraft) {
         return new Promise((resolve, reject) => {
             let childrenLids = spacecraft[0].instrument_ref
-            let params = {
-                q: childrenLids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
-            }
-            httpGetIdentifiers(router.instrumentsCore, childrenLids).then(children => {
+            httpGetIdentifiers(router.instrumentsCore, childrenLids).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb)).then(children => {
                 resolve(children.filter(child => child.identifier !== instrument.identifier))
             }, reject)
         })
