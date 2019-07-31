@@ -47,6 +47,7 @@ class MissionList extends React.Component {
     render() {
         let self = this
         const {missions} = self.state
+        self.state.elements = [];
         let arr = Array.from(missions)
         
         for (const [idx,val] of arr.entries()) {
