@@ -2,8 +2,6 @@ import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
-import {getDatasetsForTarget} from 'api/target'
-import {getDatasetsForSpacecraft} from 'api/spacecraft'
 import ListBox from 'components/ListBox'
 
 export default class Dataset extends React.Component {
@@ -55,32 +53,10 @@ export default class Dataset extends React.Component {
 class DatasetList extends React.Component {
     constructor(props) {
         super(props)
-        const model = props.model
         this.state = {
-            model: model,
-            datasets: [],
+            datasets: props.datasets,
             elements: [],
             loaded: false
-        }
-    }
-    
-    componentDidMount() {
-        let self = this
-        const type = self.state.model.data_class.toUpperCase()
-        const setDatasets = datasets => self.setState({datasets})
-        
-        switch (type) {
-            case 'INSTRUMENT_HOST':
-                console.log('get datasets for INSTRUMENT_HOST');
-                getDatasetsForSpacecraft(this.state.model).then(setDatasets)
-                break;
-            case 'TARGET':  
-                console.log('get datasets for TARGET');
-                getDatasetsForTarget(this.state.model).then(setDatasets)
-                break;
-            default:
-                console.log(`get datasets for something NEW: ${type}`);
-                break;
         }
     }
     
@@ -107,7 +83,8 @@ class DatasetList extends React.Component {
     
     render() {
         let self = this
-        const {datasets} = this.state
+        self.state.elements = []
+        const {datasets,elements} = this.state
         let arr = Array.from(datasets)
         
         // TODO: Apply various sorting methods
@@ -122,7 +99,7 @@ class DatasetList extends React.Component {
         
         return (
             <section className="co-section target-datasets">
-                <h2>Datasets</h2>
+                <h2>Datasets {self.state.elements.length}</h2>
                 <ListBox itemList={self.state.elements} />
             </section>
         )

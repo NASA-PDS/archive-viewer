@@ -1,5 +1,5 @@
 import React from 'react';
-import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft} from 'api/spacecraft.js'
+import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {getSpacecraftForTarget} from 'api/target'
 import ListBox from 'components/ListBox'
 import {DatasetList} from 'components/Dataset'
@@ -12,34 +12,40 @@ export default class Spacecraft extends React.Component {
         this.state = {
             spacecraft: props.spacecraft,
             missions: null,
+            datasets: null,
             loaded: false,
         }
     }
 
     componentDidMount() {
-        getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
-            console.log(targets)
-        })
-        getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
-            console.log(instruments)
-        })
+        // getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
+        //     console.log(targets)
+        // })
+        // getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
+        //     console.log(instruments)
+        // })
         getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
             this.setState({missions})
+        })
+        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => {
+            console.log(datasets);
+            this.setState({datasets})
         })
     }
 
     render() {
-        const {spacecraft,missions} = this.state
+        const {spacecraft,missions,datasets} = this.state
         
-        const showMissions = mission => (!missions) ? <p>Loading...</p> : <MissionList missions={missions} />;
+        const showMissionList = mission => (!missions) ? <p>Loading...</p> : <MissionList missions={missions} />;
+        const showDatasetList = dataset => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
         
         return (
             <div>
                 <Header model={spacecraft} />
                 <Description model={spacecraft} />
                 <main className="co-main target-main">
-                    {showMissions(missions)}
-                    <DatasetList model={spacecraft} />
+                    {showMissionList(missions)}
+                    {showDatasetList(datasets)}
                 </main>
             </div>
         )
