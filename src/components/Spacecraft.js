@@ -1,6 +1,6 @@
 import React from 'react';
 // API
-import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
+import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft} from 'api/spacecraft.js'
 import {getSpacecraftForTarget} from 'api/target'
 // GUI Components
 import ListBox from 'components/ListBox'
@@ -26,9 +26,6 @@ export default class Spacecraft extends React.Component {
         })
         getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
             console.log(instruments)
-        })
-        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => {
-            console.log(datasets)
         })
     }
 

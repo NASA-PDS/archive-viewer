@@ -3,6 +3,7 @@ import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {getDatasetsForTarget} from 'api/target'
+import {getDatasetsForSpacecraft} from 'api/spacecraft'
 import ListBox from 'components/ListBox'
 
 export default class Dataset extends React.Component {
@@ -64,12 +65,23 @@ class DatasetList extends React.Component {
     }
     
     componentDidMount() {
-        let self = this;
-        getDatasetsForTarget(this.state.target).then(function(vals) {
-            self.setState({
-                datasets: vals
-            })
-        })
+        let self = this
+        const type = self.state.target.data_class.toUpperCase()
+        const setDatasets = datasets => self.setState({datasets})
+        
+        switch (type) {
+            case 'INSTRUMENT_HOST':
+                console.log('get datasets for INSTRUMENT_HOST');
+                getDatasetsForSpacecraft(this.state.target).then(setDatasets)
+                break;
+            case 'TARGET':  
+                console.log('get datasets for TARGET');
+                getDatasetsForTarget(this.state.target).then(setDatasets)
+                break;
+            default:
+                console.log(`get datasets for something NEW: ${type}`);
+                break;
+        }
     }
     
     sortBy() {
