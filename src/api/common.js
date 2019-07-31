@@ -74,3 +74,34 @@ function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }
 
+
+export function stitchWithWebFields(fields, route) {
+    if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
+    return (previousResult) => {
+        return new Promise((resolve, _) => {
+            let identifiers = previousResult.map(doc => doc.identifier)
+            let params = {
+                q: identifiers.reduce((query, lid) => query + 'logical_identifier:"' + lid + '" ', ''),
+                fl: fields.join()
+            }
+            httpGet(route, params).then(webDocs => {
+                if(previousResult.length ===  webDocs.length) {
+                    let toReturn = []
+                    // combine documents by lid
+                    for (let coreDoc of previousResult ) {
+                        let consolidated = Object.assign({}, coreDoc)
+                        let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
+                        toReturn.push(Object.assign(consolidated, corresponding))
+                    }
+                    resolve(toReturn)
+                } else {
+                    // can't find matching documents, so just return the results of original query
+                    resolve(previousResult)
+                }
+            }, err => {
+                //ignore error, just pass original
+                resolve(previousResult)
+            })
+        })
+    }
+}

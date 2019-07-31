@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGetRelated} from 'api/common.js'
+import {httpGetFull, httpGetRelated, stitchWithWebFields} from 'api/common.js'
 
 export function lookupMission(lidvid) {
     if(!lidvid) {
@@ -32,7 +32,7 @@ export function getSpacecraftForMission(mission) {
     let params = {
         q: `investigation_ref:*${missionLid.lastSegment}* AND data_class:"Instrument_Host"`
     }
-    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft)
+    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
 }
 
 export function getTargetsForMission(mission) {
@@ -41,5 +41,5 @@ export function getTargetsForMission(mission) {
     let params = {
         q: `investigation_ref:*${missionLid.lastSegment}* AND data_class:"Target"`
     }
-    return httpGetRelated(params, router.targetsCore, knownTargets)
+    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
 }

@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields} from 'api/common.js'
 
 export function lookupSpacecraft(lidvid) {
     if(!lidvid) {
@@ -32,7 +32,7 @@ export function getMissionsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Investigation"`
     }
-    return httpGetRelated(params, router.missionsCore, knownMissions)
+    return httpGetRelated(params, router.missionsCore, knownMissions).then(stitchWithWebFields(['display_name', 'image_url'], router.missionsWeb))
 }
 
 export function getInstrumentsForSpacecraft(spacecraft) {
@@ -41,7 +41,7 @@ export function getInstrumentsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Instrument"`
     }
-    return httpGetRelated(params, router.instrumentsCore, knownInstruments)
+    return httpGetRelated(params, router.instrumentsCore, knownInstruments).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
 }
 
 export function getTargetsForSpacecraft(spacecraft) {
@@ -50,7 +50,7 @@ export function getTargetsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:*${spacecraftLid.lastSegment}* AND data_class:"Target"`
     }
-    return httpGetRelated(params, router.targetsCore, knownTargets)
+    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
 }
 
 export function getDatasetsForSpacecraft(spacecraft) {
@@ -59,5 +59,5 @@ export function getDatasetsForSpacecraft(spacecraft) {
     let params = {
         q: `(instrument_host_ref:*${spacecraftLid.lastSegment}* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
-    return httpGet(router.datasetCore, params)
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
