@@ -1,8 +1,11 @@
 import React from 'react';
+// API
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {getSpacecraftForTarget} from 'api/target'
-import {Header, Description} from 'components/ContextObjects'
+// GUI Components
 import ListBox from 'components/ListBox'
+import {DatasetList} from 'components/Dataset'
+import {Header, Description} from 'components/ContextObjects'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -35,6 +38,9 @@ export default class Spacecraft extends React.Component {
             <div>
                 <Header model={spacecraft} />
                 <Description model={spacecraft} />
+                <main className="co-main target-main">
+                    <DatasetList model={spacecraft} />
+                </main>
             </div>
         )
     }
@@ -68,7 +74,7 @@ class SpacecraftList extends React.Component {
         
         for (const [idx,val] of arr.entries()) {
             const lid = val.identifier
-            const link = `/?instrument=${lid}`
+            const link = `/?spacecraft=${lid}`
             
             self.state.elements.push(<li key={val.title}><a href={link}>{ val.title }</a></li>);
         };

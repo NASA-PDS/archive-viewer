@@ -2,6 +2,8 @@ import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
+import {getDatasetsForTarget} from 'api/target'
+import ListBox from 'components/ListBox'
 
 export default class Dataset extends React.Component {
 
@@ -45,6 +47,72 @@ export default class Dataset extends React.Component {
                     <RelatedData dataset={dataset} />
                 </div>
             </div>
+        )
+    }
+}
+
+class DatasetList extends React.Component {
+    constructor(props) {
+        super(props)
+        const target = props.model
+        this.state = {
+            target: target,
+            datasets: [],
+            elements: [],
+            loaded: false
+        }
+    }
+    
+    componentDidMount() {
+        let self = this;
+        getDatasetsForTarget(this.state.target).then(function(vals) {
+            self.setState({
+                datasets: vals
+            })
+        })
+    }
+    
+    sortBy() {
+        return {
+            mission: function(datasets) {
+                // takes an array of datasets and
+                    // returns an object containing mission names
+                    // and a list of associated datasets
+                
+                let missions = {}
+                
+                datasets.map((dataset, idx) => {
+                    const mission = dataset['investigation_name']
+                    
+                    if (!missions[mission]) missions[mission] = [dataset]
+                    else missions[mission].push(dataset)
+                })
+                
+                return missions
+            }
+        }
+    }
+    
+    render() {
+        let self = this
+        const {datasets} = this.state
+        let arr = Array.from(datasets)
+        
+        // TODO: Apply various sorting methods
+        const datasetsByMission = self.sortBy().mission(datasets)
+        
+        for (const [idx,val] of arr.entries()) {
+            const el = (
+                <li key={val.title}>{ val.title }</li>
+            )
+            self.state.elements.push(el)
+        } 
+        
+        return (
+            <section className="co-section target-datasets">
+                <h2>Datasets</h2>
+                <ListBox itemList={self.state.elements} />
+            </section>
         )
     }
 }
@@ -331,3 +399,5 @@ function RelatedData(props) {
         )
     } else return null
 }
+
+export {Dataset, DatasetList}
