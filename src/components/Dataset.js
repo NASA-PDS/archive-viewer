@@ -92,7 +92,7 @@ class DatasetList extends React.Component {
         
         for (const [idx,val] of arr.entries()) {
             const el = (
-                <li key={val.title}>{ val.title }</li>
+                <li key={val.identifier}>{ val.title }</li>
             )
             self.state.elements.push(el)
         } 
