@@ -1,10 +1,9 @@
 import React from 'react';
-// API
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft} from 'api/spacecraft.js'
 import {getSpacecraftForTarget} from 'api/target'
-// GUI Components
 import ListBox from 'components/ListBox'
 import {DatasetList} from 'components/Dataset'
+import {MissionList} from 'components/Mission'
 import {Header, Description} from 'components/ContextObjects'
 
 export default class Spacecraft extends React.Component {
@@ -18,9 +17,6 @@ export default class Spacecraft extends React.Component {
     }
 
     componentDidMount() {
-        getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
-            console.log(missions)
-        })
         getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
             console.log(targets)
         })
@@ -36,6 +32,7 @@ export default class Spacecraft extends React.Component {
                 <Header model={spacecraft} />
                 <Description model={spacecraft} />
                 <main className="co-main target-main">
+                    <MissionList model={spacecraft} />
                     <DatasetList model={spacecraft} />
                 </main>
             </div>
