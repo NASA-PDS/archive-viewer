@@ -1,6 +1,5 @@
 import React from 'react';
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
-import {getMissionsForSpacecraft} from 'api/spacecraft'
 import {Header, Description} from 'components/ContextObjects'
 import ListBox from 'components/ListBox'
 
@@ -38,20 +37,11 @@ export default class Mission extends React.Component {
 class MissionList extends React.Component {
     constructor(props) {
         super(props)
-        const target = props.model
         this.state = {
-            target: target,
-            missions: [],
+            missions: props.missions,
             elements: [],
             loaded: false
         }
-    }
-    
-    componentDidMount() {
-        getMissionsForSpacecraft(this.state.target).then(missions => {
-            console.log(missions)
-            this.setState({missions})
-        })
     }
     
     render() {
@@ -62,7 +52,7 @@ class MissionList extends React.Component {
         for (const [idx,val] of arr.entries()) {
             const lid = val.identifier
             const link = `/?mission=${lid}`
-            
+        
             self.state.elements.push(<li key={val.title}><a href={link}>{ val.title }</a></li>)
         }
         

@@ -9,9 +9,9 @@ import {Header, Description} from 'components/ContextObjects'
 export default class Spacecraft extends React.Component {
     constructor(props) {
         super(props)
-        const spacecraft = props.spacecraft
         this.state = {
-            spacecraft: spacecraft,
+            spacecraft: props.spacecraft,
+            missions: null,
             loaded: false,
         }
     }
@@ -23,16 +23,22 @@ export default class Spacecraft extends React.Component {
         getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
             console.log(instruments)
         })
+        getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
+            this.setState({missions})
+        })
     }
 
     render() {
-        const {spacecraft} = this.state
+        const {spacecraft,missions} = this.state
+        
+        const showMissions = mission => (!missions) ? <p>Loading...</p> : <MissionList missions={missions} />;
+        
         return (
             <div>
                 <Header model={spacecraft} />
                 <Description model={spacecraft} />
                 <main className="co-main target-main">
-                    <MissionList model={spacecraft} />
+                    {showMissions(missions)}
                     <DatasetList model={spacecraft} />
                 </main>
             </div>
