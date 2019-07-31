@@ -47,6 +47,7 @@ class InstrumentList extends React.Component {
     render() {
         let self = this
         const {instruments} = self.state
+        self.state.elements = [];
         let arr = Array.from(instruments)
         
         for (const [idx,val] of arr.entries()) {
