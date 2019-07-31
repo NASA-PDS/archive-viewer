@@ -1,5 +1,8 @@
 import React from 'react';
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
+import {getInstrumentsForSpacecraft} from 'api/spacecraft'
+import {Header, Description} from 'components/ContextObjects'
+import ListBox from 'components/ListBox'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -31,19 +34,35 @@ export default class Instrument extends React.Component {
     }
 }
 
-function Header({model}) {
-    const {display_name, title, image_url} = model
-    const name = display_name ? display_name : title
-    return (
-        <div className="instrument-header">
-            <img src={image_url} />
-            <h1> { name } Data Archive </h1>
-        </div>
-    )
+class InstrumentList extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            instruments: props.instruments,
+            elements: [],
+            loaded: false
+        }
+    }
+    
+    render() {
+        let self = this
+        const {instruments} = self.state
+        let arr = Array.from(instruments)
+        
+        for (const [idx,val] of arr.entries()) {
+            const lid = val.identifier
+            const link = `/?instrument=${lid}`
+            
+            self.state.elements.push(<li key={val.title}><a href={link}>{val.title}</a></li>)
+        }
+        
+        return (
+            <section className="co-section instrument-list">
+                <h2>Instruments</h2>
+                <ListBox itemList={self.state.elements} />
+            </section>
+        )
+    }
 }
 
-function Description({model}) {
-    const {display_description, instrument_description} = model
-    const description = display_description ? display_description : instrument_description
-    return <h3 itemProp="description" className="resource-description">{ description }</h3>
-}
+export {Instrument, InstrumentList}

@@ -4,6 +4,7 @@ import {getSpacecraftForTarget} from 'api/target'
 import ListBox from 'components/ListBox'
 import {DatasetList} from 'components/Dataset'
 import {MissionList} from 'components/Mission'
+import {InstrumentList} from 'components/Instrument'
 import {Header, Description} from 'components/ContextObjects'
 
 export default class Spacecraft extends React.Component {
@@ -12,6 +13,7 @@ export default class Spacecraft extends React.Component {
         this.state = {
             spacecraft: props.spacecraft,
             missions: null,
+            instruments: null,
             datasets: null,
             loaded: false,
         }
@@ -21,9 +23,10 @@ export default class Spacecraft extends React.Component {
         // getTargetsForSpacecraft(this.state.spacecraft).then(targets => {
         //     console.log(targets)
         // })
-        // getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
-        //     console.log(instruments)
-        // })
+        getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => {
+            console.log(instruments)
+            this.setState({instruments})
+        })
         getMissionsForSpacecraft(this.state.spacecraft).then(missions => {
             this.setState({missions})
         })
@@ -34,10 +37,11 @@ export default class Spacecraft extends React.Component {
     }
 
     render() {
-        const {spacecraft,missions,datasets} = this.state
+        const {spacecraft,missions,datasets,instruments} = this.state
         
         const showMissionList = mission => (!missions) ? <p>Loading...</p> : <MissionList missions={missions} />;
         const showDatasetList = dataset => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
+        const showInstrumentList = instrument => (!instruments) ? <p>Loading...</p> : <InstrumentList instruments={instruments} />;
         
         return (
             <div>
@@ -46,6 +50,7 @@ export default class Spacecraft extends React.Component {
                 <main className="co-main target-main">
                     {showMissionList(missions)}
                     {showDatasetList(datasets)}
+                    {showInstrumentList(instruments)}
                 </main>
             </div>
         )
