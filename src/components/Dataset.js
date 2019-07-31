@@ -55,9 +55,9 @@ export default class Dataset extends React.Component {
 class DatasetList extends React.Component {
     constructor(props) {
         super(props)
-        const target = props.model
+        const model = props.model
         this.state = {
-            target: target,
+            model: model,
             datasets: [],
             elements: [],
             loaded: false
@@ -66,17 +66,17 @@ class DatasetList extends React.Component {
     
     componentDidMount() {
         let self = this
-        const type = self.state.target.data_class.toUpperCase()
+        const type = self.state.model.data_class.toUpperCase()
         const setDatasets = datasets => self.setState({datasets})
         
         switch (type) {
             case 'INSTRUMENT_HOST':
                 console.log('get datasets for INSTRUMENT_HOST');
-                getDatasetsForSpacecraft(this.state.target).then(setDatasets)
+                getDatasetsForSpacecraft(this.state.model).then(setDatasets)
                 break;
             case 'TARGET':  
                 console.log('get datasets for TARGET');
-                getDatasetsForTarget(this.state.target).then(setDatasets)
+                getDatasetsForTarget(this.state.model).then(setDatasets)
                 break;
             default:
                 console.log(`get datasets for something NEW: ${type}`);
