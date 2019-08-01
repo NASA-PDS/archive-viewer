@@ -8,7 +8,7 @@ class ListBox extends React.Component {
             itemList: props.itemList,
             previewLength: props.previewLength || 10,
             title: props.listTitle,
-            type: props.listType,
+            query: props.query,
             showAll: false
         }
     }
@@ -16,14 +16,14 @@ class ListBox extends React.Component {
     render() {
         let self = this
         this.state.elements = []
-        const {elements,itemList} = this.state
+        const {elements,itemList,title} = this.state
         let arr = Array.from(itemList)
         
-        if (!self.state.type) throw new Error('ListBox `type` is required.')
+        if (!self.state.query) throw new Error('ListBox `query` is required.')
         
         for (const [idx,val] of arr.entries()) {
             const lid = val.identifier
-            const link = `/?${self.state.type}=${lid}`
+            const link = `/?${self.state.query}=${lid}`
             
             const el = (
                 <li key={val.identifier}><a href={link}>{ val.title }</a></li>
@@ -48,7 +48,7 @@ class ListBox extends React.Component {
         
         return (
             <div>
-                <h3>{ this.state.title }</h3>
+                <h3>{ title }</h3>
                 <ul className="list-box">
                     { makeList(this.state.elements) }
                     <div className="button" onClick={toggleList}>{ commandText() } ({itemList.length})</div>
@@ -60,23 +60,29 @@ class ListBox extends React.Component {
 
 export default function ShowListBox(items, type, length) {
     let title,
-        element;
+        element,
+        query;
     
     switch (type) {
         case 'missions':
             title = 'Missions'
+            query = 'mission'
             break;
         case 'datasets':
             title = 'Datasets'
+            query = 'dataset'
             break;
         case 'instruments':
             title = 'Instruments'
+            query = 'instrument'
             break;
         case 'targets':
             title = 'Targets'
+            query = 'target'
             break;
         case 'spacecraft':
             title = 'Spacecraft'
+            query = 'spacecraft'
             break;
         default:
             throw new Error(`Unexpected TYPE: ${type}`)
@@ -90,7 +96,7 @@ export default function ShowListBox(items, type, length) {
             </div>
         )
     } else {
-        return (<ListBox itemList={items} listTitle={title} listType={type} previewLength={length} />)
+        return (<ListBox itemList={items} listTitle={title} query={query} previewLength={length} />)
     }
 }
 
