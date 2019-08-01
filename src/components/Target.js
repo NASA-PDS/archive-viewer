@@ -1,47 +1,36 @@
 import React from 'react';
-import {missionsForTarget} from 'target-api'
+import {getDatasetsForTarget, getSpacecraftForTarget} from 'api/target'
+import {Header, Description} from 'components/ContextObjects'
+import ShowListBox from 'components/ListBox'
+import 'components/Target.scss';
 
 export default class Target extends React.Component {
     constructor(props) {
         super(props)
-        const target = props.target
         this.state = {
-            target: target,
+            target: props.target,
+            datasets: props.datasets,
+            spacecraft: props.spacecraft,
             loaded: false,
         }
     }
-
+    
     componentDidMount() {
-        missionsForTarget(this.state.target.identifier).then(function(val) {
-            console.log(val)
-        })
+        getDatasetsForTarget(this.state.target).then(datasets => this.setState({datasets}))
+        getSpacecraftForTarget(this.state.target).then(spacecraft => this.setState({spacecraft}))
     }
 
     render() {
-        const {target} = this.state
+        const {target,datasets,spacecraft} = this.state
         return (
             <div>
                 <Header model={target} />
                 <Description model={target} />
-
+                <main className="co-main target-main">
+                    { ShowListBox( datasets, 'Datasets' ) }
+                    { ShowListBox( spacecraft, 'Spacecraft' ) }
+                </main>
             </div>
         )
     }
-}
-
-function Header({model}) {
-    const {display_name, title, image_url} = model
-    const name = display_name ? display_name : title
-    return (
-        <div className="target-header">
-            <img src={image_url} />
-            <h1> { name } Data Archive </h1>
-        </div>
-    )
-}
-
-function Description({model}) {
-    const {display_description, target_description} = model
-    const description = display_description ? display_description : target_description
-    return <h3 itemProp="description" className="resource-description">{ description }</h3>
 }

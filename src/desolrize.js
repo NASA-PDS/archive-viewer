@@ -14,17 +14,22 @@ function desolrize(dataset) {
 }
 
 function shouldComeOutOfArray(key, value) {
-    return (!keysThatAreActuallyStringArrays.includes(key) && value.constructor === Array && value.length === 1 && value[0].constructor === String)
-        || (!keysThatAreActuallyObjectArrays.includes(key) && value.constructor === Array && value.length === 1 && value[0].constructor === Object)
+    return  value.constructor === Array && 
+            value.length === 1 && 
+            !keysThatAreActuallyStringArrays.includes(key) && 
+            !keysThatAreActuallyObjectArrays.includes(key) &&
+            (keysThatAreNeverArrays.includes(key) || value[0].constructor === String)
 }
 
-const keysThatAreActuallyStringArrays = []
-const keysThatAreActuallyObjectArrays = ['tags', 'related_tools', 'related_data', 'superseded_data', 'download_packages']
+const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref']
+const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'superseded_data', 'download_packages']
+
+const keysThatAreNeverArrays = ['is_major', 'is_prime']
 
 export default function(fromSolr) {
-    if(fromSolr.response.docs) {
+    if(!!fromSolr.response.docs) {
         if(fromSolr.response.docs.length > 0) {
             return fromSolr.response.docs.map(desolrize)
-        } else return null
+        } else return []
     } else return null
 }

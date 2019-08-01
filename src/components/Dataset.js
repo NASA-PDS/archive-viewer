@@ -1,36 +1,101 @@
 import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
+import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
+import ListBox from 'components/ListBox'
 
-export default function Dataset({dataset}) {
-    const isBundle = dataset.lid.split(':').length === 4
-    return (
-        <div>
-            <Taxonomy dataset={dataset} />
-            <FamilyLinks dataset={dataset} isBundle={isBundle}/>
-            <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
-                <Title dataset={dataset} />
-                <DeliveryInfo dataset={dataset} />
-                <Metadata dataset={dataset} isBundle={isBundle} />
-                <Description dataset={dataset} />
+export default class Dataset extends React.Component {
 
-                { isBundle && 
-                    <CollectionList dataset={dataset} />
-                }
-                <CollectionQuickLinks dataset={dataset} />
-                <CollectionDownloads dataset={dataset} />
+    constructor(props) {
+        super(props)
+        const {dataset} = props
+        const isBundle = dataset.identifier.split(':').length === 4
+        this.state = { dataset, isBundle }
+    }
 
-                <Citation dataset={dataset} />
+    componentDidMount() {
+        getInstrumentsForDataset(this.state.dataset).then(console.log)
+        getSpacecraftForDataset(this.state.dataset).then(console.log)
+        getTargetsForDataset(this.state.dataset).then(console.log)
+    }   
+
+    render() {    
+        const {dataset, isBundle} = this.state
+        return (
+            <div>
+                <Taxonomy dataset={dataset} />
+                <FamilyLinks dataset={dataset} isBundle={isBundle}/>
+                <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
+                    <Title dataset={dataset} />
+                    <DeliveryInfo dataset={dataset} />
+                    <Metadata dataset={dataset} isBundle={isBundle} />
+                    <Description dataset={dataset} />
+
+                    { isBundle && 
+                        <CollectionList dataset={dataset} />
+                    }
+                    <CollectionQuickLinks dataset={dataset} />
+                    <CollectionDownloads dataset={dataset} />
+
+                    <Citation dataset={dataset} />
+                </div>
+                <div className="related-references">
+                    <RelatedPDS3 dataset={dataset} />
+                    <Superseded dataset={dataset} />
+                    <RelatedTools dataset={dataset} />
+                    <RelatedData dataset={dataset} />
+                </div>
             </div>
-            <div className="related-references">
-                <RelatedPDS3 dataset={dataset} />
-                <Superseded dataset={dataset} />
-                <RelatedTools dataset={dataset} />
-                <RelatedData dataset={dataset} />
-            </div>
-        </div>
-    )
+        )
+    }
 }
+
+class DatasetList extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            datasets: props.datasets,
+            elements: [],
+            loaded: false
+        }
+    }
+    
+    sortBy() {
+        return {
+            mission: function(datasets) {
+                // takes an array of datasets and
+                    // returns an object containing mission names
+                    // and a list of associated datasets
+                
+                let missions = {}
+                
+                datasets.map((dataset, idx) => {
+                    const mission = dataset['investigation_name']
+                    
+                    if (!missions[mission]) missions[mission] = [dataset]
+                    else missions[mission].push(dataset)
+                })
+                
+                return missions
+            }
+        }
+    }
+    
+    render() {
+        let self = this
+        self.state.elements = []
+        const {datasets} = this.state
+        
+        return (
+            <section className="co-section target-datasets">
+                <h2>Datasets {self.state.elements.length}</h2>
+                <ListBox itemList={self.state.elements} />
+            </section>
+        )
+    }
+}
+
+const ShowDatasetList = datasets => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
 
 function Taxonomy(props) {
     const tags = props.dataset.tags
@@ -314,3 +379,5 @@ function RelatedData(props) {
         )
     } else return null
 }
+
+export {Dataset, DatasetList, ShowDatasetList}
