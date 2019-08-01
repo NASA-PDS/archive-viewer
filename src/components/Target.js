@@ -2,7 +2,6 @@ import React from 'react';
 import {getDatasetsForTarget, getSpacecraftForTarget} from 'api/target'
 import {Header, Description} from 'components/ContextObjects'
 import ShowListBox from 'components/ListBox'
-import 'components/Target.scss';
 
 export default class Target extends React.Component {
     constructor(props) {
