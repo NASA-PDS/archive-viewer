@@ -1,7 +1,7 @@
 import React from 'react';
 import {getDatasetsForTarget, getSpacecraftForTarget} from 'api/target'
 import {Header, Description} from 'components/ContextObjects'
-import {ShowDatasetListBox,ShowSpacecraftListBox} from 'components/ListBox'
+import {DatasetListBox,ShowSpacecraftListBox} from 'components/ListBox'
 
 export default class Target extends React.Component {
     constructor(props) {
@@ -21,14 +21,15 @@ export default class Target extends React.Component {
 
     render() {
         const {target,datasets,spacecraft} = this.state
-        return (
+        if (!this.state.datasets) {return null}
+        else return (
             <div>
                 <Header model={target} />
                 <main className="co-main target-main">
                     <div>
                         <Description model={target} />
                     </div>
-                    { ShowDatasetListBox( datasets, 'datasets' ) }
+                    <DatasetListBox items={datasets} />
                 </main>
             </div>
         )

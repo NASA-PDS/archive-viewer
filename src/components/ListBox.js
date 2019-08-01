@@ -52,42 +52,52 @@ class ListBox extends React.Component {
                 <h3>{ title }</h3>
                 <ul className="list-box">
                     { this.state.elements }
-                    <div className="button" onClick={toggleList}>{ commandText() } ({ self.state.listHeaders.length })</div>
                 </ul>
             </div>
         )
     }
 }
 
-export default function ShowDatasetListBox(items, length) {
-    const title = 'Datasets'
-    const query = 'dataset'
-    let element;
+export default class DatasetListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+            length: props.length || 10,
+            title: 'Datasets',
+            query: 'datasets',
+            loaded: false,
+        }
+    }
     
-    if (!items || !items.length) {
-        return (
-            <div>
-                <h3>{title}</h3>
-                <p>No items...</p>
-            </div>
-        )
-    } else {
-        /* * * * * GROUP BY: * * * * */
-        // Spacecraft
-        let groupedItems = {}
-        items.map(item => {
-            const lids = item['instrument_host_ref']
-            if (lids && lids.length > 0) lids.map(lidvid => {
-                const lid = new LID(lidvid).lid
-                if (!groupedItems[lid]) groupedItems[lid] = [item]
-                else groupedItems[lid].push(item)
+    render() {
+        let self = this
+        const {items,title,query,length} = this.state
+        if (!self.state.items || !self.state.items.length) {
+            return (
+                <div>
+                    <h3>{title}</h3>
+                    <p>No items...</p>
+                </div>
+            )
+        } else {
+            /* * * * * GROUP BY: * * * * */
+            // Spacecraft
+            let groupedItems = {}
+            self.state.items.map(item => {
+                const lids = item['instrument_host_ref']
+                if (lids && lids.length > 0) lids.map(lidvid => {
+                    const lid = new LID(lidvid).lid
+                    if (!groupedItems[lid]) groupedItems[lid] = [item]
+                    else groupedItems[lid].push(item)
+                })
             })
-        })
-        // Instrument
-        
-        // Data Type
-        return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
+            // TODO Instrument
+            // TODO Data Type
+            
+            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
+        }
     }
 }
 
-export {ListBox, ShowDatasetListBox}
+export {ListBox, DatasetListBox}
