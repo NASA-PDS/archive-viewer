@@ -1,7 +1,7 @@
 import React from 'react';
 import LID from 'services/LogicalIdentifier'
 
-class ListBox extends React.Component {
+export default class ListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -129,6 +129,25 @@ class TargetListBox extends React.Component {
     }
 }
 
+class InstrumentListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+            title: 'Instruments',
+            query: 'instrument',
+            loaded: false
+        }
+    }
+    
+    render() {
+        let self = this
+        const {items,title,query} = self.state
+        
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
+    }
+}
+
 class NoItems extends React.Component {
     constructor(props) {
         super(props)
@@ -167,4 +186,4 @@ const groupby = (arr, val) => {
     return items
 }
 
-export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox}
+export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, InstrumentListBox}
