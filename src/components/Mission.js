@@ -1,7 +1,7 @@
 import React from 'react';
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
-import ShowListBox from 'components/ListBox'
+import {SpacecraftListBox} from 'components/ListBox'
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -23,18 +23,19 @@ export default class Mission extends React.Component {
 
     render() {
         const {mission,datasets,spacecraft,instruments,targets} = this.state
-        
-        return (
+        if (!spacecraft) {return null}
+        else return (
             <div>
                 <Header model={mission} />
                 <main className="co-main mission-main">
                     <div>
                         <Description model={mission} />
                     </div>
-                    { ShowListBox( spacecraft, 'spacecraft') }
-                    { ShowListBox( targets, 'targets') }
+                    <SpacecraftListBox items={spacecraft} />
                 </main>
             </div>
         )
     }
 }
+
+// { ShowListBox( targets, 'targets') }

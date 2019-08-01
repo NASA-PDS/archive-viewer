@@ -63,7 +63,6 @@ export default class DatasetListBox extends React.Component {
         super(props)
         this.state = {
             items: props.items,
-            length: props.length || 10,
             title: 'Datasets',
             query: 'datasets',
             loaded: false,
@@ -72,7 +71,7 @@ export default class DatasetListBox extends React.Component {
     
     render() {
         let self = this
-        const {items,title,query,length} = this.state
+        const {items,title,query,length} = self.state
         if (!self.state.items || !self.state.items.length) {
             return (
                 <div>
@@ -83,15 +82,8 @@ export default class DatasetListBox extends React.Component {
         } else {
             /* * * * * GROUP BY: * * * * */
             // Spacecraft
-            let groupedItems = {}
-            self.state.items.map(item => {
-                const lids = item['instrument_host_ref']
-                if (lids && lids.length > 0) lids.map(lidvid => {
-                    const lid = new LID(lidvid).lid
-                    if (!groupedItems[lid]) groupedItems[lid] = [item]
-                    else groupedItems[lid].push(item)
-                })
-            })
+            let groupedItems = sortby(self.state.items, 'instrument_host_ref')
+            
             // TODO Instrument
             // TODO Data Type
             
@@ -100,4 +92,54 @@ export default class DatasetListBox extends React.Component {
     }
 }
 
-export {ListBox, DatasetListBox}
+class SpacecraftListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+            title: 'Spacecraft',
+            query: 'spacecraft',
+            loaded: false,
+        }
+    }
+    
+    render() {
+        let self = this
+        const {items,title,query} = self.state
+        
+        if (!self.state.items || !self.state.items.length) {
+            return (
+                <div>
+                    <h3>{title}</h3>
+                    <p>No items...</p>
+                </div>
+            )
+        } else {
+            let groupedItems = sortby(self.state.items, null)
+            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} />)
+        }
+    }
+}
+
+const sortby = (arr, val) => {
+    /* Takes an array and a keyword to sort array on
+        returns a grouped objects of lids and
+        lists of associated datasets
+    */
+    let items = {}
+    if (val === null) {
+        items['All'] = arr
+    } else {
+        arr.map(item => {
+            const lids = item[val]
+            if (lids && lids.length > 0) lids.map(lidvid => {
+                const lid = new LID(lidvid).lid
+                if (!items[lid]) items[lid] = [item]
+                else items[lid].push(item)
+            })
+        })
+    }
+    return items
+}
+
+export {ListBox, DatasetListBox, SpacecraftListBox}
