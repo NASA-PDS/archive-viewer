@@ -1,13 +1,15 @@
 import React from 'react';
+import LID from 'services/LogicalIdentifier'
 
 class ListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             elements: [],
-            itemList: props.itemList,
+            groupedItems: props.groupedItems,
             previewLength: props.previewLength || 10,
             title: props.listTitle,
+            listHeaders: null,
             query: props.query,
             showAll: false
         }
@@ -15,21 +17,24 @@ class ListBox extends React.Component {
     
     render() {
         let self = this
+        
+        const {elements,groupedItems,title} = this.state
         this.state.elements = []
-        const {elements,itemList,title} = this.state
-        let arr = Array.from(itemList)
+        self.state.listHeaders = Object.keys(groupedItems)
         
-        if (!self.state.query) throw new Error('ListBox `query` is required.')
-        
-        for (const [idx,val] of arr.entries()) {
-            const lid = val.identifier
-            const link = `/?${self.state.query}=${lid}`
+        self.state.listHeaders.map(key => {
+            const items = groupedItems[key]
+            // first, push header <li> to elements array
+            self.state.elements.push(<li className="list-header">{ key }</li>)
             
-            const el = (
-                <li key={val.identifier}><a href={link}>{ val.title }</a></li>
-            )
-            self.state.elements.push(el)
-        } 
+            // second, push <li> for each dataset in the key
+            items.map(item => {
+                const lid = item.identifier
+                const link = `/?${self.state.query}=${lid}`
+                
+                self.state.elements.push(<li key={item.identifier}><a href={link}>{ item.title }</a></li>)
+            })
+        })
         
         function toggleList(e) {
             e.preventDefault();
@@ -42,51 +47,22 @@ class ListBox extends React.Component {
             return (self.state.showAll) ? "Show Less" : "Show All";
         }
         
-        function makeList(list) {
-            return (self.state.showAll) ? list : list.slice(0,self.state.previewLength);
-        }
-        
         return (
             <div>
                 <h3>{ title }</h3>
                 <ul className="list-box">
-                    { makeList(this.state.elements) }
-                    <div className="button" onClick={toggleList}>{ commandText() } ({itemList.length})</div>
+                    { this.state.elements }
+                    <div className="button" onClick={toggleList}>{ commandText() } ({ self.state.listHeaders.length })</div>
                 </ul>
             </div>
         )
     }
 }
 
-export default function ShowListBox(items, type, length) {
-    let title,
-        element,
-        query;
-    
-    switch (type) {
-        case 'missions':
-            title = 'Missions'
-            query = 'mission'
-            break;
-        case 'datasets':
-            title = 'Datasets'
-            query = 'dataset'
-            break;
-        case 'instruments':
-            title = 'Instruments'
-            query = 'instrument'
-            break;
-        case 'targets':
-            title = 'Targets'
-            query = 'target'
-            break;
-        case 'spacecraft':
-            title = 'Spacecraft'
-            query = 'spacecraft'
-            break;
-        default:
-            throw new Error(`Unexpected TYPE: ${type}`)
-    }
+export default function ShowDatasetListBox(items, length) {
+    const title = 'Datasets'
+    const query = 'dataset'
+    let element;
     
     if (!items || !items.length) {
         return (
@@ -96,8 +72,22 @@ export default function ShowListBox(items, type, length) {
             </div>
         )
     } else {
-        return (<ListBox itemList={items} listTitle={title} query={query} previewLength={length} />)
+        /* * * * * GROUP BY: * * * * */
+        // Spacecraft
+        let groupedItems = {}
+        items.map(item => {
+            const lids = item['instrument_host_ref']
+            if (lids && lids.length > 0) lids.map(lidvid => {
+                const lid = new LID(lidvid).lid
+                if (!groupedItems[lid]) groupedItems[lid] = [item]
+                else groupedItems[lid].push(item)
+            })
+        })
+        // Instrument
+        
+        // Data Type
+        return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
     }
 }
 
-export {ListBox, ShowListBox}
+export {ListBox, ShowDatasetListBox}

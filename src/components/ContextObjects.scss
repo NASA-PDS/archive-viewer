@@ -48,4 +48,10 @@
 .list-box {
     display: flex;
     flex-flow: column nowrap;
+    .list-header {
+        list-style: none;
+        list-style-position: -1em;
+        font-weight: bolder;
+        margin: 0.5em 0;
+    }
 }
