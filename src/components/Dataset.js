@@ -103,7 +103,7 @@ function DeliveryInfo(props) {
 function Metadata(props) {
     const {isBundle, dataset} = props
     return (
-        <aside>
+        <aside className="main-aside">
             <section className="dataset-metadata">
                 {isBundle && 
                     <h2>PDS4 Bundle</h2>
