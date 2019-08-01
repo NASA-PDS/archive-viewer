@@ -24,8 +24,10 @@ export default class Target extends React.Component {
         return (
             <div>
                 <Header model={target} />
-                <Description model={target} />
                 <main className="co-main target-main">
+                    <div>
+                        <Description model={target} />
+                    </div>
                     { ShowListBox( datasets, 'datasets' ) }
                     { ShowListBox( spacecraft, 'spacecraft' ) }
                 </main>

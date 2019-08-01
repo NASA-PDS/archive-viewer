@@ -27,8 +27,10 @@ export default class Instrument extends React.Component {
         return (
             <div>
                 <Header model={instrument} />
-                <Description model={instrument} />
                 <main className="co-main instrument-main">
+                    <div>
+                        <Description model={instrument} />
+                    </div>
                     { ShowListBox( datasets, 'datasets' ) }
                     { ShowListBox( spacecraft, 'spacecraft' ) }
                     { ShowListBox( instruments, 'instruments') }

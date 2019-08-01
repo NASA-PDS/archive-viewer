@@ -27,8 +27,10 @@ export default class Mission extends React.Component {
         return (
             <div>
                 <Header model={mission} />
-                <Description model={mission} />
                 <main className="co-main mission-main">
+                    <div>
+                        <Description model={mission} />
+                    </div>
                     { ShowListBox( spacecraft, 'spacecraft') }
                     { ShowListBox( targets, 'targets') }
                 </main>
