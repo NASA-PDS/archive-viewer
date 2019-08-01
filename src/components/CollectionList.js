@@ -1,6 +1,7 @@
 import React from 'react';
 import {getCollections} from 'api/dataset.js';
 import Error from 'components/Error.js'
+import Loading from 'components/Loading'
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -30,6 +31,9 @@ export default class Main extends React.Component {
 
     render() {
         const { error, collections, loaded } = this.state
+        if(!loaded && !error) {
+            return <Loading></Loading>
+        }
         if(error) {
             return <Error error={error} />
         } else
