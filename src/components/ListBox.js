@@ -58,12 +58,13 @@ class ListBox extends React.Component {
     }
 }
 
-export default class DatasetListBox extends React.Component {
+class DatasetListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             items: props.items,
             title: 'Datasets',
+            groupBy: props.groupBy,
             query: 'datasets',
             loaded: false,
         }
@@ -71,22 +72,20 @@ export default class DatasetListBox extends React.Component {
     
     render() {
         let self = this
-        const {items,title,query,length} = self.state
+        const {items,title,query,length,groupBy} = self.state
         if (!self.state.items || !self.state.items.length) {
-            return (
-                <div>
-                    <h3>{title}</h3>
-                    <p>No items...</p>
-                </div>
-            )
+            return (<NoItems title={title} />)
         } else {
-            /* * * * * GROUP BY: * * * * */
-            // Spacecraft
-            let groupedItems = sortby(self.state.items, 'instrument_host_ref')
-            
-            // TODO Instrument
-            // TODO Data Type
-            
+            let groupedItems;
+            if (groupBy) {
+                // Spacecraft
+                if (groupBy === "spacecraft") groupedItems = groupby(self.state.items, 'instrument_host_ref')
+                // TODO Instrument
+                // TODO Data Type
+                return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
+            } else {
+                groupedItems = groupby(self.state.items, null)
+            }
             return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
         }
     }
@@ -107,21 +106,47 @@ class SpacecraftListBox extends React.Component {
         let self = this
         const {items,title,query} = self.state
         
-        if (!self.state.items || !self.state.items.length) {
-            return (
-                <div>
-                    <h3>{title}</h3>
-                    <p>No items...</p>
-                </div>
-            )
-        } else {
-            let groupedItems = sortby(self.state.items, null)
-            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} />)
-        }
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
     }
 }
 
-const sortby = (arr, val) => {
+class TargetListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+            title: 'Targets',
+            query: 'target',
+            loaded: false,
+        }
+    }
+    
+    render() {
+        let self = this
+        const {items,title,query} = self.state
+        
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
+    }
+}
+
+class NoItems extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            title: props.title
+        }
+    }
+    render() {
+        return (
+            <div>
+                <h3>{this.state.title}</h3>
+                <p>No items...</p>
+            </div>
+        )
+    }
+}
+
+const groupby = (arr, val) => {
     /* Takes an array and a keyword to sort array on
         returns a grouped objects of lids and
         lists of associated datasets
@@ -142,4 +167,4 @@ const sortby = (arr, val) => {
     return items
 }
 
-export {ListBox, DatasetListBox, SpacecraftListBox}
+export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox}
