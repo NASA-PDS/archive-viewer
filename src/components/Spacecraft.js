@@ -40,10 +40,10 @@ export default class Spacecraft extends React.Component {
                 <Header model={spacecraft} />
                 <Description model={spacecraft} />
                 <main className="co-main target-main">
-                    { ShowListBox( missions, 'Missions' ) }
-                    { ShowListBox( datasets, 'Datasets' ) }
-                    { ShowListBox( instruments, 'Instruments' ) }
-                    { ShowListBox( targets, 'Targets' ) }
+                    { ShowListBox( missions, 'missions' ) }
+                    { ShowListBox( datasets, 'datasets' ) }
+                    { ShowListBox( instruments, 'instruments' ) }
+                    { ShowListBox( targets, 'targets' ) }
                 </main>
             </div>
         )
