@@ -45,3 +45,7 @@
     @include button;
     align-self: flex-start;
 }
+.list-box {
+    display: flex;
+    flex-flow: column nowrap;
+}
