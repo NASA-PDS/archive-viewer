@@ -84,18 +84,7 @@ class DatasetList extends React.Component {
     render() {
         let self = this
         self.state.elements = []
-        const {datasets,elements} = this.state
-        let arr = Array.from(datasets)
-        
-        // TODO: Apply various sorting methods
-        const datasetsByMission = self.sortBy().mission(datasets)
-        
-        for (const [idx,val] of arr.entries()) {
-            const el = (
-                <li key={val.identifier}>{ val.title }</li>
-            )
-            self.state.elements.push(el)
-        } 
+        const {datasets} = this.state
         
         return (
             <section className="co-section target-datasets">
@@ -105,6 +94,8 @@ class DatasetList extends React.Component {
         )
     }
 }
+
+const ShowDatasetList = datasets => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
 
 function Taxonomy(props) {
     const tags = props.dataset.tags
@@ -389,4 +380,4 @@ function RelatedData(props) {
     } else return null
 }
 
-export {Dataset, DatasetList}
+export {Dataset, DatasetList, ShowDatasetList}
