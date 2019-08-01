@@ -22,17 +22,17 @@ class ListBox extends React.Component {
         this.state.elements = []
         self.state.listHeaders = Object.keys(groupedItems)
         
-        self.state.listHeaders.map(key => {
+        self.state.listHeaders.map((key,idx) => {
             const items = groupedItems[key]
             // first, push header <li> to elements array
-            self.state.elements.push(<li className="list-header">{ key }</li>)
+            self.state.elements.push(<li className="list-header" key={key}>{ key }</li>)
             
             // second, push <li> for each dataset in the key
             items.map(item => {
                 const lid = item.identifier
                 const link = `/?${self.state.query}=${lid}`
                 
-                self.state.elements.push(<li key={item.identifier}><a href={link}>{ item.title }</a></li>)
+                self.state.elements.push(<li key={item.identifier + idx}><a href={link}>{ item.title }</a></li>)
             })
         })
         
