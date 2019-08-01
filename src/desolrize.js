@@ -18,7 +18,7 @@ function shouldComeOutOfArray(key, value) {
             value.length === 1 && 
             !keysThatAreActuallyStringArrays.includes(key) && 
             !keysThatAreActuallyObjectArrays.includes(key) &&
-            (keysThatAreNeverArrays.includes(key) || value[0].constructor === String)
+            (keysThatAreNeverArrays.includes(key) || value[0].constructor === String || value[0].constructor === Object)
 }
 
 const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref']
