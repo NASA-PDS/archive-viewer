@@ -1,7 +1,6 @@
 import React from 'react';
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
-import ListBox from 'components/ListBox'
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -33,37 +32,3 @@ export default class Mission extends React.Component {
         )
     }
 }
-
-class MissionList extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            missions: props.missions,
-            elements: [],
-            loaded: false
-        }
-    }
-    
-    render() {
-        let self = this
-        const {missions} = self.state
-        self.state.elements = [];
-        let arr = Array.from(missions)
-        
-        for (const [idx,val] of arr.entries()) {
-            const lid = val.identifier
-            const link = `/?mission=${lid}`
-        
-            self.state.elements.push(<li key={val.title}><a href={link}>{ val.title }</a></li>)
-        }
-        
-        return (
-            <section className="co-section mission-list">
-                <h2>Missions</h2>
-                <ListBox itemList={self.state.elements} />
-            </section>
-        )
-    }
-}
-
-export {Mission, MissionList}
