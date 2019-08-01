@@ -50,53 +50,6 @@ export default class Dataset extends React.Component {
     }
 }
 
-class DatasetList extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            datasets: props.datasets,
-            elements: [],
-            loaded: false
-        }
-    }
-    
-    sortBy() {
-        return {
-            mission: function(datasets) {
-                // takes an array of datasets and
-                    // returns an object containing mission names
-                    // and a list of associated datasets
-                
-                let missions = {}
-                
-                datasets.map((dataset, idx) => {
-                    const mission = dataset['investigation_name']
-                    
-                    if (!missions[mission]) missions[mission] = [dataset]
-                    else missions[mission].push(dataset)
-                })
-                
-                return missions
-            }
-        }
-    }
-    
-    render() {
-        let self = this
-        self.state.elements = []
-        const {datasets} = this.state
-        
-        return (
-            <section className="co-section target-datasets">
-                <h2>Datasets {self.state.elements.length}</h2>
-                <ListBox itemList={self.state.elements} />
-            </section>
-        )
-    }
-}
-
-const ShowDatasetList = datasets => (!datasets) ? <p>Loading...</p> : <DatasetList datasets={datasets} />;
-
 function Taxonomy(props) {
     const tags = props.dataset.tags
     return (
