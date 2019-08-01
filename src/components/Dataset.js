@@ -3,6 +3,7 @@ import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import ListBox from 'components/ListBox'
+import Loading from 'components/Loading'
 
 export default class Dataset extends React.Component {
 
@@ -14,13 +15,13 @@ export default class Dataset extends React.Component {
     }
 
     componentDidMount() {
-        getInstrumentsForDataset(this.state.dataset).then(console.log)
-        getSpacecraftForDataset(this.state.dataset).then(console.log)
-        getTargetsForDataset(this.state.dataset).then(console.log)
+        getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
+        getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
+        getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
     }   
 
     render() {    
-        const {dataset, isBundle} = this.state
+        const {dataset, isBundle, targets, spacecraft, instruments} = this.state
         return (
             <div>
                 <Taxonomy dataset={dataset} />
@@ -28,7 +29,7 @@ export default class Dataset extends React.Component {
                 <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
-                    <Metadata dataset={dataset} isBundle={isBundle} />
+                    <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
                     <Description dataset={dataset} />
 
                     { isBundle && 
@@ -102,7 +103,7 @@ function DeliveryInfo({dataset}) {
 }
 
 function Metadata(props) {
-    const {isBundle, dataset} = props
+    const {isBundle, dataset, targets, spacecraft, instruments} = props
     return (
         <aside className="main-aside">
             <section className="dataset-metadata">
@@ -139,6 +140,11 @@ function Metadata(props) {
                 
                 {/* Hidden Data Values */}
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
+            </section>
+            <section className="related-context-objects">
+                <ContextObjectList objects={targets} displayType="Target" param="target"></ContextObjectList>
+                <ContextObjectList objects={spacecraft} displayType="Spacecraft" param="spacecraft"></ContextObjectList>
+                <ContextObjectList objects={instruments} displayType="Instrument" param="instrument"></ContextObjectList>
             </section>
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>
@@ -179,7 +185,19 @@ function EditorList({editors}) {
     )
 }
 
-
+function ContextObjectList({objects, param, displayType}) {
+    if(objects) {
+        return (
+            <ul>{displayType}(s):<br/>
+                {objects.map(object =>  
+                    <li key={object.identifier} className="datum" ><a href={`?${param}=${object.identifier}`}>{ object.display_name ? object.display_name : object.title }</a></li>   
+                )}
+            </ul>
+        )
+    } else {
+        return <Loading></Loading>
+    }
+}
 
 function BrowseButton({dataset}) {
     let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url

@@ -51,6 +51,25 @@ main aside.main-aside {
     }
     ul, p {
         font-weight: bold;
+        list-style: none;
+        padding-left: 0;
+        .datum {
+            margin-left: 1em;
+            font-weight: normal;
+        }        
+    }
+}
+
+.related-context-objects {
+    display: block;
+    padding: 0 20px 0 20px;
+    background-color: #EDEDED;
+    word-wrap: break-word;
+
+    ul, p {
+        font-weight: bold;
+        list-style: none;
+        padding-left: 0;
         .datum {
             margin-left: 1em;
             font-weight: normal;
