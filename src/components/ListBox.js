@@ -65,7 +65,7 @@ class DatasetListBox extends React.Component {
             items: props.items,
             title: 'Datasets',
             groupBy: props.groupBy,
-            query: 'datasets',
+            query: 'dataset',
             loaded: false,
         }
     }
