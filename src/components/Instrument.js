@@ -3,6 +3,7 @@ import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrume
 import {getInstrumentsForSpacecraft} from 'api/spacecraft'
 import {Header, Description} from 'components/ContextObjects'
 import {DatasetListBox,SpacecraftListBox,InstrumentListBox} from 'components/ListBox'
+import Loading from 'components/Loading'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class Instrument extends React.Component {
 
     render() {
         const {instrument,datasets,spacecraft,instruments} = this.state
-        if (!instrument || !datasets || !spacecraft || !instruments) return null
+        if (!instrument || !datasets || !spacecraft || !instruments) return <Loading />
         else return (
             <div>
                 <Header model={instrument} />

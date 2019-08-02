@@ -2,6 +2,7 @@ import React from 'react';
 import {getDatasetsForTarget, getSpacecraftForTarget} from 'api/target'
 import {Header, Description} from 'components/ContextObjects'
 import {DatasetListBox,SpacecraftListBox} from 'components/ListBox'
+import Loading from 'components/Loading'
 
 export default class Target extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ export default class Target extends React.Component {
 
     render() {
         const {target,datasets,spacecraft} = this.state
-        if (!target || !datasets || !spacecraft) {return null}
+        if (!target || !datasets || !spacecraft) return <Loading />
         else return (
             <div>
                 <Header model={target} />

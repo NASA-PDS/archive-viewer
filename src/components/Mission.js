@@ -2,6 +2,7 @@ import React from 'react';
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
 import {SpacecraftListBox,TargetListBox} from 'components/ListBox'
+import Loading from 'components/Loading'
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ export default class Mission extends React.Component {
 
     render() {
         const {mission,spacecraft,targets} = this.state
-        if (!mission || !spacecraft || !targets) return null
+        if (!mission || !spacecraft || !targets) return <Loading />
         else return (
             <div>
                 <Header model={mission} />
