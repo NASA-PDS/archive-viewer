@@ -45,7 +45,7 @@ export default class ListBox extends React.Component {
             // second, push <li> for each dataset in the key
             items.map(item => {
                 const lid = item.identifier
-                const link = `/?${self.state.query}=${lid}`
+                const link = `?${self.state.query}=${lid}`
                 
                 self.state.elements.push(<li key={item.identifier + idx}><a href={link}>{ item.title }</a></li>)
             })
