@@ -8,7 +8,7 @@ import Mission from 'components/Mission.js'
 import Spacecraft from 'components/Spacecraft.js'
 import Instrument from 'components/Instrument.js'
 import Loading from 'components/Loading'
-import Error from 'components/Error.js'
+import ErrorMessage from 'components/Error.js'
 import { lookupDataset } from 'api/dataset.js';
 import { lookupTarget } from 'api/target.js';
 import { lookupMission } from 'api/mission.js';
@@ -75,7 +75,7 @@ class Main extends React.Component {
     render() {
         const { error, loaded, type, model } = this.state
         if(error) {
-            return <Error error={error} />
+            return <ErrorMessage error={error} />
         } else if (!loaded) {
             return <Loading />
         } else if (type === 'dataset') {
@@ -89,7 +89,7 @@ class Main extends React.Component {
         } else if (type === 'spacecraft') {
             return <Spacecraft spacecraft={model} />
         } else {
-            return <Error error={new Error("Couldn't render anything")} />
+            return <ErrorMessage error={new Error("Couldn't render anything")} />
         }
     }
 }
