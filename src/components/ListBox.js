@@ -188,9 +188,13 @@ const groupby = (arr, val, groupInfo) => {
         arr.map(item => {
             const lids = item[val]
             if (lids && lids.length > 0) lids.map(lidvid => {
+                let host_name
                 const lid = new LID(lidvid).lid
                 const el = groupInfo.find(a => a.identifier === lid)
-                const host_name = el['instrument_host_name']
+                
+                if (el) host_name = el['instrument_host_name']
+                else host_name = lid
+                
                 if (!items[host_name]) items[host_name] = [item]
                 else items[host_name].push(item)
             })
