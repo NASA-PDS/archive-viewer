@@ -12,3 +12,11 @@ $superDarkGrey: #646464;
 $main-padding: 0.7em;
 
 $readable-width: 1200px;
+
+@mixin list-box {
+    padding: 0 0.5em;
+    border-left: 2px solid $blue;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+}

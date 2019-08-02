@@ -41,11 +41,12 @@ class Main extends React.Component {
     componentDidMount() {
 
         let params = new URLSearchParams(window.location.search);
-
+        let pageType
         for(let type of pageTypes) {
             let lidvid = params.get(type);
             if(lidvid) {
                 this.setState({ type })
+                pageType = type
                 lookup(type, lidvid).then(result => {
                     if(result.length === 0) {
                         this.setState({
@@ -70,6 +71,14 @@ class Main extends React.Component {
                 break;
             }
         }
+
+        // no page type found, so just render default
+        if(!pageType) {
+            this.setState({
+                type: 'default',
+                loaded: 'true'
+            })
+        }
         
     }
     render() {
@@ -89,11 +98,47 @@ class Main extends React.Component {
         } else if (type === 'spacecraft') {
             return <Spacecraft spacecraft={model} />
         } else {
-            return <ErrorMessage error={new Error("Couldn't render anything")} />
+            return <Index />
         }
     }
 }
 
+function Index() {
+    return (
+        <div>
+            <h1>PDS Archive Viewer</h1>
+            <div><p className="resource-description">Here are some links to get started...</p></div>
+            <div className="co-main">
+            <section className="list-box">
+                <h2>Targets</h2>
+                <ul>
+                    <li><a href="?target=urn:nasa:pds:context:target:planet.mars">Mars</a></li>
+                    <li><a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a></li>
+                    <li><a href="?target=urn:nasa:pds:context:target:satellite.earth.moon">Earth's Moon</a></li>
+                </ul>
+            </section>
+
+            <section className="list-box">
+                <h2>Missions</h2>
+                <ul>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.a17c">Apollo 17</a></li>
+                </ul>
+            </section>
+
+            <section className="list-box">
+                <h2>Datasets</h2>
+                <ul>
+                    <li><a href="?dataset=urn:nasa:pds:orex.ocams">OSIRIS-REx OCAMS Bundle</a></li>
+                    <li><a href="?dataset=urn:nasa:pds:apollodoc">Apollo Documents Bundle</a></li>
+                    <li><a href="?dataset=urn:nasa:pds:insight_cameras">InSight Cameras Bundle</a></li>
+                </ul>
+            </section>
+            </div>
+        </div>
+    )
+}
 
 // ========================================
 
