@@ -8,9 +8,7 @@ export default class Mission extends React.Component {
         super(props)
         this.state = {
             mission: props.mission,
-            datasets: null,
             spacecraft: null,
-            instruments: null,
             targets: null,
             loaded: false,
         }
@@ -22,8 +20,8 @@ export default class Mission extends React.Component {
     }
 
     render() {
-        const {mission,datasets,spacecraft,instruments,targets} = this.state
-        if (!spacecraft || !targets) return null
+        const {mission,spacecraft,targets} = this.state
+        if (!mission || !spacecraft || !targets) return null
         else return (
             <div>
                 <Header model={mission} />

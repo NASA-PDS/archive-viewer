@@ -27,7 +27,7 @@ export default class Spacecraft extends React.Component {
     render() {
         const {spacecraft,missions,datasets,instruments,targets} = this.state
         
-        if (!spacecraft || !datasets || !targets) {return null}
+        if (!spacecraft || !datasets || !targets || !instruments || !missions) {return null}
         else return (
             <div>
                 <Header model={spacecraft} />

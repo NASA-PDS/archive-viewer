@@ -21,7 +21,7 @@ export default class Target extends React.Component {
 
     render() {
         const {target,datasets,spacecraft} = this.state
-        if (!datasets || !spacecraft) {return null}
+        if (!target || !datasets || !spacecraft) {return null}
         else return (
             <div>
                 <Header model={target} />

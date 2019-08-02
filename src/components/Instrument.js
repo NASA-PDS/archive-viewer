@@ -24,7 +24,7 @@ export default class Instrument extends React.Component {
 
     render() {
         const {instrument,datasets,spacecraft,instruments} = this.state
-        if (!datasets || !spacecraft || !instruments) return null
+        if (!instrument || !datasets || !spacecraft || !instruments) return null
         else return (
             <div>
                 <Header model={instrument} />
