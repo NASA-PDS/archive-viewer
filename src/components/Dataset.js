@@ -124,8 +124,8 @@ function Metadata(props) {
                 <p>Publisher:<br/>
                     <span className="datum" itemProp="publisher" itemScope itemType="http://schema.org/Organization">NASA Planetary Data System</span>
                 </p>
-                {dataset.lidvid &&
-                    <p>PDS4 ID: <br/><span className="datum">{dataset.lidvid}</span></p>
+                {dataset.identifier &&
+                    <p>PDS4 ID: <br/><span className="datum">{dataset.identifier}</span></p>
                 }
                 {dataset.doi &&
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>

@@ -58,7 +58,7 @@ export function getCollectionsForDataset(dataset) {
 }
 
 export function getBundlesForCollection(dataset) {
-    let lid = new LID(dataset.logical_identifier)
+    let lid = new LID(dataset.identifier, dataset.version_id)
     let params = {
             wt: 'json',
             q: `product_class:"Product_Bundle" AND collection_ref:"${lid.lidvid}"`
