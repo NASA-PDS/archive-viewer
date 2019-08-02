@@ -65,6 +65,7 @@ class DatasetListBox extends React.Component {
             items: props.items,
             title: 'Datasets',
             groupBy: props.groupBy,
+            groupInfo: props.groupInfo,
             query: 'datasets',
             loaded: false,
         }
@@ -72,19 +73,19 @@ class DatasetListBox extends React.Component {
     
     render() {
         let self = this
-        const {items,title,query,length,groupBy} = self.state
+        const {items,title,query,length,groupBy,groupInfo} = self.state
         if (!self.state.items || !self.state.items.length) {
             return (<NoItems title={title} />)
         } else {
             let groupedItems;
             if (groupBy) {
                 // Spacecraft
-                if (groupBy === "spacecraft") groupedItems = groupby(self.state.items, 'instrument_host_ref')
+                if (groupBy === "spacecraft") groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
                 // TODO Instrument
                 // TODO Data Type
                 return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
             } else {
-                groupedItems = groupby(self.state.items, null)
+                groupedItems = groupby(self.state.items, null, null)
             }
             return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
         }
@@ -106,7 +107,7 @@ class SpacecraftListBox extends React.Component {
         let self = this
         const {items,title,query} = self.state
         
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
     }
 }
 
@@ -125,7 +126,7 @@ class TargetListBox extends React.Component {
         let self = this
         const {items,title,query} = self.state
         
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
     }
 }
 
@@ -144,7 +145,7 @@ class InstrumentListBox extends React.Component {
         let self = this
         const {items,title,query} = self.state
         
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null)} listTitle={title} query={query} />)
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
     }
 }
 
@@ -165,7 +166,7 @@ class NoItems extends React.Component {
     }
 }
 
-const groupby = (arr, val) => {
+const groupby = (arr, val, groupInfo) => {
     /* Takes an array and a keyword to sort array on
         returns a grouped objects of lids and
         lists of associated datasets
@@ -178,8 +179,10 @@ const groupby = (arr, val) => {
             const lids = item[val]
             if (lids && lids.length > 0) lids.map(lidvid => {
                 const lid = new LID(lidvid).lid
-                if (!items[lid]) items[lid] = [item]
-                else items[lid].push(item)
+                const el = groupInfo.find(a => a.identifier === lid)
+                const host_name = el['instrument_host_name']
+                if (!items[host_name]) items[host_name] = [item]
+                else items[host_name].push(item)
             })
         })
     }

@@ -29,7 +29,7 @@ export default class Target extends React.Component {
                     <div>
                         <Description model={target} />
                     </div>
-                    <DatasetListBox items={datasets} groupBy="spacecraft"/>
+                    <DatasetListBox items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
                     <SpacecraftListBox items={spacecraft} />
                 </main>
             </div>
