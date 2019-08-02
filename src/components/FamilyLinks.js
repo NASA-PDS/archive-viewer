@@ -34,7 +34,7 @@ export default class Main extends React.Component {
                         <img src="/images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
-                            <a key={bundle.identifier} className="ignore-a-styling" href={'?dataset=' + bundle.identifier}><span>{bundle.title}</span></a>
+                            <a key={bundle.identifier} className="ignore-a-styling" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>
                         )}
                     </div>
                 }

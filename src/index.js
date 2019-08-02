@@ -7,6 +7,7 @@ import Target from 'components/Target.js'
 import Mission from 'components/Mission.js'
 import Spacecraft from 'components/Spacecraft.js'
 import Instrument from 'components/Instrument.js'
+import Loading from 'components/Loading'
 import Error from 'components/Error.js'
 import { lookupDataset } from 'api/dataset.js';
 import { lookupTarget } from 'api/target.js';
@@ -93,9 +94,6 @@ class Main extends React.Component {
     }
 }
 
-function Loading() {
-    return <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
-}
 
 // ========================================
 

@@ -3,6 +3,7 @@ import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import ListBox from 'components/ListBox'
+import Loading from 'components/Loading'
 
 export default class Dataset extends React.Component {
 
@@ -14,13 +15,13 @@ export default class Dataset extends React.Component {
     }
 
     componentDidMount() {
-        getInstrumentsForDataset(this.state.dataset).then(console.log)
-        getSpacecraftForDataset(this.state.dataset).then(console.log)
-        getTargetsForDataset(this.state.dataset).then(console.log)
+        getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
+        getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
+        getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
     }   
 
     render() {    
-        const {dataset, isBundle} = this.state
+        const {dataset, isBundle, targets, spacecraft, instruments} = this.state
         return (
             <div>
                 <Taxonomy dataset={dataset} />
@@ -28,7 +29,7 @@ export default class Dataset extends React.Component {
                 <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
-                    <Metadata dataset={dataset} isBundle={isBundle} />
+                    <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
                     <Description dataset={dataset} />
 
                     { isBundle && 
@@ -52,7 +53,8 @@ export default class Dataset extends React.Component {
 
 function Taxonomy(props) {
     const tags = props.dataset.tags
-    return (
+    return tags ? (
+
         <div id="taxonomy">
             {tags.length > 0 &&
                 <h3>Relevant Tags:</h3>
@@ -67,13 +69,13 @@ function Taxonomy(props) {
                 )
             }
         </div>
-    )
+    ) : null
 }
 
 
 
-function Title(props) {
-    const title = props.dataset.display_name
+function Title({dataset}) {
+    const title = dataset.display_name ? dataset.display_name : dataset.title
     return (
         <h1 itemProp="name">
             <div className="image-container">
@@ -86,8 +88,8 @@ function Title(props) {
     )
 }
 
-function DeliveryInfo(props) {
-    const publication = props.dataset.publication
+function DeliveryInfo({dataset}) {
+    const publication = dataset.publication
     if(publication && publication.delivery_info) {
         return (
             <div className="dataset-delivery">
@@ -101,9 +103,9 @@ function DeliveryInfo(props) {
 }
 
 function Metadata(props) {
-    const {isBundle, dataset} = props
+    const {isBundle, dataset, targets, spacecraft, instruments} = props
     return (
-        <aside>
+        <aside className="main-aside">
             <section className="dataset-metadata">
                 {isBundle && 
                     <h2>PDS4 Bundle</h2>
@@ -111,17 +113,19 @@ function Metadata(props) {
                 {!isBundle &&
                     <h2>PDS4 Collection</h2>
                 }
-                <p>Status: <br/>
-                    <span className="datum">{dataset.publication.publish_status}</span>
-                </p>
-                {dataset.publication.publication_date &&
+                {!!dataset.publication && !!dataset.publication.publish_status && (
+                    <p>Status: <br/>
+                        <span className="datum">{dataset.publication.publish_status}</span>
+                    </p>)
+                }
+                {!!dataset.publication && !!dataset.publication.publication_date &&
                     <p>Date Published: <br/><span className="datum" itemProp="datePublished" itemScope itemType="http://schema.org/Date">{dataset.publication.publication_date}</span></p>
                 }
                 <p>Publisher:<br/>
                     <span className="datum" itemProp="publisher" itemScope itemType="http://schema.org/Organization">NASA Planetary Data System</span>
                 </p>
-                {dataset.lidvid &&
-                    <p>PDS4 ID: <br/><span className="datum">{dataset.lidvid}</span></p>
+                {dataset.identifier &&
+                    <p>PDS4 ID: <br/><span className="datum">{dataset.identifier}</span></p>
                 }
                 {dataset.doi &&
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
@@ -137,10 +141,13 @@ function Metadata(props) {
                 {/* Hidden Data Values */}
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
+            <section className="related-context-objects">
+                <ContextObjectList objects={targets} displayType="Target" param="target"></ContextObjectList>
+                <ContextObjectList objects={spacecraft} displayType="Spacecraft" param="spacecraft"></ContextObjectList>
+                <ContextObjectList objects={instruments} displayType="Instrument" param="instrument"></ContextObjectList>
+            </section>
             <section className="dataset-links">
-                {dataset.browse_url &&
-                    <a href={dataset.browse_url}><img src="/images/icn-folder.png" /><span> Browse All </span></a>
-                }
+                <BrowseButton dataset={dataset}></BrowseButton>
                 {dataset.download_url &&
                     <a href={dataset.download_url}><img src="/images/icn-download.png" /><span> Download All 
                         {dataset.download_size && 
@@ -156,30 +163,49 @@ function Metadata(props) {
     )
 }
 
-function AuthorList(props) {
-    const list = props.authors.split(';')
+function AuthorList({authors}) {
+    const list = authors.split(';')
     return (
-        <p>Author(s):<br/>
+        <ul>Author(s):<br/>
             {list.map(author =>  
-                <div key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</div>   
+                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
             )}
-        </p>
+        </ul>
     )
 }
 
-function EditorList(props) {
-    const list = props.editors.split(';')
+function EditorList({editors}) {
+    const list = editors.split(';')
     return (
-        <p>Editor(s):<br/>
+        <ul>Editor(s):<br/>
             {list.map(editor =>  
-                <div key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</div>   
+                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   
             )}
-        </p>
+        </ul>
     )
 }
 
-function Description(props) {
-    const description = props.dataset.display_description
+function ContextObjectList({objects, param, displayType}) {
+    if(objects) {
+        return (
+            <ul>{displayType}(s):<br/>
+                {objects.map(object =>  
+                    <li key={object.identifier} className="datum" ><a href={`?${param}=${object.identifier}`}>{ object.display_name ? object.display_name : object.title }</a></li>   
+                )}
+            </ul>
+        )
+    } else {
+        return <Loading></Loading>
+    }
+}
+
+function BrowseButton({dataset}) {
+    let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url
+    return <a href={url}><img src="/images/icn-folder.png" /><span> Browse All </span></a>
+}
+
+function Description({dataset}) {
+    const description = dataset.display_description ? dataset.display_description : dataset.description
     return <h3 itemProp="description" className="resource-description">{ description }</h3>
 }
 
