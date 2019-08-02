@@ -94,6 +94,8 @@ class DatasetListBox extends React.Component {
         } else {
             let groupedItems;
             
+            console.log(groupBy);
+            console.log(groupInfo);
             if (groupBy) groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
             else groupedItems = groupby(self.state.items, null, null)
             
@@ -159,6 +161,25 @@ class InstrumentListBox extends React.Component {
     }
 }
 
+class MissionListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+            title: 'Missions',
+            query: 'mission',
+            loaded: false
+        }
+    }
+    
+    render() {
+        let self = this
+        const {items,title,query} = self.state
+        
+        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
+    }
+}
+
 class NoItems extends React.Component {
     constructor(props) {
         super(props)
@@ -203,4 +224,4 @@ const groupby = (arr, val, groupInfo) => {
     return items
 }
 
-export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, InstrumentListBox}
+export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, InstrumentListBox, MissionListBox}
