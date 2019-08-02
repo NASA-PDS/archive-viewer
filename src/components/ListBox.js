@@ -7,9 +7,7 @@ export default class ListBox extends React.Component {
         this.state = {
             elements: [],
             groupedItems: props.groupedItems,
-            previewLength: props.previewLength || 10,
             title: props.listTitle,
-            listHeaders: null,
             query: props.query,
             showAll: false
         }
@@ -17,12 +15,29 @@ export default class ListBox extends React.Component {
     
     render() {
         let self = this
+        let listHeaders
         
         const {elements,groupedItems,title} = this.state
         this.state.elements = []
-        self.state.listHeaders = Object.keys(groupedItems)
+        listHeaders = Object.keys(groupedItems)
         
-        self.state.listHeaders.map((key,idx) => {
+        const regA = /[^a-zA-Z]/g;
+        const regN = /[^0-9]/g;
+        
+        function sortAlphaNum(a, b) {
+            const aA = a.replace(regA, "");
+            const bA = b.replace(regA, "");
+            
+            if (aA === bA) {
+                const aN = parseInt(a.replace(regN, ""), 10);
+                const bN = parseInt(b.replace(regN, ""), 10);
+                return aN === bN ? 0 : aN > bN ? 1 : -1;
+            } else {
+                return aA > bA ? 1 : -1;
+            }
+        }
+        
+        listHeaders.sort(sortAlphaNum).map((key,idx) => {
             const items = groupedItems[key]
             // first, push header <li> to elements array
             self.state.elements.push(<li className="list-header" key={key}>{ key }</li>)
@@ -78,16 +93,11 @@ class DatasetListBox extends React.Component {
             return (<NoItems title={title} />)
         } else {
             let groupedItems;
-            if (groupBy) {
-                // Spacecraft
-                if (groupBy === "spacecraft") groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
-                // TODO Instrument
-                // TODO Data Type
-                return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
-            } else {
-                groupedItems = groupby(self.state.items, null, null)
-            }
-            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} previewLength={length} />)
+            
+            if (groupBy) groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
+            else groupedItems = groupby(self.state.items, null, null)
+            
+            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} />)
         }
     }
 }
