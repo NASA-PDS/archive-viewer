@@ -1,6 +1,6 @@
 import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
-import Error from 'components/Error.js'
+import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading'
 
 export default class Main extends React.Component {
@@ -26,7 +26,7 @@ export default class Main extends React.Component {
     render() {
         const { error, collections, loaded } = this.state
         if(error) {
-            return <Error error={error} />
+            return <ErrorMessage error={error} />
         } else
         return <CollectionList collections={collections} loaded={loaded} />
     }

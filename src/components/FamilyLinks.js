@@ -1,6 +1,6 @@
 import React from 'react';
 import {getBundlesForCollection} from 'api/dataset.js';
-import Error from 'components/Error.js'
+import ErrorMessage from 'components/Error.js'
 
 export default class Main extends React.Component {
 
@@ -25,7 +25,7 @@ export default class Main extends React.Component {
     render() {
         const {isBundle, dataset, bundles, error} = this.state
         if(error && !isBundle) {
-            return <Error error={error}></Error>
+            return <ErrorMessage error={error}></ErrorMessage>
         } else
         return (
             <div className="family-links">
