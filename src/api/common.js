@@ -39,6 +39,8 @@ export function httpGetFull(endpoints) {
             else if(webUI.length === 1 && core.length === 1) {
                 let consolidated = Object.assign({}, core[0])
                 resolve(Object.assign(consolidated, webUI[0]))
+            } else if (core.length === 1) {
+                resolve(core[0])
             } else {
                 reject(new Error(`Received unexpected number of results
                 
@@ -56,7 +58,7 @@ export function httpGetRelated(initialQuery, route, knownLids) {
     return new Promise((resolve, reject) => {
         httpGet(route, initialQuery).then(results => {
             let foundLids = results.map(items => items.identifier)
-            if(!knownLids || knownLids.length == 0 || arraysEquivalent(foundLids, knownLids)) {
+            if(!knownLids || knownLids.length === 0 || arraysEquivalent(foundLids, knownLids)) {
                 // if we have all the referenced items, just return them
                 resolve(results)
             } else {

@@ -1,6 +1,7 @@
 import React from 'react';
-import {getCollections} from 'api/dataset.js';
+import {getCollectionsForDataset} from 'api/dataset.js';
 import Error from 'components/Error.js'
+import Loading from 'components/Loading'
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -8,23 +9,17 @@ export default class Main extends React.Component {
         const dataset = props.dataset
         this.state = {
             loaded: false,
-            lids: dataset.collection_ref,
+            dataset: dataset,
             collections: dataset.collection_ref.map(ref => { return { lid: ref } })
         }
     }
 
     componentDidMount() {
-        getCollections(this.state.lids).then(result => {
-            if( result.length === this.state.collections.length) {
-                this.setState({
-                    collections: result,
-                    loaded: true
-                })
-            } else {
-                this.setState({
-                    error: { message: 'Unexpected error searching for collections in this bundle'}
-                })
-            }
+        getCollectionsForDataset(this.state.dataset).then(result => {
+            this.setState({
+                collections: result,
+                loaded: true
+            })
         })
     }
 
@@ -54,21 +49,21 @@ function CollectionList({ collections, loaded }) {
         )
     } else {
         collectionElements = collections.map(collection =>
-            <div key={collection.logical_identifier} className="collection collection-container">
+            <div key={collection.identifier} className="collection collection-container">
                 <div className="header">
-                    <a href={'?dataset=' + collection.logical_identifier}>
-                        <span className="collection-title" title="Collection Title">{collection.display_name}</span>
-
-                        {collection.example && (
-                            <span className="example">
-                                {collection.document_flag ? 
-                                    <span className="file-label">Key Document:</span> : 
-                                    <span className="file-label">Example File:</span>
-                                }
-                                <a href={collection.example.url}>{collection.example.title}</a>
-                            </span>
-                        )}
+                    <a href={'?dataset=' + collection.identifier}>
+                        <span className="collection-title" title="Collection Title">{collection.display_name ? collection.display_name : collection.title}</span>
                     </a>
+
+                    {collection.example && (
+                        <span className="example">
+                            {collection.document_flag ? 
+                                <span className="file-label">Key Document: </span> : 
+                                <span className="file-label">Example File: </span>
+                            }
+                            <a href={collection.example.url}>{collection.example.title ? collection.example.title : collection.example.filename}</a>
+                        </span>
+                    )}
                 </div>
                 <div className="actions">
                     {collection.download_url && (

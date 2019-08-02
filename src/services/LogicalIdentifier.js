@@ -1,14 +1,20 @@
 export default class LogicalIdentifier {
 
-    constructor(lidvid) {
-        if(!lidvid) { return }
-        this.lidvid = lidvid
+    constructor(identifier, vid) {
+        if(!identifier) { return }
+        if(!!vid) {
+            this.lidvid = `${identifier}::${vid}`
+            this.lid = identifier
+            this.vid = vid
+        } else {
+            this.lidvid = identifier
+            let [lid, version] = identifier.split('::')
+            this.lid = lid
+            this.vid = version
+        }
 
-        let [lid, vid] = lidvid.split('::')
-        this.lid = lid
-        this.vid = vid
-        if(lid) {
-            let segments = lid.split(':')
+        if(this.lid) {
+            let segments = this.lid.split(':')
             this.lastSegment = segments[segments.length - 1]
         }
     }
