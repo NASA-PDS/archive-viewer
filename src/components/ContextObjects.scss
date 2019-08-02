@@ -25,19 +25,6 @@
 .co-aside {
     max-width: 300px;
 }
-.co-section {
-    ul {
-        @include list-box;
-        padding: 0.3em 1em;
-        
-        li {
-            list-style: inside;
-            list-style: none;
-            text-indent: -0.5em;
-        }
-    }
-}
-
 .target-datasets {
     max-width: 60%;
 }
@@ -46,8 +33,15 @@
     align-self: flex-start;
 }
 .list-box {
+    @include list-box;
+    padding: 0.3em 1em;
     display: flex;
     flex-flow: column nowrap;
+    li {
+        list-style: inside;
+        list-style: none;
+        text-indent: -0.5em;
+    }
     .list-header {
         list-style: none;
         list-style-position: -1em;
