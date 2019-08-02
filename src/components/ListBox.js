@@ -63,9 +63,9 @@ export default class ListBox extends React.Component {
         }
         
         return (
-            <div>
-                <h3>{ title }</h3>
-                <ul className="list-box">
+            <div className="list-box">
+                <h3 className="title">{ title }</h3>
+                <ul className="list">
                     { this.state.elements }
                 </ul>
             </div>

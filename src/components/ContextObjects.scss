@@ -34,18 +34,29 @@
 }
 .list-box {
     @include list-box;
-    padding: 0.3em 1em;
+    
+    margin-bottom: 2em;
+    padding: 0.5em;
     display: flex;
     flex-flow: column nowrap;
-    li {
-        list-style: inside;
-        list-style: none;
-        text-indent: -0.5em;
+    align-self: flex-start;
+    
+    .title {
+        margin: 0;
     }
-    .list-header {
-        list-style: none;
-        list-style-position: -1em;
-        font-weight: bolder;
-        margin: 0.5em 0;
+    
+    .list {
+        li {
+            align-self: flex-start;
+            list-style: inside;
+            list-style: none;
+            text-indent: -0.5em;
+        }
+        .list-header {
+            list-style: none;
+            list-style-position: -1em;
+            font-weight: bolder;
+            margin-top: 0.75em;
+        }
     }
 }
