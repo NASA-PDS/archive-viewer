@@ -17,7 +17,7 @@ export default class ListBox extends React.Component {
         let self = this
         let listHeaders
         
-        const {elements,groupedItems,title} = this.state
+        const {groupedItems,title} = this.state
         this.state.elements = []
         listHeaders = Object.keys(groupedItems)
         
@@ -43,7 +43,7 @@ export default class ListBox extends React.Component {
             self.state.elements.push(<li className="list-header" key={key}>{ key }</li>)
             
             // second, push <li> for each dataset in the key
-            items.map(item => {
+            items.sort((a,b) => sortAlphaNum(a.title,b.title)).map(item => {
                 const lid = item.identifier
                 const link = `/?${self.state.query}=${lid}`
                 
