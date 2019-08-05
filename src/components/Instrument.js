@@ -35,8 +35,10 @@ export default class Instrument extends React.Component {
                         <Description model={instrument} />
                     </div>
                     <DatasetListBox items={datasets} />
-                    <SpacecraftListBox items={spacecraft} />
-                    <InstrumentListBox items={instruments} />
+                    <div className="sidebox">
+                        <SpacecraftListBox items={spacecraft} />
+                        <InstrumentListBox items={instruments} />
+                    </div>
                 </main>
             </div>
         )

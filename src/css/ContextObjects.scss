@@ -20,3 +20,8 @@
     @include button;
     align-self: flex-start;
 }
+.sidebox {
+    background: $lightGrey;
+    max-width: 30%;
+    width: 20em;
+}
