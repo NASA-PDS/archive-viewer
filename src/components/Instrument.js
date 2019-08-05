@@ -1,4 +1,5 @@
 import React from 'react';
+import 'css/ContextObjects.scss'
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
 import {getInstrumentsForSpacecraft} from 'api/spacecraft'
 import {Header, Description} from 'components/ContextObjects'

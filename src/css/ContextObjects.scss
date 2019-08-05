@@ -1,0 +1,22 @@
+@import 'variables';
+
+.co-main {
+    padding: 0.5em 1em;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    
+    .resource-description {
+        width: 100%;
+    }
+}
+.co-aside {
+    max-width: 300px;
+}
+.target-datasets {
+    max-width: 60%;
+}
+.button {
+    @include button;
+    align-self: flex-start;
+}

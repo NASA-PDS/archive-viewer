@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from 'react-snapshot';
-import 'main.scss';
-import 'components/ContextObjects.scss';
+import 'css/main.scss';
 import Dataset from 'components/Dataset.js'
 import Target from 'components/Target.js'
 import Mission from 'components/Mission.js'
