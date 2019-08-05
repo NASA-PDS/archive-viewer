@@ -11,6 +11,10 @@ a, .link {
     color: $link;
     text-decoration: none;
 }
+.inline-link {
+    margin: 0 0.3em;
+    text-decoration: underline;
+}
 
 h1 {
     text-align: center;
