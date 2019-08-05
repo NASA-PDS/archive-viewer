@@ -12,11 +12,6 @@ export default class LogicalIdentifier {
             this.lid = lid
             this.vid = version
         }
-
-        if(this.lid) {
-            let segments = this.lid.split(':')
-            this.lastSegment = segments[segments.length - 1]
-        }
     }
 
     get escapedLid() {
