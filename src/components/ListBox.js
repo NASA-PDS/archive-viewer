@@ -19,12 +19,6 @@ export default class ListBox extends React.Component {
         
         const {groupedItems,title} = this.state
         this.state.elements = []
-        function toggleList(e) {
-            e.preventDefault();
-            
-            self.state.showAll = !self.state.showAll;
-            self.setState({ showAll: self.state.showAll });
-        }
         
         function commandText() {
             return (self.state.showAll) ? "Show Less" : "Show All";
@@ -36,8 +30,8 @@ export default class ListBox extends React.Component {
             return titles.sort().map(title => {
                 return (
                     <div>
-                        <p className="link">{ title }</p>
-                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} />
+                        
+                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} showGroup={self.state.showAll} />
                     </div>
                 )
             })
@@ -57,21 +51,33 @@ class GroupBox extends React.Component {
         super(props)
         this.state = {
             items: props.groupItems,
-            query: props.query
+            title: props.groupTitle,
+            query: props.query,
+            showGroup: false
         }
     }
     
     render() {
         let self = this
         
+        function toggleList(e) {
+            e.preventDefault();
+            
+            self.state.showGroup = !self.state.showGroup;
+            self.setState({ showGroup: self.state.showGroup });
+        }
+        
         function listItems(items) {
             return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}>{ item.title }</a></li>)
         }
         
         return (
-            <ul className="list">
-                { listItems(this.state.items) }
-            </ul>
+            <div>
+                <p className="link" onClick={ toggleList }>{ self.state.title }</p>
+                {self.state.showGroup
+                    ? <ul className="list">{ listItems(this.state.items) }</ul>
+                    : null}
+            </div>
         )
     }
 }
