@@ -58,7 +58,7 @@ class Description extends React.Component {
         function shorten(description) {
             const short = description.split('').splice(0,previewLength).join('') + '... '
             
-            return <p>{short}{seeMore()}</p>
+            return (description.length < previewLength) ? description : <p>{ short }{ seeMore() }</p>
         }
         
         function full(description) {
