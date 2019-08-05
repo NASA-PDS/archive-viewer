@@ -9,6 +9,7 @@ export default class ListBox extends React.Component {
             elements: [],
             groupedItems: props.groupedItems,
             title: props.listTitle,
+            showAll: props.showAll || false,
             query: props.query
         }
     }
@@ -25,7 +26,7 @@ export default class ListBox extends React.Component {
             return titles.sort().map(title => {
                 return (
                     <div>
-                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} />
+                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} showAll={self.state.showAll} />
                     </div>
                 )
             })
@@ -47,7 +48,7 @@ class GroupBox extends React.Component {
             items: props.groupItems,
             title: props.groupTitle,
             query: props.query,
-            showGroup: false
+            showGroup: props.showAll
         }
     }
     
