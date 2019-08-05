@@ -143,6 +143,29 @@ class TargetListBox extends React.Component {
     }
 }
 
+class RelatedTargetsListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            relatedTargets: props.relatedTargets
+        }
+    }
+    
+    render() {
+        const self = this
+        const {relatedTargets} = self.state
+        
+        let newGroup = {}
+        
+        if (relatedTargets.parents && relatedTargets.parents.length) newGroup['Parents'] = relatedTargets.parents
+        if (relatedTargets.children && relatedTargets.children.length) newGroup['Children'] = relatedTargets.children
+        if (relatedTargets.associated && relatedTargets.associated.length) newGroup['Associated'] = relatedTargets.associated
+        
+        if (Object.keys(newGroup).length > 0) return (<ListBox groupedItems={newGroup} listTitle='Related Targets' query='target' showAll={true}/> )
+        else return <p>No related targets.</p>
+    }
+}
+
 class InstrumentListBox extends React.Component {
     constructor(props) {
         super(props)
@@ -225,4 +248,4 @@ const groupby = (arr, val, groupInfo) => {
     return items
 }
 
-export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, InstrumentListBox, MissionListBox}
+export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, RelatedTargetsListBox, InstrumentListBox, MissionListBox}
