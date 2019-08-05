@@ -67,9 +67,9 @@ class Description extends React.Component {
             return <p>{full}{seeLess()}</p>
         }
         
-        return (
-            <div itemProp="description" className="resource-description">{ self.state.showFull ? full(description) : shorten(description) }</div>
-        )
+        return <div itemProp="description" className="resource-description">
+            { !description ? <p>No description is available.</p> : self.state.showFull ? full(description) : shorten(description) }
+        </div>
     }
 }
 
