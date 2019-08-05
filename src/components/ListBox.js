@@ -79,28 +79,21 @@ class DatasetListBox extends React.Component {
         this.state = {
             items: props.items,
             title: 'Datasets',
-            groupBy: props.groupBy,
-            groupInfo: props.groupInfo,
+            groups: { // constant list of mappings
+                spacecraft: 'instrument_host_ref'
+            },
+            groupBy: props.groupBy || null,
+            groupInfo: props.groupInfo || null,
             query: 'dataset',
-            loaded: false,
         }
     }
     
     render() {
         let self = this
-        const {items,title,query,length,groupBy,groupInfo} = self.state
-        if (!self.state.items || !self.state.items.length) {
-            return (<NoItems title={title} />)
-        } else {
-            let groupedItems;
-            
-            console.log(groupBy);
-            console.log(groupInfo);
-            if (groupBy) groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
-            else groupedItems = groupby(self.state.items, null, null)
-            
-            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} />)
-        }
+        const {items,title,query,length,groupBy,groupInfo,groups} = self.state
+        const keyword = groups[groupBy]
+        
+        return (<ListBox groupedItems={groupby(self.state.items, keyword, groupInfo)} listTitle={title} query={query} />)
     }
 }
 
