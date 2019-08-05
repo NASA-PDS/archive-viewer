@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
-import {Header, Description} from 'components/ContextObjects'
+import {TargetHeader, Description} from 'components/ContextObjects'
 import {DatasetListBox,SpacecraftListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 
@@ -27,7 +27,7 @@ export default class Target extends React.Component {
         if (!target || !datasets || !spacecraft) return <Loading />
         else return (
             <div>
-                <Header model={target} />
+                <TargetHeader target={target} />
                 <main className="co-main target-main">
                     <div>
                         <Description model={target} />

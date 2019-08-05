@@ -3,22 +3,41 @@ import React from 'react';
 class Header extends React.Component {
     constructor(props) {
         super(props)
-        const target = props.model
+        const model = props.model
         this.state = {
-            target: target,
+            model: model,
+            type: props.modelType,
             loaded: false
         }
     }
     
     render() {
-        const {display_name, title, image_url} = this.state.target
+        let self = this
+        const {model,type} = self.state
+        const {display_name, title, image_url} = model
         const name = display_name ? display_name : title
         return (
-            <header className="co-header target-header">
+            <header className={ `co-header ${type}-header` }>
                 <img src={image_url} />
                 <h1 className="title"> { name } Data Archive </h1>
             </header>
         )
+    }
+}
+
+class TargetHeader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            target: props.target
+        }
+    }
+    
+    render() {
+        let self = this
+        const {target} = self.state
+        
+        return <Header model={target} modelType="target" />
     }
 }
 
@@ -73,4 +92,4 @@ class Description extends React.Component {
     }
 }
 
-export {Header,Description}
+export {Header,TargetHeader,Description}
