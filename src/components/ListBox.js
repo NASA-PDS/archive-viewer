@@ -67,7 +67,7 @@ class GroupBox extends React.Component {
         
         return (
             <div onClick={ toggleList }>
-                <p class="expandable">
+                <p className="expandable">
                     <span className={ self.state.showGroup ? 'collapse' : 'expand'}>
                         {self.state.showGroup ? '- ' : '+ '}
                     </span>
