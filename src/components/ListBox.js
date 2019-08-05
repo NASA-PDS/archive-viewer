@@ -35,7 +35,9 @@ export default class ListBox extends React.Component {
         return (
             <div className="list-box">
                 <h3 className="title">{ title }</h3>
-                { makeGroupedList(self.state.groupedItems) }
+                { Object.keys(groupedItems).length
+                    ? makeGroupedList(self.state.groupedItems) 
+                    : <p>No items.</p>}
             </div>
         )
     }
@@ -161,8 +163,7 @@ class RelatedTargetsListBox extends React.Component {
         if (relatedTargets.children && relatedTargets.children.length) newGroup['Children'] = relatedTargets.children
         if (relatedTargets.associated && relatedTargets.associated.length) newGroup['Associated'] = relatedTargets.associated
         
-        if (Object.keys(newGroup).length > 0) return (<ListBox groupedItems={newGroup} listTitle='Related Targets' query='target' showAll={true}/> )
-        else return <p>No related targets.</p>
+        return <ListBox groupedItems={newGroup} listTitle='Related Targets' query='target' showAll={true}/>
     }
 }
 
