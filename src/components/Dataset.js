@@ -223,7 +223,7 @@ function CollectionQuickLinks({dataset}) {
             }
             { dataset.example && 
                 <div>
-                    { dataset.document_flag ?     
+                    { dataset.collection_type === "Document"?     
                         <h3>Key Document</h3> :
                         <h3>Example File</h3>
                     }
