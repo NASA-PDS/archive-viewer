@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
-import {Header, Description} from 'components/ContextObjects'
+import {MissionHeader, Description} from 'components/ContextObjects'
 import {SpacecraftListBox,TargetListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 
@@ -26,7 +26,7 @@ export default class Mission extends React.Component {
         if (!mission || !spacecraft || !targets) return <Loading />
         else return (
             <div>
-                <Header model={mission} />
+                <MissionHeader mission={mission} />
                 <main className="co-main mission-main">
                     <div>
                         <Description model={mission} />

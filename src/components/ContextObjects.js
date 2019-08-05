@@ -41,6 +41,54 @@ class TargetHeader extends React.Component {
     }
 }
 
+class SpacecraftHeader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            spacecraft: props.spacecraft
+        }
+    }
+    
+    render() {
+        let self = this
+        const {spacecraft} = self.state
+        
+        return <Header model={spacecraft} modelType="spacecraft" />
+    }
+}
+
+class MissionHeader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            mission: props.mission
+        }
+    }
+    
+    render() {
+        let self = this
+        const {mission} = self.state
+        
+        return <Header model={mission} modelType="mission" />
+    }
+}
+
+class InstrumentHeader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            instrument: props.instrument
+        }
+    }
+    
+    render() {
+        let self = this
+        const {instrument} = self.state
+        
+        return <Header model={instrument} modelType="instrument" />
+    }
+}
+
 class Description extends React.Component {
     constructor(props) {
         super(props)
@@ -92,4 +140,4 @@ class Description extends React.Component {
     }
 }
 
-export {Header,TargetHeader,Description}
+export {Header,TargetHeader,SpacecraftHeader,MissionHeader,InstrumentHeader,Description}

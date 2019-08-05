@@ -3,7 +3,7 @@ import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {getSpacecraftForTarget} from 'api/target'
 import {DatasetListBox, TargetListBox, InstrumentListBox, MissionListBox} from 'components/ListBox'
-import {Header, Description} from 'components/ContextObjects'
+import {SpacecraftHeader, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 
 export default class Spacecraft extends React.Component {
@@ -32,7 +32,7 @@ export default class Spacecraft extends React.Component {
         if (!spacecraft || !datasets || !targets || !instruments || !missions) return <Loading />
         else return (
             <div>
-                <Header model={spacecraft} />
+                <SpacecraftHeader spacecraft={spacecraft} />
                 <main className="co-main target-main">
                     <div>
                         <Description model={spacecraft} />
