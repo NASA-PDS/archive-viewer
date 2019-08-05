@@ -88,7 +88,8 @@ class DatasetListBox extends React.Component {
             items: props.items,
             title: 'Datasets',
             groups: { // constant list of mappings
-                spacecraft: 'instrument_host_ref'
+                spacecraft: 'instrument_host_ref',
+                instrument: 'instrument_ref'
             },
             groupBy: props.groupBy || null,
             groupInfo: props.groupInfo || null,

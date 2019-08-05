@@ -23,7 +23,10 @@ export default class Spacecraft extends React.Component {
         getTargetsForSpacecraft(this.state.spacecraft).then(targets => this.setState({targets}))
         getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => this.setState({instruments}))
         getMissionsForSpacecraft(this.state.spacecraft).then(missions => this.setState({missions}))
-        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => this.setState({datasets}))
+        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => {
+            console.log(datasets);
+            this.setState({datasets})
+        })
     }
 
     render() {
@@ -37,7 +40,7 @@ export default class Spacecraft extends React.Component {
                     <div>
                         <Description model={spacecraft} />
                     </div>
-                    <DatasetListBox items={datasets} />
+                    <DatasetListBox items={datasets} groupBy="instrument" groupInfo={instruments} />
                     <TargetListBox items={targets} />
                     <InstrumentListBox items={instruments} />
                     <MissionListBox items={missions} />
