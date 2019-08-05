@@ -30,15 +30,13 @@ export default class Target extends React.Component {
             <div>
                 <TargetHeader target={target} />
                 <main className="co-main target-main">
-                    <div style={{width:'100%'}}>
-                        <Description model={target} />
-                    </div>
+                    <Description model={target} />
                     <DatasetListBox items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
-                    <aside className="sidebox">
-                        <SpacecraftListBox items={spacecraft} />
-                        <RelatedTargetsListBox relatedTargets={relatedTargets} />
-                    </aside>
                 </main>
+                <aside className="sidebox">
+                    <SpacecraftListBox items={spacecraft} />
+                    <RelatedTargetsListBox relatedTargets={relatedTargets} />
+                </aside>
             </div>
         )
     }

@@ -15,6 +15,17 @@ a, .link {
     margin: 0 0.3em;
     text-decoration: underline;
 }
+.sidebox {
+    background: red;
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    float: right;
+    margin: 1em;
+}
+.resource-description {
+    margin-bottom: 2em;
+}
 
 h1 {
     text-align: center;
@@ -41,10 +52,6 @@ main aside.main-aside {
     font-size: 0.7em;
 }
 
-.resource-description {
-    font-weight: 200;
-    max-width: $readable-width;
-}
 
 .dataset-metadata {
     display: block;

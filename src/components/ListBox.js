@@ -103,7 +103,11 @@ class DatasetListBox extends React.Component {
         const {items,title,query,length,groupBy,groupInfo,groups} = self.state
         const keyword = groups[groupBy]
         
-        return (<ListBox groupedItems={groupby(self.state.items, keyword, groupInfo)} listTitle={title} query={query} />)
+        return (
+            <div className="listbox-dataset">
+                <ListBox groupedItems={groupby(self.state.items, keyword, groupInfo)} listTitle={title} query={query} />
+            </div>
+        )
     }
 }
 

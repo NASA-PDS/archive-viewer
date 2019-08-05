@@ -28,12 +28,12 @@ export default class Mission extends React.Component {
             <div>
                 <MissionHeader mission={mission} />
                 <main className="co-main mission-main">
-                    <div>
-                        <Description model={mission} />
-                    </div>
+                    <Description model={mission} />
+                </main>
+                <aside className="sidebox">
                     <SpacecraftListBox items={spacecraft} />
                     <TargetListBox items={targets} />
-                </main>
+                </aside>
             </div>
         )
     }

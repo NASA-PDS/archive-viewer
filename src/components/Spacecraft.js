@@ -34,16 +34,14 @@ export default class Spacecraft extends React.Component {
             <div>
                 <SpacecraftHeader spacecraft={spacecraft} />
                 <main className="co-main target-main">
-                    <div>
-                        <Description model={spacecraft} />
-                    </div>
+                    <Description model={spacecraft} />
                     <DatasetListBox items={datasets} groupBy="instrument" groupInfo={instruments} />
-                    <div className="sidebox">
-                        <TargetListBox items={targets} />
-                        <InstrumentListBox items={instruments} />
-                        <MissionListBox items={missions} />
-                    </div>
                 </main>
+                <aside className="sidebox">
+                    <TargetListBox items={targets} />
+                    <InstrumentListBox items={instruments} />
+                    <MissionListBox items={missions} />
+                </aside>
             </div>
         )
     }

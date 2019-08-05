@@ -31,15 +31,13 @@ export default class Instrument extends React.Component {
             <div>
                 <InstrumentHeader instrument={instrument} />
                 <main className="co-main instrument-main">
-                    <div>
-                        <Description model={instrument} />
-                    </div>
+                    <Description model={instrument} />
                     <DatasetListBox items={datasets} />
-                    <div className="sidebox">
-                        <SpacecraftListBox items={spacecraft} />
-                        <InstrumentListBox items={instruments} />
-                    </div>
                 </main>
+                <aside className="sidebox">
+                    <SpacecraftListBox items={spacecraft} />
+                    <InstrumentListBox items={instruments} />
+                </aside>
             </div>
         )
     }
