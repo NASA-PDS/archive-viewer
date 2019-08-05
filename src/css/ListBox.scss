@@ -15,16 +15,20 @@
     
     .list {
         li {
-            align-self: flex-start;
-            list-style: inside;
             list-style: none;
-            text-indent: -0.5em;
         }
-        .list-header {
-            list-style: none;
-            list-style-position: -1em;
-            font-weight: bolder;
-            margin-top: 0.75em;
-        }
+    }
+}
+.expandable {
+    margin: 0 0 0.3em 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    cursor: pointer;
+    
+    .collapse, .expand {
+        margin-right: 0.5em;
+        font-size: 2em;
     }
 }
