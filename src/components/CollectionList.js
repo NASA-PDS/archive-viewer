@@ -48,7 +48,12 @@ function CollectionList({ collections, loaded }) {
             </div>
         )
     } else {
-        collectionElements = collections.map(collection =>
+        let sortedCollections = collections.sort((a, b) => {
+            if (a.collection_type === "Document") { return -1}
+            if (b.collection_type === "Document") { return 1 }
+            return 0
+        })
+        collectionElements = sortedCollections.map(collection =>
             <div key={collection.identifier} className="collection collection-container">
                 <div className="header">
                     <a href={'?dataset=' + collection.identifier}>
@@ -57,7 +62,7 @@ function CollectionList({ collections, loaded }) {
 
                     {collection.example && (
                         <span className="example">
-                            {collection.document_flag ? 
+                            {collection.collection_type === "Document" ? 
                                 <span className="file-label">Key Document: </span> : 
                                 <span className="file-label">Example File: </span>
                             }
