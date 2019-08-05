@@ -27,10 +27,10 @@ export default class Target extends React.Component {
         if (!target || !datasets || !spacecraft) return <Loading />
         else return (
             <div>
-                <Header model={target} />
+                <Header model={target} type={Header.type.target} />
                 <main className="co-main target-main">
                     <div>
-                        <Description model={target} />
+                        <Description model={target} type={Description.type.target} />
                     </div>
                     <DatasetListBox items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
                     <SpacecraftListBox items={spacecraft} />

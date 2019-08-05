@@ -32,10 +32,10 @@ export default class Spacecraft extends React.Component {
         if (!spacecraft || !datasets || !targets || !instruments || !missions) return <Loading />
         else return (
             <div>
-                <Header model={spacecraft} />
+                <Header model={spacecraft} type={Header.type.spacecraft} />
                 <main className="co-main target-main">
                     <div>
-                        <Description model={spacecraft} />
+                        <Description model={spacecraft} type={Description.type.spacecraft} />
                     </div>
                     <DatasetListBox items={datasets} groupBy="instrument" groupInfo={instruments} />
                     <TargetListBox items={targets} />

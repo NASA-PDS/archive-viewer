@@ -1,20 +1,29 @@
 import React from 'react';
 
 class Header extends React.Component {
+    static type = {
+        target: 'target',
+        spacecraft: 'spacecraft',
+        instrument: 'instrument',
+        mission: 'mission',
+        dataset: 'dataset'
+    }
+
     constructor(props) {
         super(props)
         const target = props.model
         this.state = {
-            target: target,
+            model: props.model,
+            type: props.type,
             loaded: false
         }
     }
     
     render() {
-        const {display_name, title, image_url} = this.state.target
+        const {display_name, title, image_url} = this.state.model
         const name = display_name ? display_name : title
         return (
-            <header className="co-header target-header">
+            <header className={`co-header ${this.state.type}-header`}>
                 <img src={image_url} />
                 <h1 className="title"> { name } Data Archive </h1>
             </header>
@@ -23,11 +32,18 @@ class Header extends React.Component {
 }
 
 class Description extends React.Component {
+    static type = {
+        target: 'target_',
+        spacecraft: 'instrument_host_',
+        instrument: 'instrument_',
+        mission: 'investigation_',
+        dataset: ''
+    }
     constructor(props) {
         super(props)
-        const target = props.model
         this.state = {
-            target: target,
+            model: props.model,
+            type: props.type,
             showFull: false,
             loaded: false
         }
@@ -35,9 +51,8 @@ class Description extends React.Component {
     
     render() {
         let self = this
-        
-        const {display_description, target_description} = self.state.target
-        const description = display_description ? display_description : target_description
+        const {display_description} = self.state.model
+        const description = display_description ? display_description : self.state.model[`${self.state.type}description`]
         const previewLength = 750
         
         function expand(e) {

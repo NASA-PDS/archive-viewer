@@ -30,7 +30,7 @@ export default class Dataset extends React.Component {
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
                     <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
-                    <Description dataset={dataset} />
+                    <Description dataset={dataset} type={Description.type.dataset}/>
 
                     { isBundle && 
                         <CollectionList dataset={dataset} />

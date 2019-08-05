@@ -32,7 +32,7 @@ export function getMissionsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`
     }
-    return httpGetRelated(params, router.missionsCore, knownMissions).then(stitchWithWebFields(['display_name', 'image_url'], router.missionsWeb))
+    return httpGetRelated(params, router.missionsCore, knownMissions).then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
 }
 
 export function getInstrumentsForSpacecraft(spacecraft) {

@@ -26,10 +26,10 @@ export default class Mission extends React.Component {
         if (!mission || !spacecraft || !targets) return <Loading />
         else return (
             <div>
-                <Header model={mission} />
+                <Header model={mission} type={Header.type.mission} />
                 <main className="co-main mission-main">
                     <div>
-                        <Description model={mission} />
+                        <Description model={mission} type={Description.type.mission} />
                     </div>
                     <SpacecraftListBox items={spacecraft} />
                     <TargetListBox items={targets} />

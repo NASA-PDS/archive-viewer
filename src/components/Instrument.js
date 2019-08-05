@@ -29,10 +29,10 @@ export default class Instrument extends React.Component {
         if (!instrument || !datasets || !spacecraft || !instruments) return <Loading />
         else return (
             <div>
-                <Header model={instrument} />
+                <Header model={instrument} type={Header.type.instrument}/>
                 <main className="co-main instrument-main">
                     <div>
-                        <Description model={instrument} />
+                        <Description model={instrument} type={Description.type.instrument} />
                     </div>
                     <DatasetListBox items={datasets} />
                     <SpacecraftListBox items={spacecraft} />
