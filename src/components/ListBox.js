@@ -1,4 +1,5 @@
 import React from 'react';
+import 'css/ListBox.scss'
 import LID from 'services/LogicalIdentifier'
 
 export default class ListBox extends React.Component {
@@ -8,66 +9,73 @@ export default class ListBox extends React.Component {
             elements: [],
             groupedItems: props.groupedItems,
             title: props.listTitle,
-            query: props.query,
-            showAll: false
+            query: props.query
         }
     }
     
     render() {
         let self = this
-        let listHeaders
         
         const {groupedItems,title} = this.state
         this.state.elements = []
-        listHeaders = Object.keys(groupedItems)
         
-        const regA = /[^a-zA-Z]/g;
-        const regN = /[^0-9]/g;
-        
-        function sortAlphaNum(a, b) {
-            const aA = a.replace(regA, "");
-            const bA = b.replace(regA, "");
+        function makeGroupedList(groups) {
+            const titles = Object.keys(groups)
             
-            if (aA === bA) {
-                const aN = parseInt(a.replace(regN, ""), 10);
-                const bN = parseInt(b.replace(regN, ""), 10);
-                return aN === bN ? 0 : aN > bN ? 1 : -1;
-            } else {
-                return aA > bA ? 1 : -1;
-            }
-        }
-        
-        listHeaders.sort(sortAlphaNum).map((key,idx) => {
-            const items = groupedItems[key]
-            // first, push header <li> to elements array
-            self.state.elements.push(<li className="list-header" key={key}>{ key }</li>)
-            
-            // second, push <li> for each dataset in the key
-            items.sort((a,b) => sortAlphaNum(a.title,b.title)).map(item => {
-                const lid = item.identifier
-                const link = `?${self.state.query}=${lid}`
-                
-                self.state.elements.push(<li key={item.identifier + idx}><a href={link}>{ item.title }</a></li>)
+            return titles.sort().map(title => {
+                return (
+                    <div>
+                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} />
+                    </div>
+                )
             })
-        })
-        
-        function toggleList(e) {
-            e.preventDefault();
-            
-            self.state.showAll = !self.state.showAll;
-            self.setState({ showAll: self.state.showAll });
-        }
-        
-        function commandText() {
-            return (self.state.showAll) ? "Show Less" : "Show All";
         }
         
         return (
             <div className="list-box">
                 <h3 className="title">{ title }</h3>
-                <ul className="list">
-                    { this.state.elements }
-                </ul>
+                { makeGroupedList(self.state.groupedItems) }
+            </div>
+        )
+    }
+}
+
+class GroupBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.groupItems,
+            title: props.groupTitle,
+            query: props.query,
+            showGroup: false
+        }
+    }
+    
+    render() {
+        let self = this
+        
+        function toggleList(e) {
+            e.preventDefault();
+            
+            self.state.showGroup = !self.state.showGroup;
+            self.setState({ showGroup: self.state.showGroup });
+        }
+        
+        function listItems(items) {
+            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}>{ item.title }</a></li>)
+        }
+        
+        return (
+            <div>
+                <p onClick={ toggleList } className="expandable">
+                    <span className={ self.state.showGroup ? 'collapse' : 'expand'}>
+                        {self.state.showGroup ? '- ' : '+ '}
+                    </span>
+                    { self.state.title }
+                </p>
+                {self.state.showGroup
+                    ? <ul className="list">{ listItems(this.state.items) }</ul>
+                    : null}
             </div>
         )
     }
@@ -79,28 +87,22 @@ class DatasetListBox extends React.Component {
         this.state = {
             items: props.items,
             title: 'Datasets',
-            groupBy: props.groupBy,
-            groupInfo: props.groupInfo,
+            groups: { // constant list of mappings
+                spacecraft: 'instrument_host_ref',
+                instrument: 'instrument_ref'
+            },
+            groupBy: props.groupBy || null,
+            groupInfo: props.groupInfo || null,
             query: 'dataset',
-            loaded: false,
         }
     }
     
     render() {
         let self = this
-        const {items,title,query,length,groupBy,groupInfo} = self.state
-        if (!self.state.items || !self.state.items.length) {
-            return (<NoItems title={title} />)
-        } else {
-            let groupedItems;
-            
-            console.log(groupBy);
-            console.log(groupInfo);
-            if (groupBy) groupedItems = groupby(self.state.items, 'instrument_host_ref', groupInfo)
-            else groupedItems = groupby(self.state.items, null, null)
-            
-            return (<ListBox groupedItems={groupedItems} listTitle={title} query={query} />)
-        }
+        const {items,title,query,length,groupBy,groupInfo,groups} = self.state
+        const keyword = groups[groupBy]
+        
+        return (<ListBox groupedItems={groupby(self.state.items, keyword, groupInfo)} listTitle={title} query={query} />)
     }
 }
 

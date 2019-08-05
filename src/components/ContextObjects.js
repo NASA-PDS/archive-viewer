@@ -28,15 +28,48 @@ class Description extends React.Component {
         const target = props.model
         this.state = {
             target: target,
+            showFull: false,
             loaded: false
         }
     }
     
     render() {
-        const {display_description, target_description} = this.state.target
-        const description = display_description ? display_description : target_description
+        let self = this
         
-        return <p itemProp="description" className="resource-description">{ description }</p>
+        const {display_description, target_description} = self.state.target
+        const description = display_description ? display_description : target_description
+        const previewLength = 750
+        
+        function expand(e) {
+            e.preventDefault()
+            
+            self.state.showFull = !self.state.showFull
+            self.setState({showFull:self.state.showFull})
+        }
+        
+        function seeMore() {
+            return <span className="link inline-link" onClick={ expand }>Show Description</span>
+        }
+        
+        function seeLess() {
+            return <span className="link inline-link" onClick={ expand }>Hide Description</span>
+        }
+        
+        function shorten(description) {
+            const short = description.split('').splice(0,previewLength).join('') + '... '
+            
+            return <p>{short}{seeMore()}</p>
+        }
+        
+        function full(description) {
+            const full = description
+            
+            return <p>{full}{seeLess()}</p>
+        }
+        
+        return (
+            <div itemProp="description" className="resource-description">{ self.state.showFull ? full(description) : shorten(description) }</div>
+        )
     }
 }
 
