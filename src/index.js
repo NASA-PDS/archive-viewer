@@ -118,7 +118,7 @@ function Index() {
             </section>
 
             <section className="list-box">
-                <h2>Missions</h2>
+                <h2>Spacecraft</h2>
                 <ul>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini</a></li>

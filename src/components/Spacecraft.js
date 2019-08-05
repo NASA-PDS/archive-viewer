@@ -11,7 +11,7 @@ export default class Spacecraft extends React.Component {
         super(props)
         this.state = {
             spacecraft: props.spacecraft,
-            missions: null,
+            mission: null,
             instruments: null,
             targets: null,
             datasets: null,
@@ -22,25 +22,22 @@ export default class Spacecraft extends React.Component {
     componentDidMount() {
         getTargetsForSpacecraft(this.state.spacecraft).then(targets => this.setState({targets}))
         getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => this.setState({instruments}))
-        getMissionsForSpacecraft(this.state.spacecraft).then(missions => this.setState({missions}))
+        getMissionsForSpacecraft(this.state.spacecraft).then(missions => this.setState({mission: missions && missions.length > 0 ? missions[0] : null}))
         getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => this.setState({datasets}))
     }
 
     render() {
-        const {spacecraft,missions,datasets,instruments,targets} = this.state
-        
-        if (!spacecraft || !datasets || !targets || !instruments || !missions) return <Loading />
+        const {spacecraft,mission,datasets,instruments,targets} = this.state
+        if (!spacecraft || !datasets || !targets || !instruments || !mission) return <Loading />
         else return (
             <div>
-                <Header model={spacecraft} type={Header.type.spacecraft} />
+                <Header model={mission} type={Header.type.mission} />
                 <main className="co-main target-main">
-                    <div>
-                        <Description model={spacecraft} type={Description.type.spacecraft} />
-                    </div>
+                    <div><Description model={mission} type={Description.type.mission} /></div>
+                    <Header model={spacecraft} type={Header.type.spacecraft}/>
                     <DatasetListBox items={datasets} groupBy="instrument" groupInfo={instruments} />
                     <TargetListBox items={targets} />
                     <InstrumentListBox items={instruments} />
-                    <MissionListBox items={missions} />
                 </main>
             </div>
         )

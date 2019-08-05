@@ -23,9 +23,9 @@ class Header extends React.Component {
         const {display_name, title, image_url} = this.state.model
         const name = display_name ? display_name : title
         return (
-            <header className={`co-header ${this.state.type}-header`}>
+            <header className={`co-header ${this.state.type}-header ${this.state.type === Header.type.spacecraft ? 'subheader' : ''}`}>
                 <img src={image_url} />
-                <h1 className="title"> { name } Data Archive </h1>
+                <h1 className="title"> { name } <span className="header-supplemental-text" >Data Archive</span> </h1>
             </header>
         )
     }
