@@ -7,6 +7,7 @@ const targetsCollection = 'web-targets'
 const instrumentsCollection = 'web-instruments'
 const instrumenthostsCollection = 'web-instrumenthosts'
 const investigationsCollection = 'web-investigations'
+const targetrelationshipsCollection = 'web-targetrelationships'
 const coreCollection = 'pds'
 
 export default {
@@ -14,6 +15,7 @@ export default {
     // datasetCore: `${localSolr}/${coreCollection}/select`,
     datasetCore: `${remoteSolr}/search`,
     targetsWeb: `${localSolr}/${targetsCollection}/select`,
+    targetRelationships: `${localSolr}/${targetrelationshipsCollection}/select`,
     targetsCore: `${remoteSolr}/search`,
     instrumentsWeb: `${localSolr}/${instrumentsCollection}/select`,
     instrumentsCore: `${remoteSolr}/search`,
