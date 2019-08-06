@@ -6,40 +6,85 @@ export default class ListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            elements: [],
-            groupedItems: props.groupedItems,
-            title: props.listTitle,
-            showAll: props.showAll || false,
-            query: props.query
+            items: props.items,
+            type: props.type,
+            groupBy: props.groupBy,
+            groupInfo: props.groupInfo,
+            types: {
+                dataset: {
+                    title: 'Datasets',
+                    titleSingular: 'Dataset',
+                    query: 'dataset'
+                },
+                mission: {
+                    title: 'Missions',
+                    titleSingular: 'Mission',
+                    query: 'mission'
+                },
+                target: {
+                    title: 'Targets',
+                    titleSingular: 'Target',
+                    query: 'target'
+                },
+                relatedTarget: {
+                    title: 'Related Targets',
+                    titleSingular: 'Related Target',
+                    query: 'target'
+                },
+                instrument: {
+                    title: 'Instruments',
+                    titleSingular: 'Instrument',
+                    query: 'instrument'
+                },
+                spacecraft: {
+                    title: 'Spacecraft',
+                    titleSingular: 'Spacecraft',
+                    query: 'spacecraft'
+                }
+            }
         }
+        this.state.showAll = this.state.items.length <= 8
     }
     
     render() {
         let self = this
         
-        const {groupedItems,title} = this.state
-        this.state.elements = []
+        const {items,type,types} = self.state
         
         function makeGroupedList(groups) {
             const titles = Object.keys(groups)
-            
-            return titles.sort().map(title => {
-                return (
-                    <div>
-                        <GroupBox groupTitle={title} groupItems={groups[title]} query={self.state.query} showAll={self.state.showAll} />
-                    </div>
-                )
-            })
+            return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={types[type]['query']} showAll={self.state.showAll} />))
         }
         
-        return (
-            <div className="list-box">
-                <h3 className="title">{ title }</h3>
-                { Object.keys(groupedItems).length
-                    ? makeGroupedList(self.state.groupedItems) 
-                    : <p>No items.</p>}
-            </div>
-        )
+        function makeList(type) {
+            if (type === 'relatedTarget') {
+                return <RelatedTargetsListBox targets={items} />
+            }
+            else {
+                if (!items.length) return <NoItems />
+                else if (items.length === 1) return <SingleItem item={items[0]} query={types[type]['query']} />
+                else return makeGroupedList(groupby(items,null,null))
+            }
+        }
+        
+        return (<div className="list-box">
+            <h3 className="title">{ items && items.length === 1 ? types[type]['titleSingular'] : types[type]['title'] }</h3>
+            { makeList(type) }
+        </div>)
+    }
+}
+
+class SingleItem extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            item: props.item,
+            query: props.query
+        }
+    }
+    
+    render() {
+        return (<a href={`/?${this.state.query}=${this.state.item.identifier}`}>{this.state.item.display_name}</a>)
     }
 }
 
@@ -82,132 +127,25 @@ class GroupBox extends React.Component {
     }
 }
 
-class DatasetListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-            title: 'Datasets',
-            groups: { // constant list of mappings
-                spacecraft: 'instrument_host_ref',
-                instrument: 'instrument_ref'
-            },
-            groupBy: props.groupBy || null,
-            groupInfo: props.groupInfo || null,
-            query: 'dataset',
-        }
-    }
-    
-    render() {
-        let self = this
-        const {items,title,query,length,groupBy,groupInfo,groups} = self.state
-        const keyword = groups[groupBy]
-        
-        return (
-            <div className="listbox-dataset">
-                <ListBox groupedItems={groupby(self.state.items, keyword, groupInfo)} listTitle={title} query={query} />
-            </div>
-        )
-    }
-}
-
-class SpacecraftListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-            title: 'Spacecraft',
-            query: 'spacecraft',
-            loaded: false,
-        }
-    }
-    
-    render() {
-        let self = this
-        const {items,title,query} = self.state
-        
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
-    }
-}
-
-class TargetListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-            title: 'Targets',
-            query: 'target',
-            loaded: false,
-        }
-    }
-    
-    render() {
-        let self = this
-        const {items,title,query} = self.state
-        
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
-    }
-}
-
 class RelatedTargetsListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            relatedTargets: props.relatedTargets
+            targets: props.targets
         }
     }
     
     render() {
         const self = this
-        const {relatedTargets} = self.state
+        const {targets} = self.state
         
         let newGroup = {}
         
-        if (relatedTargets.parents && relatedTargets.parents.length) newGroup['Parents'] = relatedTargets.parents
-        if (relatedTargets.children && relatedTargets.children.length) newGroup['Children'] = relatedTargets.children
-        if (relatedTargets.associated && relatedTargets.associated.length) newGroup['Associated'] = relatedTargets.associated
+        if (targets.parents && targets.parents.length) newGroup['Parents'] = targets.parents
+        if (targets.children && targets.children.length) newGroup['Children'] = targets.children
+        if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
         
-        return <ListBox groupedItems={newGroup} listTitle='Related Targets' query='target' showAll={true}/>
-    }
-}
-
-class InstrumentListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-            title: 'Instruments',
-            query: 'instrument',
-            loaded: false
-        }
-    }
-    
-    render() {
-        let self = this
-        const {items,title,query} = self.state
-        
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
-    }
-}
-
-class MissionListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-            title: 'Missions',
-            query: 'mission',
-            loaded: false
-        }
-    }
-    
-    render() {
-        let self = this
-        const {items,title,query} = self.state
-        
-        if (!items || !items.length) return (<NoItems title={title} />)
-        else if (items.length === 1) return (<div className="list-box"><h3 className="title">Mission</h3><a>{items[0].display_name}</a></div>)
-        else return (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} showAll={items.length < 5} />)
+        return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={'target'} showAll={true} />))
     }
 }
 
@@ -221,7 +159,6 @@ class NoItems extends React.Component {
     render() {
         return (
             <div>
-                <h3>{this.state.title}</h3>
                 <p>No items...</p>
             </div>
         )
@@ -254,5 +191,3 @@ const groupby = (arr, val, groupInfo) => {
     }
     return items
 }
-
-export {ListBox, DatasetListBox, SpacecraftListBox, TargetListBox, RelatedTargetsListBox, InstrumentListBox, MissionListBox}
