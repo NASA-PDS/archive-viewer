@@ -4,6 +4,13 @@
     padding: 0.5em 1em;
     float: left;
     width: 60%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    
+    .subheader {
+        width: 100%;
+    }
 }
 .co-aside {
     max-width: 300px;

@@ -247,7 +247,9 @@ main aside.main-aside {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+}
 
+.mission-header, .target-header, .instrument-header {
     img {
         max-height: 10em;
         ~ h1 {
@@ -260,7 +262,20 @@ main aside.main-aside {
     & ~ aside {
         margin-top: -2em;
     }
-
+}
+.spacecraft-header {
+    img {
+        max-height: 3em;
+        ~ h1 {
+            margin-left: 1em;
+        }
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    .header-supplemental-text {
+        display: none;
+    }
 }
 
 .target-header, .spacecraft-header, .mission-header {

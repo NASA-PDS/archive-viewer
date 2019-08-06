@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
 import {getInstrumentsForSpacecraft} from 'api/spacecraft'
-import {InstrumentHeader, Description} from 'components/ContextObjects'
+import {Header, Description} from 'components/ContextObjects'
 import {DatasetListBox,SpacecraftListBox,InstrumentListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 
@@ -26,12 +26,12 @@ export default class Instrument extends React.Component {
 
     render() {
         const {instrument,datasets,spacecraft,instruments} = this.state
-        if (!instrument || !datasets || !spacecraft || !instruments) return <Loading />
+        if (!instrument || datasets === null || spacecraft === null || instruments === null) return <Loading />
         else return (
             <div>
-                <InstrumentHeader instrument={instrument} />
+                <Header model={instrument} type={Header.type.instrument}/>
                 <main className="co-main instrument-main">
-                    <Description model={instrument} />
+                    <Description model={instrument} type={Description.type.instrument} />
                     <DatasetListBox items={datasets} />
                 </main>
                 <aside className="sidebox">
