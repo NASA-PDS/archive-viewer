@@ -4,6 +4,7 @@ import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import ListBox from 'components/ListBox'
 import Loading from 'components/Loading'
+import {Description} from 'components/ContextObjects'
 
 export default class Dataset extends React.Component {
 
@@ -30,7 +31,7 @@ export default class Dataset extends React.Component {
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
                     <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
-                    <Description dataset={dataset} type={Description.type.dataset}/>
+                    <Description model={dataset} type={Description.type.dataset}/>
 
                     { isBundle && 
                         <CollectionList dataset={dataset} />
@@ -202,11 +203,6 @@ function ContextObjectList({objects, param, displayType}) {
 function BrowseButton({dataset}) {
     let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url
     return <a href={url}><img src="/images/icn-folder.png" /><span> Browse All </span></a>
-}
-
-function Description({dataset}) {
-    const description = dataset.display_description ? dataset.display_description : dataset.description
-    return <h3 itemProp="description" className="resource-description">{ description }</h3>
 }
 
 function CollectionQuickLinks({dataset}) {
