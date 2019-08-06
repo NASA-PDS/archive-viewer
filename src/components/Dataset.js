@@ -143,9 +143,9 @@ function Metadata(props) {
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
             <section className="related-context-objects">
-                <ContextObjectList objects={targets} displayType="Target" param="target"></ContextObjectList>
-                <ContextObjectList objects={spacecraft} displayType="Spacecraft" param="spacecraft"></ContextObjectList>
-                <ContextObjectList objects={instruments} displayType="Instrument" param="instrument"></ContextObjectList>
+                <ContextObjectList objects={targets} type="target"></ContextObjectList>
+                <ContextObjectList objects={spacecraft} type="spacecraft"></ContextObjectList>
+                <ContextObjectList objects={instruments} type="instrument"></ContextObjectList>
             </section>
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>
@@ -186,14 +186,10 @@ function EditorList({editors}) {
     )
 }
 
-function ContextObjectList({objects, param, displayType}) {
+function ContextObjectList({objects, type}) {
     if(objects) {
         return (
-            <ul>{displayType}(s):<br/>
-                {objects.map(object =>  
-                    <li key={object.identifier} className="datum" ><a href={`?${param}=${object.identifier}`}>{ object.display_name ? object.display_name : object.title }</a></li>   
-                )}
-            </ul>
+            <ListBox type={type} items={objects} />            
         )
     } else {
         return <Loading></Loading>
