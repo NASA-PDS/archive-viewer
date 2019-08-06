@@ -65,7 +65,7 @@ class GroupBox extends React.Component {
         }
         
         function listItems(items) {
-            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}>{ item.title }</a></li>)
+            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
         }
         
         return (

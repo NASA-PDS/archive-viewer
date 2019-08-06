@@ -87,19 +87,18 @@ export function stitchWithWebFields(fields, route) {
                 fl: fields.join()
             }
             httpGet(route, params).then(webDocs => {
-                if(previousResult.length ===  webDocs.length) {
-                    let toReturn = []
-                    // combine documents by lid
-                    for (let coreDoc of previousResult ) {
-                        let consolidated = Object.assign({}, coreDoc)
-                        let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
+                let toReturn = []
+                // combine documents by lid
+                for (let coreDoc of previousResult ) {
+                    let consolidated = Object.assign({}, coreDoc)
+                    let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
+                    if(!!corresponding) {
                         toReturn.push(Object.assign(consolidated, corresponding))
+                    } else {
+                        toReturn.push(consolidated)
                     }
-                    resolve(toReturn)
-                } else {
-                    // can't find matching documents, so just return the results of original query
-                    resolve(previousResult)
                 }
+                resolve(toReturn)
             }, err => {
                 //ignore error, just pass original
                 resolve(previousResult)
