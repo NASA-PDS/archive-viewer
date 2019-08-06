@@ -9,8 +9,14 @@
     flex-flow: column nowrap;
     align-self: flex-start;
     
+    .title-box {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: baseline;
+    }
+    
     .title {
-        margin: 0;
+        margin: 0 0.5em 0.5em 0;
     }
     
     .list {
