@@ -205,7 +205,9 @@ class MissionListBox extends React.Component {
         let self = this
         const {items,title,query} = self.state
         
-        return (!items || !items.length) ? (<NoItems title={title} />) : (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} />)
+        if (!items || !items.length) return (<NoItems title={title} />)
+        else if (items.length === 1) return (<div className="list-box"><h3 className="title">Mission</h3><a>{items[0].display_name}</a></div>)
+        else return (<ListBox groupedItems={groupby(items,null,null)} listTitle={title} query={query} showAll={items.length < 5} />)
     }
 }
 
