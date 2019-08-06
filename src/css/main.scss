@@ -242,58 +242,7 @@ main aside.main-aside {
     }
 }
 
-.mission-header, .target-header, .instrument-header, .spacecraft-header {
-    color: white;
-    padding: 0.5em;
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-}
 
-.mission-header, .target-header, .instrument-header {
-    img {
-        max-height: 10em;
-        ~ h1 {
-            margin-left: 1em;
-        }
-    }
-    h1 {
-        font-size: 2em;
-    }
-    & ~ aside {
-        margin-top: -2em;
-    }
-}
-.spacecraft-header {
-    img {
-        max-height: 3em;
-        ~ h1 {
-            margin-left: 1em;
-        }
-    }
-    h1 {
-        font-size: 1.5em;
-    }
-    .header-supplemental-text {
-        display: none;
-    }
-}
-
-.target-header, .spacecraft-header, .mission-header {
-    background-color: black;
-}
-
-.instrument-header {
-    background-color: $superDarkGrey;
-}
-
-.target-mission-datatypes {
-    padding: 10px 0 0 10px;
-    border-left: 8px solid $blue;
-    .target-mission-datatype-datasets {
-        padding-left: 10px;
-    }
-}
 
 .embedded-list {
     margin-left: 10px;
