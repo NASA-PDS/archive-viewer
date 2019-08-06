@@ -1,5 +1,7 @@
 @import 'variables';
 
+$list-item-padding: 30px;
+
 .list-box {
     @include list-box;
     
@@ -19,21 +21,28 @@
     }
     
     .list {
+        padding: 0;
         li {
+            margin-left: $list-item-padding;
             list-style-position: outside;
         }
     }
+    .single-item {
+            margin-left: $list-item-padding;
+
+    }
 }
 .expandable {
-    margin: 0 0 0.3em 0;
+    margin: 0 0 8px 0;
     padding: 0;
     display: flex;
+    font-weight: bold;
     flex-flow: row nowrap;
     align-items: center;
     cursor: pointer;
     
     .collapse, .expand {
         margin-right: 0.5em;
-        height: 2.2em;
+        height: $list-item-padding - 8px;
     }
 }
