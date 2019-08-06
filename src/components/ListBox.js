@@ -34,12 +34,14 @@ export default class ListBox extends React.Component {
                 instrument: {
                     title: 'Instruments',
                     titleSingular: 'Instrument',
-                    query: 'instrument'
+                    query: 'instrument',
+                    groupBy: 'instrument_ref'
                 },
                 spacecraft: {
                     title: 'Spacecraft',
                     titleSingular: 'Spacecraft',
-                    query: 'spacecraft'
+                    query: 'spacecraft',
+                    groupBy: 'instrument_host_ref'
                 }
             }
         }
@@ -51,7 +53,7 @@ export default class ListBox extends React.Component {
     render() {
         let self = this
         
-        const {items,type,types} = self.state
+        const {items,type,types,groupBy,groupInfo} = self.state
         
         function makeGroupedList(groups) {
             const titles = Object.keys(groups)
@@ -65,7 +67,14 @@ export default class ListBox extends React.Component {
             else {
                 if (!items.length) return <NoItems />
                 else if (items.length === 1) return <SingleItem item={items[0]} query={types[type]['query']} />
-                else return makeGroupedList(groupby(items,null,null))
+                else {
+                    if (groupBy) {
+                        const keyword = types[groupBy]['groupBy']
+                        return makeGroupedList(groupby(items,keyword,groupInfo))
+                    } else {
+                        return makeGroupedList(groupby(items,null,null))
+                    }
+                }
             }
         }
         
