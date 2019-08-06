@@ -49,7 +49,7 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
 
     return new Promise((resolve, reject) => {
         getSpacecraftForInstrument(instrument).then(parent => {
-            if(!!parent[0] && !!parent[0].instrument_ref) {
+            if(!!parent[0]) {
                 gatherInstruments(parent).then(resolve, reject)
             } else {
                 reject(new Error("Couldn't find parent object"))

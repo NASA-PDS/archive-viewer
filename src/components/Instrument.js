@@ -19,9 +19,11 @@ export default class Instrument extends React.Component {
     }
 
     componentDidMount() {
-        getSpacecraftForInstrument(this.state.instrument).then(spacecraft => this.setState({spacecraft}))
+        getSpacecraftForInstrument(this.state.instrument).then(spacecraft => {
+            this.setState({spacecraft})
+            getRelatedInstrumentsForInstrument(this.state.instrument, spacecraft).then(instruments => this.setState({instruments}))
+        })
         getDatasetsForInstrument(this.state.instrument).then(datasets => this.setState({datasets}))
-        getRelatedInstrumentsForInstrument(this.state.instrument).then(instruments => this.setState({instruments}))
     }
 
     render() {
