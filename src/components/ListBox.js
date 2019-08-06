@@ -79,7 +79,10 @@ export default class ListBox extends React.Component {
         }
         
         return (<div className="list-box">
-            <h3 className="title">{ items && items.length === 1 ? types[type]['titleSingular'] : types[type]['title'] }</h3>
+            <span className="title-box">
+                <h3 className="title">{ items && items.length === 1 ? types[type]['titleSingular'] : types[type]['title'] }</h3>
+                <h4 className="count">({ items.length })</h4>
+            </span>
             { makeList(type) }
         </div>)
     }
