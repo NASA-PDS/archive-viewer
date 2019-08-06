@@ -98,7 +98,8 @@ class SingleItem extends React.Component {
     }
     
     render() {
-        return (<a href={`/?${this.state.query}=${this.state.item.identifier}`}>{this.state.item.display_name}</a>)
+        let {item} = this.state
+        return (<a href={`/?${this.state.query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
     }
 }
 
