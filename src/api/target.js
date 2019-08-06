@@ -63,7 +63,7 @@ export function getRelatedTargetsForTarget(target) {
             let lidMap = {
                 children: children.map(c => c.child_ref),
                 parents: parents.map(p => p.parent_ref),
-                associated: associated.map(a => a.find(a !== targetLid))
+                associated: associated.map(a => a.associated_targets.find(ref => ref !== targetLid))
             }
             let allIdentifiers = [...lidMap.children, ...lidMap.parents, ...lidMap.associated]
             httpGetIdentifiers(router.targetsCore, allIdentifiers).then(stitchWithWebFields(['display_name'], router.targetsWeb), reject).then(allTargets => {
