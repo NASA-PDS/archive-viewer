@@ -25,7 +25,7 @@ a, .link {
 }
 .resource-description {
     margin-bottom: 2em;
-    white-space: pre-wrap;
+    white-space: pre-line;
 }
 
 h1 {
@@ -45,7 +45,6 @@ main aside.main-aside {
     section {
         margin-bottom: 1em;
         margin-right: 15px;
-        box-shadow: 1px 1px 2px #dadada;
     }
 }
 
@@ -55,10 +54,7 @@ main aside.main-aside {
 
 
 .dataset-metadata {
-    display: block;
-    padding: 0 20px 0 20px;
-    background-color: #EDEDED;
-    word-wrap: break-word;
+    @include sidebox;
     h2 {
         font-size: 1.2em;
         text-align: center;
@@ -75,10 +71,7 @@ main aside.main-aside {
 }
 
 .related-context-objects {
-    display: block;
-    padding: 0 20px 0 20px;
-    background-color: #EDEDED;
-    word-wrap: break-word;
+    @include sidebox;
 
     ul, p {
         font-weight: bold;
@@ -101,10 +94,7 @@ main aside.main-aside {
 }
 
 .dataset-pds3, .dataset-superseded, .dataset-related {
-    background-color: #EDEDED;
-    padding: 20px;
-    margin: 15px;
-    box-shadow: 1px 1px 2px #dadada;
+    @include sidebox;
     .header {
         display: block;
         margin: -20px -20px 15px -20px;
@@ -128,7 +118,9 @@ main aside.main-aside {
     display: flex;
     text-align: center;
     flex-flow: column;
-    margin: -$main-padding;
+    margin-top: -$main-padding;
+    margin-left: -$main-padding;
+    margin-right: -$main-padding;
 }
 
 .dataset-pds3, .dataset-related {

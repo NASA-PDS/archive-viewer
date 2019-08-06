@@ -30,16 +30,14 @@ export default class Instrument extends React.Component {
         const {instrument,datasets,spacecraft,instruments} = this.state
         if (!instrument || datasets === null || spacecraft === null || instruments === null) return <Loading />
         else return (
-            <div>
+            <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>
-                <main className="co-main instrument-main">
-                    <Description model={instrument} type={Description.type.instrument} />
-                    <ListBox type="dataset" items={datasets} />
-                </main>
-                <aside className="sidebox">
+                <aside className="main-aside sidebox">
                     <ListBox type="spacecraft" items={spacecraft} />
                     <ListBox type="instrument" items={instruments} />
                 </aside>
+                <Description model={instrument} type={Description.type.instrument} />
+                <ListBox type="dataset" items={datasets} />
             </div>
         )
     }

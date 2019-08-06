@@ -31,18 +31,16 @@ export default class Mission extends React.Component {
 
         // otherwise, show simple page with list of this mission's spacecraft
         else return (
-            <div>
+            <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
-                <main className="co-main mission-main">
-                    <Description model={mission} type={Description.type.mission} />
-                    <div>
-                        <h2>View the mission's data for:</h2>
-                        { spacecraft.map(ButtonForSpacecraft)}
-                    </div>
-                </main>
-                <aside className="sidebox">
+                <aside className="main-aside sidebox">
                     <ListBox type="target" items={targets} />
                 </aside>
+                <Description model={mission} type={Description.type.mission} />
+                <div>
+                    <h2>View the mission's data for:</h2>
+                    { spacecraft.map(ButtonForSpacecraft)}
+                </div>
             </div>
         )
     }

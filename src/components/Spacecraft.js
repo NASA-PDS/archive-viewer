@@ -31,22 +31,20 @@ export default class Spacecraft extends React.Component {
         if (!spacecraft || datasets === null || targets === null || instruments === null || mission === null) return <Loading />
         else {
             return (
-                <div>
+                <div className="co-main">
                     <Header model={mission} type={Header.type.mission} />
-                    <main className="co-main target-main">
-                        <div><Description model={mission} type={Description.type.mission} /></div>
-                        {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <Header model={spacecraft} type={Header.type.spacecraft}/>
-                        }
-                        <ListBox type="dataset" items={datasets} groupBy="instrument" groupInfo={instruments} />
-                    </main>
-                    <aside className="sidebox">
-                        {mission && 
+                    <aside className="main-aside sidebox">
+                        {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <h3><a href={`?mission=${mission.identifier}`}>Visit Mission Page</a></h3>
                         }
                         <ListBox type="target"     items={targets} />
                         <ListBox type="instrument" items={instruments} />
                     </aside>
+                    <Description model={mission} type={Description.type.mission} />
+                    {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
+                        <Header model={spacecraft} type={Header.type.spacecraft}/>
+                    }
+                    <ListBox type="dataset" items={datasets} groupBy="instrument" groupInfo={instruments} />
                 </div>
             )
         }

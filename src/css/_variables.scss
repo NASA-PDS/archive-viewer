@@ -15,6 +15,7 @@ $readable-width: 1200px;
 
 @mixin list-box {
     padding: 0 0.5em;
+
     border-left: 2px solid $blue;
     align-self: flex-start;
     display: flex;
@@ -28,4 +29,15 @@ $readable-width: 1200px;
     background: $link;
     border-radius: 0.25em;
     color: white;
+}
+@mixin sidebox {
+    width: 300px;
+    background: $lightGrey;
+    box-shadow: 1px 1px 2px #dadada;
+    background-color: $lightGrey;
+    padding: 0 20px 0 20px;
+    word-wrap: break-word;
+    .list-box {
+        border-left: none;
+    }
 }

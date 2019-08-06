@@ -27,16 +27,14 @@ export default class Target extends React.Component {
         const {target,relatedTargets,datasets,spacecraft} = this.state
         if (!target || relatedTargets === null || datasets === null || spacecraft === null) return <Loading />
         else return (
-            <div>
+            <div className="co-main">
                 <Header model={target} type={Header.type.target} />
-                <main className="co-main target-main">
-                    <Description model={target} type={Description.type.target} />
-                    <ListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
-                </main>
-                <aside className="sidebox">
+                <aside className="main-aside sidebox">
                     <ListBox type="spacecraft"     items={spacecraft} />
                     <ListBox type="relatedTarget"  items={relatedTargets} />
                 </aside>
+                <Description model={target} type={Description.type.target} />
+                <ListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
             </div>
         )
     }

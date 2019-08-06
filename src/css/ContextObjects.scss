@@ -1,13 +1,15 @@
 @import 'variables';
 
+
 .co-main {
-    padding: 0.5em 1em;
-    float: left;
-    width: 60%;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
+    padding: $main-padding;
     
+    header:not(.subheader) { 
+        margin-top: -$main-padding;
+        margin-left: -$main-padding;
+        margin-right: -$main-padding;
+        margin-bottom: $main-padding
+    }
     .subheader {
         width: 100%;
     }
@@ -15,18 +17,12 @@
 .co-aside {
     max-width: 300px;
 }
-.target-datasets {
-    max-width: 60%;
-}
 .button {
     @include button;
     align-self: flex-start;
 }
 .sidebox {
-    background: $lightGrey;
-    box-shadow: 1px 1px 2px #dadada;
-    max-width: 30%;
-    width: 20em;
+    @include sidebox;
 }
 
 .mission-header, .target-header, .instrument-header, .spacecraft-header {
