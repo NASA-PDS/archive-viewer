@@ -35,7 +35,7 @@ export default class Spacecraft extends React.Component {
                     <Header model={mission} type={Header.type.mission} />
                     <aside className="main-aside sidebox">
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <h3><a href={`?mission=${mission.identifier}`}>Visit Mission Page</a></h3>
+                            <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
                         <ListBox type="target"     items={targets} />
                         <ListBox type="instrument" items={instruments} />

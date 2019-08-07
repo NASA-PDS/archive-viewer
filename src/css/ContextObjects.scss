@@ -19,6 +19,7 @@
 .button {
     @include button;
     align-self: flex-start;
+    text-align: center;
 }
 .sidebox {
     @include sidebox;
