@@ -25,7 +25,6 @@ export default class Dataset extends React.Component {
         const {dataset, isBundle, targets, spacecraft, instruments} = this.state
         return (
             <div>
-                <Taxonomy dataset={dataset} />
                 <FamilyLinks dataset={dataset} isBundle={isBundle}/>
                 <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
                     <Title dataset={dataset} />
@@ -51,28 +50,6 @@ export default class Dataset extends React.Component {
         )
     }
 }
-
-function Taxonomy(props) {
-    const tags = props.dataset.tags
-    return tags ? (
-
-        <div id="taxonomy">
-            {tags.length > 0 &&
-                <h3>Relevant Tags:</h3>
-            }
-            {
-                tags.map( tag => 
-                    <div className="banner" key={tag}>
-                        <a className="ignore-a-styling" href="#">
-                            <span> {tag} </span>
-                        </a>
-                    </div>
-                )
-            }
-        </div>
-    ) : null
-}
-
 
 
 function Title({dataset}) {

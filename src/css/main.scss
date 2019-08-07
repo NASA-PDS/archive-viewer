@@ -26,6 +26,8 @@ a, .link {
 .resource-description {
     margin-bottom: 2em;
     white-space: pre-line;
+    max-width: $readable-width;
+
 }
 
 h1 {
@@ -97,10 +99,13 @@ main aside.main-aside {
 }
 
 .dataset-pds3, .dataset-superseded, .dataset-related {
-    @include sidebox;
+    box-shadow: 1px 1px 2px #dadada;
+    background-color: $lightGrey;
+    padding: 0 20px 0 20px;
+    margin: 20px;
     .header {
         display: block;
-        margin: -20px -20px 15px -20px;
+        margin: 0 -20px 15px -20px;
         padding: 15px;
         text-align: center;
         color: white;
