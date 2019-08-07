@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import ListBox from 'components/ListBox'
+import {OptionalListBox} from 'components/ListBox'
 import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 
@@ -20,15 +20,15 @@ export default class Spacecraft extends React.Component {
     }
 
     componentDidMount() {
-        getTargetsForSpacecraft(this.state.spacecraft).then(targets => this.setState({targets}))
-        getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => this.setState({instruments}))
-        getMissionsForSpacecraft(this.state.spacecraft).then(missions => this.setState({mission: (missions && missions.length > 0) ? missions[0] : null}))
-        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => this.setState({datasets}))
+        getMissionsForSpacecraft(this.state.spacecraft).then(missions => this.setState({mission: (missions && missions.length > 0) ? missions[0] : null}), er => console.log(er))
+        getTargetsForSpacecraft(this.state.spacecraft).then(targets => this.setState({targets}), er => console.log(er))
+        getInstrumentsForSpacecraft(this.state.spacecraft).then(instruments => this.setState({instruments}), er => console.log(er))
+        getDatasetsForSpacecraft(this.state.spacecraft).then(datasets => this.setState({datasets}), er => console.log(er))
     }
 
     render() {
-        const {spacecraft,mission,missions,datasets,instruments,targets} = this.state
-        if (!spacecraft || datasets === null || targets === null || instruments === null || mission === null) return <Loading fullscreen={true}/>
+        const {spacecraft,mission} = this.state
+        if (!spacecraft || mission === null) return <Loading fullscreen={true}/>
         else {
             return (
                 <div className="co-main">
@@ -37,14 +37,14 @@ export default class Spacecraft extends React.Component {
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
-                        <ListBox type="target"     items={targets} />
-                        <ListBox type="instrument" items={instruments} />
+                        <OptionalListBox type="target"     items={this.state.targets} />
+                        <OptionalListBox type="instrument" items={this.state.instruments} />
                     </aside>
                     <Description model={mission} type={Description.type.mission} />
                     {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                         <Header model={spacecraft} type={Header.type.spacecraft}/>
                     }
-                    <ListBox type="dataset" items={datasets} groupBy="instrument" groupInfo={instruments} />
+                    <OptionalListBox type="dataset" items={this.state.datasets} groupBy="instrument" groupInfo={this.state.instruments} />
                 </div>
             )
         }

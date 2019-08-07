@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
 import {Header, Description} from 'components/ContextObjects'
-import ListBox from 'components/ListBox'
+import {OptionalListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 
 export default class Target extends React.Component {
@@ -18,23 +18,23 @@ export default class Target extends React.Component {
     }
     
     componentDidMount() {
-        getDatasetsForTarget(this.state.target).then(datasets => this.setState({datasets}))
-        getSpacecraftForTarget(this.state.target).then(spacecraft => this.setState({spacecraft}))
-        getRelatedTargetsForTarget(this.state.target).then(relatedTargets => this.setState({relatedTargets}))
+        getDatasetsForTarget(this.state.target).then(datasets => this.setState({datasets}), er => console.log(er))
+        getSpacecraftForTarget(this.state.target).then(spacecraft => this.setState({spacecraft}), er => console.log(er))
+        getRelatedTargetsForTarget(this.state.target).then(relatedTargets => this.setState({relatedTargets}), er => console.log(er))
     }
 
     render() {
         const {target,relatedTargets,datasets,spacecraft} = this.state
-        if (!target || relatedTargets === null || datasets === null || spacecraft === null) return <Loading fullscreen={true} />
+        if (!target ) return <Loading fullscreen={true} />
         else return (
             <div className="co-main">
                 <Header model={target} type={Header.type.target} />
                 <aside className="main-aside sidebox">
-                    <ListBox type="spacecraft"     items={spacecraft} />
-                    <ListBox type="relatedTarget"  items={relatedTargets} />
+                    <OptionalListBox type="spacecraft"     items={spacecraft} />
+                    <OptionalListBox type="relatedTarget"  items={relatedTargets} />
                 </aside>
                 <Description model={target} type={Description.type.target} />
-                <ListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
+                <OptionalListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
             </div>
         )
     }

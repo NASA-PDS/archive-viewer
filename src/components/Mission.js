@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
-import ListBox from 'components/ListBox'
+import {OptionalListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/Spacecraft'
 
@@ -18,23 +18,23 @@ export default class Mission extends React.Component {
     }
 
     componentDidMount() {
-        getSpacecraftForMission(this.state.mission).then(spacecraft => this.setState({spacecraft}))
-        getTargetsForMission(this.state.mission).then(targets => this.setState({targets}))
+        getSpacecraftForMission(this.state.mission).then(spacecraft => this.setState({spacecraft}), er => console.log(er))
+        getTargetsForMission(this.state.mission).then(targets => this.setState({targets}), er => console.log(er))
     }
 
     render() {
         const {mission,spacecraft,targets} = this.state
-        if (!mission || spacecraft === null || targets === null) return <Loading fullscreen={true} />
+        if (!mission) return <Loading fullscreen={true} />
 
         // if this mission only has one spacecraft, we should just show that spacecraft's page
-        else if(spacecraft.length === 1) return <Spacecraft spacecraft={spacecraft[0]}></Spacecraft>
+        else if(spacecraft && spacecraft.length === 1) return <Spacecraft spacecraft={spacecraft[0]}></Spacecraft>
 
         // otherwise, show simple page with list of this mission's spacecraft
         else return (
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
                 <aside className="main-aside sidebox">
-                    <ListBox type="target" items={targets} />
+                    <OptionalListBox type="target" items={targets} />
                 </aside>
                 <Description model={mission} type={Description.type.mission} />
                 <div className="mission-spacecraft-list">

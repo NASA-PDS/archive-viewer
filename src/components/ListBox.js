@@ -1,6 +1,24 @@
 import React from 'react';
 import 'css/ListBox.scss'
 import LID from 'services/LogicalIdentifier'
+import Loading from 'components/Loading.js'
+
+export class OptionalListBox extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            items: props.items,
+        }
+    }
+    render() {
+        console.log(`rendering for ${this.props.type} ${this.props.items}`)
+        if(!!this.props.items) {
+            return React.createElement(ListBox, this.props, null)
+        } else {
+            return <Loading/>
+        }
+    }
+}
 
 export default class ListBox extends React.Component {
     constructor(props) {

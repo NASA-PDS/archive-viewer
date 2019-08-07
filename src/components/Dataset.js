@@ -2,7 +2,7 @@ import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
-import ListBox from 'components/ListBox'
+import {OptionalListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import {Description} from 'components/ContextObjects'
 
@@ -120,9 +120,9 @@ function Metadata(props) {
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
             <section className="related-context-objects">
-                <ContextObjectList objects={targets} type="target"></ContextObjectList>
-                <ContextObjectList objects={spacecraft} type="spacecraft"></ContextObjectList>
-                <ContextObjectList objects={instruments} type="instrument"></ContextObjectList>
+                <OptionalListBox items={targets} type="target"/>
+                <OptionalListBox items={spacecraft} type="spacecraft"/>
+                <OptionalListBox items={instruments} type="instrument"/>
             </section>
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>
@@ -161,16 +161,6 @@ function EditorList({editors}) {
             )}
         </ul>
     )
-}
-
-function ContextObjectList({objects, type}) {
-    if(objects) {
-        return (
-            <ListBox type={type} items={objects} />            
-        )
-    } else {
-        return <Loading />
-    }
 }
 
 function BrowseButton({dataset}) {

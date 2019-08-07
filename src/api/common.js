@@ -30,7 +30,6 @@ export function httpGetFull(endpoints) {
 
     return new Promise((resolve, reject) => {
         let calls = endpoints.map(endpoint => httpGet(endpoint.url, endpoint.params))
-        console.log(`calling ${endpoints.map(e => e.url + '\n')}`)
         Promise.all(calls).then(values => {
             let [core, webUI] = values
             if(!core) {
