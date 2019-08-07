@@ -25,7 +25,7 @@ export default class Target extends React.Component {
 
     render() {
         const {target,relatedTargets,datasets,spacecraft} = this.state
-        if (!target || relatedTargets === null || datasets === null || spacecraft === null) return <Loading />
+        if (!target || relatedTargets === null || datasets === null || spacecraft === null) return <Loading fullscreen={true} />
         else return (
             <div className="co-main">
                 <Header model={target} type={Header.type.target} />

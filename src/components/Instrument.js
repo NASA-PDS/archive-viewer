@@ -28,7 +28,7 @@ export default class Instrument extends React.Component {
 
     render() {
         const {instrument,datasets,spacecraft,instruments} = this.state
-        if (!instrument || datasets === null || spacecraft === null || instruments === null) return <Loading />
+        if (!instrument || datasets === null || spacecraft === null || instruments === null) return <Loading fullscreen={true} />
         else return (
             <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>

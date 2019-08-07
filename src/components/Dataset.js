@@ -169,7 +169,7 @@ function ContextObjectList({objects, type}) {
             <ListBox type={type} items={objects} />            
         )
     } else {
-        return <Loading></Loading>
+        return <Loading />
     }
 }
 

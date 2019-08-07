@@ -85,7 +85,7 @@ class Main extends React.Component {
         if(error) {
             return <ErrorMessage error={error} />
         } else if (!loaded) {
-            return <Loading />
+            return <Loading fullscreen={true} />
         } else if (type === 'dataset') {
             return <Dataset dataset={model} />
         } else if (type === 'target') {

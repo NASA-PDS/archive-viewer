@@ -28,7 +28,7 @@ export default class Spacecraft extends React.Component {
 
     render() {
         const {spacecraft,mission,missions,datasets,instruments,targets} = this.state
-        if (!spacecraft || datasets === null || targets === null || instruments === null || mission === null) return <Loading />
+        if (!spacecraft || datasets === null || targets === null || instruments === null || mission === null) return <Loading fullscreen={true}/>
         else {
             return (
                 <div className="co-main">

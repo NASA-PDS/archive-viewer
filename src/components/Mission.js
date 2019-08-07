@@ -24,7 +24,7 @@ export default class Mission extends React.Component {
 
     render() {
         const {mission,spacecraft,targets} = this.state
-        if (!mission || spacecraft === null || targets === null) return <Loading />
+        if (!mission || spacecraft === null || targets === null) return <Loading fullscreen={true} />
 
         // if this mission only has one spacecraft, we should just show that spacecraft's page
         else if(spacecraft.length === 1) return <Spacecraft spacecraft={spacecraft[0]}></Spacecraft>
