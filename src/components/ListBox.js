@@ -219,7 +219,7 @@ const groupby = (arr, val, groupInfo) => {
         lists of associated datasets
     */
     let items = {}
-    if (val === null) {
+    if (val === null || !groupInfo) {
         items['All'] = arr
     } else {
         arr.map(item => {
