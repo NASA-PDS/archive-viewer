@@ -129,7 +129,7 @@ function Metadata(props) {
                 {dataset.download_url &&
                     <a href={dataset.download_url}><img src="/images/icn-download.png" /><span> Download All 
                         {dataset.download_size && 
-                            <span className="download-size">({ dataset.download_size })</span>
+                            <span className="adjacent-link download-size">({ dataset.download_size })</span>
                         }
                         </span></a>
                 }

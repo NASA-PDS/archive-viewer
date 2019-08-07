@@ -26,19 +26,19 @@ export default class Main extends React.Component {
         const {isBundle, dataset, bundles, error} = this.state
         if(error && !isBundle) {
             return <ErrorMessage error={error}></ErrorMessage>
-        } else
+        } else if((isBundle || bundles.length == 0) && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
         return (
             <div className="family-links">
                 {!isBundle && bundles.length > 0 &&
-                    <div>
+                    <div className="bundle-ref">
                         <img src="/images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
-                            <a key={bundle.identifier} className="ignore-a-styling" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>
+                            <a key={bundle.identifier} className="adjacent-link" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>
                         )}
                     </div>
                 }
-                <div>
+                <div className="links">
                     {dataset.other_instruments_url &&
                         <a className="big-ugly-button" href={`?dataset=${dataset.other_instruments_url}`}>Other Instruments</a>
                     }

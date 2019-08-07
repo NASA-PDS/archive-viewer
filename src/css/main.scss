@@ -338,6 +338,9 @@ table {
     }
 }
 
+.bundle-container, .collection-container {
+    padding: $main-padding;
+}
 .collection-container {
     margin-left: 5px;
     border-left: 8px solid $blue;
@@ -392,29 +395,23 @@ table {
 
  .family-links {
     margin-left: 5px;
-    width: 100%;
+    width: calc(100% - 5px);
     min-height: 75px;
 
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
-    > a {
-        font-size: 1.2em;
-        padding-left: 4px;
-        height: 60px;
-        box-sizing: border-box;
-
+    
+    .bundle-ref {
         display: flex;
-        flex-direction: row;
         align-items: center;
-
     }
     img {
         max-height: 48px;
         margin-right: 1em;
     }
 
-    div {
+    .links {
         margin-left: auto;
         display: flex;
         flex-flow: row wrap;
@@ -501,6 +498,10 @@ table {
 .error {
     color: $red;
     white-space: pre-line;
+}
+
+.adjacent-link {
+    margin-left: 0.5em;
 }
 
 .lds-ring {
