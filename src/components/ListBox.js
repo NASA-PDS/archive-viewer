@@ -46,7 +46,7 @@ export default class ListBox extends React.Component {
             }
         }
         // Set minimum list length for displaying a list
-        const min = 8
+        const min = 25
         this.state.showAll = this.state.items.length <= min
     }
     
