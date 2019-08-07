@@ -2,10 +2,15 @@
 
 $list-item-padding: 30px;
 
+h1, h2, h3, h4, h5, h6  {
+    margin: 0;
+    padding: 0;
+}
+
 .list-box {
     @include list-box;
     
-    padding: 0.5em;
+    padding: 0 0.5em;
     display: flex;
     flex-flow: column nowrap;
     align-self: flex-start;
@@ -22,6 +27,7 @@ $list-item-padding: 30px;
     
     .list {
         padding: 0;
+        margin: 0.5em 0;
         li {
             margin-left: $list-item-padding;
             list-style-position: outside;
@@ -44,5 +50,12 @@ $list-item-padding: 30px;
     .collapse, .expand {
         margin-right: 0.5em;
         height: $list-item-padding - 8px;
+    }
+}
+.sidebox {
+    .list-box {
+        li {
+            font-size: 0.8em;
+        }
     }
 }

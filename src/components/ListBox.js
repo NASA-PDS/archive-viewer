@@ -67,9 +67,7 @@ export default class ListBox extends React.Component {
             else {
                 if (!items.length) return <NoItems />
                 else if (items.length === 1) return <SingleItem item={items[0]} query={types[type]['query']} />
-                else {
-                    return groupBy ? makeGroupedList(groupby(items,types[groupBy]['groupBy'],groupInfo)) : makeGroupedList(groupby(items,null,null))
-                }
+                else return groupBy ? makeGroupedList(groupby(items,types[groupBy]['groupBy'],groupInfo)) : <List items={items} query={types[type]['query']} />
             }
         }
         
@@ -78,13 +76,18 @@ export default class ListBox extends React.Component {
             return (type === 'relatedTarget') ? Object.keys(items).reduce((next, key) => current += items[key].length, current) : items.length
         }
         
-        return (<div className="list-box">
-            <span className="title-box">
-                <h3 className="title">{ items && items.length === 1 ? types[type]['titleSingular'] : types[type]['title'] }</h3>
-                <h4 className="count">({ itemCount() })</h4>
-            </span>
-            { makeList(type) }
-        </div>)
+        return (
+            <div className="list-box">
+                
+                <span className="title-box">
+                    <h2 className="title">{ items && items.length === 1 ? types[type]['titleSingular'] : types[type]['title'] }</h2>
+                    <h3 className="count">({ itemCount() })</h3>
+                </span>
+                
+                { makeList(type) }
+                
+            </div>
+        )
     }
 }
 
@@ -100,6 +103,17 @@ class SingleItem extends React.Component {
     render() {
         let {item} = this.state
         return (<a className="single-item" href={`?${this.state.query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
+    }
+}
+
+class List extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { items: props.items, query: props.query }
+    }
+    
+    render() {
+        return this.state.items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${this.state.query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
     }
 }
 
@@ -125,14 +139,14 @@ class GroupBox extends React.Component {
         }
         
         function listItems(items) {
-            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
+            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}><h4>{ item.display_name ? item.display_name : item.title }</h4></a></li>)
         }
         
         return (
             <div>
                 <div onClick={ toggleList } className="expandable">
                     <img src={ self.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ self.state.showGroup ? 'collapse' : 'expand' } />
-                    { self.state.title }
+                    <h3>{ self.state.title }</h3>
                 </div>
                 {self.state.showGroup
                     ? <ul className="list">{ listItems(this.state.items) }</ul>
