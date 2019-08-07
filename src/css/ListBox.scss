@@ -54,6 +54,13 @@ h1, h2, h3, h4, h5, h6  {
 }
 .sidebox {
     .list-box {
+        margin-top: 1em;
+        .title {
+            font-size: 1.2em;
+        }
+        .count {
+            font-size: 1em;
+        }
         li {
             font-size: 0.8em;
         }
