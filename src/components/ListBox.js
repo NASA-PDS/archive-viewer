@@ -86,7 +86,7 @@ export default class ListBox extends React.Component {
             else {
                 if (!items.length) return <NoItems />
                 else if (items.length === 1) return <SingleItem item={items[0]} query={types[type]['query']} />
-                else return groupBy ? makeGroupedList(groupby(items,types[groupBy]['groupBy'],groupInfo)) : <List items={items} query={types[type]['query']} />
+                else return groupBy ? makeGroupedList(groupby(items,types[groupBy]['groupBy'],groupInfo)) : <ul className="list"><List items={items} query={types[type]['query']} /></ul>
             }
         }
         
@@ -158,7 +158,7 @@ class GroupBox extends React.Component {
         }
         
         function listItems(items) {
-            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}><h4>{ item.display_name ? item.display_name : item.title }</h4></a></li>)
+            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
         }
         
         return (

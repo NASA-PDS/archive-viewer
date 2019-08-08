@@ -1,11 +1,6 @@
 @import 'variables';
 
-$list-item-padding: 30px;
-
-h1, h2, h3, h4, h5, h6  {
-    margin: 0;
-    padding: 0;
-}
+$list-item-padding: 20px;
 
 .list-box {
     @include list-box;
@@ -26,15 +21,15 @@ h1, h2, h3, h4, h5, h6  {
     }
     
     .list {
-        padding: 0;
         margin: 0.5em 0;
+        padding: 0;
         li {
             margin-left: $list-item-padding;
             list-style-position: outside;
         }
     }
     .single-item {
-            margin-left: $list-item-padding;
+        margin-left: $list-item-padding;
 
     }
 }
@@ -49,12 +44,11 @@ h1, h2, h3, h4, h5, h6  {
     
     .collapse, .expand {
         margin-right: 0.5em;
-        height: $list-item-padding - 8px;
+        height: 22px;
     }
 }
 .sidebox {
     .list-box {
-        margin-top: 1em;
         .title {
             font-size: 1.2em;
         }
