@@ -37,10 +37,13 @@ export default class Mission extends React.Component {
                     <OptionalListBox type="target" items={targets} />
                 </aside>
                 <Description model={mission} type={Description.type.mission} />
-                <div className="mission-spacecraft-list">
-                    <h2>View the mission's data for:</h2>
-                    { spacecraft.map(ButtonForSpacecraft)}
-                </div>
+                {!!spacecraft ? 
+                    (<div className="mission-spacecraft-list">
+                        <h2>View the mission's data for:</h2>
+                        { spacecraft.map(ButtonForSpacecraft)}
+                    </div>)
+                    : <Loading/>
+                 }
             </div>
         )
     }
