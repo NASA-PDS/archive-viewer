@@ -178,7 +178,7 @@ const groupby = (arr, val, groupInfo) => {
                 const lid = new LID(lidvid).lid
                 const el = groupInfo.find(a => a.identifier === lid)
                 
-                if (el) host_name = el['instrument_host_name']
+                if (el) host_name = el.display_name ? el.display_name : el.title
                 else host_name = lid
                 
                 if (!items[host_name]) items[host_name] = [item]
