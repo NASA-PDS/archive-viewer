@@ -4,14 +4,7 @@ import LID from 'services/LogicalIdentifier'
 import Loading from 'components/Loading.js'
 
 export class OptionalListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            items: props.items,
-        }
-    }
     render() {
-        console.log(`rendering for ${this.props.type} ${this.props.items}`)
         if(!!this.props.items) {
             return React.createElement(ListBox, this.props, null)
         } else {
@@ -24,10 +17,8 @@ export default class ListBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            items: props.items,
             type: props.type,
             groupBy: props.groupBy,
-            groupInfo: props.groupInfo,
             types: {
                 dataset: {
                     title: 'Datasets',
@@ -65,13 +56,14 @@ export default class ListBox extends React.Component {
         }
         // Set minimum list length for displaying a list
         const min = 25
-        this.state.showAll = this.state.items.length <= min
+        this.state.showAll = this.props.items.length <= min
     }
     
     render() {
         let self = this
         
-        const {items,type,types,groupBy,groupInfo} = self.state
+        const {type,types,groupBy} = self.state
+        const {items, groupInfo} = this.props
         const threshold = 5
         
         function makeGroupedList(groups) {
@@ -110,45 +102,25 @@ export default class ListBox extends React.Component {
     }
 }
 
-class SingleItem extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            item: props.item,
-            query: props.query
-        }
-    }
-    
-    render() {
-        let {item} = this.state
-        return (<a className="single-item" href={`?${this.state.query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
-    }
+function SingleItem({item, query}) {
+    return (<a className="single-item" href={`?${query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
 }
 
-class List extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = { items: props.items, query: props.query }
-    }
-    
-    render() {
-        return this.state.items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${this.state.query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
-    }
+function List({items, query}) {
+    return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
 }
 
 class GroupBox extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            items: props.groupItems,
-            title: props.groupTitle,
-            query: props.query,
             showGroup: props.showAll
         }
     }
     
     render() {
         let self = this
+        let items = this.props.groupItems, title = this.props.groupTitle, query = this.props.query
         
         function toggleList(e) {
             e.preventDefault();
@@ -158,59 +130,39 @@ class GroupBox extends React.Component {
         }
         
         function listItems(items) {
-            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${self.state.query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
+            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
         }
         
         return (
             <div>
                 <div onClick={ toggleList } className="expandable">
                     <img src={ self.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ self.state.showGroup ? 'collapse' : 'expand' } />
-                    <h3>{ self.state.title }</h3>
+                    <h3>{ title }</h3>
                 </div>
                 {self.state.showGroup
-                    ? <ul className="list">{ listItems(this.state.items) }</ul>
+                    ? <ul className="list">{ listItems(items) }</ul>
                     : null}
             </div>
         )
     }
 }
 
-class RelatedTargetsListBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            targets: props.targets
-        }
-    }
+function RelatedTargetsListBox({targets}) {
+    let newGroup = {}
     
-    render() {
-        const self = this
-        const {targets} = self.state
-        
-        let newGroup = {}
-        
-        if (targets.parents && targets.parents.length) newGroup['Parents'] = targets.parents
-        if (targets.children && targets.children.length) newGroup['Children'] = targets.children
-        if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
-        
-        return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={'target'} showAll={true} />))
-    }
+    if (targets.parents && targets.parents.length) newGroup['Parents'] = targets.parents
+    if (targets.children && targets.children.length) newGroup['Children'] = targets.children
+    if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
+    
+    return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={'target'} showAll={true} />))
 }
 
-class NoItems extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            title: props.title
-        }
-    }
-    render() {
-        return (
-            <div>
-                <p>No items...</p>
-            </div>
-        )
-    }
+function NoItems() {
+    return (
+        <div>
+            <p>No items...</p>
+        </div>
+    )
 }
 
 const groupby = (arr, val, groupInfo) => {
