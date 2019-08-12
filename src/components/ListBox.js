@@ -118,29 +118,26 @@ class GroupBox extends React.Component {
         }
     }
     
+    listItems(items) {
+        return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${this.props.query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
+    }
+
+    toggleList = event => {
+        event.preventDefault();
+        this.setState({ showGroup: !this.state.showGroup });
+    }
+
     render() {
-        let self = this
-        let items = this.props.groupItems, title = this.props.groupTitle, query = this.props.query
-        
-        function toggleList(e) {
-            e.preventDefault();
-            
-            self.state.showGroup = !self.state.showGroup;
-            self.setState({ showGroup: self.state.showGroup });
-        }
-        
-        function listItems(items) {
-            return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
-        }
-        
+        let items = this.props.groupItems, title = this.props.groupTitle
+
         return (
             <div>
-                <div onClick={ toggleList } className="expandable">
-                    <img src={ self.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ self.state.showGroup ? 'collapse' : 'expand' } />
+                <div onClick={ this.toggleList } className="expandable">
+                    <img src={ this.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ this.state.showGroup ? 'collapse' : 'expand' } />
                     <h3>{ title }</h3>
                 </div>
-                {self.state.showGroup
-                    ? <ul className="list">{ listItems(items) }</ul>
+                {this.state.showGroup
+                    ? <ul className="list">{ this.listItems(items) }</ul>
                     : null}
             </div>
         )
