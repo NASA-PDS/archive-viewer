@@ -68,7 +68,7 @@ export default class ListBox extends React.Component {
         
         function makeGroupedList(groups) {
             const titles = Object.keys(groups)
-            return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={types[type]['query']} showAll={titles.length < threshold} />))
+            return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={types[type]['query']} showAll={titles.length < threshold} key={title} />))
         }
         
         function makeList(type) {
