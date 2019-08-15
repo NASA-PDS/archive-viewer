@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
 import {Header, Description} from 'components/ContextObjects'
-import {OptionalListBox} from 'components/ListBox'
+import ListBox from 'components/ListBox'
 import Loading from 'components/Loading'
 
 export default class Target extends React.Component {
@@ -30,11 +30,11 @@ export default class Target extends React.Component {
             <div className="co-main">
                 <Header model={target} type={Header.type.target} />
                 <aside className="main-aside sidebox">
-                    <OptionalListBox type="spacecraft"     items={spacecraft} />
-                    <OptionalListBox type="relatedTarget"  items={relatedTargets} />
+                    <ListBox type="spacecraft"     items={spacecraft} />
+                    <ListBox type="relatedTarget"  items={relatedTargets} />
                 </aside>
                 <Description model={target} type={Description.type.target} />
-                <OptionalListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
+                <ListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
             </div>
         )
     }
