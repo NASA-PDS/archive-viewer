@@ -37,14 +37,14 @@ export default class Spacecraft extends React.Component {
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
-                        <ListBox type="target"     items={this.state.targets} />
-                        <ListBox type="instrument" items={this.state.instruments} />
+                        <ListBox type={ListBox.type.target}     items={this.state.targets} />
+                        <ListBox type={ListBox.type.instrument} items={this.state.instruments} />
                     </aside>
                     <Description model={mission} type={Description.type.mission} />
                     {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                         <Header model={spacecraft} type={Header.type.spacecraft}/>
                     }
-                    <ListBox type="dataset" items={this.state.datasets} groupBy="instrument" groupInfo={this.state.instruments} />
+                    <ListBox type={ListBox.type.dataset} items={this.state.datasets} groupBy={ListBox.type.instrument} groupInfo={this.state.instruments} />
                 </div>
             )
         }

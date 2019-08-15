@@ -32,11 +32,11 @@ export default class Instrument extends React.Component {
             <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>
                 <aside className="main-aside sidebox">
-                    <ListBox type="spacecraft" items={spacecraft} />
-                    <ListBox type="instrument" items={instruments} />
+                    <ListBox type={ListBox.type.spacecraft} items={spacecraft} />
+                    <ListBox type={ListBox.type.instrument} items={instruments} />
                 </aside>
                 <Description model={instrument} type={Description.type.instrument} />
-                <ListBox type="dataset" items={datasets} />
+                <ListBox type={ListBox.type.dataset} items={datasets} />
             </div>
         )
     }

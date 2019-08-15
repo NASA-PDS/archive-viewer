@@ -119,9 +119,9 @@ function Metadata(props) {
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
             <section className="related-context-objects">
-                <ListBox items={targets} type="target"/>
-                <ListBox items={spacecraft} type="spacecraft"/>
-                <ListBox items={instruments} type="instrument"/>
+                <ListBox items={targets} type={ListBox.type.target}/>
+                <ListBox items={spacecraft} type={ListBox.type.spacecraft}/>
+                <ListBox items={instruments} type={ListBox.type.instrument}/>
             </section>
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>

@@ -30,11 +30,11 @@ export default class Target extends React.Component {
             <div className="co-main">
                 <Header model={target} type={Header.type.target} />
                 <aside className="main-aside sidebox">
-                    <ListBox type="spacecraft"     items={spacecraft} />
-                    <ListBox type="relatedTarget"  items={relatedTargets} />
+                    <ListBox type={ListBox.type.spacecraft}     items={spacecraft} />
+                    <ListBox type={ListBox.type.relatedTarget}  items={relatedTargets} />
                 </aside>
                 <Description model={target} type={Description.type.target} />
-                <ListBox type="dataset" items={datasets} groupBy="spacecraft" groupInfo={spacecraft}/>
+                <ListBox type={ListBox.type.dataset} items={datasets} groupBy={ListBox.type.spacecraft} groupInfo={spacecraft}/>
             </div>
         )
     }

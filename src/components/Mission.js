@@ -34,7 +34,7 @@ export default class Mission extends React.Component {
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
                 <aside className="main-aside sidebox">
-                    <ListBox type="target" items={targets} />
+                    <ListBox type={ListBox.type.target} items={targets} />
                 </aside>
                 <Description model={mission} type={Description.type.mission} />
                 {!!spacecraft ? 

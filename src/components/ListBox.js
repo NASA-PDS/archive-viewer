@@ -3,42 +3,18 @@ import 'css/ListBox.scss'
 import LID from 'services/LogicalIdentifier'
 import Loading from 'components/Loading.js'
 
-const types = {
-    dataset: {
-        title: 'Datasets',
-        titleSingular: 'Dataset',
-        query: 'dataset'
-    },
-    mission: {
-        title: 'Missions',
-        titleSingular: 'Mission',
-        query: 'mission'
-    },
-    target: {
-        title: 'Targets',
-        titleSingular: 'Target',
-        query: 'target'
-    },
-    relatedTarget: {
-        title: 'Related Targets',
-        titleSingular: 'Related Target',
-        query: 'target'
-    },
-    instrument: {
-        title: 'Instruments',
-        titleSingular: 'Instrument',
-        query: 'instrument',
-        groupBy: 'instrument_ref'
-    },
-    spacecraft: {
-        title: 'Spacecraft',
-        titleSingular: 'Spacecraft',
-        query: 'spacecraft',
-        groupBy: 'instrument_host_ref'
-    }
-}
+
 
 export default class ListBox extends React.Component {
+    static type = {
+        dataset: 'dataset',
+        mission: 'mission',
+        target: 'target',
+        relatedTarget: 'relatedTarget',
+        instrument: 'instrument',
+        spacecraft: 'spacecraft'
+    }
+
     constructor(props) {
         super(props)
 
@@ -51,7 +27,7 @@ export default class ListBox extends React.Component {
 
     itemCount = () => {
         let current = 0, type = this.state.type, items = this.props.items
-        return (type === 'relatedTarget') ? Object.keys(items).reduce((next, key) => current += items[key].length, current) : items.length
+        return (type === ListBox.type.relatedTarget) ? Object.keys(items).reduce((next, key) => current += items[key].length, current) : items.length
     }
 
     makeGroupedList = (groups) => {
@@ -63,7 +39,7 @@ export default class ListBox extends React.Component {
     makeList = (type) => {
         const {items, groupInfo, groupBy} = this.props
 
-        if (type === 'relatedTarget') {
+        if (type === ListBox.type.relatedTarget) {
             return <RelatedTargetsListBox targets={items} />
         }
         else {
@@ -122,7 +98,40 @@ export default class ListBox extends React.Component {
         }
     }
 }
-
+const types = {
+    [ListBox.type.dataset]: {
+        title: 'Datasets',
+        titleSingular: 'Dataset',
+        query: 'dataset'
+    },
+    [ListBox.type.mission]: {
+        title: 'Missions',
+        titleSingular: 'Mission',
+        query: 'mission'
+    },
+    [ListBox.type.target]: {
+        title: 'Targets',
+        titleSingular: 'Target',
+        query: 'target'
+    },
+    [ListBox.type.relatedTarget]: {
+        title: 'Related Targets',
+        titleSingular: 'Related Target',
+        query: 'target'
+    },
+    [ListBox.type.instrument]: {
+        title: 'Instruments',
+        titleSingular: 'Instrument',
+        query: 'instrument',
+        groupBy: 'instrument_ref'
+    },
+    [ListBox.type.spacecraft]: {
+        title: 'Spacecraft',
+        titleSingular: 'Spacecraft',
+        query: 'spacecraft',
+        groupBy: 'instrument_host_ref'
+    }
+}
 function SingleItem({item, query}) {
     return (<a className="single-item" href={`?${query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
 }
