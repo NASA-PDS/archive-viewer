@@ -108,12 +108,8 @@ function Metadata(props) {
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
                 }
                 
-                {dataset.citation_author_list && 
-                    <AuthorList authors={dataset.citation_author_list} />
-                }
-                {dataset.citation_editor_list && 
-                    <EditorList editors={dataset.citation_editor_list} />
-                }
+                <AuthorList authors={dataset.citation_author_list} />
+                <EditorList editors={dataset.citation_editor_list} />
                 
                 {/* Hidden Data Values */}
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
@@ -141,25 +137,25 @@ function Metadata(props) {
 }
 
 function AuthorList({authors}) {
-    const list = authors.split(';')
-    return (
+    const list = authors ? authors.split(';') : []
+    return list ? (
         <ul>Author(s):<br/>
             {list.map(author =>  
                 <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
             )}
         </ul>
-    )
+    ) : null
 }
 
 function EditorList({editors}) {
-    const list = editors.split(';')
-    return (
+    const list = editors ? editors.split(';') : []
+    return list ? (
         <ul>Editor(s):<br/>
             {list.map(editor =>  
                 <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   
             )}
         </ul>
-    )
+    ) : null
 }
 
 function BrowseButton({dataset}) {
