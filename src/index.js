@@ -111,7 +111,7 @@ function Index() {
             <section className="list-box">
                 <h2>Targets</h2>
                 <ul>
-				    <li><h3>Planets &#38; Satellites</h3></li>
+                    <li><h3>Planets &#38; Satellites</h3></li>
 					<ul>
                         <li><a href="?target=urn:nasa:pds:context:target:planet.mercury">Mercury</a></li>
                         <li><a href="?target=urn:nasa:pds:context:target:planet.venus">Venus</a></li>
@@ -123,6 +123,13 @@ function Index() {
 						<ul>
     						<li><a href="?target=urn:nasa:pds:context:target:satellite.mars.deimos">Deimos</a></li>
 						    <li><a href="?target=urn:nasa:pds:context:target:satellite.mars.phobos">Phobos</a></li>
+						</ul>
+                        <li><a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a></li>
+						<ul>
+                            <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.io">Io</a></li>
+                            <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.europa">Europa</a></li>
+                            <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.ganymede">Ganymede</a></li>
+                            <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.callisto">Callisto</a></li>
 						</ul>
                         <li><a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a></li>
 						<ul>
@@ -143,14 +150,16 @@ function Index() {
 						    <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.tethys">Tethys</a></li>
 						    <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.titan">Titan</a></li>
 						</ul>
-                        <li><a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a></li>
                         <li><a href="?target=urn:nasa:pds:context:target:planet.uranus">Uranus</a></li>
                         <li><a href="?target=urn:nasa:pds:context:target:planet.neptune">Neptune</a></li>
 					</ul>
-				    <li><h3>Dwarf Planets</h3></li>
+				    <li><h3>Dwarf Planets &#38; Satellites</h3></li>
 					<ul>
 					    <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
 						<li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
+						<ul>
+                            <li><a href="?target=urn:nasa:pds:context:target:satellite.134340_pluto.charon">Charon</a></li>
+						</ul>
 					</ul>
 				    <li><h3>Asteroids</h3></li>
 					<ul>
