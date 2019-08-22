@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
 import {Header, Description} from 'components/ContextObjects'
-import ListBox from 'components/ListBox'
+import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 
 export default class Instrument extends React.Component {
@@ -32,11 +32,11 @@ export default class Instrument extends React.Component {
             <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>
                 <aside className="main-aside sidebox">
-                    <ListBox type={ListBox.type.spacecraft} items={spacecraft} />
-                    <ListBox type={ListBox.type.instrument} items={instruments} />
+                    <SpacecraftListBox items={spacecraft} />
+                    <InstrumentListBox items={instruments} />
                 </aside>
                 <Description model={instrument} type={Description.type.instrument} />
-                <ListBox type={ListBox.type.dataset} items={datasets} />
+                <DatasetListBox items={datasets} />
             </div>
         )
     }

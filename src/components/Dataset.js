@@ -2,7 +2,7 @@ import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
-import ListBox from 'components/ListBox'
+import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {Description} from 'components/ContextObjects'
 
 export default class Dataset extends React.Component {
@@ -115,9 +115,9 @@ function Metadata(props) {
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
             <section className="related-context-objects">
-                <ListBox items={targets} type={ListBox.type.target}/>
-                <ListBox items={spacecraft} type={ListBox.type.spacecraft}/>
-                <ListBox items={instruments} type={ListBox.type.instrument}/>
+                <TargetListBox items={targets}/>
+                <SpacecraftListBox items={spacecraft}/>
+                <InstrumentListBox items={instruments}/>
             </section>
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>

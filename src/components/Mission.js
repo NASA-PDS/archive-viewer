@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
-import ListBox from 'components/ListBox'
+import {TargetListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/Spacecraft'
 
@@ -34,7 +34,7 @@ export default class Mission extends React.Component {
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
                 <aside className="main-aside sidebox">
-                    <ListBox type={ListBox.type.target} items={targets} />
+                    <TargetListBox items={targets} />
                 </aside>
                 <Description model={mission} type={Description.type.mission} />
                 {!!spacecraft ? 

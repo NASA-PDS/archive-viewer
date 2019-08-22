@@ -3,50 +3,80 @@ import 'css/ListBox.scss'
 import LID from 'services/LogicalIdentifier'
 import Loading from 'components/Loading.js'
 
-
-
-export default class ListBox extends React.Component {
-    static type = {
-        dataset: 'dataset',
-        mission: 'mission',
-        target: 'target',
-        relatedTarget: 'relatedTarget',
-        instrument: 'instrument',
-        spacecraft: 'spacecraft'
+const listTypes = {
+    dataset: 'dataset',
+    mission: 'mission',
+    target: 'target',
+    relatedTarget: 'relatedTarget',
+    instrument: 'instrument',
+    spacecraft: 'spacecraft'
+}
+const listTypeValues = {
+    [listTypes.dataset]: {
+        title: 'Datasets',
+        titleSingular: 'Dataset',
+        query: 'dataset'
+    },
+    [listTypes.mission]: {
+        title: 'Missions',
+        titleSingular: 'Mission',
+        query: 'mission'
+    },
+    [listTypes.target]: {
+        title: 'Targets',
+        titleSingular: 'Target',
+        query: 'target'
+    },
+    [listTypes.relatedTarget]: {
+        title: 'Related Targets',
+        titleSingular: 'Related Target',
+        query: 'target'
+    },
+    [listTypes.instrument]: {
+        title: 'Instruments',
+        titleSingular: 'Instrument',
+        query: 'instrument',
+        groupBy: 'instrument_ref'
+    },
+    [listTypes.spacecraft]: {
+        title: 'Spacecraft',
+        titleSingular: 'Spacecraft',
+        query: 'spacecraft',
+        groupBy: 'instrument_host_ref'
     }
+}
 
-    constructor(props) {
+class ListBox extends React.Component {
+
+    static groupType = listTypes
+
+    constructor(props, type) {
         super(props)
 
         // Set minimum list length for displaying a list
         const min = 25
         this.state = {
+            type,
             showAll: props.items ? props.items.length <= min : false
         }
     }
 
     itemCount = () => {
-        let current = 0, type = this.state.type, items = this.props.items
-        return (type === ListBox.type.relatedTarget) ? Object.keys(items).reduce((next, key) => current += items[key].length, current) : items.length
+        return this.props.items.length
     }
 
     makeGroupedList = (groups) => {
         const titles = Object.keys(groups)
         const threshold = 5
-        return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={types[this.props.type]['query']} showAll={titles.length < threshold} key={title} />))
+        return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={listTypeValues[this.state.type].query} showAll={titles.length < threshold} key={title} />))
     }
 
     makeList = (type) => {
         const {items, groupInfo, groupBy} = this.props
 
-        if (type === ListBox.type.relatedTarget) {
-            return <RelatedTargetsListBox targets={items} />
-        }
-        else {
-            if (!items.length) return <NoItems />
-            else if (items.length === 1) return <SingleItem item={items[0]} query={types[type]['query']} />
-            else return groupBy ? this.makeGroupedList(this.groupby(items,types[groupBy].groupBy,groupInfo)) : <ul className="list"><List items={items} query={types[type]['query']} /></ul>
-        }
+        if (!items.length) return <NoItems />
+        else if (items.length === 1) return <SingleItem item={items[0]} query={listTypeValues[type].query} />
+        else return groupBy ? this.makeGroupedList(this.groupby(items,listTypeValues[groupBy].groupBy,groupInfo)) : <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
     }
 
     groupby = (arr, val, groupInfo) => {
@@ -78,14 +108,15 @@ export default class ListBox extends React.Component {
     
     render() {
         
-        const {items, type} = this.props
+        const {items} = this.props
+        const {type} = this.state
         
         if(!!this.props.items) {
             return (
                 <div className="list-box">
                     
                     <span className="title-box">
-                        <h2 className="title">{ items && items.length === 1 ? types[type].titleSingular : types[type].title }</h2>
+                        <h2 className="title">{ items && items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title }</h2>
                         <h3 className="count">({ this.itemCount() })</h3>
                     </span>
                     
@@ -98,40 +129,53 @@ export default class ListBox extends React.Component {
         }
     }
 }
-const types = {
-    [ListBox.type.dataset]: {
-        title: 'Datasets',
-        titleSingular: 'Dataset',
-        query: 'dataset'
-    },
-    [ListBox.type.mission]: {
-        title: 'Missions',
-        titleSingular: 'Mission',
-        query: 'mission'
-    },
-    [ListBox.type.target]: {
-        title: 'Targets',
-        titleSingular: 'Target',
-        query: 'target'
-    },
-    [ListBox.type.relatedTarget]: {
-        title: 'Related Targets',
-        titleSingular: 'Related Target',
-        query: 'target'
-    },
-    [ListBox.type.instrument]: {
-        title: 'Instruments',
-        titleSingular: 'Instrument',
-        query: 'instrument',
-        groupBy: 'instrument_ref'
-    },
-    [ListBox.type.spacecraft]: {
-        title: 'Spacecraft',
-        titleSingular: 'Spacecraft',
-        query: 'spacecraft',
-        groupBy: 'instrument_host_ref'
+
+class DatasetListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.dataset)
     }
 }
+class MissionListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.mission)
+    }
+}
+class TargetListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.target)
+    }
+}
+class RelatedTargetListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.relatedTarget)
+    }
+
+    itemCount = () => {
+        let current = 0, items = this.props.items
+        return Object.keys(items).reduce((next, key) => current += items[key].length, current)
+    }
+
+    makeList = (type) => {
+        const {items} = this.props
+
+        return <RelatedTargetsListBox targets={items} />
+    }
+}
+class InstrumentListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.instrument)
+    }
+}
+class SpacecraftListBox extends ListBox {
+    constructor(props) {
+        super(props, listTypes.spacecraft)
+    }
+}
+
+export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
+
+
+
 function SingleItem({item, query}) {
     return (<a className="single-item" href={`?${query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
 }
@@ -181,7 +225,7 @@ function RelatedTargetsListBox({targets}) {
     if (targets.children && targets.children.length) newGroup['Children'] = targets.children
     if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
     
-    return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={'target'} showAll={true} />))
+    return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={listTypeValues[listTypes.relatedTarget].query} showAll={true} />))
 }
 
 function NoItems() {

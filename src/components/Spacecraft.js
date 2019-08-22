@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import ListBox from 'components/ListBox'
+import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
 import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 
@@ -37,14 +37,14 @@ export default class Spacecraft extends React.Component {
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
-                        <ListBox type={ListBox.type.target}     items={this.state.targets} />
-                        <ListBox type={ListBox.type.instrument} items={this.state.instruments} />
+                        <TargetListBox items={this.state.targets} />
+                        <InstrumentListBox items={this.state.instruments} />
                     </aside>
                     <Description model={mission} type={Description.type.mission} />
                     {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                         <Header model={spacecraft} type={Header.type.spacecraft}/>
                     }
-                    <ListBox type={ListBox.type.dataset} items={this.state.datasets} groupBy={ListBox.type.instrument} groupInfo={this.state.instruments} />
+                    <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
                 </div>
             )
         }
