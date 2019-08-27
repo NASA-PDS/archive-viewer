@@ -4,6 +4,7 @@ import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpac
 import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
 import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
+import HTMLBox from 'components/HTMLBox'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -44,7 +45,9 @@ export default class Spacecraft extends React.Component {
                     {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                         <Header model={spacecraft} type={Header.type.spacecraft}/>
                     }
+                    <HTMLBox markup={spacecraft.html1} />
                     <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
+                    <HTMLBox markup={spacecraft.html2} />
                 </div>
             )
         }

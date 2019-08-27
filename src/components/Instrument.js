@@ -4,6 +4,7 @@ import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrume
 import {Header, Description} from 'components/ContextObjects'
 import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
+import HTMLBox from 'components/HTMLBox'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -36,7 +37,9 @@ export default class Instrument extends React.Component {
                     <InstrumentListBox items={instruments} />
                 </aside>
                 <Description model={instrument} type={Description.type.instrument} />
+                <HTMLBox markup={instrument.html1} />
                 <DatasetListBox items={datasets} />
+                <HTMLBox markup={instrument.html2} />
             </div>
         )
     }
