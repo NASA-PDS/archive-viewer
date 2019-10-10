@@ -187,9 +187,39 @@ function Index() {
             <section className="list-box">
                 <h2>Spacecraft</h2>
                 <ul>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.a17c">Apollo 17</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini Orbiter</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.dawn">Dawn</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.grail-a">Gravity Recovery and Interior Laboratory A (GRAIL Ebb)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.grail-b">Gravity Recovery and Interior Laboratory B (GRAIL Flow)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.hay">Hayabusa</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.hp">Huygens Probe</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.ladee"> Lunar Atmosphere and Dust Environment Explorer (LADEE)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lp">Lunar Prospector</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lcross">Lunar Crater Observation and Sensing Satellite (LCROSS)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr6">Mariner 6</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr7">Mariner 7</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr9">Mariner 9</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mer1">Mars Exploration Rover - Opportunity</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mer2">Mars Exploration Rover - Spirit</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mgs">Mars Global Surveyor</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mo">Mars Observer</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.ody">Mars Odyssey</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mpfl">Mars Pathfinder Lander</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mpfr">Mars Pathfinder Rover (Sojourner)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mro">Mars Reconnaissance Orbiter</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.msl">Mars Science Laboratory (Curiosity)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.near">Near Earth Asteroid Rendezvous (NEAR Shoemaker)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.orex">Origins, Spectral Interpretation, Resource Identification, Security, Regolith Explorer (OSIRIS-REx)</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.p11">Pioneer 11</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.phx">Phoenix</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vl1">Viking Lander 1</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vl2">Viking Lander 2</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vo1">Viking Orbiter 1</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vo2">Viking Orbiter 2</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vg1">Voyager 1</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vg2">Voyager 2</a></li>
                 </ul>
             </section>
             <section className="list-box">
