@@ -27,7 +27,7 @@ const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'super
 const keysThatAreNeverArrays = ['is_major', 'is_prime']
 
 export default function(fromSolr) {
-    if(!!fromSolr.response.docs) {
+    if(!!fromSolr.response && !!fromSolr.response.docs) {
         if(fromSolr.response.docs.length > 0) {
             return fromSolr.response.docs.map(desolrize)
         } else return []
