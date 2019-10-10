@@ -6,6 +6,7 @@ import Target from 'components/Target.js'
 import Mission from 'components/Mission.js'
 import Spacecraft from 'components/Spacecraft.js'
 import Instrument from 'components/Instrument.js'
+import TagSearch from 'components/TagSearch.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
 import { lookupDataset } from 'api/dataset.js';
@@ -15,6 +16,7 @@ import { lookupSpacecraft } from 'api/spacecraft.js';
 import { lookupInstrument } from 'api/instrument.js';
 
 const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
+const searchPages = ['tag']
 const lookup = (type, lidvid) => {
     let func = () => new Promise((_, reject) => reject(new Error("Invalid lookup")));
     switch (type) {
@@ -40,12 +42,10 @@ class Main extends React.Component {
     componentDidMount() {
 
         let params = new URLSearchParams(window.location.search);
-        let pageType
         for(let type of pageTypes) {
             let lidvid = params.get(type);
             if(lidvid) {
                 this.setState({ type })
-                pageType = type
                 lookup(type, lidvid).then(result => {
                     if(result.length === 0) {
                         this.setState({
@@ -56,7 +56,6 @@ class Main extends React.Component {
                             error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
                         })
                     } else {
-                        console.log(result)
                         this.setState({
                             model: result,
                             loaded: true
@@ -67,17 +66,27 @@ class Main extends React.Component {
                         error: error
                     })
                 })
-                break;
+                return
+            }
+        }
+
+        for(let type of searchPages) {
+            let search = params.get(type)
+            if(search) {
+                this.setState({
+                    loaded: true,
+                    type: type,
+                    model: params
+                })
+                return
             }
         }
 
         // no page type found, so just render default
-        if(!pageType) {
-            this.setState({
-                type: 'default',
-                loaded: 'true'
-            })
-        }
+        this.setState({
+            type: 'default',
+            loaded: 'true'
+        })
         
     }
     render() {
@@ -96,6 +105,8 @@ class Main extends React.Component {
             return <Mission mission={model} />
         } else if (type === 'spacecraft') {
             return <Spacecraft spacecraft={model} />
+        } else if (type === 'tag') {
+            return <TagSearch tags={model.get('tag')} type={model.get('type')} />
         } else {
             return <Index />
         }

@@ -4,6 +4,7 @@ import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpac
 import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
 import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
+import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 
 export default class Spacecraft extends React.Component {
@@ -41,6 +42,7 @@ export default class Spacecraft extends React.Component {
                         <TargetListBox items={this.state.targets} />
                         <InstrumentListBox items={this.state.instruments} />
                     </aside>
+                    <SpacecraftTagList tags={spacecraft.tags} />
                     <Description model={mission} type={Description.type.mission} />
                     {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                         <Header model={spacecraft} type={Header.type.spacecraft}/>

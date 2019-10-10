@@ -4,6 +4,7 @@ import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget
 import {Header, Description} from 'components/ContextObjects'
 import {SpacecraftListBox, RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
+import {TargetTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 
 export default class Target extends React.Component {
@@ -34,6 +35,7 @@ export default class Target extends React.Component {
                     <SpacecraftListBox items={spacecraft} />
                     <RelatedTargetListBox items={relatedTargets} />
                 </aside>
+                <TargetTagList tags={target.tags} />
                 <Description model={target} type={Description.type.target} />
                 <HTMLBox markup={target.html1} />
                 <DatasetListBox items={datasets} groupBy={DatasetListBox.groupType.spacecraft} groupInfo={spacecraft}/>
