@@ -76,10 +76,11 @@ class ListBox extends React.Component {
 
         if (!items.length) return <NoItems />
         else if (items.length === 1) return <SingleItem item={items[0]} query={listTypeValues[type].query} />
-        else return groupBy ? this.makeGroupedList(this.groupby(items,listTypeValues[groupBy].groupBy,groupInfo)) : <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
+        else return groupBy ? this.groupby(items,listTypeValues[groupBy].groupBy,groupInfo) : <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
     }
 
     groupby = (arr, val, groupInfo) => {
+        const {type} = this.state
         /* Takes an array and a keyword to sort array on
             returns a grouped objects of lids and
             lists of associated datasets
@@ -88,9 +89,12 @@ class ListBox extends React.Component {
         if (val === null || !groupInfo) {
             items['All'] = arr
         } else {
-            arr.forEach(item => {
+            for (let i = 0; i < arr.length; i++) {
+                const item = arr[i]
                 const lids = item[val]
-                if (lids && lids.length > 0) lids.map(lidvid => {
+                if (!lids || !lids.length) {
+                    return <ul className="list"><List items={arr} query={listTypeValues[type].query} /></ul>
+                } else if (lids && lids.length > 0) lids.map(lidvid => {
                     let host_name
                     const lid = new LID(lidvid).lid
                     const el = groupInfo.find(a => a.identifier === lid)
@@ -101,9 +105,9 @@ class ListBox extends React.Component {
                     if (!items[host_name]) items[host_name] = [item]
                     else items[host_name].push(item)
                 })
-            })
+            }
         }
-        return items
+        return this.makeGroupedList(items)
     }
     
     render() {
@@ -181,6 +185,7 @@ function SingleItem({item, query}) {
 }
 
 function List({items, query}) {
+    console.log(items);
     return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
 }
 
