@@ -65,19 +65,24 @@ class ListBox extends React.Component {
         return this.props.items.length
     }
 
-    makeGroupedList = (groups) => {
-        const titles = Object.keys(groups)
-        const threshold = 5
-        return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={listTypeValues[this.state.type].query} showAll={titles.length < threshold} key={title} />))
-    }
-
     makeList = (type) => {
         const {items, groupInfo, groupBy} = this.props
 
         if (!items.length) return <NoItems />
         else if (items.length === 1) return <SingleItem item={items[0]} query={listTypeValues[type].query} />
-        else return groupBy ? this.groupby(items,listTypeValues[groupBy].groupBy,groupInfo) : <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
+        else return groupBy ? this.makeGroupedList(items,listTypeValues[groupBy].groupBy,groupInfo) : this.makeUngroupedList(items,type)
     }
+
+    makeGroupedList = (arr,val,groupInfo) => {
+        const {type} = this.state
+        const groups = this.groupby(arr,val,groupInfo)
+        const titles = Object.keys(groups)
+        if (!titles.length) return this.makeUngroupedList(arr,type)
+        const threshold = 5
+        return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={listTypeValues[this.state.type].query} showAll={titles.length < threshold} key={title} />))
+    }
+
+    makeUngroupedList = (items,type) => <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
 
     groupby = (arr, val, groupInfo) => {
         const {type} = this.state
@@ -92,9 +97,7 @@ class ListBox extends React.Component {
             for (let i = 0; i < arr.length; i++) {
                 const item = arr[i]
                 const lids = item[val]
-                if (!lids || !lids.length) {
-                    return <ul className="list"><List items={arr} query={listTypeValues[type].query} /></ul>
-                } else if (lids && lids.length > 0) lids.map(lidvid => {
+                if (lids && lids.length > 0) lids.map(lidvid => {
                     let host_name
                     const lid = new LID(lidvid).lid
                     const el = groupInfo.find(a => a.identifier === lid)
@@ -107,7 +110,7 @@ class ListBox extends React.Component {
                 })
             }
         }
-        return this.makeGroupedList(items)
+        return items
     }
     
     render() {
@@ -185,7 +188,6 @@ function SingleItem({item, query}) {
 }
 
 function List({items, query}) {
-    console.log(items);
     return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
 }
 
