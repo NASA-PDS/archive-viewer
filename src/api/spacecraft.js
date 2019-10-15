@@ -1,6 +1,7 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields} from 'api/common.js'
+import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function lookupSpacecraft(lidvid) {
     if(!lidvid) {
@@ -32,7 +33,8 @@ export function getMissionsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`
     }
-    return httpGetRelated(params, router.missionsCore, knownMissions).then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+    return httpGetRelated(params, router.missionsCore, knownMissions)
+        .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
 }
 
 export function getInstrumentsForSpacecraft(spacecraft) {
@@ -41,7 +43,9 @@ export function getInstrumentsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Instrument"`
     }
-    return httpGetRelated(params, router.instrumentsCore, knownInstruments).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
+    return httpGetRelated(params, router.instrumentsCore, knownInstruments)
+        .then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraftLid))
 }
 
 export function getTargetsForSpacecraft(spacecraft) {
@@ -50,7 +54,9 @@ export function getTargetsForSpacecraft(spacecraft) {
     let params = {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Target"`
     }
-    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
+    return httpGetRelated(params, router.targetsCore, knownTargets)
+        .then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraftLid))
 }
 
 export function getDatasetsForSpacecraft(spacecraft) {

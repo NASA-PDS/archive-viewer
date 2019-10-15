@@ -1,6 +1,7 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGetFull, httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
+import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function lookupInstrument(lidvid) {
     if(!lidvid) {
@@ -31,7 +32,9 @@ export function getSpacecraftForInstrument(instrument) {
     let params = {
         q: `instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`
     }
-    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
+    return httpGetRelated(params, router.spacecraftCore, knownSpacecraft)
+        .then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToSpacecraft, instrumentLid))
 }
 
 export function getDatasetsForInstrument(instrument) {
@@ -40,7 +43,8 @@ export function getDatasetsForInstrument(instrument) {
     let params = {
         q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
-    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+    return httpGet(router.datasetCore, params)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
 
 export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecraft) {
