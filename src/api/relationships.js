@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
+import {httpGet} from 'api/common.js'
 
 let targetSpacecraftRelationshipTypes
 let instrumentSpacecraftRelationshipTypes
@@ -66,6 +66,7 @@ const configureForType = (type) => {
 export function stitchWithRelationships(type, sourceLID) {
     return (results) => {
         return new Promise(async (resolve, _) => {
+            // ensure we have the relationship types ready
             await bootstrap()
             let {relationshipTypes, sourceType, relatedType} = configureForType(type)
 
@@ -74,18 +75,20 @@ export function stitchWithRelationships(type, sourceLID) {
                 q: `${sourceType}:${sourceLID.escapedLid} AND (` + identifiers.reduce((query, lid) => `${query}${relatedType}:"${lid}" `, '') + ')',
                 fl: `relationshipId,${sourceType},${relatedType}`
             }
+            // get attributed relationships
             httpGet(router.relationships, params).then(webDocs => {
                 for (let doc of results ) {
+                    // find the relationship for each context object
                     let relationship = webDocs.find(webUIdoc => new LID(webUIdoc[relatedType]).lid === new LID(doc.identifier).lid)
                     if(!relationship) {
                         doc.relatedBy = unknownRelationship
                     } else {
+                        // replace relationshipId with the actual relationship type info
                         let relationshipType = relationshipTypes.find(t => t.relationshipId === relationship.relationshipId)
-                        Object.assign(relationship, relationshipType)
+                        Object.assign(relationship, relationshipType ? relationshipType : unknownRelationship)
                         doc.relatedBy = relationship
                     }
                 }
-                console.log(results)
                 resolve(results)
             }, err => {
                 console.log(err)
