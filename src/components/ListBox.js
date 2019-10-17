@@ -20,29 +20,32 @@ const listTypeValues = {
     [listTypes.mission]: {
         title: 'Missions',
         titleSingular: 'Mission',
-        query: 'mission'
+        query: 'mission',
+        fieldName: 'investigation_ref'
     },
     [listTypes.target]: {
         title: 'Targets',
         titleSingular: 'Target',
-        query: 'target'
+        query: 'target',
+        fieldName: 'target_ref'
     },
     [listTypes.relatedTarget]: {
         title: 'Related Targets',
         titleSingular: 'Related Target',
-        query: 'target'
+        query: 'target',
+        fieldName: 'target_ref'
     },
     [listTypes.instrument]: {
         title: 'Instruments',
         titleSingular: 'Instrument',
         query: 'instrument',
-        groupBy: 'instrument_ref'
+        fieldName: 'instrument_ref'
     },
     [listTypes.spacecraft]: {
         title: 'Spacecraft',
         titleSingular: 'Spacecraft',
         query: 'spacecraft',
-        groupBy: 'instrument_host_ref'
+        fieldName: 'instrument_host_ref'
     }
 }
 
@@ -65,75 +68,41 @@ class ListBox extends React.Component {
         return this.props.items.length
     }
 
-    makeList = (type) => {
-        const {items, groupInfo, groupBy} = this.props
-
-        if (!items.length) return <NoItems />
-        else if (items.length === 1) return <SingleItem item={items[0]} query={listTypeValues[type].query} />
-        else return groupBy ? this.makeGroupedList(items,listTypeValues[groupBy].groupBy,groupInfo) : this.makeUngroupedList(items,type)
-    }
-
-    makeGroupedList = (arr,val,groupInfo) => {
+    makeList = () => {
+        const {items, groupBy, groupInfo} = this.props
         const {type} = this.state
-        const groups = this.groupby(arr,val,groupInfo)
-        const titles = Object.keys(groups)
-        if (!titles.length) return this.makeUngroupedList(arr,type)
-        const threshold = 5
-        return titles.sort().map(title => (<GroupBox groupTitle={title} groupItems={groups[title]} query={listTypeValues[this.state.type].query} showAll={titles.length < threshold} key={title} />))
-    }
-
-    makeUngroupedList = (items,type) => <ul className="list"><List items={items} query={listTypeValues[type].query} /></ul>
-
-    groupby = (arr, val, groupInfo) => {
-        const {type} = this.state
-        /* Takes an array and a keyword to sort array on
-            returns a grouped objects of lids and
-            lists of associated datasets
-        */
-        let items = {}
-        if (val === null || !groupInfo) {
-            items['All'] = arr
-        } else {
-            for (let i = 0; i < arr.length; i++) {
-                const item = arr[i]
-                const lids = item[val]
-                if (lids && lids.length > 0) lids.map(lidvid => {
-                    let host_name
-                    const lid = new LID(lidvid).lid
-                    const el = groupInfo.find(a => a.identifier === lid)
-                    
-                    if (el) host_name = el.display_name ? el.display_name : el.title
-                    else host_name = lid
-                    
-                    if (!items[host_name]) items[host_name] = [item]
-                    else items[host_name].push(item)
-                })
-            }
-        }
-        return items
+        const query = listTypeValues[type].query
+        const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
+        return items.length === 1
+        ? <ItemLink item={items[0]} query={query} single={true}/> 
+        : <GroupedList items={items} query={query} groupByField={groupByField} groupInfo={groupInfo}/>
     }
     
     render() {
-        
         const {items} = this.props
         const {type} = this.state
-        
-        if(!!this.props.items) {
+
+        if(!items) {
+            return <Loading/>
+        } else if(!items.length) {
+            return <NoItems type={type}/>
+        } else {
+            const singular = items.length === 1
             return (
                 <div className="list-box">
                     
                     <span className="title-box">
-                        <h2 className="title">{ items && items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title }</h2>
-                        <h3 className="count">({ this.itemCount() })</h3>
+                        <h2 className="title">{ singular ? listTypeValues[type].titleSingular : listTypeValues[type].title }</h2>
+                        { !singular && <h3 className="count">({ this.itemCount() })</h3> }
                     </span>
                     
-                    { this.makeList(type) }
+                    {   
+                        this.makeList()
+                    }
                     
                 </div>
             )
-        } else {
-            return <Loading/>
-        }
+        } 
     }
 }
 
@@ -162,11 +131,13 @@ class RelatedTargetListBox extends ListBox {
         return Object.keys(items).reduce((next, key) => current += items[key].length, current)
     }
 
-    makeList = (type) => {
+    makeList = () => {
         const {items} = this.props
 
         return <RelatedTargetsListBox targets={items} />
     }
+
+    render() { return null}
 }
 class InstrumentListBox extends ListBox {
     constructor(props) {
@@ -181,14 +152,68 @@ class SpacecraftListBox extends ListBox {
 
 export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
 
+function GroupedList({items, query, groupByField, groupInfo}) {
+    const groups = groupItems(items,groupByField,groupInfo)
 
-
-function SingleItem({item, query}) {
-    return (<a className="single-item" href={`?${query}=${item.identifier}`}>{item.display_name ? item.display_name : item.title}</a>)
+    if (groups.length === 1) {
+        return <List items={items} query={query} />
+    }
+    const threshold = 5
+    return groups.map(group => 
+        <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={groups.length < threshold} key={group.name} />
+    )
 }
 
-function List({items, query}) {
-    return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${query}=${item.identifier}`}>{ item.display_name ? item.display_name : item.title }</a></li>)
+class Group {
+    constructor(name, items, order) {
+        this.name = name
+        this.items = items
+        this.order = order ? order : name
+    }
+}
+
+const groupItems = (items, field, groupInfo) => {
+    /* Takes an array and a keyword to sort array on
+        returns a grouped objects of lids and
+        lists of associated datasets
+    */
+    let groups = []
+
+    let insert = (item, groupName, order) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], order))
+    }
+    for (let item of items) {
+
+        // if possible, group by relationships already in data
+        const relationship = item.relatedBy
+        if(!!relationship) {
+            insert(item, relationship.name, relationship.order)
+        }
+
+        // otherwise, group by the field specified, or all together
+        else if(!field || !item[field] || !item[field].length) {
+            insert(item, 'All')
+        }
+        else {
+            const lids = item[field]
+            // an item might appear in many groups simultaneously. add it to each group it references
+            lids.forEach(lidvid => {
+                let host_name
+                const lid = new LID(lidvid).lid
+                const groupInfoSource = groupInfo ? groupInfo.find(a => a.identifier === lid) : null
+                
+                if (groupInfoSource) host_name = groupInfoSource.display_name ? groupInfoSource.display_name : groupInfoSource.title
+                else host_name = lid
+                
+                insert(item, host_name)
+            })
+        }
+    }
+    groups = groups.sort((a, b) => a.order > b.order ? 1 : -1)
+    
+    return groups
 }
 
 class GroupBox extends React.Component {
@@ -197,10 +222,6 @@ class GroupBox extends React.Component {
         this.state = {
             showGroup: props.showAll
         }
-    }
-    
-    listItems(items) {
-        return items.map((item,idx) => <li key={item.identifier + idx}><a href={`?${this.props.query}=${item.identifier}`}><span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span></a></li>)
     }
 
     toggleList = event => {
@@ -218,11 +239,29 @@ class GroupBox extends React.Component {
                     <h3>{ title }</h3>
                 </div>
                 {this.state.showGroup
-                    ? <ul className="list">{ this.listItems(items) }</ul>
+                    ? <List items={items} query={this.props.query} />
                     : null}
             </div>
         )
     }
+}
+
+function List({items, query}) {    
+    return (
+        <ul className="list">
+            {items.map((item,idx) => 
+                <li key={item.identifier + idx}><ItemLink item={item} query={query} single={items.length === 1}/></li>
+            )}
+        </ul>
+    )
+}
+
+function ItemLink({item, query, single}) {
+    return (
+        <a href={`?${query}=${item.identifier}`} className={single ? 'single-item' : ''}>
+            <span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span>
+        </a>
+    )
 }
 
 function RelatedTargetsListBox({targets}) {
@@ -235,10 +274,10 @@ function RelatedTargetsListBox({targets}) {
     return (!Object.keys(newGroup).length) ? <NoItems /> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={listTypeValues[listTypes.relatedTarget].query} showAll={true} />))
 }
 
-function NoItems() {
+function NoItems({type}) {
     return (
-        <div>
-            <p>No items...</p>
+        <div className="no-items">
+            <p>No {listTypeValues[type].title}</p>
         </div>
     )
 }
