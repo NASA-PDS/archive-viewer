@@ -4,7 +4,7 @@ import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
 import {TargetListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
-import Spacecraft from 'components/Spacecraft'
+import Spacecraft from 'components/pages/Spacecraft'
 
 export default class Mission extends React.Component {
     constructor(props) {

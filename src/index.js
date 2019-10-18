@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-snapshot';
 import 'css/main.scss';
-import Dataset from 'components/Dataset.js'
-import Target from 'components/Target.js'
-import Mission from 'components/Mission.js'
-import Spacecraft from 'components/Spacecraft.js'
-import Instrument from 'components/Instrument.js'
+import Dataset from 'components/pages/Dataset.js'
+import Target from 'components/pages/Target.js'
+import Mission from 'components/pages/Mission.js'
+import Spacecraft from 'components/pages/Spacecraft.js'
+import Instrument from 'components/pages/Instrument.js'
 import TagSearch from 'components/TagSearch.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
