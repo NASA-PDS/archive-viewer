@@ -48,6 +48,7 @@ const listTypeValues = {
         fieldName: 'instrument_host_ref'
     }
 }
+const groupTypesToIgnore = ['Ignore', 'Error']
 
 class ListBox extends React.Component {
 
@@ -159,7 +160,7 @@ function GroupedList({items, query, groupByField, groupInfo}) {
         return <List items={items} query={query} />
     }
     const threshold = 5
-    return groups.map(group => 
+    return groups.filter(group => !groupTypesToIgnore.includes(group.name)).map(group => 
         <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={groups.length < threshold} key={group.name} />
     )
 }
