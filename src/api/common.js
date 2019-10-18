@@ -3,7 +3,8 @@ import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 
 const defaultParameters = () => { return {
-    wt: 'json'
+    wt: 'json',
+    rows: 100
 }}
 let fail = msg => new Promise((_, reject) => { reject(new Error(msg)) })
 
