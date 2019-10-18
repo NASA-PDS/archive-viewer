@@ -195,7 +195,7 @@ const groupItems = (items, field, groupInfo) => {
 
         // otherwise, group by the field specified, or all together
         else if(!field || !item[field] || !item[field].length) {
-            insert(item, 'All')
+            insert(item, 'Other', 99999)
         }
         else {
             const lids = item[field]
@@ -212,7 +212,7 @@ const groupItems = (items, field, groupInfo) => {
             })
         }
     }
-    groups = groups.sort((a, b) => a.order > b.order ? 1 : -1)
+    groups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     
     return groups
 }
