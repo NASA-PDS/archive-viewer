@@ -251,7 +251,7 @@ function List({items, query}) {
     return (
         <ul className="list">
             {items.map((item,idx) => 
-                <li key={item.identifier + idx}><ItemLink item={item} query={query} single={items.length === 1}/></li>
+                <li key={item.identifier + idx}><ItemLink item={item} query={query} single={false}/></li>
             )}
         </ul>
     )
