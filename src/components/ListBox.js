@@ -159,9 +159,9 @@ function GroupedList({items, query, groupByField, groupInfo}) {
     if (groups.length === 1) {
         return <List items={items} query={query} />
     }
-    const threshold = 5
-    return groups.filter(group => !groupTypesToIgnore.includes(group.name)).map(group => 
-        <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={groups.length < threshold} key={group.name} />
+    const threshold = 3
+    return groups.filter(group => !groupTypesToIgnore.includes(group.name)).map((group, index) => 
+        <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={index < threshold} key={group.name} />
     )
 }
 
