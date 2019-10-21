@@ -205,7 +205,7 @@ const groupItems = (items, field, groupInfo) => {
                 const lid = new LID(lidvid).lid
                 const groupInfoSource = groupInfo ? groupInfo.find(a => a.identifier === lid) : null
                 
-                if (groupInfoSource) host_name = groupInfoSource.display_name ? groupInfoSource.display_name : groupInfoSource.title
+                if (groupInfoSource) host_name = nameFinder(groupInfoSource)
                 else host_name = lid
                 
                 insert(item, host_name)
@@ -248,19 +248,26 @@ class GroupBox extends React.Component {
 }
 
 function List({items, query}) {    
+    let sortedItems = items.sort((a, b) => {
+        return nameFinder(a).localeCompare(nameFinder(b))
+    })
     return (
         <ul className="list">
-            {items.map((item,idx) => 
+            {sortedItems.map((item,idx) => 
                 <li key={item.identifier + idx}><ItemLink item={item} query={query} single={false}/></li>
             )}
         </ul>
     )
 }
 
+function nameFinder(item) {
+    return item.display_name ? item.display_name : item.title
+}
+
 function ItemLink({item, query, single}) {
     return (
         <a href={`?${query}=${item.identifier}`} className={single ? 'single-item' : ''}>
-            <span className="list-item-name">{ item.display_name ? item.display_name : item.title }</span>
+            <span className="list-item-name">{ nameFinder(item) }</span>
         </a>
     )
 }
