@@ -3,6 +3,7 @@ import 'css/ListBox.scss'
 import LID from 'services/LogicalIdentifier'
 import Loading from 'components/Loading.js'
 
+/* ------ Constants ------ */
 const listTypes = {
     dataset: 'dataset',
     mission: 'mission',
@@ -49,6 +50,8 @@ const listTypeValues = {
     }
 }
 const groupTypesToIgnore = ['Ignore', 'Error']
+
+/* ------ Main Export Classes ------ */
 
 class ListBox extends React.Component {
 
@@ -153,17 +156,7 @@ class SpacecraftListBox extends ListBox {
 
 export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
 
-function GroupedList({items, query, groupByField, groupInfo}) {
-    const groups = groupItems(items,groupByField,groupInfo)
-
-    if (groups.length === 1) {
-        return <List items={items} query={query} />
-    }
-    const threshold = 3
-    return groups.filter(group => !groupTypesToIgnore.includes(group.name)).map((group, index) => 
-        <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={index < threshold} key={group.name} />
-    )
-}
+/* ------ Internal Logic ------ */
 
 class Group {
     constructor(name, items, order) {
@@ -171,6 +164,10 @@ class Group {
         this.items = items
         this.order = order ? order : name
     }
+}
+
+function nameFinder(item) {
+    return item.display_name ? item.display_name : item.title
 }
 
 const groupItems = (items, field, groupInfo) => {
@@ -217,6 +214,20 @@ const groupItems = (items, field, groupInfo) => {
     return groups
 }
 
+/* ------ Internal Components ------ */
+
+function GroupedList({items, query, groupByField, groupInfo}) {
+    const groups = groupItems(items,groupByField,groupInfo)
+
+    if (groups.length === 1) {
+        return <List items={items} query={query} />
+    }
+    const threshold = 3
+    return groups.filter(group => !groupTypesToIgnore.includes(group.name)).map((group, index) => 
+        <GroupBox groupTitle={group.name} groupItems={group.items} query={query} showAll={index < threshold} key={group.name} />
+    )
+}
+
 class GroupBox extends React.Component {
     constructor(props) {
         super(props)
@@ -258,10 +269,6 @@ function List({items, query}) {
             )}
         </ul>
     )
-}
-
-function nameFinder(item) {
-    return item.display_name ? item.display_name : item.title
 }
 
 function ItemLink({item, query, single}) {
