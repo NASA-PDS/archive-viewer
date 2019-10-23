@@ -41,5 +41,5 @@ export function getTargetsForMission(mission) {
     let params = {
         q: `investigation_ref:${missionLid.escapedLid}\\:\\:* AND data_class:"Target"`
     }
-    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
+    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb))
 }

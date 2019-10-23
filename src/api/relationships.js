@@ -2,10 +2,10 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet} from 'api/common.js'
 
-let targetSpacecraftRelationshipTypes
-let instrumentSpacecraftRelationshipTypes
+export let targetSpacecraftRelationshipTypes
+export let instrumentSpacecraftRelationshipTypes
 const unknownRelationship = {
-    order: 99999,
+    order: 9999,
     name: 'Other',
     relationshipId: 'Unknown'
 }

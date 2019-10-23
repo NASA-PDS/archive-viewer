@@ -64,9 +64,13 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
     function gatherInstruments(spacecraft) {
         return new Promise((resolve, reject) => {
             let childrenLids = spacecraft[0].instrument_ref
-            httpGetIdentifiers(router.instrumentsCore, childrenLids).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb)).then(children => {
-                resolve(children.filter(child => child.identifier !== instrument.identifier))
-            }, reject)
+            httpGetIdentifiers(router.instrumentsCore, childrenLids)
+                .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
+                .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, new LID(spacecraft[0].identifier)))
+                .then(children => {
+                    resolve(children.filter(child => child.identifier !== instrument.identifier))
+                }, 
+            reject)
         })
     }
 }

@@ -44,7 +44,7 @@ export function getInstrumentsForSpacecraft(spacecraft) {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Instrument"`
     }
     return httpGetRelated(params, router.instrumentsCore, knownInstruments)
-        .then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraftLid))
 }
 
@@ -55,7 +55,7 @@ export function getTargetsForSpacecraft(spacecraft) {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Target"`
     }
     return httpGetRelated(params, router.targetsCore, knownTargets)
-        .then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraftLid))
 }
 

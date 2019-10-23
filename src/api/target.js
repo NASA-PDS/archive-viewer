@@ -33,7 +33,7 @@ export function getSpacecraftForTarget(target) {
         q: `target_ref:${targetLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`
     }
     return httpGetRelated(params, router.spacecraftCore, [])
-        .then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
+        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
         .then(stitchWithRelationships(relationshipTypes.fromTargetToSpacecraft, targetLid))
 }
 

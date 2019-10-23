@@ -6,6 +6,7 @@ import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/L
 import Loading from 'components/Loading'
 import {InstrumentTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
+import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -34,8 +35,8 @@ export default class Instrument extends React.Component {
             <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>
                 <aside className="main-aside sidebox">
-                    <SpacecraftListBox items={spacecraft} />
-                    <InstrumentListBox items={instruments} />
+                    <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
+                    <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
                 </aside>
                 <InstrumentTagList tags={instrument.tags} />
                 <Description model={instrument} type={Description.type.instrument} />
