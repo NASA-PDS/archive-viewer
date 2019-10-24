@@ -2,7 +2,6 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
 import {Header, Description} from 'components/ContextObjects'
-import {TargetListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
 
@@ -19,7 +18,6 @@ export default class Mission extends React.Component {
 
     componentDidMount() {
         getSpacecraftForMission(this.state.mission).then(spacecraft => this.setState({spacecraft}), er => console.log(er))
-        getTargetsForMission(this.state.mission).then(targets => this.setState({targets}), er => console.log(er))
     }
 
     render() {
@@ -33,9 +31,6 @@ export default class Mission extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
-                <aside className="main-aside sidebox">
-                    <TargetListBox items={targets} />
-                </aside>
                 <Description model={mission} type={Description.type.mission} />
                 {!!spacecraft ? 
                     (<div className="mission-spacecraft-list">
