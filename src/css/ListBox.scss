@@ -4,33 +4,59 @@ $list-item-padding: 20px;
 
 .list-box {
     @include list-box;
+    ul, li, p, h1, h2, h3, h4 {
+        margin: 0;
+        padding: 0;
+    }
     
     padding: 0 0.5em;
     display: flex;
     flex-flow: column nowrap;
     align-self: flex-start;
+    box-sizing: border-box;
     
     .title-box {
         display: flex;
         flex-flow: row nowrap;
         align-items: baseline;
+        border-bottom: 1px solid $grey;
+        margin-bottom: 10px;
     }
     
     .title {
-        margin: 0 0.5em 0.5em 0;
+        margin-right: 0.5em;
     }
     
     .list {
         margin: 0.5em 0;
         padding: 0;
         li {
-            margin-left: $list-item-padding;
-            list-style-position: outside;
+            list-style: none;
+            background: url('/images/red-square-4×4.jpg') no-repeat left 9px;
+            padding-left: $list-item-padding;
+            display: block;
+            &:not(:last-child) {
+                margin-bottom: 5px;
+            }
         }
     }
     .single-item {
         margin-left: $list-item-padding;
-
+    }
+    .no-items {
+        color: $superDarkGrey;
+    }
+    .list-item-tag {
+        font-style: italic;
+        font-size: 0.9em;
+    }
+    &:not(:first-child) {
+        padding-top: 20px;
+    }
+    h3 {
+        font-size: 1em;
+        text-transform: uppercase;
+        color: $superDarkGrey;
     }
 }
 .expandable {
@@ -44,21 +70,19 @@ $list-item-padding: 20px;
     
     .collapse, .expand {
         margin-right: 0.5em;
-        height: 22px;
-    }
-    h3 {
-        margin: 0;
+        height: 18px;
     }
 }
 .sidebox {
     .list-box {
+        width: 100%;
         .title {
             font-size: 1.2em;
         }
         .count {
             font-size: 1em;
         }
-        li, p {
+        li {
             font-size: 0.8em;
         }
     }
