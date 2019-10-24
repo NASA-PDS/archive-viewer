@@ -142,11 +142,8 @@ class RelatedTargetListBox extends ListBox {
 
     makeList = () => {
         const {items} = this.props
-
         return <RelatedTargetsListBox targets={items} />
     }
-
-    render() { return null}
 }
 class InstrumentListBox extends ListBox {
     constructor(props) {
