@@ -291,7 +291,7 @@ function List({items, query}) {
 }
 
 function ItemLink({item, query, single}) {
-    let url = item.resource_url ? item.resource_url : `?${query}=${item.identifier}`
+    let url = `?${query}=${item.identifier}`
     return (
         <a href={url} className={single ? 'single-item' : ''}>
             <span className="list-item-name">{ nameFinder(item) }</span>
