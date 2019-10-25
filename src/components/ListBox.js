@@ -50,7 +50,7 @@ const listTypeValues = {
     }
 }
 const downplayGroupsThreshold = 100
-const hiddenGroupsThreshold = 10000
+const hiddenGroupsThreshold = 1000
 
 /* ------ Main Export Classes ------ */
 
