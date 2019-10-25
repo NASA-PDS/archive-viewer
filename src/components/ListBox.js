@@ -135,11 +135,6 @@ class RelatedTargetListBox extends ListBox {
         super(props, listTypes.relatedTarget)
     }
 
-    itemCount = () => {
-        let current = 0, items = this.props.items
-        return Object.keys(items).reduce((next, key) => current += items[key].length, current)
-    }
-
     makeList = () => {
         const {items} = this.props
         return <RelatedTargetsListBox targets={items} />
@@ -226,6 +221,25 @@ const groupByRelatedItems = (items, relatedItems, field) => {
     return groups.sort((a, b) => a.order < b.order ? -1 : 1)
 }
 
+const groupByFirstTag = (items) => {
+    let insert = (item, groupName, order) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], order))
+    }
+    let groups = []
+    for (let item of items) {
+        if(!item.tags || !item.tags.length) {
+            insert(item, 'Other', 9999)
+        }
+        else {
+            insert(item, item.tags[0])
+        }
+        console.log(item)
+    }
+    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+}
+
 
 /* ------ Internal Components ------ */
 
@@ -301,12 +315,8 @@ function ItemLink({item, query, single}) {
 }
 
 function RelatedTargetsListBox({targets}) {
-    let groups = []
-    
-    if (targets.parents && targets.parents.length) groups.push(new Group('Parent', targets.parents, 0))
-    if (targets.children && targets.children.length) groups.push(new Group('Children', targets.children, 1))
-    if (targets.associated && targets.associated.length) groups.push(new Group('Associated', targets.associated, 2))
-    
+    let groups = groupByFirstTag(targets)
+
     return !groups.length 
         ? <NoItems type={listTypes.relatedTarget}/> 
         : <GroupedList groups={groups} query={listTypeValues[listTypes.target].query} type={listTypes.target}/>
