@@ -1,6 +1,7 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
+import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function lookupTarget(lidvid) {
     if(!lidvid) {
@@ -31,7 +32,9 @@ export function getSpacecraftForTarget(target) {
     let params = {
         q: `target_ref:${targetLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`
     }
-    return httpGetRelated(params, router.spacecraftCore, []).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
+    return httpGetRelated(params, router.spacecraftCore, [])
+        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromTargetToSpacecraft, targetLid))
 }
 
 export function getDatasetsForTarget(target) {
@@ -40,7 +43,8 @@ export function getDatasetsForTarget(target) {
     let params = {
         q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
     }
-    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+    return httpGet(router.datasetCore, params)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
 
 export function getRelatedTargetsForTarget(target) {

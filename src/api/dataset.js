@@ -68,11 +68,11 @@ export function getBundlesForCollection(dataset) {
 }
 
 export function getTargetsForDataset(dataset) {
-    return httpGetIdentifiers(router.targetsCore, dataset.target_ref).then(stitchWithWebFields(['display_name', 'is_major'], router.targetsWeb))
+    return httpGetIdentifiers(router.targetsCore, dataset.target_ref).then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb))
 }
 export function getSpacecraftForDataset(dataset) {
     return httpGetIdentifiers(router.spacecraftCore, dataset.instrument_host_ref).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
 }
 export function getInstrumentsForDataset(dataset) {
-    return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref).then(stitchWithWebFields(['display_name', 'is_prime'], router.instrumentsWeb))
+    return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref).then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
 }

@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-snapshot';
 import 'css/main.scss';
-import Dataset from 'components/Dataset.js'
-import Target from 'components/Target.js'
-import Mission from 'components/Mission.js'
-import Spacecraft from 'components/Spacecraft.js'
-import Instrument from 'components/Instrument.js'
+import Dataset from 'components/pages/Dataset.js'
+import Target from 'components/pages/Target.js'
+import Mission from 'components/pages/Mission.js'
+import Spacecraft from 'components/pages/Spacecraft.js'
+import Instrument from 'components/pages/Instrument.js'
 import TagSearch from 'components/TagSearch.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
@@ -119,7 +119,7 @@ function Index() {
             <h1>PDS Archive Viewer</h1>
             <div><p className="resource-description">Here are some links to get started...</p></div>
             <div className="co-main">
-            <section className="list-box">
+            <section>
                 <h2>Targets</h2>
                 <ul>
                     <li><h3>Planets &#38; Satellites</h3></li>
@@ -195,7 +195,7 @@ function Index() {
 					</ul>
                 </ul>
             </section>
-            <section className="list-box">
+            <section>
                 <h2>Spacecraft</h2>
                 <ul>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.a17c">Apollo 17</a></li>
@@ -233,7 +233,7 @@ function Index() {
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vg2">Voyager 2</a></li>
                 </ul>
             </section>
-            <section className="list-box">
+            <section>
                 <h2>Datasets</h2>
                 <ul>
                     <li><a href="?dataset=urn:nasa:pds:orex.ocams">OSIRIS-REx OCAMS Bundle</a></li>

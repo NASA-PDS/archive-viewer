@@ -6,6 +6,7 @@ import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
+import {instrumentSpacecraftRelationshipTypes, targetSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -39,8 +40,8 @@ export default class Spacecraft extends React.Component {
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
-                        <TargetListBox items={this.state.targets} />
-                        <InstrumentListBox items={this.state.instruments} />
+                        <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
+                        <InstrumentListBox items={this.state.instruments} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     </aside>
                     <SpacecraftTagList tags={spacecraft.tags} />
                     <Description model={mission} type={Description.type.mission} />
