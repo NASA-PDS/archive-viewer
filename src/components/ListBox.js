@@ -159,7 +159,7 @@ class Group {
     constructor(name, items, order) {
         this.name = name
         this.items = items
-        this.order = order ? order : name
+        this.order = order !== undefined ? order : name
     }
 }
 
@@ -189,7 +189,7 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
         else { insert(item, 'Other', 9999) }
         
     }
-    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return groups
 }
 
 const groupByRelatedItems = (items, relatedItems, field) => {
@@ -218,7 +218,7 @@ const groupByRelatedItems = (items, relatedItems, field) => {
             })
         }
     }
-    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return groups
 }
 
 const groupByFirstTag = (items) => {
@@ -235,9 +235,8 @@ const groupByFirstTag = (items) => {
         else {
             insert(item, item.tags[0])
         }
-        console.log(item)
     }
-    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return groups
 }
 
 
@@ -247,7 +246,8 @@ function GroupedList({groups, query, type}) {
     if (groups.length === 1) {
         return <List items={groups[0].items} query={query} />
     }
-    return groups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
+    let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
         <GroupBox group={group} type={type} query={query} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
