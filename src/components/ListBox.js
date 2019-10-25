@@ -188,7 +188,7 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
         // if possible, group by relationships already in data
         const relationship = item.relatedBy
         if(!!relationship) { insert(item, relationship.name, relationship.order) }
-        else { insert(item, 'Other', 9999) }
+        else { insert(item, 'Other', 999) }
         
     }
     return groups
@@ -203,7 +203,7 @@ const groupByRelatedItems = (items, relatedItems, field) => {
     let groups = []
     for (let item of items) {
         if(!field || !item[field] || !item[field].length) {
-            insert(item, 'Other', 9999)
+            insert(item, 'Other', 999)
         }
         else {
             const lids = item[field]
@@ -232,7 +232,7 @@ const groupByFirstTag = (items) => {
     let groups = []
     for (let item of items) {
         if(!item.tags || !item.tags.length) {
-            insert(item, 'Other', 9999)
+            insert(item, 'Other', 999)
         }
         else {
             insert(item, item.tags[0])

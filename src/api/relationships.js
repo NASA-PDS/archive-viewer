@@ -5,7 +5,7 @@ import {httpGet} from 'api/common.js'
 export let targetSpacecraftRelationshipTypes
 export let instrumentSpacecraftRelationshipTypes
 const unknownRelationship = {
-    order: 9999,
+    order: 999,
     name: 'Other',
     relationshipId: 'Unknown'
 }
