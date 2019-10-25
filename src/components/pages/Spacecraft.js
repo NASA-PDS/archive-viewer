@@ -41,7 +41,6 @@ export default class Spacecraft extends React.Component {
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
                         }
                         <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
-                        <InstrumentListBox items={this.state.instruments} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     </aside>
                     <SpacecraftTagList tags={spacecraft.tags} />
                     <Description model={mission} type={Description.type.mission} />
@@ -49,6 +48,7 @@ export default class Spacecraft extends React.Component {
                         <Header model={spacecraft} type={Header.type.spacecraft}/>
                     }
                     <HTMLBox markup={spacecraft.html1} />
+                    <InstrumentListBox items={this.state.instruments} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
                     <HTMLBox markup={spacecraft.html2} />
                 </div>
