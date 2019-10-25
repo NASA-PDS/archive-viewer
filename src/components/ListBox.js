@@ -178,7 +178,7 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     // first insert any mandatory groups
     if(!!relationshipInfo) {
         for(let relationship of relationshipInfo) {
-            if (!!relationship.order && relationship.order < downplayGroupsThreshold) {
+            if (relationship.order !== undefined && relationship.order < downplayGroupsThreshold) {
                 groups.push(new Group(relationship.name, [], relationship.order))
             }
         }
