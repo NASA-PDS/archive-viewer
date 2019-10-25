@@ -41,7 +41,7 @@ export function getDatasetsForInstrument(instrument) {
     let instrumentLid = new LID(instrument.identifier)
 
     let params = {
-        q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
+        q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))

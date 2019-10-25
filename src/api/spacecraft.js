@@ -63,7 +63,7 @@ export function getDatasetsForSpacecraft(spacecraft) {
     let spacecraftLid = new LID(spacecraft.identifier)
 
     let params = {
-        q: `(instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND (product_class:"Product_Bundle" OR product_class:"Product_Collection"))`
+        q: `(instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT instrument_ref:*)`
     }
     return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
