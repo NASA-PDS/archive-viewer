@@ -91,7 +91,7 @@ class ListBox extends React.Component {
 
         if(!items) {
             return <Loading/>
-        } else if(!items.length) {
+        } else if(this.itemCount() === 0) {
             return <NoItems type={type}/>
         } else {
             const singular = items.length === 1
@@ -301,13 +301,15 @@ function ItemLink({item, query, single}) {
 }
 
 function RelatedTargetsListBox({targets}) {
-    let newGroup = {}
+    let groups = []
     
-    if (targets.parents && targets.parents.length) newGroup['Parents'] = targets.parents
-    if (targets.children && targets.children.length) newGroup['Children'] = targets.children
-    if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
+    if (targets.parents && targets.parents.length) groups.push(new Group('Parent', targets.parents, 0))
+    if (targets.children && targets.children.length) groups.push(new Group('Children', targets.children, 1))
+    if (targets.associated && targets.associated.length) groups.push(new Group('Associated', targets.associated, 2))
     
-    return (!Object.keys(newGroup).length) ? <NoItems type={listTypes.relatedTarget}/> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={listTypeValues[listTypes.relatedTarget].query} showAll={true} />))
+    return !groups.length 
+        ? <NoItems type={listTypes.relatedTarget}/> 
+        : <GroupedList groups={groups} query={listTypeValues[listTypes.target].query} type={listTypes.target}/>
 }
 
 function NoItems({type, descriptor}) {
