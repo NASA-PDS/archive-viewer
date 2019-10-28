@@ -32,7 +32,6 @@ $list-item-padding: 20px;
         padding: 0;
         li {
             list-style: none;
-            background: url('/images/red-square-4×4.jpg') no-repeat left 9px;
             padding-left: $list-item-padding;
             display: block;
             &:not(:last-child) {

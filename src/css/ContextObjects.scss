@@ -62,10 +62,12 @@
     }
 }
 
-.target-header, .spacecraft-header, .mission-header {
+.target-header, .spacecraft-header {
     background-color: black;
 }
-
+.mission-header {
+    background-color: $darkBlue;
+}
 .instrument-header {
     background-color: $superDarkGrey;
 }
