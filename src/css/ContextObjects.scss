@@ -97,3 +97,34 @@
         }
     }
 }
+
+.related-tools {
+    list-style: none;
+    display: flex;
+    flex-flow: row wrap;
+    .related-tool {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 150px;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0);
+        margin-right: 20px;
+        .tool-names {
+            padding: 5px;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 10px 10px 0 0;
+
+        }
+        .tool-shortname {
+            font-size: 2em;
+        }
+        .tool-longname {
+            display:block;
+        }
+    }
+}
