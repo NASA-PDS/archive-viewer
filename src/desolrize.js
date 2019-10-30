@@ -26,8 +26,9 @@ const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'super
 
 const keysThatAreNeverArrays = ['is_major', 'is_prime', 'order']
 
-export default function(fromSolr) {
+export default function(fromSolr, withCount) {
     if(!!fromSolr.response && !!fromSolr.response.docs && fromSolr.response.docs.length > 0) {
-        return fromSolr.response.docs.map(desolrize)
+        let docs = fromSolr.response.docs.map(desolrize)
+        return withCount ? { docs, count: fromSolr.response.numFound} : docs
     } else return []
 }

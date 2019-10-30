@@ -7,6 +7,7 @@ import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
+import PDS3Results from 'components/PDS3Results'
 import {instrumentSpacecraftRelationshipTypes, targetSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Spacecraft extends React.Component {
@@ -52,6 +53,7 @@ export default class Spacecraft extends React.Component {
                     <RelatedTools tools={spacecraft.tools}/>
                     <InstrumentListBox items={this.state.instruments} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
+                    <PDS3Results name={spacecraft.title}/>
                     <HTMLBox markup={spacecraft.html2} />
                 </div>
             )
