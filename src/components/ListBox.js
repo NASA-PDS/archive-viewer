@@ -50,7 +50,7 @@ const listTypeValues = {
     }
 }
 const downplayGroupsThreshold = 100
-const hiddenGroupsThreshold = 10000
+const hiddenGroupsThreshold = 1000
 
 /* ------ Main Export Classes ------ */
 
@@ -91,7 +91,7 @@ class ListBox extends React.Component {
 
         if(!items) {
             return <Loading/>
-        } else if(!items.length) {
+        } else if(this.itemCount() === 0) {
             return <NoItems type={type}/>
         } else {
             const singular = items.length === 1
@@ -135,11 +135,6 @@ class RelatedTargetListBox extends ListBox {
         super(props, listTypes.relatedTarget)
     }
 
-    itemCount = () => {
-        let current = 0, items = this.props.items
-        return Object.keys(items).reduce((next, key) => current += items[key].length, current)
-    }
-
     makeList = () => {
         const {items} = this.props
         return <RelatedTargetsListBox targets={items} />
@@ -164,7 +159,7 @@ class Group {
     constructor(name, items, order) {
         this.name = name
         this.items = items
-        this.order = order ? order : name
+        this.order = order !== undefined ? order : name
     }
 }
 
@@ -181,9 +176,11 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     let groups = []
 
     // first insert any mandatory groups
-    for(let relationship of relationshipInfo) {
-        if (!!relationship.order && relationship.order < downplayGroupsThreshold) {
-            groups.push(new Group(relationship.name, [], relationship.order))
+    if(!!relationshipInfo) {
+        for(let relationship of relationshipInfo) {
+            if (relationship.order !== undefined && relationship.order < downplayGroupsThreshold) {
+                groups.push(new Group(relationship.name, [], relationship.order))
+            }
         }
     }
     for (let item of items) {
@@ -191,10 +188,10 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
         // if possible, group by relationships already in data
         const relationship = item.relatedBy
         if(!!relationship) { insert(item, relationship.name, relationship.order) }
-        else { insert(item, 'Other', 9999) }
+        else { insert(item, 'Other', 999) }
         
     }
-    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return groups
 }
 
 const groupByRelatedItems = (items, relatedItems, field) => {
@@ -206,7 +203,7 @@ const groupByRelatedItems = (items, relatedItems, field) => {
     let groups = []
     for (let item of items) {
         if(!field || !item[field] || !item[field].length) {
-            insert(item, 'Other', 9999)
+            insert(item, 'Other', 999)
         }
         else {
             const lids = item[field]
@@ -223,7 +220,25 @@ const groupByRelatedItems = (items, relatedItems, field) => {
             })
         }
     }
-    return groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return groups
+}
+
+const groupByFirstTag = (items) => {
+    let insert = (item, groupName, order) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], order))
+    }
+    let groups = []
+    for (let item of items) {
+        if(!item.tags || !item.tags.length) {
+            insert(item, 'Other', 999)
+        }
+        else {
+            insert(item, item.tags[0])
+        }
+    }
+    return groups
 }
 
 
@@ -233,7 +248,8 @@ function GroupedList({groups, query, type}) {
     if (groups.length === 1) {
         return <List items={groups[0].items} query={query} />
     }
-    return groups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
+    let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
+    return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
         <GroupBox group={group} type={type} query={query} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
@@ -291,7 +307,7 @@ function List({items, query}) {
 }
 
 function ItemLink({item, query, single}) {
-    let url = item.resource_url ? item.resource_url : `?${query}=${item.identifier}`
+    let url = `?${query}=${item.identifier}`
     return (
         <a href={url} className={single ? 'single-item' : ''}>
             <span className="list-item-name">{ nameFinder(item) }</span>
@@ -301,13 +317,11 @@ function ItemLink({item, query, single}) {
 }
 
 function RelatedTargetsListBox({targets}) {
-    let newGroup = {}
-    
-    if (targets.parents && targets.parents.length) newGroup['Parents'] = targets.parents
-    if (targets.children && targets.children.length) newGroup['Children'] = targets.children
-    if (targets.associated && targets.associated.length) newGroup['Associated'] = targets.associated
-    
-    return (!Object.keys(newGroup).length) ? <NoItems type={listTypes.relatedTarget}/> : Object.keys(newGroup).map(title => (<GroupBox groupTitle={title} groupItems={newGroup[title]} query={listTypeValues[listTypes.relatedTarget].query} showAll={true} />))
+    let groups = groupByFirstTag(targets)
+
+    return !groups.length 
+        ? <NoItems type={listTypes.relatedTarget}/> 
+        : <GroupedList groups={groups} query={listTypeValues[listTypes.target].query} type={listTypes.target}/>
 }
 
 function NoItems({type, descriptor}) {

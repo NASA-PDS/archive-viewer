@@ -8,6 +8,7 @@ const instrumenthostsCollection = 'web-instrumenthosts-alias'
 const investigationsCollection = 'web-investigations-alias'
 const targetrelationshipsCollection = 'web-targetrelationships-alias'
 const relationshipsCollection = 'web-objectrelationships-alias'
+const toolsCollection = 'web-tools-alias'
 const targetSpacecraftRelationshipTypesCollection = 'web-targetspacecraftrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
 const coreCollection = 'pds'
@@ -28,4 +29,5 @@ export default {
     relationships: `${localSolr}/${relationshipsCollection}/select`,
     targetSpacecraftRelationshipTypes: `${localSolr}/${targetSpacecraftRelationshipTypesCollection}/select`,
     instrumentSpacecraftRelationshipTypes: `${localSolr}/${instrumentSpacecraftRelationshipTypesCollection}/select`,
+    tools: `${localSolr}/${toolsCollection}/select`,
 }

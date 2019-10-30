@@ -1,7 +1,8 @@
 export default class LogicalIdentifier {
 
-    constructor(identifier, vid) {
-        if(!identifier) { return }
+    constructor(original, vid) {
+        if(!original) { return }
+        let identifier = original.toLowerCase()
         if(!!vid) {
             this.lidvid = `${identifier}::${vid}`
             this.lid = identifier

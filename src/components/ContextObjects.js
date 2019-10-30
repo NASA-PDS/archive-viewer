@@ -52,7 +52,8 @@ class Description extends React.Component {
         this.state = {
             model: props.model,
             type: props.type,
-            showFull: false,
+            alwaysShow: props.model.display_description ? true : false,
+            showFull: props.model.display_description ? true : false,
             loaded: false
         }
     }
@@ -87,7 +88,7 @@ class Description extends React.Component {
         function full(description) {
             const full = description
             
-            return <p>{full}{seeLess()}</p>
+            return <p>{full}{self.state.alwaysShow ? null : seeLess()}</p>
         }
         
         return <div itemProp="description" className="resource-description">

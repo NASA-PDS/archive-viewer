@@ -1,6 +1,7 @@
 import web from 'axios';
 import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
+import router from 'api/router.js'
 
 const defaultParameters = () => { return {
     wt: 'json',
@@ -38,6 +39,7 @@ export function httpGetFull(endpoints) {
             }
             else if(webUI.length === 1 && core.length === 1) {
                 let consolidated = Object.assign({}, core[0])
+                console.log()
                 resolve(Object.assign(consolidated, webUI[0]))
             } else if (core.length === 1) {
                 resolve(core[0])
@@ -50,6 +52,28 @@ export function httpGetFull(endpoints) {
             }
         }, error => {
             reject(error)
+        })
+    }).then(stitchWithTools)
+}
+
+function stitchWithTools(result) {
+    return new Promise((resolve, _) => {
+        let tools = result.tools
+        if(!tools) {
+            resolve(result)
+        }
+        let params = {
+            q: tools.reduce((query, lid) => query + 'toolId:"' + lid + '" ', '')
+        }
+        httpGet(router.tools, params).then(toolLookup => {
+            console.log(toolLookup)
+            result.tools = toolLookup
+            resolve(result)
+        }, err => {
+            console.log(err)
+            // couldn't find tools, so just hide the field
+            result.tools = null
+            resolve(result)
         })
     })
 }
