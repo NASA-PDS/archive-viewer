@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet'
 
 class Header extends React.Component {
     static type = {
@@ -24,8 +25,13 @@ class Header extends React.Component {
         const {model,type} = self.state
         const {display_name, title, image_url} = this.state.model
         const name = display_name ? display_name : title
+        const pageTitle = name + ' - PDS Archive Viewer'
         return (
             <header className={`co-header ${this.state.type}-header ${this.state.type === Header.type.spacecraft ? 'subheader' : ''}`}>
+                <Helmet>
+                    <title>{ pageTitle }</title>
+                    <meta charSet="utf-8" />
+                </Helmet>
                 <img src={image_url} />
                 <h1 className="title"> { name } <span className="header-supplemental-text" >Data Archive</span> </h1>
             </header>
