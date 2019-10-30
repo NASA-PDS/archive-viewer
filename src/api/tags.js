@@ -8,7 +8,8 @@ export function lookupTags(tags, type) {
         [TagTypes.target]: router.targetsWeb,
         [TagTypes.spacecraft]: router.spacecraftWeb,
         [TagTypes.mission]: router.missionsWeb,
-        [TagTypes.instrument]: router.instrumentsWeb
+        [TagTypes.instrument]: router.instrumentsWeb,
+        [TagTypes.dataset]: router.datasetWeb,
     }
 
     if(!tags) {

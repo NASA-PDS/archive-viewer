@@ -7,7 +7,8 @@ export const TagTypes = {
     target: 'target',
     mission: 'mission',
     spacecraft: 'spacecraft',
-    instrument: 'instrument'
+    instrument: 'instrument',
+    dataset: 'dataset',
 }
 
 export default class TagSearch extends React.Component {
