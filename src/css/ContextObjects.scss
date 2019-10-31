@@ -126,3 +126,16 @@
         }
     }
 }
+.pds3-results {
+    @include tangent-box;
+    @include tangent-box-default-style;
+    display: flex;
+    flex-direction: column;
+    .further-results {
+        margin: 20px 0;
+        a {
+            @include button;
+            margin: 0;
+        }
+    }
+}

@@ -45,7 +45,7 @@ export default class PDS3Results extends React.Component {
         let query = new URLSearchParams(params)
         return (
             <div className="pds3-results">
-                <h2>There are {count} older datasets available:</h2>
+                <h2 className="header">There are {count} older datasets available:</h2>
                 <ul>
                     {docs.map(dataset => 
                         <li key={dataset.identifier}>
@@ -53,7 +53,7 @@ export default class PDS3Results extends React.Component {
                         </li>
                         )}
                 </ul>
-                <p><a href={`${searchPage}?${query.toString()}`}>View other results</a></p>
+                <div className="further-results"><a href={`${searchPage}?${query.toString()}`}>View other results</a></div>
             </div>
         )
     }
