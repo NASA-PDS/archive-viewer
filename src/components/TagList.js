@@ -31,3 +31,6 @@ export function MissionTagList({tags}) {
 export function InstrumentTagList({tags}) {
     return <TagList tags={tags} type={TagTypes.instrument} />
 }
+export function DatasetTagList({tags}) {
+    return <TagList tags={tags} type={TagTypes.dataset} />
+}

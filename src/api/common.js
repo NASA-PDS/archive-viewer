@@ -9,10 +9,10 @@ const defaultParameters = () => { return {
 }}
 let fail = msg => new Promise((_, reject) => { reject(new Error(msg)) })
 
-export function httpGet(endpoint, params) {
+export function httpGet(endpoint, params, withCount) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data)), reject)
+        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data, withCount)), reject)
     )
 }
 
@@ -66,7 +66,6 @@ function stitchWithTools(result) {
             q: tools.reduce((query, lid) => query + 'toolId:"' + lid + '" ', '')
         }
         httpGet(router.tools, params).then(toolLookup => {
-            console.log(toolLookup)
             result.tools = toolLookup
             resolve(result)
         }, err => {

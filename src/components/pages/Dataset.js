@@ -1,9 +1,11 @@
 import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
+import RelatedTools from 'components/RelatedTools'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {Description} from 'components/ContextObjects'
+import {DatasetTagList} from 'components/TagList'
 
 export default class Dataset extends React.Component {
 
@@ -29,11 +31,13 @@ export default class Dataset extends React.Component {
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
                     <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
+                    <DatasetTagList tags={dataset.tags}/>
                     <Description model={dataset} type={Description.type.dataset}/>
 
                     { isBundle && 
                         <CollectionList dataset={dataset} />
                     }
+                    <RelatedTools tools={dataset.tools}/>
                     <CollectionQuickLinks dataset={dataset} />
                     <CollectionDownloads dataset={dataset} />
 
@@ -42,7 +46,6 @@ export default class Dataset extends React.Component {
                 <div className="related-references">
                     <RelatedPDS3 dataset={dataset} />
                     <Superseded dataset={dataset} />
-                    <RelatedTools dataset={dataset} />
                     <RelatedData dataset={dataset} />
                 </div>
             </div>
@@ -130,6 +133,9 @@ function Metadata(props) {
                 }
                 {dataset.checksum_url &&
                     <a href={dataset.checksum_url}><img src="/images/icn-checksum.png" /><span> View Checksums </span></a>
+                }
+                {dataset.resource_url &&
+                    <a href={dataset.resource_url}><img src="/images/icn-external.png" /><span> View Resource </span></a>
                 }
             </section>
         </aside>
@@ -269,24 +275,6 @@ function Superseded(props) {
                         <li key={ref.browse_url}>
                             {ref.name}
                             <a href={ref.browse_url}><img className="tiny-icon" src="/images/icn-folder-rnd.png" /></a>
-                        </li>
-                    )}
-                </ul>
-            </section>
-        )
-    } else return null
-}
-
-function RelatedTools(props) {
-    const tools = props.dataset.related_tools
-    if(tools) {
-        return (
-            <section className="dataset-related">
-                <h3 className="header"> Related tools: </h3>
-                <ul>
-                    {tools.map(ref => 
-                        <li key={ref.url}>
-                            <a href={ref.url}>{ref.name}</a>
                         </li>
                     )}
                 </ul>

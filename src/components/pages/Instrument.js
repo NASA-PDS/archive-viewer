@@ -7,6 +7,7 @@ import Loading from 'components/Loading'
 import {InstrumentTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
+import PDS3Results from 'components/PDS3Results'
 import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Instrument extends React.Component {
@@ -44,6 +45,7 @@ export default class Instrument extends React.Component {
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={instrument.tools}/>
                 <DatasetListBox items={datasets} />
+                <PDS3Results name={instrument.title}/>
                 <HTMLBox markup={instrument.html2} />
             </div>
         )
