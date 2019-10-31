@@ -59,7 +59,7 @@ function Title({dataset}) {
     return (
         <h1 itemProp="name">
             <div className="image-container">
-                <img src="/images/icn-bundle.png" />
+                <img src="./images/icn-bundle.png" />
             </div>
             <div className="resource-title">
                 { title }
@@ -125,17 +125,17 @@ function Metadata(props) {
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>
                 {dataset.download_url &&
-                    <a href={dataset.download_url}><img src="/images/icn-download.png" /><span> Download All 
+                    <a href={dataset.download_url}><img src="./images/icn-download.png" /><span> Download All 
                         {dataset.download_size && 
                             <span className="adjacent-link download-size">({ dataset.download_size })</span>
                         }
                         </span></a>
                 }
                 {dataset.checksum_url &&
-                    <a href={dataset.checksum_url}><img src="/images/icn-checksum.png" /><span> View Checksums </span></a>
+                    <a href={dataset.checksum_url}><img src="./images/icn-checksum.png" /><span> View Checksums </span></a>
                 }
                 {dataset.resource_url &&
-                    <a href={dataset.resource_url}><img src="/images/icn-external.png" /><span> View Resource </span></a>
+                    <a href={dataset.resource_url}><img src="./images/icn-external.png" /><span> View Resource </span></a>
                 }
             </section>
         </aside>
@@ -166,7 +166,7 @@ function EditorList({editors}) {
 
 function BrowseButton({dataset}) {
     let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url
-    return <a href={url}><img src="/images/icn-folder.png" /><span> Browse All </span></a>
+    return <a href={url}><img src="./images/icn-folder.png" /><span> Browse All </span></a>
 }
 
 function CollectionQuickLinks({dataset}) {
@@ -176,7 +176,7 @@ function CollectionQuickLinks({dataset}) {
                 <div>
                     <h3>View Local Documents</h3>
                     <a href="{{data.localDocumentsUrl}}">
-                        <img src="/images/icn-documents.png" />
+                        <img src="./images/icn-documents.png" />
                         <span>View Local Documents</span>
                     </a>
                 </div>
@@ -191,7 +191,7 @@ function CollectionQuickLinks({dataset}) {
                     <a href={dataset.example.url}>
                         { dataset.example.thumbnail_url ?
                             <img src={dataset.example.thumbnail_url} /> :
-                            <img src="/images/icn-file.png" />
+                            <img src="./images/icn-file.png" />
                         }
                         <span>{ dataset.example.title }</span>
                     </a>
@@ -209,7 +209,7 @@ function CollectionDownloads({dataset}) {
                 <h3>Download packages:</h3>
                 <ul>
                     <li>
-                        <img src="/images/icn-package.png" />
+                        <img src="./images/icn-package.png" />
                         <a href={dataset.download_url}> 
                             <span> Download All 
                             { dataset.download_size &&
@@ -220,7 +220,7 @@ function CollectionDownloads({dataset}) {
                     </li>
                     { dataset.download_packages.map(pkg => (
                         <li key={pkg.download_url}>
-                            <img src="/images/icn-package.png" />
+                            <img src="./images/icn-package.png" />
                             <a href={pkg.download_url}>
                                 <span> { pkg.name } 
                                 { pkg.download_size &&
@@ -241,12 +241,12 @@ function Citation(props) {
     if(citation) {
         return (
             <section className="dataset-citation">
-                <img className="start-quote" src="/images/quotes-start.png" />
+                <img className="start-quote" src="./images/quotes-start.png" />
                 <div>
                     <p>Use the following citation to reference this data set:</p>
                     <p className="citation">"{ citation }"</p>
                 </div>
-                <img className="end-quote" src="/images/quotes-end.png" />
+                <img className="end-quote" src="./images/quotes-end.png" />
             </section>
         )
     } else return null
@@ -258,7 +258,7 @@ function RelatedPDS3(props) {
         return (
             <section className="dataset-pds3">
                 <h3 className="header"> PDS3 versions of this dataset: </h3>
-                <a href={pds3}><img className="tiny-icon" src="/images/icn-folder-rnd.png" />Click here to browse</a>
+                <a href={pds3}><img className="tiny-icon" src="./images/icn-folder-rnd.png" />Click here to browse</a>
             </section>
         )
     } else return null
@@ -274,7 +274,7 @@ function Superseded(props) {
                     {superseded.map(ref => 
                         <li key={ref.browse_url}>
                             {ref.name}
-                            <a href={ref.browse_url}><img className="tiny-icon" src="/images/icn-folder-rnd.png" /></a>
+                            <a href={ref.browse_url}><img className="tiny-icon" src="./images/icn-folder-rnd.png" /></a>
                         </li>
                     )}
                 </ul>
