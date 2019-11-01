@@ -3,6 +3,7 @@
 
 .co-main {
     padding: $main-padding;
+    max-width: $readable-width;
     
     header:not(.subheader) { 
         margin-top: -$main-padding;
@@ -129,6 +130,8 @@
 .pds3-results {
     @include tangent-box;
     @include tangent-box-default-style;
+    margin-top: 3em;
+    opacity: 0.75;
     display: flex;
     flex-direction: column;
     .further-results {
