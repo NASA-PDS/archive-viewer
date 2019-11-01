@@ -23,7 +23,7 @@ export default class PDS3Results extends React.Component {
 
     componentDidMount() {
         let params = this.buildParams()
-        params.q = this.state.name
+        params.q = `"${this.state.name}"`
         params.fl = 'identifier,title,resLocation'
         params.rows = 10
         httpGet(router.datasetCore, params, true).then(response => {
