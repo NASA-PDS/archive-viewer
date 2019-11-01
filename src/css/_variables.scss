@@ -13,6 +13,7 @@ $superDarkGrey: #646464;
 $main-padding: 0.7em;
 
 $readable-width: 1200px;
+$list-item-padding: 20px;
 
 @mixin list-box {
     padding: 0 0.5em;
@@ -68,4 +69,17 @@ $readable-width: 1200px;
     .header {
         background-color: $blue;
     }
+}
+@mixin list {
+    margin: 0.5em 0;
+    padding: 0;
+    li {
+        list-style: none;
+        padding-left: $list-item-padding;
+        display: block;
+        &:not(:last-child) {
+            margin-bottom: 5px;
+        }
+    }
+    
 }

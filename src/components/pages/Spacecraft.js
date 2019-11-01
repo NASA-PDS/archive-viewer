@@ -2,6 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
+import {InstrumentBrowseTable} from 'components/BrowseTable'
 import {Header, Description} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
@@ -51,9 +52,9 @@ export default class Spacecraft extends React.Component {
                     }
                     <HTMLBox markup={spacecraft.html1} />
                     <RelatedTools tools={spacecraft.tools}/>
-                    <InstrumentListBox items={this.state.instruments} groupInfo={instrumentSpacecraftRelationshipTypes}/>
+                    <InstrumentBrowseTable items={this.state.instruments} />
                     <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
-                    <PDS3Results name={spacecraft.title}/>
+                    <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title}/>
                     <HTMLBox markup={spacecraft.html2} />
                 </div>
             )

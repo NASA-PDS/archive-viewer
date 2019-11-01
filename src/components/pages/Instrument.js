@@ -45,7 +45,7 @@ export default class Instrument extends React.Component {
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={instrument.tools}/>
                 <DatasetListBox items={datasets} />
-                <PDS3Results name={instrument.title}/>
+                <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title}/>
                 <HTMLBox markup={instrument.html2} />
             </div>
         )
