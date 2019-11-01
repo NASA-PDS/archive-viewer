@@ -18,7 +18,7 @@ export function lookupTags(tags, type) {
 
     let route = routeForTagType[type]
     let params = {
-        q: `tags:${tags}`
+        q: tags.reduce((query, tag) => query + 'tags:"' + tag + '" ', '')
     }
     return httpGet(route, params)
 }

@@ -34,7 +34,6 @@ export default class TagSearch extends React.Component {
             })
         } else {
             lookupTags(tags, type).then(result => {
-                console.log(result)
                 this.setState({
                     results: result,
                     loaded: true
@@ -55,7 +54,7 @@ export default class TagSearch extends React.Component {
         results.sort((a, b) => a.display_name.localeCompare(b.display_name))
         return (
             <div>
-                <h1>{tags}</h1>
+                <h1>{tags.join(' or ')}</h1>
                 <ul>
                     {results.map(result =>
                         <li key={result.logical_identifier}>
