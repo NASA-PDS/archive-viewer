@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom'
+import LogicalIdentifier from 'services/LogicalIdentifier'
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {Description} from 'components/ContextObjects'
+import { Link } from 'react-router-dom'
 
 export default class Dataset extends React.Component {
 
@@ -304,7 +307,7 @@ function RelatedData(props) {
                 <ul>
                     {data.map(ref => 
                         <li key={ref.lid}>
-                            <a href={'?dataset=' + ref.lid}>{ref.name}</a>
+                            <Link to={'/dataset/' + ref.lid}>{ref.name}</Link>
                         </li>
                     )}
                 </ul>

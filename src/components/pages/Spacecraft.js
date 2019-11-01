@@ -8,6 +8,7 @@ import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import {instrumentSpacecraftRelationshipTypes, targetSpacecraftRelationshipTypes} from 'api/relationships'
+import { Link } from 'react-router-dom'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ export default class Spacecraft extends React.Component {
                     <Header model={mission} type={Header.type.mission} />
                     <aside className="main-aside sidebox">
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
+                            <Link to={`/mission/${mission.identifier}`}><div className="button">Visit Mission Page</div></Link>
                         }
                         <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
                     </aside>
