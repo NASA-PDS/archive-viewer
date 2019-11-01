@@ -37,14 +37,16 @@ export default class Target extends React.Component {
                 <aside className="main-aside sidebox">
                     <RelatedTargetListBox items={relatedTargets} />
                 </aside>
-                <TargetTagList tags={target.tags} />
-                <Description model={target} type={Description.type.target} />
-                <HTMLBox markup={target.html1} />
-                <RelatedTools tools={target.tools}/>
-                <SpacecraftBrowseTable items={spacecraft} />
-                <DatasetListBox items={datasets} groupBy={DatasetListBox.groupType.spacecraft} groupInfo={spacecraft}/>
-                <PDS3Results name={target.display_name ? target.display_name : target.title}/>
-                <HTMLBox markup={target.html2} />
+                <div className="co-content">
+                    <TargetTagList tags={target.tags} />
+                    <Description model={target} type={Description.type.target} />
+                    <HTMLBox markup={target.html1} />
+                    <RelatedTools tools={target.tools}/>
+                    <SpacecraftBrowseTable items={spacecraft} />
+                    <DatasetListBox items={datasets} groupBy={DatasetListBox.groupType.spacecraft} groupInfo={spacecraft}/>
+                    <PDS3Results name={target.display_name ? target.display_name : target.title}/>
+                    <HTMLBox markup={target.html2} />
+                </div>
             </div>
         )
     }

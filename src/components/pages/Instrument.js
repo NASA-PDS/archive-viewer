@@ -40,13 +40,15 @@ export default class Instrument extends React.Component {
                     <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
                 </aside>
-                <InstrumentTagList tags={instrument.tags} />
-                <Description model={instrument} type={Description.type.instrument} />
-                <HTMLBox markup={instrument.html1} />
-                <RelatedTools tools={instrument.tools}/>
-                <DatasetListBox items={datasets} />
-                <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title}/>
-                <HTMLBox markup={instrument.html2} />
+                <div className="co-content">
+                    <InstrumentTagList tags={instrument.tags} />
+                    <Description model={instrument} type={Description.type.instrument} />
+                    <HTMLBox markup={instrument.html1} />
+                    <RelatedTools tools={instrument.tools}/>
+                    <DatasetListBox items={datasets} />
+                    <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title}/>
+                    <HTMLBox markup={instrument.html2} />
+                </div>
             </div>
         )
     }

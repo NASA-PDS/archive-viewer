@@ -45,17 +45,19 @@ export default class Spacecraft extends React.Component {
                         }
                         <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
                     </aside>
-                    <SpacecraftTagList tags={spacecraft.tags} />
-                    <Description model={mission} type={Description.type.mission} />
-                    {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                        <Header model={spacecraft} type={Header.type.spacecraft}/>
-                    }
-                    <HTMLBox markup={spacecraft.html1} />
-                    <RelatedTools tools={spacecraft.tools}/>
-                    <InstrumentBrowseTable items={this.state.instruments} />
-                    <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
-                    <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title}/>
-                    <HTMLBox markup={spacecraft.html2} />
+                    <div className="co-content">
+                        <SpacecraftTagList tags={spacecraft.tags} />
+                        <Description model={mission} type={Description.type.mission} />
+                        {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
+                            <Header model={spacecraft} type={Header.type.spacecraft}/>
+                        }
+                        <HTMLBox markup={spacecraft.html1} />
+                        <RelatedTools tools={spacecraft.tools}/>
+                        <InstrumentBrowseTable items={this.state.instruments} />
+                        <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
+                        <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title}/>
+                        <HTMLBox markup={spacecraft.html2} />
+                    </div>
                 </div>
             )
         }

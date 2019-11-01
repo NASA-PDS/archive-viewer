@@ -31,14 +31,16 @@ export default class Mission extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
-                <Description model={mission} type={Description.type.mission} />
-                {!!spacecraft ? 
-                    (<div className="mission-spacecraft-list">
-                        <h2>View the mission's data for:</h2>
-                        { spacecraft.map(ButtonForSpacecraft)}
-                    </div>)
-                    : <Loading/>
-                 }
+                <div className="co-content">
+                    <Description model={mission} type={Description.type.mission} />
+                    {!!spacecraft ? 
+                        (<div className="mission-spacecraft-list">
+                            <h2>View the mission's data for:</h2>
+                            { spacecraft.map(ButtonForSpacecraft)}
+                        </div>)
+                        : <Loading/>
+                    }
+                </div>
             </div>
         )
     }

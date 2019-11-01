@@ -1,9 +1,7 @@
 @import 'variables';
 
-
 .co-main {
     padding: $main-padding;
-    max-width: $readable-width;
     
     header:not(.subheader) { 
         margin-top: -$main-padding;
@@ -11,6 +9,9 @@
         margin-right: -$main-padding;
         margin-bottom: $main-padding
     }
+}
+.co-content {
+    max-width: $readable-width;
 }
 .co-aside {
     max-width: 300px;
@@ -26,7 +27,7 @@
 
 .mission-header, .target-header, .instrument-header, .spacecraft-header {
     color: white;
-    padding: 0.5em;
+    padding: $main-padding;
     display: flex;
     flex-flow: row wrap;
     align-items: center;

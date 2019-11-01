@@ -109,10 +109,10 @@ main aside.main-aside {
 .dataset-delivery {
     background-color: $blue;
     color: white;
-    display: flex;
     text-align: center;
     flex-flow: column;
     margin-top: -$main-padding;
+    padding: 15px;
     margin-left: -$main-padding;
     margin-right: -$main-padding;
 }
