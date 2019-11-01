@@ -35,6 +35,8 @@ class BrowseTables extends React.Component {
                 else if(group.order < hiddenGroupsThreshold) { minorGroups.push(group) }
             }
         })
+
+        const expanded = this.state.expanded || (majorGroups.length === 0 && minorGroups.length > 0)
         return (
             <div className="browse-tables">
                 {majorGroups.map(group => { return (
@@ -43,10 +45,10 @@ class BrowseTables extends React.Component {
                         { this.sectioned ? <SectionedTable items={group.items} query={this.query} /> : <List items={group.items} query={this.query} /> }
                     </div>
                 )})}
-                {this.state.expanded === false && minorGroups.length > 0 && 
+                {expanded === false && minorGroups.length > 0 && 
                     <div className="browse-expand" onClick={this.toggleExpanded}>See more</div>
                 }
-                {this.state.expanded === true && minorGroups.map(group => { return (
+                {expanded && minorGroups.map(group => { return (
                     <div key={group.name} className="minor">
                         <h2 className="browse-group-title">{group.name} {group.order < downplayGroupsThreshold ? this.type : ''}</h2>
                         { this.sectioned ? <SectionedTable items={group.items} query={this.query} /> : <List items={group.items} query={this.query} /> }
