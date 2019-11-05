@@ -3,7 +3,7 @@ import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
-import {Header, Description} from 'components/ContextObjects'
+import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
@@ -39,6 +39,7 @@ export default class Spacecraft extends React.Component {
             return (
                 <div className="co-main">
                     <Header model={mission} type={Header.type.mission} />
+                    <Menu/>
                     <aside className="main-aside sidebox">
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>

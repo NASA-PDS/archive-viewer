@@ -100,4 +100,7 @@ class Description extends React.Component {
     }
 }
 
-export {Header,Description}
+function Menu() {
+    return <a className="menu-link" href="./"><img src="./images/menu.svg"/></a>
+}
+export {Header,Description,Menu}

@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
-import {Header, Description} from 'components/ContextObjects'
+import {Header, Description, Menu} from 'components/ContextObjects'
 import {SpacecraftListBox, RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
 import {SpacecraftBrowseTable} from 'components/BrowseTable'
 import Loading from 'components/Loading'
@@ -34,6 +34,7 @@ export default class Target extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={target} type={Header.type.target} />
+                <Menu/>
                 <aside className="main-aside sidebox">
                     <RelatedTargetListBox items={relatedTargets} />
                 </aside>

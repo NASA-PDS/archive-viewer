@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
-import {Header, Description} from 'components/ContextObjects'
+import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
 
@@ -31,6 +31,7 @@ export default class Mission extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
+                <Menu/>
                 <div className="co-content">
                     <Description model={mission} type={Description.type.mission} />
                     {!!spacecraft ? 
