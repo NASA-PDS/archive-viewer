@@ -128,101 +128,9 @@ function Index() {
                     <li><a href="?target=urn:nasa:pds:context:target:planet.mercury">Mercury</a></li>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.venus">Venus</a></li>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.earth">Earth</a></li>
-                    <ul>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.earth.moon">Moon</a></li>
-                    </ul>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.mars">Mars</a></li>
-                    <ul>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.mars.deimos">Deimos</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.mars.phobos">Phobos</a></li>
-                    </ul>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a></li>
-                    <ul>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.adrastea">Adrastea</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.aitne">Aitne</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.amalthea">Amalthea</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.ananke">Ananke</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.autonoe">Autonoe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.callirrhoe">Callirrhoe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.callisto">Callisto</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.carme">Carme</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.chaldene">Chaldene</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.dia">Dia</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.elara">Elara</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.erinome">Erinome</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.euanthe">Euanthe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.eukelade">Eukelade</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.europa">Europa</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.eurydome">Eurydome</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.ganymede">Ganymede</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.harpalyke">Harpalyke</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.himalia">Himalia</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.io">Io</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.iocaste">Iocaste</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.isonoe">Isonoe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.kale">Kale</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.kalyke">Kalyke</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.leda">Leda</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.megaclite">Megaclite</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.metis">Metis</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.pasiphae">Pasiphae</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.pasithee">Pasithee</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.praxidike">Praxidike</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.sponde">Sponde</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.taygete">Taygete</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.thebe">Thebe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.jupiter.thyone">Thyone</a></li>
-                    </ul>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a></li>
-                    <ul>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.aegaeon">Aegaeon</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.albiorix">Albiorix</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.atlas">Atlas</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.anthe">Anthe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.bebhionn">Bebhionn</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.bergelmir">Bergelmir</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.bestla">Bestla</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.calypso">Calypso</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.daphnis">Daphnis</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.dione">Dione</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.enceladus">Enceladus</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.erriapus">Erriapus</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.fornjot">Fornjot</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.greip">Greip</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.hati">Hati</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.helene">Helene</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.hyperion">Hyperion</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.hyrrokkin">Hyrrokkin</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.iapetus">Iapetus</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.ijiraq">Ijiraq</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.janus">Janus</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.kari">Kari</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.kiviuq">Kiviuq</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.loge">Loge</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.methone">Methone</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.mimas">Mimas</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.mundilfari">Mundilfari</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.narvi">Narvi</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.paaliaq">Paaliaq</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.pallene">Pallene</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.pan">Pan</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.pandora">Pandora</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.phoebe">Phoebe</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.polydeuces">Polydeuces</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.prometheus">Prometheus</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.rhea">Rhea</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.skathi">Skathi</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.siarnaq">Siarnaq</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.surtur">Surtur</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.suttungr">Suttungr</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.tarqeq">Tarqeq</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.tarvos">Tarvos</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.telesto">Telesto</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.tethys">Tethys</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.thrymr">Thrymr</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.titan">Titan</a></li>
-                        <li><a href="?target=urn:nasa:pds:context:target:satellite.saturn.ymir">Ymir</a></li>
-                        </ul>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.uranus">Uranus</a></li>
                     <li><a href="?target=urn:nasa:pds:context:target:planet.neptune">Neptune</a></li>
                 </ul>
@@ -230,9 +138,6 @@ function Index() {
                 <ul>
                     <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
                     <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
-                        <ul>
-                            <li><a href="?target=urn:nasa:pds:context:target:satellite.134340_pluto.charon">Charon</a></li>
-                        </ul>
                 </ul>
             <li><h3>Asteroids</h3></li>
                 <ul>
@@ -273,6 +178,7 @@ function Index() {
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.ladee"> Lunar Atmosphere and Dust Environment Explorer (LADEE)</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lp">Lunar Prospector</a></li>
+                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lro">Lunar Reconnaissance Orbiter (LRO)</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lcross">Lunar Crater Observation and Sensing Satellite (LCROSS)</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr6">Mariner 6</a></li>
                     <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr7">Mariner 7</a></li>
