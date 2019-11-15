@@ -22,6 +22,7 @@ import { lookupTarget } from 'api/target.js';
 import { lookupMission } from 'api/mission.js';
 import { lookupSpacecraft } from 'api/spacecraft.js';
 import { lookupInstrument } from 'api/instrument.js';
+import { Helmet } from 'react-helmet'
 
 const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
 const searchPages = ['tag']
@@ -73,7 +74,10 @@ class Main extends React.Component {
             return <ErrorMessage error={error} />
         } else {
             return (
-                <Router>
+                <Router basename="/demo/">
+                    <Helmet>
+                        <base href="/demo/"></base>
+                    </Helmet>
                     <Switch>
                         <Route path="/dataset/:lidvid" children={<ParentClass type="dataset" />} />
                         <Route path="/target/:lidvid" children={<ParentClass type="target" />} />
