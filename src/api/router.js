@@ -1,5 +1,5 @@
 const localSolr = (process.env.NODE_ENV === 'production') ? 'https://sbnpds4.psi.edu/solr' : 'http://localhost:1001/http://localhost:8983/solr'
-const remoteSolr = (process.env.NODE_ENV === 'production') ? 'https://pds-gamma.jpl.nasa.gov/services/search' : 'http://localhost:1001/https://pds-gamma.jpl.nasa.gov/services/search'
+const remoteSolr = /*(process.env.NODE_ENV === 'production') ? 'https://pds-gamma.jpl.nasa.gov/services/search' :*/ 'http://localhost:1001/https://pds-gamma.jpl.nasa.gov/services/search'
 
 const datasetsCollection = 'web-datasets-alias'
 const targetsCollection = 'web-targets-alias'
