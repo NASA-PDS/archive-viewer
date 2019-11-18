@@ -1,6 +1,5 @@
 {
   "name": "archive-viewer",
-  "homepage": "https://sbnarchivedemo.psi.edu/demo",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

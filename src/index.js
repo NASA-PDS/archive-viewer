@@ -42,7 +42,6 @@ const lookup = (type, lidvid) => {
 function ParentClass(props) {
     const { type } = props
     const lidvid = new LogicalIdentifier(useParams().lidvid).denormalizedLid
-    console.log(lidvid);
     const [ model, setModel ] = useState(null)
     
     if (model === null) {
@@ -76,7 +75,7 @@ class Main extends React.Component {
             return <ErrorMessage error={error} />
         } else {
             return (
-                <Router basename="/demo/">
+                <Router>
                     <Helmet>
                         <base href="/demo/"></base>
                     </Helmet>
