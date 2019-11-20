@@ -28,3 +28,13 @@ export default class LogicalIdentifier {
 function escape(str) {
     return str.replace(/:/g, '\\:')
 }
+function normalize(str) {
+    return str.replace(/:/g,'%3A') + '/'
+}
+function denormalize(str) {
+    if (str.split('')[str.length - 1] === '/') {
+        // still not sure if this ever happens... but it seems like it should
+        str.pop()
+    }
+    return str.replace(/%3[A,a]/g,':')
+}

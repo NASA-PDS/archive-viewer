@@ -11,7 +11,7 @@ export function lookupTags(tags, type) {
         [TagTypes.instrument]: router.instrumentsWeb
     }
 
-    if(!tags) {
+    if(!tags || tags.length === 0) {
         return new Promise((_, reject) => reject(new Error("Expected list of tags")))
     } 
 
