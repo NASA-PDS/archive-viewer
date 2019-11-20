@@ -4,7 +4,7 @@ import {httpGetFull, httpGetRelated, stitchWithWebFields} from 'api/common.js'
 
 export function lookupMission(lidvid) {
     if(!lidvid) {
-        return new Promise((_, reject) => reject(new Error("Expected mission parameter")))
+        return Promise.reject(new Error("Expected mission parameter"))
     }
     if(lidvid.constructor === String) {
         lidvid = new LID(lidvid)

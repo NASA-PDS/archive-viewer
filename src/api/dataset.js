@@ -4,7 +4,7 @@ import {httpGetFull, httpGet, httpGetIdentifiers, stitchWithWebFields} from 'api
 
 export function lookupDataset(lidvid) {
     if(!lidvid) {
-        return new Promise((_, reject) => reject(new Error("Expected dataset parameter")))
+        return Promise.reject(new Error("Expected dataset parameter"))
     }
     if(lidvid.constructor === String) {
         lidvid = new LID(lidvid)

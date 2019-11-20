@@ -7,14 +7,14 @@ const defaultParameters = () => { return {
     wt: 'json',
     rows: 100
 }}
-let fail = msg => new Promise((_, reject) => { reject(new Error(msg)) })
+let fail = msg => Promise.reject(new Error(msg))
 
 export function httpGet(endpoint, params, withCount) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
 
     if(params.q === "") {
         // don't let poorly formed queries through
-        return new Promise((resolve, _) => { resolve([])})
+        return Promise.resolve([])
     }
 
     return new Promise((resolve, reject) => 
@@ -23,7 +23,7 @@ export function httpGet(endpoint, params, withCount) {
 }
 
 export function httpGetIdentifiers(route, identifiers) {
-    if(!identifiers || identifiers.length === 0) return new Promise((resolve, _) => { resolve([])})
+    if(!identifiers || identifiers.length === 0) return Promise.resolve([])
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')

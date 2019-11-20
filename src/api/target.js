@@ -5,7 +5,7 @@ import {stitchWithRelationships, types as relationshipTypes } from 'api/relation
 
 export function lookupTarget(lidvid) {
     if(!lidvid) {
-        return new Promise((_, reject) => reject(new Error("Expected target parameter")))
+        return Promise.reject(new Error("Expected target parameter"))
     }
     if(lidvid.constructor === String) {
         lidvid = new LID(lidvid)

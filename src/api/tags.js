@@ -13,7 +13,7 @@ export function lookupTags(tags, type) {
     }
 
     if(!tags || tags.length === 0) {
-        return new Promise((_, reject) => reject(new Error("Expected list of tags")))
+        return Promise.reject(new Error("Expected list of tags"))
     } 
 
     let route = routeForTagType[type]
