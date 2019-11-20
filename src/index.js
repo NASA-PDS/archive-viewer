@@ -94,12 +94,6 @@ class Main extends React.Component {
 }
 
 function Index() {
-    const escapeLid = lid => {
-        const x = new LogicalIdentifier(lid).normalizedLid
-        console.log(x);
-        return x
-    }
-    
     return (
         <div>
             <h1>PDS Archive Viewer</h1>
@@ -111,24 +105,24 @@ function Index() {
                     <li><h3>Planets &#38; Satellites</h3></li>
                     <ul>
                         <li>
-                            <Link to={escapeLid('/target/urn:nasa:pds:context:target:planet.mercury')}>Mercury</Link>
+                            <Link to="/target/urn:nasa:pds:context:target:planet.mercury">Mercury</Link>
                         </li>
-                        <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:planet.venus")}>Venus</Link></li>
-                        <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:planet.earth")}>Earth</Link></li>
+                        <li><Link to="/target/urn:nasa:pds:context:target:planet.venus">Venus</Link></li>
+                        <li><Link to="/target/urn:nasa:pds:context:target:planet.earth">Earth</Link></li>
                         <ul>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.earth.moon")}>Moon</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.earth.moon">Moon</Link></li>
                         </ul>
-                        <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:planet.mars")}>Mars</Link></li>
+                        <li><Link to="/target/urn:nasa:pds:context:target:planet.mars">Mars</Link></li>
                         <ul>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.mars.deimos")}>Deimos</Link></li>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.mars.phobos")}>Phobos</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.deimos">Deimos</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.phobos">Phobos</Link></li>
                         </ul>
-                        <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:planet.jupiter")}>Jupiter</Link></li>
+                        <li><Link to="/target/urn:nasa:pds:context:target:planet.jupiter">Jupiter</Link></li>
                         <ul>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.jupiter.io")}>Io</Link></li>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.jupiter.europa")}>Europa</Link></li>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.jupiter.ganymede")}>Ganymede</Link></li>
-                            <li><Link to={escapeLid("/target/urn:nasa:pds:context:target:satellite.jupiter.callisto")}>Callisto</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.io">Io</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.europa">Europa</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.ganymede">Ganymede</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.callisto">Callisto</Link></li>
                         </ul>
                         <li><Link to="/target/urn:nasa:pds:context:target:planet.saturn">Saturn</Link></li>
                         <ul>
