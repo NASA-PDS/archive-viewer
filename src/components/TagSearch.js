@@ -2,6 +2,7 @@ import React from 'react';
 import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
+import { Link } from 'react-router-dom'
 
 export const TagTypes = {
     target: 'target',
@@ -33,7 +34,6 @@ export default class TagSearch extends React.Component {
             })
         } else {
             lookupTags(tags, type).then(result => {
-                console.log(result)
                 this.setState({
                     results: result,
                     loaded: true
@@ -56,7 +56,7 @@ export default class TagSearch extends React.Component {
                 <ul>
                     {results.map(result =>
                         <li key={result.logical_identifier}>
-                            <a href={`?${type}=${result.logical_identifier}`}>{result.display_name}</a>
+                            <Link to={`/${type}/${result.logical_identifier}`}>{result.display_name}</Link>
                         </li>
                     )}
                 </ul>

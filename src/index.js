@@ -5,6 +5,7 @@ import {
     Route,
     useParams,
     withRouter,
+    useLocation,
     Link
 } from 'react-router-dom'
 import ReactDOM from 'react-dom'
@@ -85,12 +86,23 @@ class Main extends React.Component {
                         <Route path="/instrument/:lidvid" children={<ParentClass type="instrument" />} />
                         <Route path="/mission/:lidvid" children={<ParentClass type="mission" />} />
                         <Route path="/spacecraft/:lidvid" children={<ParentClass type="spacecraft" />} />
-                        <Route path="/" children={<Index />} />
                     </Switch>
+                    <NoMatch />
                 </Router>
             )
         }
     }
+}
+
+function NoMatch() {
+    const query = new URLSearchParams(useLocation().search)
+    const params = {
+        tag: query.get('tag'),
+        type: query.get('type'),
+    }
+    return (!!params.tag && !!params.type)
+        ? <TagSearch tags={params.tag} type={params.type} />
+        : <Route path="/" children={<Index />} />
 }
 
 function Index() {
