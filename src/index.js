@@ -41,7 +41,7 @@ const lookup = (type, lidvid) => {
 
 function ParentClass(props) {
     const { type } = props
-    const lidvid = new LogicalIdentifier(useParams().lidvid).denormalizedLid
+    const lidvid = new LogicalIdentifier(useParams().lidvid)
     const [ model, setModel ] = useState(null)
     
     if (model === null) {
