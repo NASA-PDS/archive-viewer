@@ -24,24 +24,7 @@ export default class LogicalIdentifier {
     get escapedVid() {
         return escape(this.vid)
     }
-    get normalizedLid() {
-        return normalize(this.lid)
-    }
-    get denormalizedLid() {
-        return denormalize(this.lid)
-    }
 }
 function escape(str) {
     return str.replace(/:/g, '\\:')
-}
-function normalize(str) {
-    return str.replace(/:/g,'%3A') + '/'
-}
-function denormalize(str) {
-    if (str.split('')[str.length - 1] === '/') {
-        // still not sure if this ever happens... but it seems like it should
-        console.log('remove trailing slash');
-        str.pop()
-    }
-    return str.replace(/%3[A,a]/g,':')
 }
