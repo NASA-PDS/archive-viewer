@@ -40,7 +40,7 @@ export function httpGetFull(endpoints) {
         let calls = endpoints.map(endpoint => httpGet(endpoint.url, endpoint.params))
         Promise.all(calls).then(values => {
             let [core, webUI] = values
-            if(!core) {
+            if(!core || core.length === 0) {
                 reject(new Error(`None found`))
             }
             else if(webUI.length === 1 && core.length === 1) {

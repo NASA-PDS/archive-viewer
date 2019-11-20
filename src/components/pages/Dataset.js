@@ -175,7 +175,7 @@ function CollectionQuickLinks({dataset}) {
             { dataset.local_documents_url &&
                 <div>
                     <h3>View Local Documents</h3>
-                    <a href="{{data.localDocumentsUrl}}">
+                    <a href={dataset.local_documents_url}>
                         <img src="./images/icn-documents.png" />
                         <span>View Local Documents</span>
                     </a>
