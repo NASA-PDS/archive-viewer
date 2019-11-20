@@ -11,13 +11,19 @@ let fail = msg => new Promise((_, reject) => { reject(new Error(msg)) })
 
 export function httpGet(endpoint, params, withCount) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
+
+    if(params.q === "") {
+        // don't let poorly formed queries through
+        return new Promise((resolve, _) => { resolve([])})
+    }
+
     return new Promise((resolve, reject) => 
         web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data, withCount)), reject)
     )
 }
 
 export function httpGetIdentifiers(route, identifiers) {
-    if(!identifiers) return new Promise((resolve, _) => { resolve([])})
+    if(!identifiers || identifiers.length === 0) return new Promise((resolve, _) => { resolve([])})
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
@@ -59,7 +65,7 @@ export function httpGetFull(endpoints) {
 function stitchWithTools(result) {
     return new Promise((resolve, _) => {
         let tools = result.tools
-        if(!tools) {
+        if(!tools || tools.length === 0) {
             resolve(result)
         }
         let params = {
@@ -103,6 +109,8 @@ function arraysEquivalent(arr1, arr2) {
 export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
     return (previousResult) => {
+        if(!previousResult || previousResult.length === 0) return new Promise((resolve, _) => { resolve([])})
+        
         return new Promise((resolve, _) => {
             let identifiers = previousResult.map(doc => doc.identifier)
             let params = {
