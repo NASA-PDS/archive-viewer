@@ -43,10 +43,16 @@ function ParentClass(props) {
     const { type } = props
     const lidvid = new LogicalIdentifier(useParams().lidvid).denormalizedLid
     const [ model, setModel ] = useState(null)
+    const [err, setErr] = useState(null)
     
-    if (model === null) {
+    if(err !== null) {
+        return <ErrorMessage error={err}/> 
+    } else if (model === null) {
         lookup(type,lidvid).then(model => {
             setModel(model)
+        }, err => {
+            console.log(err)
+            setErr(err)
         })
         return <Loading fullscreen={true} />
     } else {
