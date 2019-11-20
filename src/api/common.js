@@ -45,7 +45,6 @@ export function httpGetFull(endpoints) {
             }
             else if(webUI.length === 1 && core.length === 1) {
                 let consolidated = Object.assign({}, core[0])
-                console.log()
                 resolve(Object.assign(consolidated, webUI[0]))
             } else if (core.length === 1) {
                 resolve(core[0])
