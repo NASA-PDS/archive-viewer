@@ -33,7 +33,6 @@ export default class TagSearch extends React.Component {
             })
         } else {
             lookupTags(tags, type).then(result => {
-                console.log(result)
                 this.setState({
                     results: result,
                     loaded: true

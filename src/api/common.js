@@ -45,7 +45,6 @@ export function httpGetFull(endpoints) {
             }
             else if(webUI.length === 1 && core.length === 1) {
                 let consolidated = Object.assign({}, core[0])
-                console.log()
                 resolve(Object.assign(consolidated, webUI[0]))
             } else if (core.length === 1) {
                 resolve(core[0])
@@ -72,7 +71,6 @@ function stitchWithTools(result) {
             q: tools.reduce((query, lid) => query + 'toolId:"' + lid + '" ', '')
         }
         httpGet(router.tools, params).then(toolLookup => {
-            console.log(toolLookup)
             result.tools = toolLookup
             resolve(result)
         }, err => {

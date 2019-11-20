@@ -96,7 +96,6 @@ class Main extends React.Component {
 function Index() {
     const escapeLid = lid => {
         const x = new LogicalIdentifier(lid).normalizedLid
-        console.log(x);
         return x
     }
     
