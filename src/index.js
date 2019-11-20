@@ -1,6 +1,6 @@
 import React from 'react';
-import { render } from 'react-snapshot';
 import 'css/main.scss';
+import ReactDOM from 'react-dom'
 import Dataset from 'components/pages/Dataset.js'
 import Target from 'components/pages/Target.js'
 import Mission from 'components/pages/Mission.js'
@@ -221,7 +221,7 @@ function Index() {
 
 // ========================================
 
-render(
+ReactDOM.render(
     <Main />,
     document.getElementById('root')
 );
