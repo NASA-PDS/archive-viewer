@@ -3,22 +3,48 @@ import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
 
+const defaultFetchSize = 50
 const defaultParameters = () => { return {
     wt: 'json',
-    rows: 100
+    rows: defaultFetchSize,
+    start: 0
 }}
 let fail = msg => Promise.reject(new Error(msg))
 
-export function httpGet(endpoint, params, withCount) {
+export function httpGet(endpoint, params, withCount, continuingFrom) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
-
+    continuingFrom = continuingFrom || []
     if(params.q === "") {
         // don't let poorly formed queries through
         return Promise.resolve([])
     }
 
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data, withCount)), reject)
+        // DO SOMETHING ABOUT WITHCOUNT
+
+        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => {
+            let fromSolr = response.data
+            
+            let docsAvailable = parseInt(fromSolr.response.numFound)
+            let currentPosition = parseInt(fromSolr.responseHeader.params.start)
+            let docs = fromSolr.response.docs
+            let numRemaining = docsAvailable - currentPosition - docs.length
+            if (numRemaining === 0 || (!!params.rows && params.rows != defaultFetchSize)) {
+                let docs = [...continuingFrom, ...desolrize(fromSolr)]
+                if(withCount === true) {
+                    resolve({
+                        count: docsAvailable,
+                        docs
+                    })
+                } else {
+                    resolve(docs)
+                }
+            }
+            else {
+                paramsWithDefaultsApplied.start = currentPosition + parseInt(paramsWithDefaultsApplied.rows)
+                httpGet(endpoint, paramsWithDefaultsApplied, null, [...continuingFrom, ...desolrize(fromSolr)]).then(resolve, reject)
+            }
+        }, reject)
     )
 }
 
