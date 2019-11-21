@@ -23,7 +23,6 @@ import { lookupTarget } from 'api/target.js';
 import { lookupMission } from 'api/mission.js';
 import { lookupSpacecraft } from 'api/spacecraft.js';
 import { lookupInstrument } from 'api/instrument.js';
-import { Helmet } from 'react-helmet'
 import LogicalIdentifier from 'services/LogicalIdentifier'
 
 const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
@@ -83,9 +82,6 @@ class Main extends React.Component {
         } else {
             return (
                 <Router>
-                    <Helmet>
-                        <base href="/demo/"></base>
-                    </Helmet>
                     <Switch>
                         <Route path="/dataset/:lidvid" children={<ParentClass type="dataset" />} />
                         <Route path="/target/:lidvid" children={<ParentClass type="target" />} />
