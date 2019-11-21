@@ -4,7 +4,6 @@ import {
     Switch,
     Route,
     useParams,
-    withRouter,
     useLocation,
     Link
 } from 'react-router-dom'
@@ -25,8 +24,6 @@ import { lookupSpacecraft } from 'api/spacecraft.js';
 import { lookupInstrument } from 'api/instrument.js';
 import LogicalIdentifier from 'services/LogicalIdentifier'
 
-const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
-const searchPages = ['tag']
 const lookup = (type, lidvid) => {
     let func = () => new Promise((_, reject) => reject(new Error("Invalid lookup")));
     switch (type) {
@@ -35,6 +32,7 @@ const lookup = (type, lidvid) => {
         case 'mission': func = lookupMission; break;
         case 'instrument': func = lookupInstrument; break;
         case 'spacecraft': func = lookupSpacecraft; break;
+        default: throw new Error(`Unexpected Lookup:\ntype: ${type}\nlidvid: ${lidvid}`)
     }
     return func(lidvid)
 }
@@ -44,9 +42,9 @@ function ParentClass(props) {
     const lidvid = new LogicalIdentifier(useParams().lidvid)
     const [ model, setModel ] = useState(null)
     const [err, setErr] = useState(null)
-    
+
     if(err !== null) {
-        return <ErrorMessage error={err}/> 
+        return <ErrorMessage error={err}/>
     } else if (model === null) {
         lookup(type,lidvid).then(model => {
             setModel(model)
@@ -73,10 +71,10 @@ class Main extends React.Component {
             model: null,
         }
     }
-    
+
     render() {
         const { error } = this.state
-        
+
         if (error) {
             return <ErrorMessage error={error} />
         } else {
