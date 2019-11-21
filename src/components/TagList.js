@@ -10,7 +10,7 @@ function TagList({tags, type}) {
             <h3>Relevant Tags: </h3>
             {tags.map(tag => 
                 <div className="banner" key={tag}>
-                    <a className="ignore-a-styling" href={`?tag=${tag}&type=${type}`}>
+                    <a className="ignore-a-styling" href={`/?tag=${tag}&type=${type}`}>
                         <span>{tag}</span>
                     </a>
                 </div>
