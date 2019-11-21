@@ -108,7 +108,7 @@ function NoMatch() {
     }
     return (!!params.tag && !!params.type)
         ? <TagSearch tags={params.tag} type={params.type} />
-        : <Route path="/" children={<Index />} />
+        : <Route exact path="/" children={<Index />} />
 }
 
 function Index() {
