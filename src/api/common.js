@@ -11,6 +11,8 @@ const defaultParameters = () => { return {
 }}
 let fail = msg => Promise.reject(new Error(msg))
 
+// Base-level solr fetch function, that all other functions will eventually call. 
+// Recursively fetches all results for a particular Solr query
 export function httpGet(endpoint, params, withCount, continuingFrom) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
     continuingFrom = continuingFrom || []
@@ -20,8 +22,6 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
     }
 
     return new Promise((resolve, reject) => 
-        // DO SOMETHING ABOUT WITHCOUNT
-
         web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => {
             let fromSolr = response.data
             
@@ -29,6 +29,8 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
             let currentPosition = parseInt(fromSolr.responseHeader.params.start)
             let docs = fromSolr.response.docs
             let numRemaining = docsAvailable - currentPosition - docs.length
+            
+            // if this is the only/last batch, desolrize it and return
             if (numRemaining === 0 || (!!params.rows && params.rows != defaultFetchSize)) {
                 let docs = [...continuingFrom, ...desolrize(fromSolr)]
                 if(withCount === true) {
@@ -40,6 +42,7 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
                     resolve(docs)
                 }
             }
+            // otherwise, call the next batch and pass the resolve function down the line
             else {
                 paramsWithDefaultsApplied.start = currentPosition + parseInt(paramsWithDefaultsApplied.rows)
                 httpGet(endpoint, paramsWithDefaultsApplied, null, [...continuingFrom, ...desolrize(fromSolr)]).then(resolve, reject)
