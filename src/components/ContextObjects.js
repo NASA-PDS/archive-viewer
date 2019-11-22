@@ -39,6 +39,9 @@ class Header extends React.Component {
     }
 }
 
+const ridiculousLength = 10000
+const previewLength = 750
+
 class Description extends React.Component {
     static type = {
         target: 'target_',
@@ -49,11 +52,12 @@ class Description extends React.Component {
     }
     constructor(props) {
         super(props)
+        const descriptionProbablyReasonable = props.model.display_description && props.model.display_description.length < ridiculousLength
         this.state = {
             model: props.model,
             type: props.type,
-            alwaysShow: props.model.display_description ? true : false,
-            showFull: props.model.display_description ? true : false,
+            alwaysShow: descriptionProbablyReasonable,
+            showFull: descriptionProbablyReasonable,
             loaded: false
         }
     }
@@ -62,7 +66,6 @@ class Description extends React.Component {
         let self = this
         const {display_description} = self.state.model
         const description = display_description ? display_description : self.state.model[`${self.state.type}description`]
-        const previewLength = 750
         
         function expand(e) {
             e.preventDefault()
@@ -97,4 +100,7 @@ class Description extends React.Component {
     }
 }
 
-export {Header,Description}
+function Menu() {
+    return <a className="menu-link" href="./"><img src="./images/menu.svg"/></a>
+}
+export {Header,Description,Menu}

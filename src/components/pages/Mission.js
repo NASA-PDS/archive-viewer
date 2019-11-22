@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
-import {Header, Description} from 'components/ContextObjects'
+import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
 import { Link } from 'react-router-dom'
@@ -32,14 +32,17 @@ export default class Mission extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={mission} type={Header.type.mission} />
-                <Description model={mission} type={Description.type.mission} />
-                {!!spacecraft ? 
-                    (<div className="mission-spacecraft-list">
-                        <h2>View the mission's data for:</h2>
-                        { spacecraft.map(ButtonForSpacecraft)}
-                    </div>)
-                    : <Loading/>
-                 }
+                <Menu/>
+                <div className="co-content">
+                    <Description model={mission} type={Description.type.mission} />
+                    {!!spacecraft ? 
+                        (<div className="mission-spacecraft-list">
+                            <h2>View the mission's data for:</h2>
+                            { spacecraft.map(ButtonForSpacecraft)}
+                        </div>)
+                        : <Loading/>
+                    }
+                </div>
             </div>
         )
     }

@@ -9,7 +9,7 @@ const defaultParameters = () => { return {
 }}
 let fail = msg => new Promise((_, reject) => { reject(new Error(msg)) })
 
-export function httpGet(endpoint, params) {
+export function httpGet(endpoint, params, withCount) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
 
     if(params.q === "") {
@@ -18,7 +18,7 @@ export function httpGet(endpoint, params) {
     }
 
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data)), reject)
+        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => resolve(desolrize(response.data, withCount)), reject)
     )
 }
 
@@ -40,7 +40,7 @@ export function httpGetFull(endpoints) {
         let calls = endpoints.map(endpoint => httpGet(endpoint.url, endpoint.params))
         Promise.all(calls).then(values => {
             let [core, webUI] = values
-            if(!core) {
+            if(!core || core.length === 0) {
                 reject(new Error(`None found`))
             }
             else if(webUI.length === 1 && core.length === 1) {

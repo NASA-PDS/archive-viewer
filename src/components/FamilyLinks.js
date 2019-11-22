@@ -32,7 +32,7 @@ export default class Main extends React.Component {
             <div className="family-links">
                 {!isBundle && bundles.length > 0 &&
                     <div className="bundle-ref">
-                        <img src="/images/icn-bundle.png" />
+                        <img src="./images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
                             <Link key={bundle.identifier} className="adjacent-link" to={'/dataset/' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></Link>

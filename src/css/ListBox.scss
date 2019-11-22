@@ -1,6 +1,5 @@
 @import 'variables';
 
-$list-item-padding: 20px;
 
 .list-box {
     @include list-box;
@@ -85,4 +84,7 @@ $list-item-padding: 20px;
             font-size: 0.8em;
         }
     }
+}
+.co-content > .no-items {
+    display: none;
 }

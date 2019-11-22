@@ -8,7 +8,8 @@ export function lookupTags(tags, type) {
         [TagTypes.target]: router.targetsWeb,
         [TagTypes.spacecraft]: router.spacecraftWeb,
         [TagTypes.mission]: router.missionsWeb,
-        [TagTypes.instrument]: router.instrumentsWeb
+        [TagTypes.instrument]: router.instrumentsWeb,
+        [TagTypes.dataset]: router.datasetWeb,
     }
 
     if(!tags || tags.length === 0) {
@@ -17,7 +18,7 @@ export function lookupTags(tags, type) {
 
     let route = routeForTagType[type]
     let params = {
-        q: `tags:${tags}`
+        q: tags.reduce((query, tag) => query + 'tags:"' + tag + '" ', '')
     }
     return httpGet(route, params)
 }

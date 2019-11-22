@@ -109,88 +109,93 @@ function Index() {
     return (
         <div>
             <h1>PDS Archive Viewer</h1>
-            <div><p className="resource-description">Here are some links to get started...</p></div>
             <div className="co-main">
+            <div><p className="resource-description">Here are some links to get started...</p></div>
+
             <section>
                 <h2>Targets</h2>
                 <ul>
                     <li><h3>Planets &#38; Satellites</h3></li>
                     <ul>
-                        <li>
-                            <Link to="/target/urn:nasa:pds:context:target:planet.mercury">Mercury</Link>
-                        </li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.venus">Venus</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.earth">Earth</Link></li>
+                        <li><h3>Planets &#38; Satellites</h3></li>
                         <ul>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.earth.moon">Moon</Link></li>
+                            <li>
+                                <Link to="/target/urn:nasa:pds:context:target:planet.mercury">Mercury</Link>
+                            </li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.venus">Venus</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.earth">Earth</Link></li>
+                            <ul>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.earth.moon">Moon</Link></li>
+                            </ul>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.mars">Mars</Link></li>
+                            <ul>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.deimos">Deimos</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.phobos">Phobos</Link></li>
+                            </ul>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.jupiter">Jupiter</Link></li>
+                            <ul>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.io">Io</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.europa">Europa</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.ganymede">Ganymede</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.callisto">Callisto</Link></li>
+                            </ul>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.saturn">Saturn</Link></li>
+                            <ul>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.atlas">Atlas</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.calypso">Calypso</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.daphnis">Daphnis</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.dione">Dione</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.enceladus">Enceladus</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.helene">Helene</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.hyperion">Hyperion</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.iapetus">Iapetus</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.janus">Janus</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.mimas">Mimas</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.pan">Pan</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.pandora">Pandora</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.rhea">Rhea</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.telesto">Telesto</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.tethys">Tethys</Link></li>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.titan">Titan</Link></li>
+                            </ul>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.uranus">Uranus</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:planet.neptune">Neptune</Link></li>
                         </ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.mars">Mars</Link></li>
+                        <li><h3>Dwarf Planets &#38; Satellites</h3></li>
                         <ul>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.deimos">Deimos</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.mars.phobos">Phobos</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</Link></li>
+                            <ul>
+                                <li><Link to="/target/urn:nasa:pds:context:target:satellite.134340_pluto.charon">Charon</Link></li>
+                            </ul>
                         </ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.jupiter">Jupiter</Link></li>
+                        <li><h3>Asteroids</h3></li>
                         <ul>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.io">Io</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.europa">Europa</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.ganymede">Ganymede</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.jupiter.callisto">Callisto</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.4_vesta">4 Vesta</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.21_lutetia">21 Lutetia</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.243_ida">243 Ida</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.253_mathilde">253 Mathilde</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.951_gaspra">951 Gaspra</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.433_eros">433 Eros</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.2867_steins">2867 Steins</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.5535_annefrank">5535 AnneFrank</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.25143_itokawa">25143 Itokawa</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:asteroid.101955_bennu">101955 Bennu</Link></li>
                         </ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.saturn">Saturn</Link></li>
+                        <li><h3>Comets</h3></li>
                         <ul>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.atlas">Atlas</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.calypso">Calypso</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.daphnis">Daphnis</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.dione">Dione</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.enceladus">Enceladus</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.helene">Helene</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.hyperion">Hyperion</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.iapetus">Iapetus</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.janus">Janus</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.mimas">Mimas</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.pan">Pan</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.pandora">Pandora</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.rhea">Rhea</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.telesto">Telesto</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.tethys">Tethys</Link></li>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.saturn.titan">Titan</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:comet.9p_tempel_1">9P Tempel 1</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:comet.19p_borrelly">19P Borrelly</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:comet.67p_churyumov-gerasimenko">67P Churyumov-Gerasimenko</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:comet.81p_wild_2">81P Wild 2</Link></li>
+                            <li><Link to="/target/urn:nasa:pds:context:target:comet.103p_hartley_2">103P Hartley 2</Link></li>
                         </ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.uranus">Uranus</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:planet.neptune">Neptune</Link></li>
-                    </ul>
-                    <li><h3>Dwarf Planets &#38; Satellites</h3></li>
-                    <ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</Link></li>
-                        <ul>
-                            <li><Link to="/target/urn:nasa:pds:context:target:satellite.134340_pluto.charon">Charon</Link></li>
-                        </ul>
-                    </ul>
-                    <li><h3>Asteroids</h3></li>
-                    <ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.4_vesta">4 Vesta</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.21_lutetia">21 Lutetia</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.243_ida">243 Ida</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.253_mathilde">253 Mathilde</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.951_gaspra">951 Gaspra</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.433_eros">433 Eros</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.2867_steins">2867 Steins</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.5535_annefrank">5535 AnneFrank</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.25143_itokawa">25143 Itokawa</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:asteroid.101955_bennu">101955 Bennu</Link></li>
-                    </ul>
-                    <li><h3>Comets</h3></li>
-                    <ul>
-                        <li><Link to="/target/urn:nasa:pds:context:target:comet.9p_tempel_1">9P Tempel 1</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:comet.19p_borrelly">19P Borrelly</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:comet.67p_churyumov-gerasimenko">67P Churyumov-Gerasimenko</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:comet.81p_wild_2">81P Wild 2</Link></li>
-                        <li><Link to="/target/urn:nasa:pds:context:target:comet.103p_hartley_2">103P Hartley 2</Link></li>
                     </ul>
                 </ul>
             </section>
+
             <section>
-                <h2>Spacecraft</h2>
+            <h2>Spacecraft</h2>
                 <ul>
                     <li><Link to="/spacecraft/urn:nasa:pds:context:instrument_host:spacecraft.a17c">Apollo 17</Link></li>
                     <li><Link to="/spacecraft/urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini Orbiter</Link></li>
@@ -227,14 +232,16 @@ function Index() {
                     <li><Link to="/spacecraft/urn:nasa:pds:context:instrument_host:spacecraft.vg2">Voyager 2</Link></li>
                 </ul>
             </section>
+
             <section>
-                <h2>Datasets</h2>
+            <h2>Datasets</h2>
                 <ul>
                     <li><Link to="/dataset/urn:nasa:pds:orex.ocams">OSIRIS-REx OCAMS Bundle</Link></li>
                     <li><Link to="/dataset/urn:nasa:pds:apollodoc">Apollo Documents Bundle</Link></li>
                     <li><Link to="/dataset/urn:nasa:pds:insight_cameras">InSight Cameras Bundle</Link></li>
                 </ul>
             </section>
+
             </div>
         </div>
     )

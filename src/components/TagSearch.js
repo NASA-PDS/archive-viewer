@@ -8,7 +8,8 @@ export const TagTypes = {
     target: 'target',
     mission: 'mission',
     spacecraft: 'spacecraft',
-    instrument: 'instrument'
+    instrument: 'instrument',
+    dataset: 'dataset',
 }
 
 export default class TagSearch extends React.Component {
@@ -45,14 +46,16 @@ export default class TagSearch extends React.Component {
     
     render() {
         const {loaded, results, error, type, tags} = this.state
+
         if(error) {
             return <ErrorMessage error={error}></ErrorMessage>
         } else if(!loaded) {
             return <Loading fullscreen={true}/>
         }
+        results.sort((a, b) => a.display_name.localeCompare(b.display_name))
         return (
             <div>
-                <h1>{tags}</h1>
+                <h1>{tags.join(' or ')}</h1>
                 <ul>
                     {results.map(result =>
                         <li key={result.logical_identifier}>

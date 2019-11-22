@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'
-import LogicalIdentifier from 'services/LogicalIdentifier'
+import React from 'react';
 import CollectionList from 'components/CollectionList.js'
 import FamilyLinks from 'components/FamilyLinks.js'
+import RelatedTools from 'components/RelatedTools'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {Description} from 'components/ContextObjects'
 import { Link } from 'react-router-dom'
+import {DatasetTagList} from 'components/TagList'
 
 export default class Dataset extends React.Component {
 
@@ -21,9 +21,9 @@ export default class Dataset extends React.Component {
         getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
         getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
         getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
-    }   
+    }
 
-    render() {    
+    render() {
         const {dataset, isBundle, targets, spacecraft, instruments} = this.state
         return (
             <div>
@@ -32,11 +32,13 @@ export default class Dataset extends React.Component {
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
                     <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
+                    <DatasetTagList tags={dataset.tags}/>
                     <Description model={dataset} type={Description.type.dataset}/>
 
-                    { isBundle && 
+                    { isBundle &&
                         <CollectionList dataset={dataset} />
                     }
+                    <RelatedTools tools={dataset.tools}/>
                     <CollectionQuickLinks dataset={dataset} />
                     <CollectionDownloads dataset={dataset} />
 
@@ -45,7 +47,6 @@ export default class Dataset extends React.Component {
                 <div className="related-references">
                     <RelatedPDS3 dataset={dataset} />
                     <Superseded dataset={dataset} />
-                    <RelatedTools dataset={dataset} />
                     <RelatedData dataset={dataset} />
                 </div>
             </div>
@@ -59,7 +60,7 @@ function Title({dataset}) {
     return (
         <h1 itemProp="name">
             <div className="image-container">
-                <img src="/images/icn-bundle.png" />
+                <img src="./images/icn-bundle.png" />
             </div>
             <div className="resource-title">
                 { title }
@@ -87,7 +88,7 @@ function Metadata(props) {
     return (
         <aside className="main-aside">
             <section className="dataset-metadata">
-                {isBundle && 
+                {isBundle &&
                     <h2>PDS4 Bundle</h2>
                 }
                 {!isBundle &&
@@ -110,10 +111,10 @@ function Metadata(props) {
                 {dataset.doi &&
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
                 }
-                
+
                 <AuthorList authors={dataset.citation_author_list} />
                 <EditorList editors={dataset.citation_editor_list} />
-                
+
                 {/* Hidden Data Values */}
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
@@ -125,14 +126,17 @@ function Metadata(props) {
             <section className="dataset-links">
                 <BrowseButton dataset={dataset}></BrowseButton>
                 {dataset.download_url &&
-                    <a href={dataset.download_url}><img src="/images/icn-download.png" /><span> Download All 
-                        {dataset.download_size && 
+                    <a href={dataset.download_url}><img src="./images/icn-download.png" /><span> Download All
+                        {dataset.download_size &&
                             <span className="adjacent-link download-size">({ dataset.download_size })</span>
                         }
                         </span></a>
                 }
                 {dataset.checksum_url &&
-                    <a href={dataset.checksum_url}><img src="/images/icn-checksum.png" /><span> View Checksums </span></a>
+                    <a href={dataset.checksum_url}><img src="./images/icn-checksum.png" /><span> View Checksums </span></a>
+                }
+                {dataset.resource_url &&
+                    <a href={dataset.resource_url}><img src="./images/icn-external.png" /><span> View Resource </span></a>
                 }
             </section>
         </aside>
@@ -143,8 +147,8 @@ function AuthorList({authors}) {
     const list = authors ? authors.split(';') : []
     return list ? (
         <ul>Author(s):<br/>
-            {list.map(author =>  
-                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
+            {list.map(author =>
+                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>
             )}
         </ul>
     ) : null
@@ -154,8 +158,8 @@ function EditorList({editors}) {
     const list = editors ? editors.split(';') : []
     return list ? (
         <ul>Editor(s):<br/>
-            {list.map(editor =>  
-                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   
+            {list.map(editor =>
+                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>
             )}
         </ul>
     ) : null
@@ -163,7 +167,7 @@ function EditorList({editors}) {
 
 function BrowseButton({dataset}) {
     let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url
-    return <a href={url}><img src="/images/icn-folder.png" /><span> Browse All </span></a>
+    return <a href={url}><img src="./images/icn-folder.png" /><span> Browse All </span></a>
 }
 
 function CollectionQuickLinks({dataset}) {
@@ -172,23 +176,23 @@ function CollectionQuickLinks({dataset}) {
             { dataset.local_documents_url &&
                 <div>
                     <h3>View Local Documents</h3>
-                    <a href="{{data.localDocumentsUrl}}">
-                        <img src="/images/icn-documents.png" />
+                    <a href={dataset.local_documents_url}>
+                        <img src="./images/icn-documents.png" />
                         <span>View Local Documents</span>
                     </a>
                 </div>
             }
-            { dataset.example && 
+            { dataset.example &&
                 <div>
-                    { dataset.collection_type === "Document"?     
+                    { dataset.collection_type === "Document"?
                         <h3>Key Document</h3> :
                         <h3>Example File</h3>
                     }
-                    
+
                     <a href={dataset.example.url}>
                         { dataset.example.thumbnail_url ?
                             <img src={dataset.example.thumbnail_url} /> :
-                            <img src="/images/icn-file.png" />
+                            <img src="./images/icn-file.png" />
                         }
                         <span>{ dataset.example.title }</span>
                     </a>
@@ -206,22 +210,22 @@ function CollectionDownloads({dataset}) {
                 <h3>Download packages:</h3>
                 <ul>
                     <li>
-                        <img src="/images/icn-package.png" />
-                        <a href={dataset.download_url}> 
-                            <span> Download All 
+                        <img src="./images/icn-package.png" />
+                        <a href={dataset.download_url}>
+                            <span> Download All
                             { dataset.download_size &&
-                                <span class="download-size">({ dataset.download_size })</span> 
+                                <span class="download-size">({ dataset.download_size })</span>
                             }
                             </span>
                         </a>
                     </li>
                     { dataset.download_packages.map(pkg => (
                         <li key={pkg.download_url}>
-                            <img src="/images/icn-package.png" />
+                            <img src="./images/icn-package.png" />
                             <a href={pkg.download_url}>
-                                <span> { pkg.name } 
+                                <span> { pkg.name }
                                 { pkg.download_size &&
-                                    <span class="download-size">({ pkg.download_size })</span> 
+                                    <span class="download-size">({ pkg.download_size })</span>
                                 }
                                 </span>
                             </a>
@@ -238,12 +242,12 @@ function Citation(props) {
     if(citation) {
         return (
             <section className="dataset-citation">
-                <img className="start-quote" src="/images/quotes-start.png" />
+                <img className="start-quote" src="./images/quotes-start.png" />
                 <div>
                     <p>Use the following citation to reference this data set:</p>
                     <p className="citation">"{ citation }"</p>
                 </div>
-                <img className="end-quote" src="/images/quotes-end.png" />
+                <img className="end-quote" src="./images/quotes-end.png" />
             </section>
         )
     } else return null
@@ -255,7 +259,7 @@ function RelatedPDS3(props) {
         return (
             <section className="dataset-pds3">
                 <h3 className="header"> PDS3 versions of this dataset: </h3>
-                <a href={pds3}><img className="tiny-icon" src="/images/icn-folder-rnd.png" />Click here to browse</a>
+                <a href={pds3}><img className="tiny-icon" src="./images/icn-folder-rnd.png" />Click here to browse</a>
             </section>
         )
     } else return null
@@ -268,28 +272,10 @@ function Superseded(props) {
             <section className="dataset-superseded">
                 <h3 className="header"> Superseded versions of this data set: </h3>
                 <ul>
-                    {superseded.map(ref => 
+                    {superseded.map(ref =>
                         <li key={ref.browse_url}>
                             {ref.name}
-                            <a href={ref.browse_url}><img className="tiny-icon" src="/images/icn-folder-rnd.png" /></a>
-                        </li>
-                    )}
-                </ul>
-            </section>
-        )
-    } else return null
-}
-
-function RelatedTools(props) {
-    const tools = props.dataset.related_tools
-    if(tools) {
-        return (
-            <section className="dataset-related">
-                <h3 className="header"> Related tools: </h3>
-                <ul>
-                    {tools.map(ref => 
-                        <li key={ref.url}>
-                            <a href={ref.url}>{ref.name}</a>
+                            <a href={ref.browse_url}><img className="tiny-icon" src="./images/icn-folder-rnd.png" /></a>
                         </li>
                     )}
                 </ul>
@@ -305,7 +291,7 @@ function RelatedData(props) {
             <section className="dataset-related">
                 <h3 className="header"> Related data: </h3>
                 <ul>
-                    {data.map(ref => 
+                    {data.map(ref =>
                         <li key={ref.lid}>
                             <Link to={'/dataset/' + ref.lid}>{ref.name}</Link>
                         </li>

@@ -74,7 +74,7 @@ function CollectionList({ collections, loaded }) {
                 <div className="actions">
                     {collection.download_url && (
                         <a href={collection.download_url}>
-                            <img src="/images/icn-download-rnd.png"/> 
+                            <img src="./images/icn-download-rnd.png"/> 
                             {collection.download_size && ( 
                                 <span className="download-size">({collection.download_size})</span> 
                             )}

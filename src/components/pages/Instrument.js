@@ -1,12 +1,13 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
-import {Header, Description} from 'components/ContextObjects'
+import {Header, Description, Menu} from 'components/ContextObjects'
 import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import {InstrumentTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
+import PDS3Results from 'components/PDS3Results'
 import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Instrument extends React.Component {
@@ -35,16 +36,20 @@ export default class Instrument extends React.Component {
         else return (
             <div className="co-main">
                 <Header model={instrument} type={Header.type.instrument}/>
+                <Menu/>
                 <aside className="main-aside sidebox">
                     <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                     <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
                 </aside>
-                <InstrumentTagList tags={instrument.tags} />
-                <Description model={instrument} type={Description.type.instrument} />
-                <HTMLBox markup={instrument.html1} />
-                <RelatedTools tools={instrument.tools}/>
-                <DatasetListBox items={datasets} />
-                <HTMLBox markup={instrument.html2} />
+                <div className="co-content">
+                    <InstrumentTagList tags={instrument.tags} />
+                    <Description model={instrument} type={Description.type.instrument} />
+                    <HTMLBox markup={instrument.html1} />
+                    <RelatedTools tools={instrument.tools}/>
+                    <DatasetListBox items={datasets} />
+                    <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title}/>
+                    <HTMLBox markup={instrument.html2} />
+                </div>
             </div>
         )
     }
