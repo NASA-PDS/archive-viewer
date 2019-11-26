@@ -45,7 +45,7 @@ export default class PDS3Results extends React.Component {
         let query = new URLSearchParams(params)
         return (
             <div className="pds3-results">
-                <h2 className="header">There {count === 1 ? `is one older (PDS3) dataset` : `are ${count} older (PDS3) datasets`} available:</h2>
+                <h2 className="header">There {count === 1 ? `is one (legacy) PDS3 dataset` : `are ${count} (legacy) PDS3 datasets`} available:</h2>
                 <ul>
                     {docs.map(dataset => 
                         <li key={dataset.identifier}>
