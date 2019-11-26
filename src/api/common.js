@@ -55,7 +55,8 @@ export function httpGetIdentifiers(route, identifiers) {
     if(!identifiers || identifiers.length === 0) return Promise.resolve([])
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
     let params = {
-        q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', '')
+        q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', ''),
+        fl: 'identifier, title'
     }
     return httpGet(route, params)
 }

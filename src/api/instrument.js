@@ -15,6 +15,7 @@ export function lookupInstrument(lidvid) {
             url: router.instrumentsCore,
             params: {
                 q: `identifier:"${lidvid.escaped}" AND data_class:"Instrument"`,
+                fl: 'identifier, title, instrument_description, instrument_host_ref'
             }
         },
         {
@@ -30,7 +31,8 @@ export function getSpacecraftForInstrument(instrument) {
     let instrumentLid = new LID(instrument.identifier)
     let knownSpacecraft = instrument.instrument_host_ref
     let params = {
-        q: `instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`
+        q: `instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
+        fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
     }
     return httpGetRelated(params, router.spacecraftCore, knownSpacecraft)
         .then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
@@ -41,7 +43,8 @@ export function getDatasetsForInstrument(instrument) {
     let instrumentLid = new LID(instrument.identifier)
 
     let params = {
-        q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`
+        q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))

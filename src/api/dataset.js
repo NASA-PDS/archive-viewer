@@ -15,6 +15,7 @@ export function lookupDataset(lidvid) {
             url: router.datasetCore,
             params: {
                 q: `identifier:"${lidvid.escapedLid}"`,
+                fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, resource_url, citation_author_list, citation_editor_list, collection_type, collection_ref, version_id'
             }
         },
         {
@@ -61,7 +62,8 @@ export function getBundlesForCollection(dataset) {
     let lid = new LID(dataset.identifier, dataset.version_id)
     let params = {
             wt: 'json',
-            q: `product_class:"Product_Bundle" AND collection_ref:"${lid.lidvid}"`
+            q: `product_class:"Product_Bundle" AND collection_ref:"${lid.lidvid}"`,
+            fl: 'identifier, title'
         }
     
     return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name'], router.datasetWeb))

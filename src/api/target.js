@@ -16,6 +16,7 @@ export function lookupTarget(lidvid) {
             url: router.targetsCore,
             params: {
                 q: `identifier:"${lidvid.escaped}" AND data_class:"Target"`,
+                fl: 'identifier, title, target_description'
             }
         },
         {
@@ -30,7 +31,8 @@ export function lookupTarget(lidvid) {
 export function getSpacecraftForTarget(target) {
     let targetLid = new LID(target.identifier)
     let params = {
-        q: `target_ref:${targetLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`
+        q: `target_ref:${targetLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
+        fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
     }
     return httpGetRelated(params, router.spacecraftCore, [])
         .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
@@ -41,7 +43,8 @@ export function getDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
-        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT instrument_ref:*)`
+        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT instrument_ref:*)`,
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
