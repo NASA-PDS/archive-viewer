@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields} from 'api/common.js'
+import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function lookupSpacecraft(lidvid) {
@@ -30,13 +30,19 @@ export function lookupSpacecraft(lidvid) {
 
 export function getMissionsForSpacecraft(spacecraft) {
     let spacecraftLid = new LID(spacecraft.identifier)
-    let knownMissions = spacecraft.investigation_ref
-    let params = {
-        q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`,
-        fl: 'identifier, title, investigation_description, instrument_host_ref'
+
+    if(!!spacecraft.mission_override) {
+        return httpGetIdentifiers(router.missionsCore, [spacecraft.mission_override])
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+    } else {
+        let knownMissions = spacecraft.investigation_ref
+        let params = {
+            q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`,
+            fl: 'identifier, title, investigation_description, instrument_host_ref'
+        }
+        return httpGetRelated(params, router.missionsCore, knownMissions)
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
     }
-    return httpGetRelated(params, router.missionsCore, knownMissions)
-        .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
 }
 
 export function getInstrumentsForSpacecraft(spacecraft) {
