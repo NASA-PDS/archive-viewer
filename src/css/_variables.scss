@@ -1,0 +1,85 @@
+$link: #0B4FA3;
+$blue: #859ec8;
+$red: #812517;
+$darkBlue: #08275e;
+
+$superLightGrey: #f6f6f6;
+$lightGrey: #ededed;
+$moderatelyLightGrey: #dadada;
+$grey: #c6c6c6;
+$darkGrey: #808080;
+$superDarkGrey: #646464;
+
+$main-padding: 16px;
+
+$readable-width: 1200px;
+$list-item-padding: 20px;
+
+@mixin list-box {
+    padding: 0 0.5em;
+
+    border-left: 2px solid $blue;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+@mixin button {
+    margin: 0.5em;
+    padding: 0.5em;
+    cursor: pointer;
+    border: 1px solid darken($link,10%);
+    background: $link;
+    border-radius: 0.25em;
+    color: white;
+}
+@mixin sidebox {
+    width: 300px;
+    background: $lightGrey;
+    box-shadow: 1px 1px 2px #dadada;
+    background-color: $lightGrey;
+    padding: 5px 20px 15px 20px;
+    word-wrap: break-word;
+    .list-box {
+        border-left: none;
+    }
+}
+@mixin tangent-box {
+    box-shadow: 1px 1px 2px #dadada;
+    background-color: $lightGrey;
+    padding: 0 20px 0 20px;
+    margin: 20px;
+    .header {
+        display: block;
+        margin: 0 -20px 15px -20px;
+        padding: 15px;
+        text-align: center;
+        color: white;
+        font-size: 1.3em;
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    li {
+        margin-bottom: 0.2em;
+    }
+}
+@mixin tangent-box-default-style {
+    border: 2px solid $blue;
+    .header {
+        background-color: $blue;
+    }
+}
+@mixin list {
+    margin: 0.5em 0;
+    padding: 0;
+    li {
+        list-style: none;
+        padding-left: $list-item-padding;
+        display: block;
+        &:not(:last-child) {
+            margin-bottom: 5px;
+        }
+    }
+    
+}

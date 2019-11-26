@@ -1,6 +1,6 @@
 {
-  "short_name": "Dataset Viewer",
-  "name": "PDS Archive Dataset Viewer",
+  "short_name": "Archive Viewer",
+  "name": "PDS Archive Viewer",
   "icons": [
     {
       "src": "favicon.ico",
