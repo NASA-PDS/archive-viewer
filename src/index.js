@@ -18,13 +18,14 @@ import { lookupInstrument } from 'api/instrument.js';
 const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
 const searchPages = ['tag']
 const lookup = (type, lidvid) => {
-    let func = () => new Promise((_, reject) => reject(new Error("Invalid lookup")));
+    let func = () => Promise.reject(new Error("Invalid lookup"));
     switch (type) {
         case 'dataset': func = lookupDataset; break;
         case 'target': func = lookupTarget; break;
         case 'mission': func = lookupMission; break;
         case 'instrument': func = lookupInstrument; break;
         case 'spacecraft': func = lookupSpacecraft; break;
+        default: break;
     }
     return func(lidvid)
 }

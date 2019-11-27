@@ -1,6 +1,5 @@
 import React from 'react';
 import 'css/BrowseTable.scss'
-import LID from 'services/LogicalIdentifier'
 import Loading from 'components/Loading.js'
 
 /* ------ Constants ------ */
@@ -61,18 +60,11 @@ class BrowseTables extends React.Component {
 }
 
 export class SpacecraftBrowseTable extends BrowseTables {
-    constructor(props) {
-        super(props)
-    }
     query = 'spacecraft'
     type = 'Spacecraft'
     sectioned = false
-
 }
 export class InstrumentBrowseTable extends BrowseTables {
-    constructor(props) {
-        super(props)
-    }
     query = 'instrument'
     type = 'Instruments'
     sectioned = true

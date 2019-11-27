@@ -12,7 +12,6 @@ class Header extends React.Component {
 
     constructor(props) {
         super(props)
-        const model = props.model
         this.state = {
             model: props.model,
             type: props.type,
@@ -23,16 +22,16 @@ class Header extends React.Component {
     render() {
         let self = this
         const {model,type} = self.state
-        const {display_name, title, image_url} = this.state.model
+        const {display_name, title, image_url} = model
         const name = display_name ? display_name : title
         const pageTitle = name + ' - PDS Archive Viewer'
         return (
-            <header className={`co-header ${this.state.type}-header ${this.state.type === Header.type.spacecraft ? 'subheader' : ''}`}>
+            <header className={`co-header ${type}-header ${type === Header.type.spacecraft ? 'subheader' : ''}`}>
                 <Helmet>
                     <title>{ pageTitle }</title>
                     <meta charSet="utf-8" />
                 </Helmet>
-                <img src={image_url} />
+                { image_url && <img alt={"Image of " + name} src={image_url} /> }
                 <h1 className="title"> { name } <span className="header-supplemental-text" >Data Archive</span> </h1>
             </header>
         )
@@ -101,6 +100,6 @@ class Description extends React.Component {
 }
 
 function Menu() {
-    return <a className="menu-link" href="./"><img src="./images/menu.svg"/></a>
+    return <a className="menu-link" href="./"><img alt="Menu icon" src="./images/menu.svg"/></a>
 }
 export {Header,Description,Menu}

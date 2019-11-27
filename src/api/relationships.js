@@ -60,6 +60,7 @@ const configureForType = (type) => {
             sourceType: 'instrument_host',
             relatedType: 'instrument'
         }
+        default: console.error("Invalid relationship type")
     }
 }
 

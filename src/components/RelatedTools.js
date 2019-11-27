@@ -17,7 +17,7 @@ export default function RelatedTools({tools}){
 function ToolLink({tool}) {
     return (
         <a className="related-tool" href={tool.url}>
-            <img src={tool.image_url} />
+            <img alt={'Icon for ' + tool.display_name} src={tool.image_url} />
             <div className="tool-names">
                 <span className="tool-shortname">{tool.display_name}</span>
                 <span className="tool-longname">{tool.name}</span>

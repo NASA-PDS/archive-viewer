@@ -1,6 +1,6 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
-import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
+import {getSpacecraftForMission} from 'api/mission.js'
 import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
@@ -11,7 +11,6 @@ export default class Mission extends React.Component {
         this.state = {
             mission: props.mission,
             spacecraft: null,
-            targets: null,
             loaded: false,
         }
     }
@@ -21,7 +20,7 @@ export default class Mission extends React.Component {
     }
 
     render() {
-        const {mission,spacecraft,targets} = this.state
+        const {mission,spacecraft} = this.state
         if (!mission) return <Loading fullscreen={true} />
 
         // if this mission only has one spacecraft, we should just show that spacecraft's page
@@ -50,7 +49,7 @@ export default class Mission extends React.Component {
 function ButtonForSpacecraft(spacecraft) {
     return (
         <a key={spacecraft.identifier} className="mission-spacecraft-button" href={`?spacecraft=${spacecraft.identifier}`}>
-            <img src={spacecraft.image_url}/>
+            {spacecraft.image_url && <img alt={"Image of " + spacecraft.title} src={spacecraft.image_url}/> }
             <span className="spacecraft-title">{spacecraft.display_name ? spacecraft.display_name : spacecraft.title}</span>
         </a>
     )

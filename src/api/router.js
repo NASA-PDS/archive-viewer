@@ -11,7 +11,7 @@ const relationshipsCollection = 'web-objectrelationships-alias'
 const toolsCollection = 'web-tools-alias'
 const targetSpacecraftRelationshipTypesCollection = 'web-targetspacecraftrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
-const coreCollection = 'pds'
+// const coreCollection = 'pds'
 
 export default {
     datasetWeb: `${localSolr}/${datasetsCollection}/select`,
