@@ -9,8 +9,8 @@ export default class PDS3Results extends React.Component {
 
     buildParams = () => { return {
         fq: `facet_pds_model_version:"1,pds3" AND facet_type:"1,data_set"`,
-        ["f.facet_pds_model_version.facet.prefix"]: '2,pds3,',
-        ["f.facet_type.facet.prefix:"]: '2,data_set,'
+        "f.facet_pds_model_version.facet.prefix": '2,pds3,',
+        "f.facet_type.facet.prefix:": '2,data_set,'
     }}
 
     constructor(props) {

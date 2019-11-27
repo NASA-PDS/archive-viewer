@@ -31,7 +31,7 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
             let numRemaining = docsAvailable - currentPosition - docs.length
             
             // if this is the only/last batch, desolrize it and return
-            if (numRemaining === 0 || (!!params.rows && params.rows != defaultFetchSize)) {
+            if (numRemaining === 0 || (!!params.rows && params.rows !== defaultFetchSize)) {
                 let docs = [...continuingFrom, ...desolrize(fromSolr)]
                 if(withCount === true) {
                     resolve({

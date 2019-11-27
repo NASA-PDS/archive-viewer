@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
 import {Header, Description, Menu} from 'components/ContextObjects'
-import {SpacecraftListBox, RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
+import {RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
 import {SpacecraftBrowseTable} from 'components/BrowseTable'
 import Loading from 'components/Loading'
 import {TargetTagList} from 'components/TagList'

@@ -1,7 +1,6 @@
 import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
-import Loading from 'components/Loading'
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -73,7 +72,7 @@ function CollectionList({ collections, loaded }) {
                 <div className="actions">
                     {collection.download_url && (
                         <a href={collection.download_url}>
-                            <img src="./images/icn-download-rnd.png"/> 
+                            <img alt="" src="./images/icn-download-rnd.png"/> 
                             {collection.download_size && ( 
                                 <span className="download-size">({collection.download_size})</span> 
                             )}

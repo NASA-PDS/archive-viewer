@@ -1,5 +1,5 @@
-const localSolr = (process.env.NODE_ENV === 'production') ? 'https://sbnpds4.psi.edu/solr' : 'http://localhost:1001/http://localhost:8983/solr'
-const remoteSolr = (process.env.NODE_ENV === 'production') ? 'https://pds-gamma.jpl.nasa.gov/services/search' : 'http://localhost:1001/https://pds-gamma.jpl.nasa.gov/services/search'
+const localSolr = process.env.REACT_APP_SUPPLEMENTAL_SOLR
+const remoteSolr = process.env.REACT_APP_CORE_SOLR
 
 const datasetsCollection = 'web-datasets-alias'
 const targetsCollection = 'web-targets-alias'
@@ -11,7 +11,7 @@ const relationshipsCollection = 'web-objectrelationships-alias'
 const toolsCollection = 'web-tools-alias'
 const targetSpacecraftRelationshipTypesCollection = 'web-targetspacecraftrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
-const coreCollection = 'pds'
+// const coreCollection = 'pds'
 
 export default {
     datasetWeb: `${localSolr}/${datasetsCollection}/select`,

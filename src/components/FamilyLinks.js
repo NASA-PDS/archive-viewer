@@ -26,12 +26,12 @@ export default class Main extends React.Component {
         const {isBundle, dataset, bundles, error} = this.state
         if(error && !isBundle) {
             return <ErrorMessage error={error}></ErrorMessage>
-        } else if((isBundle || bundles.length == 0) && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
+        } else if((isBundle || bundles.length === 0) && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
         return (
             <div className="family-links">
                 {!isBundle && bundles.length > 0 &&
                     <div className="bundle-ref">
-                        <img src="./images/icn-bundle.png" />
+                        <img alt="Bundle" src="./images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
                             <a key={bundle.identifier} className="adjacent-link" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>

@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import {TargetListBox, InstrumentListBox, DatasetListBox} from 'components/ListBox'
+import {TargetListBox, DatasetListBox} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
 import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
@@ -9,7 +9,7 @@ import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
-import {instrumentSpacecraftRelationshipTypes, targetSpacecraftRelationshipTypes} from 'api/relationships'
+import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
