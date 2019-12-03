@@ -1,13 +1,25 @@
 @import 'variables';
 
 .co-main {
-    padding: $main-padding;
-    
-    header:not(.subheader) { 
-        margin-top: -$main-padding;
-        margin-left: -$main-padding;
-        margin-right: -$main-padding;
-        margin-bottom: $main-padding
+    @include medium-up {
+        padding: $main-padding;
+        
+        header:not(.subheader) { 
+            margin-top: -$main-padding;
+            margin-left: -$main-padding;
+            margin-right: -$main-padding;
+            margin-bottom: $main-padding
+        }
+    }
+    @include narrow-only {
+        padding: $narrow-padding;
+        
+        header:not(.subheader) { 
+            margin-top: -$narrow-padding;
+            margin-left: -$narrow-padding;
+            margin-right: -$narrow-padding;
+            margin-bottom: $narrow-padding
+        }
     }
 }
 .co-content {
@@ -29,38 +41,54 @@
     color: white;
     padding: $main-padding;
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-items: center;
 }
 
-.mission-header, .target-header, .instrument-header {
-    img {
-        max-height: 10em;
-        ~ h1 {
-            margin-left: 1em;
+.mission-header, .target-header, .instrument-header, .spacecraft-header {
+    @include narrow-only {
+        img {
+            max-height: 75px;
+            ~ h1 {
+                margin-left: 1em;
+            }
+        }
+        h1 {
+            font-size: 1.5em;
+        }
+        & ~ aside {
+            margin-top: -15px;
         }
     }
-    h1 {
-        font-size: 2em;
-    }
-    & ~ aside {
-        margin-top: -2em;
-    }
-}
-.spacecraft-header {
-    img {
-        max-height: 3em;
-        ~ h1 {
-            margin-left: 1em;
+    @include medium-up {
+        img {
+            max-height: 10em;
+            ~ h1 {
+                margin-left: 1em;
+            }
+        }
+        h1 {
+            font-size: 2em;
+        }
+        & ~ aside {
+            margin-top: -2em;
         }
     }
-    h1 {
-        font-size: 1.5em;
-    }
-    .header-supplemental-text {
-        display: none;
-    }
 }
+// .spacecraft-header {
+//     img {
+//         max-height: 3em;
+//         ~ h1 {
+//             margin-left: 1em;
+//         }
+//     }
+//     h1 {
+//         font-size: 1.5em;
+//     }
+//     .header-supplemental-text {
+//         display: none;
+//     }
+// }
 
 .target-header, .spacecraft-header {
     background-color: black;
@@ -101,31 +129,55 @@
 .related-tools {
     list-style: none;
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column nowrap;
+    @include medium-up {
+        flex-flow: row wrap;
+    }
     .related-tool {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        width: 150px;
-        border-radius: 10px;
-        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0);
-        margin-right: 20px;
-        .tool-names {
-            padding: 5px;
-        }
+        flex-flow: row nowrap;
+        border-radius: 5px;
+        margin-bottom: 10px;
         img {
-            max-width: 150px;
-            border-radius: 10px 10px 0 0;
-
+            max-width: 75px;
+            border-radius: 5px 0 0 5px;
+        }
+        @include medium-up {
+            flex-direction: column;
+            width: 150px;
+            border-radius: 10px;
+            img {
+                max-width: 150px;
+                border-radius: 10px 10px 0 0;
+    
+            }
+            .tool-longname {
+                display:block;
+            }
         }
         .tool-shortname {
             font-size: 2em;
         }
         .tool-longname {
-            display:block;
+            margin-left: 12px;
         }
+        @include narrow-only {
+            .tool-shortname {
+                display: none;
+            }
+            .tool-longname {
+                font-size: 1.2em;
+                height: 65px;
+            }
+        }
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0);
+        margin-right: 20px;
+        .tool-names {
+            padding: 5px;
+        }
+        
     }
 }
 .pds3-results {
