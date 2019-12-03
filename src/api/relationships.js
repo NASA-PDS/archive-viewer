@@ -66,6 +66,7 @@ const configureForType = (type) => {
 
 export function stitchWithRelationships(type, sourceLID) {
     return (results) => {
+        if(!results || results.length === 0) return Promise.resolve([])
         return new Promise(async (resolve, _) => {
             // ensure we have the relationship types ready
             await bootstrap()

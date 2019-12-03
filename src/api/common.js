@@ -138,7 +138,7 @@ function arraysEquivalent(arr1, arr2) {
 export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
     return (previousResult) => {
-        if(!previousResult || previousResult.length === 0) return new Promise((resolve, _) => { resolve([])})
+        if(!previousResult || previousResult.length === 0) return Promise.resolve([])
         
         return new Promise((resolve, _) => {
             let identifiers = previousResult.map(doc => doc.identifier)
