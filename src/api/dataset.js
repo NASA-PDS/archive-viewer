@@ -15,7 +15,7 @@ export function lookupDataset(lidvid) {
             url: router.datasetCore,
             params: {
                 q: `identifier:"${lidvid.escapedLid}"`,
-                fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, resource_url, citation_author_list, citation_editor_list, collection_type, collection_ref, version_id'
+                fl: 'identifier, title, description, instrument_ref, target_ref, instrument_host_ref, resource_url, citation_author_list, citation_editor_list, collection_type, collection_ref, version_id'
             }
         },
         {
