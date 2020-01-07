@@ -1,6 +1,7 @@
 import React from 'react';
 import {getBundlesForCollection} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
+import { Link } from 'react-router-dom'
 
 export default class Main extends React.Component {
 
@@ -34,16 +35,16 @@ export default class Main extends React.Component {
                         <img alt="Bundle" src="./images/icn-bundle.png" />
                         Part of 
                         {bundles.map(bundle => 
-                            <a key={bundle.identifier} className="adjacent-link" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>
+                            <Link key={bundle.identifier} className="adjacent-link" to={'/dataset/' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></Link>
                         )}
                     </div>
                 }
                 <div className="links">
                     {dataset.other_instruments_url &&
-                        <a className="big-ugly-button" href={`?dataset=${dataset.other_instruments_url}`}>Other Instruments</a>
+                        <Link className="big-ugly-button" to={`/dataset/${dataset.other_instruments_url}`}>Other Instruments</Link>
                     }
                     {dataset.mission_bundle &&
-                        <a className="big-ugly-button" href={`?dataset=${dataset.mission_bundle}`}>Mission Information Bundle</a>
+                        <Link className="big-ugly-button" to={`/dataset/${dataset.mission_bundle}`}>Mission Information Bundle</Link>
                     }
                 </div>
             </div>

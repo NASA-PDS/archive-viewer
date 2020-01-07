@@ -5,6 +5,7 @@ import RelatedTools from 'components/RelatedTools'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {Description} from 'components/ContextObjects'
+import { Link } from 'react-router-dom'
 import {DatasetTagList} from 'components/TagList'
 
 export default class Dataset extends React.Component {
@@ -20,9 +21,9 @@ export default class Dataset extends React.Component {
         getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
         getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
         getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
-    }   
+    }
 
-    render() {    
+    render() {
         const {dataset, isBundle, targets, spacecraft, instruments} = this.state
         return (
             <div>
@@ -34,7 +35,7 @@ export default class Dataset extends React.Component {
                     <DatasetTagList tags={dataset.tags}/>
                     <Description model={dataset} type={Description.type.dataset}/>
 
-                    { isBundle && 
+                    { isBundle &&
                         <CollectionList dataset={dataset} />
                     }
                     <RelatedTools tools={dataset.tools}/>
@@ -87,7 +88,7 @@ function Metadata(props) {
     return (
         <aside className="main-aside">
             <section className="dataset-metadata">
-                {isBundle && 
+                {isBundle &&
                     <h2>PDS4 Bundle</h2>
                 }
                 {!isBundle &&
@@ -110,10 +111,10 @@ function Metadata(props) {
                 {dataset.doi &&
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
                 }
-                
+
                 <AuthorList authors={dataset.citation_author_list} />
                 <EditorList editors={dataset.citation_editor_list} />
-                
+
                 {/* Hidden Data Values */}
                 {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
             </section>
@@ -146,8 +147,8 @@ function AuthorList({authors}) {
     const list = authors ? authors.split(';') : []
     return list ? (
         <ul>Author(s):<br/>
-            {list.map(author =>  
-                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
+            {list.map(author =>
+                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>
             )}
         </ul>
     ) : null
@@ -157,8 +158,8 @@ function EditorList({editors}) {
     const list = editors ? editors.split(';') : []
     return list ? (
         <ul>Editor(s):<br/>
-            {list.map(editor =>  
-                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   
+            {list.map(editor =>
+                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>
             )}
         </ul>
     ) : null
@@ -181,13 +182,13 @@ function CollectionQuickLinks({dataset}) {
                     </a>
                 </div>
             }
-            { dataset.example && 
+            { dataset.example &&
                 <div>
-                    { dataset.collection_type === "Document"?     
+                    { dataset.collection_type === "Document"?
                         <h3>Key Document</h3> :
                         <h3>Example File</h3>
                     }
-                    
+
                     <a href={dataset.example.url}>
                         { dataset.example.thumbnail_url ?
                             <img alt={"Thumbnail for " + dataset.title} src={dataset.example.thumbnail_url} /> :
@@ -213,7 +214,7 @@ function CollectionDownloads({dataset}) {
                         <a href={dataset.download_url}> 
                             <span> Download All 
                             { dataset.download_size &&
-                                <span class="download-size">({ dataset.download_size })</span> 
+                                <span class="download-size">({ dataset.download_size })</span>
                             }
                             </span>
                         </a>
@@ -222,9 +223,9 @@ function CollectionDownloads({dataset}) {
                         <li key={pkg.download_url}>
                             <img alt="" src="./images/icn-package.png" />
                             <a href={pkg.download_url}>
-                                <span> { pkg.name } 
+                                <span> { pkg.name }
                                 { pkg.download_size &&
-                                    <span class="download-size">({ pkg.download_size })</span> 
+                                    <span class="download-size">({ pkg.download_size })</span>
                                 }
                                 </span>
                             </a>
@@ -271,7 +272,7 @@ function Superseded(props) {
             <section className="dataset-superseded">
                 <h3 className="header"> Superseded versions of this data set: </h3>
                 <ul>
-                    {superseded.map(ref => 
+                    {superseded.map(ref =>
                         <li key={ref.browse_url}>
                             {ref.name}
                             <a href={ref.browse_url}><img alt="" className="tiny-icon" src="./images/icn-folder-rnd.png" /></a>
@@ -290,9 +291,9 @@ function RelatedData(props) {
             <section className="dataset-related">
                 <h3 className="header"> Related data: </h3>
                 <ul>
-                    {data.map(ref => 
+                    {data.map(ref =>
                         <li key={ref.lid}>
-                            <a href={'?dataset=' + ref.lid}>{ref.name}</a>
+                            <Link to={'/dataset/' + ref.lid}>{ref.name}</Link>
                         </li>
                     )}
                 </ul>

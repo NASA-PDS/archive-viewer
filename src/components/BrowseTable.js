@@ -1,6 +1,7 @@
 import React from 'react';
 import 'css/BrowseTable.scss'
 import Loading from 'components/Loading.js'
+import { Link } from 'react-router-dom'
 
 /* ------ Constants ------ */
 const downplayGroupsThreshold = 100
@@ -116,11 +117,11 @@ function List({items, query}) {
 }
 
 function ItemLink({item, query, single}) {
-    let url = `?${query}=${item.identifier}`
+    let url = `/${query}/${item.identifier}`
     return (
-        <a href={url} className={single ? 'single-item' : ''}>
+        <Link to={url} className={single ? 'single-item' : ''}>
             <span className="list-item-name">{ nameFinder(item) }</span>
-        </a>
+        </Link>
     )
 }
 

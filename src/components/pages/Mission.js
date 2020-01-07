@@ -4,6 +4,7 @@ import {getSpacecraftForMission} from 'api/mission.js'
 import {Header, Description, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
+import { Link } from 'react-router-dom'
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -48,9 +49,9 @@ export default class Mission extends React.Component {
 
 function ButtonForSpacecraft(spacecraft) {
     return (
-        <a key={spacecraft.identifier} className="mission-spacecraft-button" href={`?spacecraft=${spacecraft.identifier}`}>
+        <Link key={spacecraft.identifier} className="mission-spacecraft-button" to={`/spacecraft/${spacecraft.identifier}`}>
             {spacecraft.image_url && <img alt={"Image of " + spacecraft.title} src={spacecraft.image_url}/> }
             <span className="spacecraft-title">{spacecraft.display_name ? spacecraft.display_name : spacecraft.title}</span>
-        </a>
+        </Link>
     )
 }

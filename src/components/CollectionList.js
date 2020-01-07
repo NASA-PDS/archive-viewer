@@ -1,6 +1,7 @@
 import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
+import { Link } from 'react-router-dom'
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -40,9 +41,9 @@ function CollectionList({ collections, loaded }) {
         collectionElements = collections.map(collection =>
             <div key={collection.lid} className="collection collection-container">
                 <div className="header">
-                    <a href={'?dataset=' + collection.lid}>
+                    <Link to={'/dataset/' + collection.lid}>
                         {collection.lid}
-                    </a>
+                    </Link>
                 </div>
             </div>
         )
@@ -55,9 +56,9 @@ function CollectionList({ collections, loaded }) {
         collectionElements = sortedCollections.map(collection =>
             <div key={collection.identifier} className="collection collection-container">
                 <div className="header">
-                    <a href={'?dataset=' + collection.identifier}>
+                    <Link to={'/dataset/' + collection.identifier}>
                         <span className="collection-title" title="Collection Title">{collection.display_name ? collection.display_name : collection.title}</span>
-                    </a>
+                    </Link>
 
                     {collection.example && (
                         <span className="example">

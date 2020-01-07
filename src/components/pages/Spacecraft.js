@@ -10,6 +10,7 @@ import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
+import { Link } from 'react-router-dom'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -42,7 +43,7 @@ export default class Spacecraft extends React.Component {
                     <Menu/>
                     <aside className="main-aside sidebox">
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
+                            <Link to={`/mission/${mission.identifier}`}><div className="button">Visit Mission Page</div></Link>
                         }
                         <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
                     </aside>

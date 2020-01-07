@@ -1,6 +1,5 @@
 {
   "name": "archive-viewer",
-  "homepage": "https://sbnarchivedemo.psi.edu/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +8,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1",
     "react-snap": "^1.23.0"
   },
