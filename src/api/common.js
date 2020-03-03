@@ -2,6 +2,7 @@ import web from 'axios';
 import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
+import { types, resolveType } from 'api/pages.js'
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -59,6 +60,40 @@ export function httpGetIdentifiers(route, identifiers) {
         fl: 'identifier, title'
     }
     return httpGet(route, params)
+}
+
+export function initialLookup(identifier) {
+    let lid = new LID(identifier)
+    return new Promise((resolve, reject) => {
+        let params = {
+            q: `identifier:"${lid.escapedLid}"`
+        }
+        httpGet(router.defaultCore, params).then(result => {
+            if(!result || result.length === 0) {
+                reject(new Error(`None found`))
+            }
+            let doc = Object.assign({}, result[0]);
+            let supplementalRoute;
+            switch (resolveType(doc)) {
+                case types.INSTRUMENT: supplementalRoute = router.instrumentsWeb; break;
+                case types.MISSION: supplementalRoute = router.missionsWeb; break;
+                case types.SPACECRAFT: supplementalRoute = router.spacecraftWeb; break;
+                case types.TARGET: supplementalRoute = router.targetsWeb; break;
+                case types.DATASET: supplementalRoute = router.datasetsWeb; break;
+            }
+
+            httpGet(supplementalRoute, {
+                q: `logical_identifier:"${lid.escapedLid}"`
+            }).then(result => {
+                if(result.length === 1) {
+                    Object.assign(doc, result[0]);
+                }
+                resolve(doc);
+            })
+        }, error => {
+            reject(error)
+        })
+    }).then(stitchWithTools)
 }
 
 export function httpGetFull(endpoints) {

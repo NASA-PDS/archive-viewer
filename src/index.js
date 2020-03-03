@@ -9,26 +9,12 @@ import Instrument from 'components/pages/Instrument.js'
 import TagSearch from 'components/TagSearch.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
-import { lookupDataset } from 'api/dataset.js';
-import { lookupTarget } from 'api/target.js';
-import { lookupMission } from 'api/mission.js';
-import { lookupSpacecraft } from 'api/spacecraft.js';
-import { lookupInstrument } from 'api/instrument.js';
+import { initialLookup } from 'api/common.js'
+import { resolveType, types } from 'api/pages.js'
 
-const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
+
+const oldParameters = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
 const searchPages = ['tag']
-const lookup = (type, lidvid) => {
-    let func = () => Promise.reject(new Error("Invalid lookup"));
-    switch (type) {
-        case 'dataset': func = lookupDataset; break;
-        case 'target': func = lookupTarget; break;
-        case 'mission': func = lookupMission; break;
-        case 'instrument': func = lookupInstrument; break;
-        case 'spacecraft': func = lookupSpacecraft; break;
-        default: break;
-    }
-    return func(lidvid)
-}
 
 class Main extends React.Component {
     constructor(props) {
@@ -43,32 +29,38 @@ class Main extends React.Component {
     componentDidMount() {
 
         let params = new URLSearchParams(window.location.search);
-        for(let type of pageTypes) {
-            let lidvid = params.get(type);
-            if(lidvid) {
-                this.setState({ type })
-                lookup(type, lidvid).then(result => {
-                    if(result.length === 0) {
-                        this.setState({
-                            error: new Error(`No ${type} found for lidvid ${lidvid}`)
-                        })
-                    } else if(result.length > 1) {
-                        this.setState({
-                            error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
-                        })
-                    } else {
-                        this.setState({
-                            model: result,
-                            loaded: true
-                        })
-                    }
-                }, error => {
+        let lidvid
+        
+        // get lid from url
+        // backwards compatibility: also look at old accepted parameters
+        [...oldParameters, 'identifier'].forEach(type => {
+            if(!!params.get(type)) lidvid = params.get(type)
+        })
+
+        if(!!lidvid) {
+            initialLookup(lidvid).then(result => {
+                let type = resolveType(result)
+                if(result.length === 0) {
                     this.setState({
-                        error: error
+                        error: new Error(`No ${type} found for lidvid ${lidvid}`)
                     })
+                } else if(result.length > 1) {
+                    this.setState({
+                        error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
+                    })
+                } else {
+                    this.setState({
+                        type,
+                        model: result,
+                        loaded: true
+                    })
+                }
+            }, error => {
+                this.setState({
+                    error: error
                 })
-                return
-            }
+            })
+            return
         }
 
         for(let type of searchPages) {
@@ -88,7 +80,6 @@ class Main extends React.Component {
             type: 'default',
             loaded: 'true'
         })
-        
     }
     render() {
         const { error, loaded, type, model } = this.state
@@ -96,15 +87,15 @@ class Main extends React.Component {
             return <ErrorMessage error={error} />
         } else if (!loaded) {
             return <Loading fullscreen={true} />
-        } else if (type === 'dataset') {
+        } else if (type === types.DATASET) {
             return <Dataset dataset={model} />
-        } else if (type === 'target') {
+        } else if (type === types.TARGET) {
             return <Target target={model} />
-        } else if (type === 'instrument') {
+        } else if (type === types.INSTRUMENT) {
             return <Instrument instrument={model} />
-        } else if (type === 'mission') {
+        } else if (type === types.MISSION) {
             return <Mission mission={model} />
-        } else if (type === 'spacecraft') {
+        } else if (type === types.SPACECRAFT) {
             return <Spacecraft spacecraft={model} />
         } else if (type === 'tag') {
             return <TagSearch tags={model.getAll('tag')} type={model.get('type')} />
