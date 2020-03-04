@@ -103,6 +103,8 @@ class Main extends React.Component {
             return <Spacecraft spacecraft={model} />
         } else if (type === 'tag') {
             return <TagSearch tags={model.getAll('tag')} type={model.get('type')} />
+        } else if(error) {
+            return <ErrorMessage error={"Unknown result type"} />
         } else {
             return <Index />
         }

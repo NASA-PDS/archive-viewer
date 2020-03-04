@@ -6,7 +6,8 @@ export const types = {
     INSTRUMENT: 'instrument',
     BUNDLE: 'bundle',
     COLLECTION: 'collection',
-    PDS3: 'pds3'
+    PDS3: 'pds3',
+    UNKNOWN: 'unknown'
 }
 
 export const resolveType = function(fromSolr) {
@@ -26,4 +27,5 @@ export const resolveType = function(fromSolr) {
             default: break;
         }
     }
+    return types.UNKNOWN;
 }

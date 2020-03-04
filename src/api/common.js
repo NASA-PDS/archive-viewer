@@ -84,16 +84,21 @@ export function initialLookup(identifier) {
                 case types.PDS3:
                     supplementalRoute = router.datasetWeb; break;
             }
-            httpGet(supplementalRoute, {
-                q: `logical_identifier:"${lid.escapedLid}"`
-            }).then(result => {
-                if(result.length === 1) {
-                    Object.assign(doc, result[0]);
-                }
-                resolve(doc);
-            }, error => {
-                reject(error)
-            })
+
+            if(!!supplementalRoute) {
+                httpGet(supplementalRoute, {
+                    q: `logical_identifier:"${lid.escapedLid}"`
+                }).then(result => {
+                    if(result.length === 1) {
+                        Object.assign(doc, result[0]);
+                    }
+                    resolve(doc);
+                }, error => {
+                    reject(error)
+                })
+            } else {
+                reject("Unknown document type")
+            }
         }, error => {
             reject(error)
         })
