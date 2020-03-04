@@ -79,9 +79,11 @@ export function initialLookup(identifier) {
                 case types.MISSION: supplementalRoute = router.missionsWeb; break;
                 case types.SPACECRAFT: supplementalRoute = router.spacecraftWeb; break;
                 case types.TARGET: supplementalRoute = router.targetsWeb; break;
-                case types.DATASET: supplementalRoute = router.datasetsWeb; break;
+                case types.BUNDLE:
+                case types.COLLECTION:
+                case types.PDS3:
+                    supplementalRoute = router.datasetWeb; break;
             }
-
             httpGet(supplementalRoute, {
                 q: `logical_identifier:"${lid.escapedLid}"`
             }).then(result => {
@@ -89,6 +91,8 @@ export function initialLookup(identifier) {
                     Object.assign(doc, result[0]);
                 }
                 resolve(doc);
+            }, error => {
+                reject(error)
             })
         }, error => {
             reject(error)

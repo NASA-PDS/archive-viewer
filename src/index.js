@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/main.scss';
 import ReactDOM from 'react-dom'
-import Dataset from 'components/pages/Dataset.js'
+import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
 import Target from 'components/pages/Target.js'
 import Mission from 'components/pages/Mission.js'
 import Spacecraft from 'components/pages/Spacecraft.js'
@@ -87,8 +87,12 @@ class Main extends React.Component {
             return <ErrorMessage error={error} />
         } else if (!loaded) {
             return <Loading fullscreen={true} />
-        } else if (type === types.DATASET) {
-            return <Dataset dataset={model} />
+        } else if (type === types.BUNDLE) {
+            return <Bundle dataset={model} />
+        } else if (type === types.COLLECTION) {
+            return <Collection dataset={model} />
+        } else if (type === types.PDS3) {
+            return <PDS3Dataset dataset={model} />
         } else if (type === types.TARGET) {
             return <Target target={model} />
         } else if (type === types.INSTRUMENT) {
