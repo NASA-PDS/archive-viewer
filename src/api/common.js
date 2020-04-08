@@ -143,10 +143,10 @@ function stitchWithTools(result) {
             resolve(result)
         }
         let params = {
-            q: tools.reduce((query, lid) => query + 'toolId:"' + lid + '" ', '')
+            q: tools.reduce((query, tool) => query + 'toolId:"' + tool.toolId + '" ', '')
         }
         httpGet(router.tools, params).then(toolLookup => {
-            result.tools = toolLookup
+            result.tools = tools.map(tool => Object.assign(tool, toolLookup.find(lookup => lookup.toolId === tool.toolId)))
             resolve(result)
         }, err => {
             console.log(err)
