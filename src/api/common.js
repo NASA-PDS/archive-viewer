@@ -25,6 +25,11 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
         web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => {
             let fromSolr = response.data
             
+            if(!fromSolr || !fromSolr.response) {
+                reject(new Error("Couldn't parse results"))
+                return
+            }
+
             let docsAvailable = parseInt(fromSolr.response.numFound)
             let currentPosition = parseInt(fromSolr.responseHeader.params.start)
             let docs = fromSolr.response.docs
