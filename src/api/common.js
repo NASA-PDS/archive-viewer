@@ -73,21 +73,22 @@ export function initialLookup(identifier) {
                 reject(new Error(`None found`))
             }
             let doc = Object.assign({}, result[0]);
-            let supplementalRoute;
+            let supplementalRoute, attrname;
             switch (resolveType(doc)) {
-                case types.INSTRUMENT: supplementalRoute = router.instrumentsWeb; break;
-                case types.MISSION: supplementalRoute = router.missionsWeb; break;
-                case types.SPACECRAFT: supplementalRoute = router.spacecraftWeb; break;
-                case types.TARGET: supplementalRoute = router.targetsWeb; break;
+                case types.INSTRUMENT: supplementalRoute = router.instrumentsWeb; attrname='instrument'; break;
+                case types.MISSION: supplementalRoute = router.missionsWeb; attrname='mission'; break;
+                case types.SPACECRAFT: supplementalRoute = router.spacecraftWeb; attrname='spacecraft'; break;
+                case types.TARGET: supplementalRoute = router.targetsWeb; attrname='target'; break;
                 case types.BUNDLE:
                 case types.COLLECTION:
                 case types.PDS3:
-                    supplementalRoute = router.datasetWeb; break;
+                    supplementalRoute = router.datasetWeb; attrname='dataset'; break;
             }
 
             if(!!supplementalRoute) {
                 httpGet(supplementalRoute, {
-                    q: `logical_identifier:"${lid.escapedLid}"`
+                    q: `logical_identifier:"${lid.escapedLid}"`,
+                    fl: `*,[child parentFilter=attrname:${attrname}]`,
                 }).then(result => {
                     if(result.length === 1) {
                         Object.assign(doc, result[0]);
