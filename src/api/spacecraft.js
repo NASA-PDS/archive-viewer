@@ -1,32 +1,8 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
+import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
-export function lookupSpacecraft(lidvid) {
-    if(!lidvid) {
-        return Promise.reject(new Error("Expected spacecraft parameter"))
-    }
-    if(lidvid.constructor === String) {
-        lidvid = new LID(lidvid)
-    }
-
-    return httpGetFull([
-        {
-            url: router.spacecraftCore,
-            params: {
-                q: `identifier:"${lidvid.escaped}" AND data_class:"Instrument_Host"`,
-                fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
-            }
-        },
-        {
-            url: router.spacecraftWeb,
-            params: {
-                q: `logical_identifier:"${lidvid.escapedLid}"`
-            }
-        }
-    ])
-}
 
 export function getMissionsForSpacecraft(spacecraft) {
     let spacecraftLid = new LID(spacecraft.identifier)

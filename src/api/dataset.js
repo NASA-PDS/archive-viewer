@@ -1,33 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
-
-export function lookupDataset(lidvid) {
-    if(!lidvid) {
-        return Promise.reject(new Error("Expected dataset parameter"))
-    }
-    if(lidvid.constructor === String) {
-        lidvid = new LID(lidvid)
-    }
-
-    return httpGetFull([
-        {
-            url: router.datasetCore,
-            params: {
-                q: `identifier:"${lidvid.escapedLid}"`,
-                fl: 'identifier, title, description, instrument_ref, target_ref, instrument_host_ref, resource_url, citation_author_list, citation_editor_list, collection_type, collection_ref, version_id'
-            }
-        },
-        {
-            url: router.datasetWeb,
-            params: {
-                fl: '*,[child parentFilter=attrname:dataset]',
-                wt: 'ujson',
-                q: `logical_identifier:"${lidvid.escaped}"`
-            }
-        }
-    ])
-}
+import {httpGet, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
 
 export function getCollectionsForDataset(dataset) {
     if(!dataset.collection_ref || dataset.collection_ref.length === 0) { return new Promise((resolve, _) => resolve([]))}

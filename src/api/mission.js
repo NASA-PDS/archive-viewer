@@ -1,31 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGetRelated, stitchWithWebFields} from 'api/common.js'
-
-export function lookupMission(lidvid) {
-    if(!lidvid) {
-        return Promise.reject(new Error("Expected mission parameter"))
-    }
-    if(lidvid.constructor === String) {
-        lidvid = new LID(lidvid)
-    }
-
-    return httpGetFull([
-        {
-            url: router.missionsCore,
-            params: {
-                q: `identifier:"${lidvid.escaped}" AND data_class:"Investigation"`,
-                fl: 'identifier, title, investigation_description, instrument_host_ref'
-            }
-        },
-        {
-            url: router.missionsWeb,
-            params: {
-                q: `logical_identifier:"${lidvid.escapedLid}"`
-            }
-        }
-    ])
-}
+import {httpGetRelated, stitchWithWebFields} from 'api/common.js'
 
 export function getSpacecraftForMission(mission) {
     let missionLid = new LID(mission.identifier)

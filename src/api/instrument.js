@@ -1,31 +1,7 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetFull, httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
+import {httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
-
-export function lookupInstrument(lidvid) {
-    if(!lidvid) {
-        return Promise.reject(new Error("Expected instrument parameter"))
-    }
-    if(lidvid.constructor === String) {
-        lidvid = new LID(lidvid)
-    }
-    return httpGetFull([
-        {
-            url: router.instrumentsCore,
-            params: {
-                q: `identifier:"${lidvid.escaped}" AND data_class:"Instrument"`,
-                fl: 'identifier, title, instrument_description, instrument_host_ref'
-            }
-        },
-        {
-            url: router.instrumentsWeb,
-            params: {
-                q: `logical_identifier:"${lidvid.escapedLid}"`
-            }
-        }
-    ])
-}
 
 export function getSpacecraftForInstrument(instrument) {
     let instrumentLid = new LID(instrument.identifier)

@@ -10,7 +10,6 @@ const defaultParameters = () => { return {
     rows: defaultFetchSize,
     start: 0
 }}
-let fail = msg => Promise.reject(new Error(msg))
 
 // Base-level solr fetch function, that all other functions will eventually call. 
 // Recursively fetches all results for a particular Solr query
@@ -99,36 +98,6 @@ export function initialLookup(identifier) {
                 })
             } else {
                 reject("Unknown document type")
-            }
-        }, error => {
-            reject(error)
-        })
-    }).then(stitchWithTools)
-}
-
-export function httpGetFull(endpoints) {
-
-    if(!endpoints || endpoints.constructor !== Array) fail("Expected array of API calls")
-    if(endpoints.length !== 2) fail("Expected only two endpoints to call")
-
-    return new Promise((resolve, reject) => {
-        let calls = endpoints.map(endpoint => httpGet(endpoint.url, endpoint.params))
-        Promise.all(calls).then(values => {
-            let [core, webUI] = values
-            if(!core || core.length === 0) {
-                reject(new Error(`None found`))
-            }
-            else if(webUI.length === 1 && core.length === 1) {
-                let consolidated = Object.assign({}, core[0])
-                resolve(Object.assign(consolidated, webUI[0]))
-            } else if (core.length === 1) {
-                resolve(core[0])
-            } else {
-                reject(new Error(`Received unexpected number of results
-                
-                ${webUI.map(w => w.logical_identifier).join('\n')}
-                ${core.map(c => c.lid).join('\n')}
-                `))
             }
         }, error => {
             reject(error)
