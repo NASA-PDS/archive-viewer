@@ -116,6 +116,9 @@ function stitchWithTools(result) {
         if(!tools || tools.length === 0) {
             resolve(result)
         }
+        if(tools[0].constructor !== Object) {
+            tools = tools.map(toolId => { return { toolId }})
+        }
         let params = {
             q: tools.reduce((query, tool) => query + 'toolId:"' + tool.toolId + '" ', '')
         }
