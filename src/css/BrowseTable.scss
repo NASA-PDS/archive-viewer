@@ -10,7 +10,7 @@ $border: 1px solid $grey;
 
     .browse-row {
         display:flex;
-        flex-flow: row wrap;
+        flex-flow: row nowrap;
         &:not(:last-child) {
             border-bottom: $border;
         }

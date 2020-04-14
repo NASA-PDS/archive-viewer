@@ -1,5 +1,10 @@
 function desolrize(dataset) {
     for(let [key, value] of Object.entries(dataset)) {
+        if(key === '_childDocuments_') {
+            unpackChildDocuments(dataset, value)
+            delete dataset[key]
+            continue
+        }
         if(shouldComeOutOfArray(key, value)) {
             dataset[key] = value[0]
         }
@@ -21,10 +26,22 @@ function shouldComeOutOfArray(key, value) {
             (keysThatAreNeverArrays.includes(key) || value[0].constructor === String || value[0].constructor === Object)
 }
 
+function unpackChildDocuments(document, children) {
+    for(let child of children) {
+        child = desolrize(child) 
+        let key = child.attrname
+        if(!document[key]) {
+            document[key] = [child]
+        } else {
+            document[key].push(child)
+        }
+    }
+}
+
 const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref', 'collection_ref', 'download_packages', 'superseded_data', 'related_tools', 'related_data']
 const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'superseded_data', 'download_packages']
 
-const keysThatAreNeverArrays = ['is_major', 'is_prime', 'order']
+const keysThatAreNeverArrays = ['is_major', 'is_prime', 'order', 'toolId']
 
 export default function(fromSolr) {
     if(!!fromSolr.response && !!fromSolr.response.docs && fromSolr.response.docs.length > 0) {

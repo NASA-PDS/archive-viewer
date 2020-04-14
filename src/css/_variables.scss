@@ -11,9 +11,28 @@ $darkGrey: #808080;
 $superDarkGrey: #646464;
 
 $main-padding: 16px;
+$narrow-padding: 8px;
 
 $readable-width: 1200px;
 $list-item-padding: 20px;
+
+@mixin narrow-only {
+    @media (max-width: 599px) {
+        @content;
+    }
+}
+
+@mixin medium-up {
+    @media (min-width: 600px) {
+        @content;
+    }
+}
+
+@mixin wide-up {
+    @media (min-width: 1200px) {
+        @content;
+    }
+}
 
 @mixin list-box {
     padding: 0 0.5em;
@@ -33,7 +52,9 @@ $list-item-padding: 20px;
     color: white;
 }
 @mixin sidebox {
-    width: 300px;
+    @include medium-up {
+        width: 300px;
+    }
     background: $lightGrey;
     box-shadow: 1px 1px 2px #dadada;
     background-color: $lightGrey;

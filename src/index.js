@@ -1,7 +1,8 @@
 import React from 'react';
 import 'css/main.scss';
+import 'css/FrontPage.scss'
 import ReactDOM from 'react-dom'
-import Dataset from 'components/pages/Dataset.js'
+import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
 import Target from 'components/pages/Target.js'
 import Mission from 'components/pages/Mission.js'
 import Spacecraft from 'components/pages/Spacecraft.js'
@@ -9,26 +10,12 @@ import Instrument from 'components/pages/Instrument.js'
 import TagSearch from 'components/TagSearch.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
-import { lookupDataset } from 'api/dataset.js';
-import { lookupTarget } from 'api/target.js';
-import { lookupMission } from 'api/mission.js';
-import { lookupSpacecraft } from 'api/spacecraft.js';
-import { lookupInstrument } from 'api/instrument.js';
+import { initialLookup } from 'api/common.js'
+import { resolveType, types } from 'api/pages.js'
 
-const pageTypes = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
+
+const oldParameters = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
 const searchPages = ['tag']
-const lookup = (type, lidvid) => {
-    let func = () => Promise.reject(new Error("Invalid lookup"));
-    switch (type) {
-        case 'dataset': func = lookupDataset; break;
-        case 'target': func = lookupTarget; break;
-        case 'mission': func = lookupMission; break;
-        case 'instrument': func = lookupInstrument; break;
-        case 'spacecraft': func = lookupSpacecraft; break;
-        default: break;
-    }
-    return func(lidvid)
-}
 
 class Main extends React.Component {
     constructor(props) {
@@ -43,32 +30,38 @@ class Main extends React.Component {
     componentDidMount() {
 
         let params = new URLSearchParams(window.location.search);
-        for(let type of pageTypes) {
-            let lidvid = params.get(type);
-            if(lidvid) {
-                this.setState({ type })
-                lookup(type, lidvid).then(result => {
-                    if(result.length === 0) {
-                        this.setState({
-                            error: new Error(`No ${type} found for lidvid ${lidvid}`)
-                        })
-                    } else if(result.length > 1) {
-                        this.setState({
-                            error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
-                        })
-                    } else {
-                        this.setState({
-                            model: result,
-                            loaded: true
-                        })
-                    }
-                }, error => {
+        let lidvid
+        
+        // get lid from url
+        // backwards compatibility: also look at old accepted parameters
+        [...oldParameters, 'identifier'].forEach(type => {
+            if(!!params.get(type)) lidvid = params.get(type)
+        })
+
+        if(!!lidvid) {
+            initialLookup(lidvid).then(result => {
+                let type = resolveType(result)
+                if(result.length === 0) {
                     this.setState({
-                        error: error
+                        error: new Error(`No ${type} found for lidvid ${lidvid}`)
                     })
+                } else if(result.length > 1) {
+                    this.setState({
+                        error: new Error(`More than one ${type} found for lidvid ${lidvid}`)
+                    })
+                } else {
+                    this.setState({
+                        type,
+                        model: result,
+                        loaded: true
+                    })
+                }
+            }, error => {
+                this.setState({
+                    error: error
                 })
-                return
-            }
+            })
+            return
         }
 
         for(let type of searchPages) {
@@ -88,7 +81,6 @@ class Main extends React.Component {
             type: 'default',
             loaded: 'true'
         })
-        
     }
     render() {
         const { error, loaded, type, model } = this.state
@@ -96,18 +88,24 @@ class Main extends React.Component {
             return <ErrorMessage error={error} />
         } else if (!loaded) {
             return <Loading fullscreen={true} />
-        } else if (type === 'dataset') {
-            return <Dataset dataset={model} />
-        } else if (type === 'target') {
+        } else if (type === types.BUNDLE) {
+            return <Bundle dataset={model} />
+        } else if (type === types.COLLECTION) {
+            return <Collection dataset={model} />
+        } else if (type === types.PDS3) {
+            return <PDS3Dataset dataset={model} />
+        } else if (type === types.TARGET) {
             return <Target target={model} />
-        } else if (type === 'instrument') {
+        } else if (type === types.INSTRUMENT) {
             return <Instrument instrument={model} />
-        } else if (type === 'mission') {
+        } else if (type === types.MISSION) {
             return <Mission mission={model} />
-        } else if (type === 'spacecraft') {
+        } else if (type === types.SPACECRAFT) {
             return <Spacecraft spacecraft={model} />
         } else if (type === 'tag') {
             return <TagSearch tags={model.getAll('tag')} type={model.get('type')} />
+        } else if(error) {
+            return <ErrorMessage error={"Unknown result type"} />
         } else {
             return <Index />
         }
@@ -117,104 +115,139 @@ class Main extends React.Component {
 function Index() {
     return (
         <div>
-            <h1>PDS Archive Viewer</h1>
+
             <div className="co-main">
-            <div><p className="resource-description">Here are some links to get started...</p></div>
+                <header className="co-header banner-header">
+                    <img className="banner" src="images/front/solar_system-e1429031444824.jpg" alt="imgHeader" />
+                    <h1 className="banner-title">PDS Archive Viewer</h1>
+                </header>
+                <div className="webinfo-content">
+                    <p className="text-center">
+                        This website was created to help find datasets for planetary bodies in one location.
+                    </p>
+                    <p className="text-center">
+                        To search for a dataset, one can go to the Planetary Body page, Spacecraft page or Instrument page to see what datasets are available. Satellites can be found on their parent body page.
+                    </p>
+                    <p className="text-center">
+                        When you select an item from the dropdown menu, it will bring you to the page of that Target.
+                    </p>
+                </div>
+                <div className="row-front">
+                    <div className="column-tar">
+                        <section>
+                            <h2>Targets</h2>
+                            <ul className="front-page-list">
+                                <li>
+                                    <h3>Planets</h3>
+                                    <ul className="front-page-list">
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.mercury">Mercury</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.venus">Venus</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.earth">Earth</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.mars">Mars</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.uranus">Uranus</a>
+                                        </li>
+                                        <li>
+                                            <a href="?target=urn:nasa:pds:context:target:planet.neptune">Neptune</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <h3>Asteroids</h3>
+                                    <ul className="front-page-list">
+                                        <li>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Near-Earth%20Asteroid&type=target">Near-Earth Asteroid</a>
+                                            <ul className="front-page-list"><li>e.g. 433 Eros</li></ul>
+                                        </li>
+                                        <li>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Main%20Belt%20Asteroid&type=target">Main Belt Asteroid</a>
+                                            <ul className="front-page-list"><li>e.g. 4 Vesta</li></ul>
+                                        </li>
+                                        <li>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Kuiper%20Belt%20Object&type=target">Kuiper Belt Object</a>
+                                            <ul className="front-page-list"><li>e.g. 486958 Arrokoth</li></ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <h3>Dwarf Planets</h3>
+                                    <ul className="front-page-list">
+                                        <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
+                                        <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
+                                    </ul>
+                                    
+                                    <h3>Comets</h3>
+                                    <ul className="front-page-list">
+                                        <li>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Short-Period%20Comet&type=target">Short-Period Comets</a>
+                                            <ul className="front-page-list"><li>e.g. 9P Tempel 1</li></ul>
+                                        </li>
+                                        <li>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Long-Period%20Comet&type=target">Long-Period Comets</a>
+                                            <ul className="front-page-list"><li>e.g. C/1996 B2 Hyakutake</li></ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                    <div className="column-spc">
+                        <section>
+                            <h2>Spacecraft</h2>
+                            <ul className="front-page-list">
 
-            <section>
-            <h2>Targets</h2>
-            <ul>
-            <li><h3>Planets &#38; Satellites</h3></li>
-                <ul>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.mercury">Mercury</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.venus">Venus</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.earth">Earth</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.mars">Mars</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.uranus">Uranus</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:planet.neptune">Neptune</a></li>
-                </ul>
-            <li><h3>Dwarf Planets &#38; Satellites</h3></li>
-                <ul>
-                    <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
-                </ul>
-            <li><h3>Asteroids</h3></li>
-                <ul>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.4_vesta">4 Vesta</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.21_lutetia">21 Lutetia</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.243_ida">243 Ida</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.253_mathilde">253 Mathilde</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.951_gaspra">951 Gaspra</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.433_eros">433 Eros</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.2685_masursky">2685 Masursky</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.2867_steins">2867 Steins</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.5535_annefrank">5535 AnneFrank</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.25143_itokawa">25143 Itokawa</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.101955_bennu">101955 Bennu</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:asteroid.162173_ryugu">162173 Ryugu</a></li>
-                </ul>
-            <li><h3>Comets</h3></li>
-                <ul>
-                    <li><a href="?target=urn:nasa:pds:context:target:comet.9p_tempel_1">9P Tempel 1</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:comet.19p_borrelly">19P Borrelly</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:comet.67p_churyumov-gerasimenko">67P Churyumov-Gerasimenko</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:comet.81p_wild_2">81P Wild 2</a></li>
-                    <li><a href="?target=urn:nasa:pds:context:target:comet.103p_hartley_2">103P Hartley 2</a></li>
-                </ul>
-                </ul>
-            </section>
-            
-            <section>
-            <h2>Spacecraft</h2>
-                <ul>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.a17c">Apollo 17</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.co">Cassini Orbiter</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.dawn">Dawn</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.grail-a">Gravity Recovery and Interior Laboratory A (GRAIL Ebb)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.grail-b">Gravity Recovery and Interior Laboratory B (GRAIL Flow)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.hay">Hayabusa</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.hp">Huygens Probe</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.insight">InSight</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.ladee"> Lunar Atmosphere and Dust Environment Explorer (LADEE)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lp">Lunar Prospector</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lro">Lunar Reconnaissance Orbiter (LRO)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.lcross">Lunar Crater Observation and Sensing Satellite (LCROSS)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr6">Mariner 6</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr7">Mariner 7</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mr9">Mariner 9</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mer1">Mars Exploration Rover - Opportunity</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mer2">Mars Exploration Rover - Spirit</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mgs">Mars Global Surveyor</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mo">Mars Observer</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.ody">Mars Odyssey</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mpfl">Mars Pathfinder Lander</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mpfr">Mars Pathfinder Rover (Sojourner)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.mro">Mars Reconnaissance Orbiter</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.msl">Mars Science Laboratory (Curiosity)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.near">Near Earth Asteroid Rendezvous (NEAR Shoemaker)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.orex">Origins, Spectral Interpretation, Resource Identification, Security, Regolith Explorer (OSIRIS-REx)</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.p11">Pioneer 11</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.phx">Phoenix</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vl1">Viking Lander 1</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vl2">Viking Lander 2</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vo1">Viking Orbiter 1</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vo2">Viking Orbiter 2</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vg1">Voyager 1</a></li>
-                    <li><a href="?spacecraft=urn:nasa:pds:context:instrument_host:spacecraft.vg2">Voyager 2</a></li>
-                </ul>
-            </section>
-            
-            <section>
-            <h2>Datasets</h2>
-                <ul>
-                    <li><a href="?dataset=urn:nasa:pds:orex.ocams">OSIRIS-REx OCAMS Bundle</a></li>
-                    <li><a href="?dataset=urn:nasa:pds:apollodoc">Apollo Documents Bundle</a></li>
-                    <li><a href="?dataset=urn:nasa:pds:insight_cameras">InSight Cameras Bundle</a></li>
-                </ul>
-            </section>
+                                <li>
+                                    <img className="sc-img" src="images/front/Orbiter.png" alt="imgOrb" /><a href="?tag=Orbiter&type=spacecraft">Orbiter</a>
+                                    <ul className="front-page-list"><li>e.g. Mariner 9</li></ul>
+                                </li>
 
+                                <li>
+                                    <img className="sc-img" src="images/front/Flyby.png" alt="imgFb" /><a href="?tag=Flyby&type=spacecraft">Flyby</a>
+                                    <ul className="front-page-list"><li>e.g. Voyager 1</li></ul>
+                                </li>
+
+                                <li>
+                                    <img className="sc-img" src="images/front/Lander.png" alt="imgLand" /><a href="?tag=Lander&type=spacecraft">Lander</a>
+                                    <ul className="front-page-list"><li>e.g. Apollo 17 LSEP</li></ul>
+                                </li>
+
+                                <li>
+                                    <img className="sc-img" src="images/front/Rover.png" alt="imgRov" /><a href="?tag=Rover&type=spacecraft">Rover</a>
+                                    <ul className="front-page-list"><li>e.g. Mars Science Laboratory (Curiosity)</li></ul>
+                                </li>
+
+                                <li>
+                                    <img className="sc-img" src="images/front/Impactor.png" alt="imgImpa" /><a href="?tag=Impactor&type=spacecraft">Impactor</a>
+                                    <ul className="front-page-list"><li>e.g. Deep Impact Impactor</li></ul>
+                                </li>
+
+                                <li>
+                                    <img className="sc-img" src="images/front/Sample_Return.png" alt="imgSaRe" /><a href="?tag=Sample%20Return&type=spacecraft">Sample Return</a>
+                                    <ul className="front-page-list"><li>e.g. Stardust</li></ul>
+                                </li>
+
+                                <li>
+                                    <img className="sc-img" src="images/front/Atmos_Probe.png" alt="imgAtPr" /><a href="?tag=Atmospheric%20Probe&type=spacecraft">Atmospheric Probe</a>
+                                    <ul className="front-page-list"><li>e.g. Galileo Probe</li></ul>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                </div>
             </div>
         </div>
     )

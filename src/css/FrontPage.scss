@@ -1,0 +1,65 @@
+@import 'variables';
+
+.row-front {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.row-front:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column-tar {
+    padding-left: 4em;
+}
+
+.column-spc {
+    padding-left: 6em;
+}
+
+.sc-img {
+    width: 3em;
+    padding-right: 1em;
+    background-color: white;
+}
+
+.front-page-list {
+    list-style-type: none;
+}
+
+.banner-header {
+    background-color: #000;
+    color: white;
+    padding: $main-padding;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+
+@media (max-width:599px) {
+    .banner-header img {
+        max-height: 75px
+    }
+    .banner-header img~h1 {
+        margin-left: 1em
+    }
+    .banner-header h1 {
+        font-size: 1.5em
+    }
+}
+
+@media (min-width:600px) {
+    .banner-header img {
+        max-height: 10em
+    }
+    .banner-header img~h1 {
+        margin-left: 1em
+    }
+    .banner-header h1 {
+        font-size: 2em
+    }
+}

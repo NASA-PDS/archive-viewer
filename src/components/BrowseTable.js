@@ -41,7 +41,7 @@ class BrowseTables extends React.Component {
                 {majorGroups.map(group => { return (
                     <div key={group.name} className="major">
                         <h2 className="browse-group-title">{group.name} {group.order < downplayGroupsThreshold ? this.type : ''}</h2>
-                        { this.sectioned ? <SectionedTable items={group.items} query={this.query} /> : <List items={group.items} query={this.query} /> }
+                        { this.sectioned ? <SectionedTable items={group.items} /> : <List items={group.items} /> }
                     </div>
                 )})}
                 {expanded === false && minorGroups.length > 0 && 
@@ -50,7 +50,7 @@ class BrowseTables extends React.Component {
                 {expanded && minorGroups.map(group => { return (
                     <div key={group.name} className="minor">
                         <h2 className="browse-group-title">{group.name} {group.order < downplayGroupsThreshold ? this.type : ''}</h2>
-                        { this.sectioned ? <SectionedTable items={group.items} query={this.query} /> : <List items={group.items} query={this.query} /> }
+                        { this.sectioned ? <SectionedTable items={group.items} /> : <List items={group.items} /> }
                     </div>
                 )})}
             </div>
@@ -60,16 +60,14 @@ class BrowseTables extends React.Component {
 }
 
 export class SpacecraftBrowseTable extends BrowseTables {
-    query = 'spacecraft'
     type = 'Spacecraft'
     sectioned = false
 }
 export class InstrumentBrowseTable extends BrowseTables {
-    query = 'instrument'
     type = 'Instruments'
     sectioned = true
 }
-function SectionedTable({items, query}) {
+function SectionedTable({items}) {
     let groups = groupByFirstTag(items)
     groups.sort((a, b) => a.order.localeCompare(b.order))
     return (
@@ -80,7 +78,7 @@ function SectionedTable({items, query}) {
                         <div className="browse-col headers"> { group.name }</div>
                     }
                     <div className="browse-col">
-                        <List items={group.items} query={query} />
+                        <List items={group.items} />
                     </div>
                 </div>
             )})}
@@ -101,7 +99,7 @@ function nameFinder(item) {
     return item.display_name ? item.display_name : item.title
 }
 
-function List({items, query}) {    
+function List({items}) {    
     if(!items || !items.length) { return <NoItems/>}
     let sortedItems = items.sort((a, b) => {
         return nameFinder(a).localeCompare(nameFinder(b))
@@ -109,14 +107,14 @@ function List({items, query}) {
     return (
         <ul className="list">
             {sortedItems.map((item,idx) => 
-                <li key={item.identifier + idx}><ItemLink item={item} query={query} single={false}/></li>
+                <li key={item.identifier + idx}><ItemLink item={item} single={false}/></li>
             )}
         </ul>
     )
 }
 
-function ItemLink({item, query, single}) {
-    let url = `?${query}=${item.identifier}`
+function ItemLink({item, single}) {
+    let url = `?identifier=${item.identifier}`
     return (
         <a href={url} className={single ? 'single-item' : ''}>
             <span className="list-item-name">{ nameFinder(item) }</span>

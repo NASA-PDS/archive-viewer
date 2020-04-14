@@ -28,8 +28,6 @@ a, .link {
     display: flex;
     flex-flow: column;
     position: relative;
-    float: right;
-    margin: 1em;
 }
 .resource-description {
     margin-bottom: 2em;
@@ -47,17 +45,27 @@ h1 {
 }
 
 main aside.main-aside {
-    float: right;
-    max-width: 35%;
+    box-sizing: border-box;
+    @include narrow-only {
+        width: 100%;
+        margin-bottom: 1em;
+    }
+    @include medium-up {
+        float: right;
+        margin-left: 10px;
+        section {
+            margin-right: 15px;
+            margin-bottom: 1em;
+        }
+    }
+    @include wide-up {
+        max-width: 35%;
+    }
     display: flex;
     flex-direction: column;
-    margin-left: 10px;
     padding-top: 15px;
     padding-bottom: 15px;
-    section {
-        margin-bottom: 1em;
-        margin-right: 15px;
-    }
+    
 }
 
 .download-size {
@@ -192,13 +200,25 @@ main aside.main-aside {
 }
 
 #taxonomy {
-    display: flex;
-    flex-flow: row wrap;
+    h3 {
+        display: inline-block;
+    }
+    @include narrow-only {
+        h3 {
+            display: none
+        }
+    }
 
     .banner {
+        display: inline-block;
         height: 60px;
-        margin: 5px 10px;
         box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        margin: 5px 10px;
+        @include narrow-only {
+            height: 30px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 12px 0 rgba(0,0,0,0.19);
+            margin: 5px 10px;
+        }
         transform: skewX(-25deg);    
         background-color: $link;
 
@@ -207,6 +227,9 @@ main aside.main-aside {
             padding: 5px 15px;
             color: white;
             height: 60px;
+            @include narrow-only {
+                height: 30px;
+            }
             box-sizing: border-box;
 
             display: flex;

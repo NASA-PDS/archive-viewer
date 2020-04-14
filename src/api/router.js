@@ -14,6 +14,7 @@ const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraf
 // const coreCollection = 'pds'
 
 export default {
+    defaultCore: `${remoteSolr}/search`,
     datasetWeb: `${localSolr}/${datasetsCollection}/select`,
     // datasetCore: `${localSolr}/${coreCollection}/select`,
     datasetCore: `${remoteSolr}/search`,

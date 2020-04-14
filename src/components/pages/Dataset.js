@@ -7,13 +7,18 @@ import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/Li
 import {Description} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
 
-export default class Dataset extends React.Component {
+const types = {
+    BUNDLE: 1,
+    COLLECTION: 2,
+    PDS3: 3,
+}
+
+class Dataset extends React.Component {
 
     constructor(props) {
         super(props)
         const {dataset} = props
-        const isBundle = dataset.identifier.split(':').length === 4
-        this.state = { dataset, isBundle }
+        this.state = { dataset }
     }
 
     componentDidMount() {
@@ -23,18 +28,18 @@ export default class Dataset extends React.Component {
     }   
 
     render() {    
-        const {dataset, isBundle, targets, spacecraft, instruments} = this.state
+        const {dataset, targets, spacecraft, instruments} = this.state
         return (
             <div>
-                <FamilyLinks dataset={dataset} isBundle={isBundle}/>
-                <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${isBundle ? 'bundle-container' : 'collection-container'}`}>
+                <FamilyLinks dataset={dataset} />
+                <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
                     <Title dataset={dataset} />
                     <DeliveryInfo dataset={dataset} />
-                    <Metadata dataset={dataset} isBundle={isBundle} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
+                    <Metadata dataset={dataset} type={this.type} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
                     <DatasetTagList tags={dataset.tags}/>
                     <Description model={dataset} type={Description.type.dataset}/>
 
-                    { isBundle && 
+                    { this.type === types.BUNDLE && 
                         <CollectionList dataset={dataset} />
                     }
                     <RelatedTools tools={dataset.tools}/>
@@ -53,6 +58,15 @@ export default class Dataset extends React.Component {
     }
 }
 
+export class Bundle extends Dataset {
+    type = types.BUNDLE
+}
+export class Collection extends Dataset {
+    type = types.COLLECTION
+}
+export class PDS3Dataset extends Dataset {
+    type = types.PDS3
+}
 
 function Title({dataset}) {
     const title = dataset.display_name ? dataset.display_name : dataset.title
@@ -83,16 +97,15 @@ function DeliveryInfo({dataset}) {
 }
 
 function Metadata(props) {
-    const {isBundle, dataset, targets, spacecraft, instruments} = props
+    const {dataset, targets, spacecraft, instruments, type} = props
     return (
         <aside className="main-aside">
             <section className="dataset-metadata">
-                {isBundle && 
-                    <h2>PDS4 Bundle</h2>
-                }
-                {!isBundle &&
-                    <h2>PDS4 Collection</h2>
-                }
+                {(() => {switch(type) {
+                    case types.BUNDLE: return <h2>PDS4 Bundle</h2>
+                    case types.COLLECTION: return <h2>PDS4 Collection</h2>
+                    case types.PDS3: return <h2>PDS3 Dataset</h2>
+                }})()}
                 {!!dataset.publication && !!dataset.publication.publish_status && (
                     <p>Status: <br/>
                         <span className="datum">{dataset.publication.publish_status}</span>
@@ -105,7 +118,7 @@ function Metadata(props) {
                     <span className="datum" itemProp="publisher" itemScope itemType="http://schema.org/Organization">NASA Planetary Data System</span>
                 </p>
                 {dataset.identifier &&
-                    <p>PDS4 ID: <br/><span className="datum">{dataset.identifier}</span></p>
+                    <p>{type === types.PDS3 ? 'PDS3' : 'PDS4'} ID: <br/><span className="datum">{dataset.identifier}</span></p>
                 }
                 {dataset.doi &&
                     <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
@@ -144,7 +157,7 @@ function Metadata(props) {
 
 function AuthorList({authors}) {
     const list = authors ? authors.split(';') : []
-    return list ? (
+    return list.length ? (
         <ul>Author(s):<br/>
             {list.map(author =>  
                 <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
@@ -155,7 +168,7 @@ function AuthorList({authors}) {
 
 function EditorList({editors}) {
     const list = editors ? editors.split(';') : []
-    return list ? (
+    return list.length ? (
         <ul>Editor(s):<br/>
             {list.map(editor =>  
                 <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   

@@ -15,37 +15,31 @@ const listTypes = {
 const listTypeValues = {
     [listTypes.dataset]: {
         title: 'Datasets',
-        titleSingular: 'Dataset',
-        query: 'dataset'
+        titleSingular: 'Dataset'
     },
     [listTypes.mission]: {
         title: 'Missions',
         titleSingular: 'Mission',
-        query: 'mission',
         fieldName: 'investigation_ref'
     },
     [listTypes.target]: {
         title: 'Targets',
         titleSingular: 'Target',
-        query: 'target',
         fieldName: 'target_ref'
     },
     [listTypes.relatedTarget]: {
         title: 'Related Targets',
         titleSingular: 'Related Target',
-        query: 'target',
         fieldName: 'target_ref'
     },
     [listTypes.instrument]: {
         title: 'Instruments',
         titleSingular: 'Instrument',
-        query: 'instrument',
         fieldName: 'instrument_ref'
     },
     [listTypes.spacecraft]: {
         title: 'Spacecraft',
         titleSingular: 'Spacecraft',
-        query: 'spacecraft',
         fieldName: 'instrument_host_ref'
     }
 }
@@ -164,11 +158,10 @@ class ListBox extends React.Component {
     makeList = () => {
         const {items, groupBy, groupInfo} = this.props
         const {type} = this.state
-        const query = listTypeValues[type].query
         const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
         return items.length === 1
-        ? <ItemLink item={items[0]} query={query} single={true}/> 
-        : <GroupedList groups={this.createGroupings(items, groupInfo, groupByField)} query={query} type={type}/>
+        ? <ItemLink item={items[0]} single={true}/> 
+        : <GroupedList groups={this.createGroupings(items, groupInfo, groupByField)} type={type}/>
     }
 
     createGroupings = groupByAttributedRelationship
@@ -246,13 +239,13 @@ export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, Ins
 
 /* ------ Internal Components ------ */
 
-function GroupedList({groups, query, type}) {
+function GroupedList({groups, type}) {
     if (groups.length === 1) {
-        return <List items={groups[0].items} query={query} />
+        return <List items={groups[0].items} />
     }
     let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
-        <GroupBox group={group} type={type} query={query} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
+        <GroupBox group={group} type={type} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
 
@@ -288,28 +281,28 @@ class GroupBox extends React.Component {
                 }
                 
                 {showGroup
-                    ? <List items={items} query={this.props.query} />
+                    ? <List items={items} />
                     : null}
             </div>
         )
     }
 }
 
-function List({items, query}) {    
+function List({items}) {    
     let sortedItems = items.sort((a, b) => {
         return nameFinder(a).localeCompare(nameFinder(b))
     })
     return (
         <ul className="list">
             {sortedItems.map((item,idx) => 
-                <li key={item.identifier + idx}><ItemLink item={item} query={query} single={false}/></li>
+                <li key={item.identifier + idx}><ItemLink item={item} single={false}/></li>
             )}
         </ul>
     )
 }
 
-function ItemLink({item, query, single}) {
-    let url = `?${query}=${item.identifier}`
+function ItemLink({item, single}) {
+    let url = `?identifier=${item.identifier}`
     return (
         <a href={url} className={single ? 'single-item' : ''}>
             <span className="list-item-name">{ nameFinder(item) }</span>
@@ -323,7 +316,7 @@ function RelatedTargetsListBox({targets}) {
 
     return !groups.length 
         ? <NoItems type={listTypes.relatedTarget}/> 
-        : <GroupedList groups={groups} query={listTypeValues[listTypes.target].query} type={listTypes.target}/>
+        : <GroupedList groups={groups} type={listTypes.target}/>
 }
 
 function NoItems({type, descriptor}) {

@@ -44,7 +44,7 @@ export default class TagSearch extends React.Component {
     }
     
     render() {
-        const {loaded, results, error, type, tags} = this.state
+        const {loaded, results, error, tags} = this.state
 
         if(error) {
             return <ErrorMessage error={error}></ErrorMessage>
@@ -58,7 +58,7 @@ export default class TagSearch extends React.Component {
                 <ul>
                     {results.map(result =>
                         <li key={result.logical_identifier}>
-                            <a href={`?${type}=${result.logical_identifier}`}>{result.display_name}</a>
+                            <a href={`?identifier=${result.logical_identifier}`}>{result.display_name}</a>
                         </li>
                     )}
                 </ul>

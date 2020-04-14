@@ -2,6 +2,7 @@ import web from 'axios';
 import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
+import { types, resolveType } from 'api/pages.js'
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -9,7 +10,6 @@ const defaultParameters = () => { return {
     rows: defaultFetchSize,
     start: 0
 }}
-let fail = msg => Promise.reject(new Error(msg))
 
 // Base-level solr fetch function, that all other functions will eventually call. 
 // Recursively fetches all results for a particular Solr query
@@ -25,6 +25,11 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
         web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => {
             let fromSolr = response.data
             
+            if(!fromSolr || !fromSolr.response) {
+                reject(new Error("Couldn't parse results"))
+                return
+            }
+
             let docsAvailable = parseInt(fromSolr.response.numFound)
             let currentPosition = parseInt(fromSolr.responseHeader.params.start)
             let docs = fromSolr.response.docs
@@ -61,29 +66,43 @@ export function httpGetIdentifiers(route, identifiers) {
     return httpGet(route, params)
 }
 
-export function httpGetFull(endpoints) {
-
-    if(!endpoints || endpoints.constructor !== Array) fail("Expected array of API calls")
-    if(endpoints.length !== 2) fail("Expected only two endpoints to call")
-
+export function initialLookup(identifier) {
+    let lid = new LID(identifier)
     return new Promise((resolve, reject) => {
-        let calls = endpoints.map(endpoint => httpGet(endpoint.url, endpoint.params))
-        Promise.all(calls).then(values => {
-            let [core, webUI] = values
-            if(!core || core.length === 0) {
+        let params = {
+            q: `identifier:"${lid.escapedLid}"`
+        }
+        httpGet(router.defaultCore, params).then(result => {
+            if(!result || result.length === 0) {
                 reject(new Error(`None found`))
             }
-            else if(webUI.length === 1 && core.length === 1) {
-                let consolidated = Object.assign({}, core[0])
-                resolve(Object.assign(consolidated, webUI[0]))
-            } else if (core.length === 1) {
-                resolve(core[0])
+            let doc = Object.assign({}, result[0]);
+            let supplementalRoute, attrname;
+            switch (resolveType(doc)) {
+                case types.INSTRUMENT: supplementalRoute = router.instrumentsWeb; attrname='instrument'; break;
+                case types.MISSION: supplementalRoute = router.missionsWeb; attrname='mission'; break;
+                case types.SPACECRAFT: supplementalRoute = router.spacecraftWeb; attrname='spacecraft'; break;
+                case types.TARGET: supplementalRoute = router.targetsWeb; attrname='target'; break;
+                case types.BUNDLE:
+                case types.COLLECTION:
+                case types.PDS3:
+                    supplementalRoute = router.datasetWeb; attrname='dataset'; break;
+            }
+
+            if(!!supplementalRoute) {
+                httpGet(supplementalRoute, {
+                    q: `logical_identifier:"${lid.escapedLid}"`,
+                    fl: `*,[child parentFilter=attrname:${attrname}]`,
+                }).then(result => {
+                    if(result.length === 1) {
+                        Object.assign(doc, result[0]);
+                    }
+                    resolve(doc);
+                }, error => {
+                    reject(error)
+                })
             } else {
-                reject(new Error(`Received unexpected number of results
-                
-                ${webUI.map(w => w.logical_identifier).join('\n')}
-                ${core.map(c => c.lid).join('\n')}
-                `))
+                reject("Unknown document type")
             }
         }, error => {
             reject(error)
@@ -97,11 +116,14 @@ function stitchWithTools(result) {
         if(!tools || tools.length === 0) {
             resolve(result)
         }
+        if(tools[0].constructor !== Object) {
+            tools = tools.map(toolId => { return { toolId }})
+        }
         let params = {
-            q: tools.reduce((query, lid) => query + 'toolId:"' + lid + '" ', '')
+            q: tools.reduce((query, tool) => query + 'toolId:"' + tool.toolId + '" ', '')
         }
         httpGet(router.tools, params).then(toolLookup => {
-            result.tools = toolLookup
+            result.tools = tools.map(tool => Object.assign(tool, toolLookup.find(lookup => lookup.toolId === tool.toolId)))
             resolve(result)
         }, err => {
             console.log(err)
@@ -138,7 +160,7 @@ function arraysEquivalent(arr1, arr2) {
 export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
     return (previousResult) => {
-        if(!previousResult || previousResult.length === 0) return new Promise((resolve, _) => { resolve([])})
+        if(!previousResult || previousResult.length === 0) return Promise.resolve([])
         
         return new Promise((resolve, _) => {
             let identifiers = previousResult.map(doc => doc.identifier)
