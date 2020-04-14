@@ -236,7 +236,7 @@ function Index() {
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Sample_Return.png" alt="imgSaRe" /><a href="?tag=Smaple%20Return&type=spacecraft">Sample Return</a>
+                                    <img className="sc-img" src="images/front/Sample_Return.png" alt="imgSaRe" /><a href="?tag=Sample%20Return&type=spacecraft">Sample Return</a>
                                     <ul className="front-page-list"><li>e.g. Stardust</li></ul>
                                 </li>
 
