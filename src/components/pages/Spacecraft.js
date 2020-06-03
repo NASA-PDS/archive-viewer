@@ -56,7 +56,7 @@ export default class Spacecraft extends React.Component {
                         <RelatedTools tools={spacecraft.tools}/>
                         <InstrumentBrowseTable items={this.state.instruments} />
                         <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
-                        <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title}/>
+                        <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
                         <HTMLBox markup={spacecraft.html2} />
                     </div>
                 </div>
