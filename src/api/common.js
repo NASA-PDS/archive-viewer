@@ -188,3 +188,17 @@ export function stitchWithWebFields(fields, route) {
         })
     }
 }
+
+export function pds3Get(params) {
+
+    let defaultParams = {
+        fq: `facet_pds_model_version:"1,pds3" AND facet_type:"1,data_set"`,
+        "f.facet_pds_model_version.facet.prefix": '2,pds3,',
+        "f.facet_type.facet.prefix:": '2,data_set,',
+        fl: 'identifier,title,resLocation',
+        rows: 10
+    }
+    Object.assign(defaultParams, params)
+
+    return httpGet(router.datasetCore, defaultParams, true)
+}

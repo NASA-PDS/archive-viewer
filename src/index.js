@@ -141,28 +141,29 @@ function Index() {
                                     <h3>Planets</h3>
                                     <ul className="front-page-list">
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.mercury">Mercury</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.mercury">Mercury</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.venus">Venus</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.venus">Venus</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.earth">Earth</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.earth">Earth</a>
+                                            <ul><li><a href="?identifier=urn:nasa:pds:context:target:satellite.earth.moon">Moon</a></li></ul>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.mars">Mars</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.mars">Mars</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.jupiter">Jupiter</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.saturn">Saturn</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.saturn">Saturn</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.uranus">Uranus</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.uranus">Uranus</a>
                                         </li>
                                         <li>
-                                            <a href="?target=urn:nasa:pds:context:target:planet.neptune">Neptune</a>
+                                            <a href="?identifier=urn:nasa:pds:context:target:planet.neptune">Neptune</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -186,8 +187,8 @@ function Index() {
                                 <li>
                                     <h3>Dwarf Planets</h3>
                                     <ul className="front-page-list">
-                                        <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
-                                        <li><a href="?target=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
+                                        <li><a href="?identifier=urn:nasa:pds:context:target:dwarf_planet.1_ceres">1 Ceres</a></li>
+                                        <li><a href="?identifier=urn:nasa:pds:context:target:dwarf_planet.134340_pluto">134340 Pluto</a></li>
                                     </ul>
                                     
                                     <h3>Comets</h3>
