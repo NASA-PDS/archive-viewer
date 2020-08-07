@@ -126,60 +126,6 @@
     }
 }
 
-.related-tools {
-    list-style: none;
-    display: flex;
-    flex-flow: column nowrap;
-    @include medium-up {
-        flex-flow: row wrap;
-    }
-    .related-tool {
-        display: flex;
-        flex-flow: row nowrap;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        img {
-            max-width: 75px;
-            border-radius: 5px 0 0 5px;
-        }
-        @include medium-up {
-            flex-direction: column;
-            width: 150px;
-            border-radius: 10px;
-            img {
-                max-width: 150px;
-                border-radius: 10px 10px 0 0;
-    
-            }
-            .tool-longname {
-                display:block;
-            }
-        }
-        .tool-shortname {
-            font-size: 2em;
-        }
-        .tool-longname {
-            margin-left: 12px;
-        }
-        @include narrow-only {
-            .tool-shortname {
-                display: none;
-            }
-            .tool-longname {
-                font-size: 1.2em;
-                height: 65px;
-            }
-        }
-        align-items: center;
-        text-align: center;
-        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0);
-        margin-right: 20px;
-        .tool-names {
-            padding: 5px;
-        }
-        
-    }
-}
 .pds3-results {
     @include tangent-box;
     @include tangent-box-default-style;
