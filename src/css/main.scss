@@ -199,61 +199,6 @@ main aside.main-aside {
     }
 }
 
-#taxonomy {
-    h3 {
-        display: inline-block;
-    }
-    @include narrow-only {
-        h3 {
-            display: none
-        }
-    }
-
-    .banner {
-        display: inline-block;
-        height: 60px;
-        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-        margin: 5px 10px;
-        @include narrow-only {
-            height: 30px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 12px 0 rgba(0,0,0,0.19);
-            margin: 5px 10px;
-        }
-        transform: skewX(-25deg);    
-        background-color: $link;
-
-        a {
-            transform: skewX(25deg);
-            padding: 5px 15px;
-            color: white;
-            height: 60px;
-            @include narrow-only {
-                height: 30px;
-            }
-            box-sizing: border-box;
-
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-
-            img {
-                max-height: 50px;
-                margin-right: 1em;
-            }
-        }
-        &.target {
-            background-color: black;
-        }
-
-        &:after:not(:last-child) {
-            width: 0;
-            height: 0;
-            border-top: 20px solid red;
-            border-right: 20px solid transparent;
-        }
-    }
-}
-
 
 
 .embedded-list {
