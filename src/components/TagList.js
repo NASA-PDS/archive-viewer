@@ -22,8 +22,8 @@ function TagList({tags, type}) {
         <Box>
             <Hidden mdDown><Typography component="span" variant="h5" className={classes.header}> Relevant Tags: </Typography></Hidden>
             {tags.map(tag => 
-                <Link href={`?tag=${tag}&type=${type}`}>
-                    <Chip className={classes.chip} clickable="true" color="primary" label={tag}/>
+                <Link key={tag} href={`?tag=${tag}&type=${type}`}>
+                    <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
                 </Link>
             )}
         </Box>
