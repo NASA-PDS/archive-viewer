@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
-import {Header, Description, Menu} from 'components/ContextObjects'
+import {InstrumentHeader, InstrumentDescription, Menu} from 'components/ContextObjects'
 import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
 import Loading from 'components/Loading'
 import {InstrumentTagList} from 'components/TagList'
@@ -35,7 +35,7 @@ export default class Instrument extends React.Component {
         if (!instrument ) return <Loading fullscreen={true} />
         else return (
             <div className="co-main">
-                <Header model={instrument} type={Header.type.instrument}/>
+                <InstrumentHeader model={instrument} />
                 <Menu/>
                 <aside className="main-aside sidebox">
                     <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
@@ -43,7 +43,7 @@ export default class Instrument extends React.Component {
                 </aside>
                 <div className="co-content">
                     <InstrumentTagList tags={instrument.tags} />
-                    <Description model={instrument} type={Description.type.instrument} />
+                    <InstrumentDescription model={instrument} />
                     <HTMLBox markup={instrument.html1} />
                     <RelatedTools tools={instrument.tools}/>
                     <DatasetListBox items={datasets} />

@@ -4,7 +4,7 @@ import FamilyLinks from 'components/FamilyLinks.js'
 import RelatedTools from 'components/RelatedTools'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
-import {Description} from 'components/ContextObjects'
+import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
 
 const types = {
@@ -37,7 +37,7 @@ class Dataset extends React.Component {
                     <DeliveryInfo dataset={dataset} />
                     <Metadata dataset={dataset} type={this.type} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
                     <DatasetTagList tags={dataset.tags}/>
-                    <Description model={dataset} type={Description.type.dataset}/>
+                    <DatasetDescription model={dataset}/>
 
                     { this.type === types.BUNDLE && 
                         <CollectionList dataset={dataset} />

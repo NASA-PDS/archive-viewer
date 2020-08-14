@@ -3,7 +3,7 @@ import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {TargetListBox, DatasetListBox} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
-import {Header, Description, Menu} from 'components/ContextObjects'
+import {MissionHeader, SpacecraftHeader, MissionDescription, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
@@ -38,7 +38,7 @@ export default class Spacecraft extends React.Component {
         else {
             return (
                 <div className="co-main">
-                    <Header model={mission} type={Header.type.mission} />
+                    <MissionHeader model={mission} /> {/* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
                     <Menu/>
                     <aside className="main-aside sidebox">
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
@@ -48,9 +48,9 @@ export default class Spacecraft extends React.Component {
                     </aside>
                     <div className="co-content">
                         <SpacecraftTagList tags={spacecraft.tags} />
-                        <Description model={mission} type={Description.type.mission} />
+                        <MissionDescription model={mission} /> {/* this is intentionally a mission description on the spacecraft page, since that is likely more relevant */}
                         {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <Header model={spacecraft} type={Header.type.spacecraft}/>
+                            <SpacecraftHeader model={spacecraft} />
                         }
                         <HTMLBox markup={spacecraft.html1} />
                         <RelatedTools tools={spacecraft.tools}/>

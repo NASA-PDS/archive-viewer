@@ -1,7 +1,7 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
-import {Header, Description, Menu} from 'components/ContextObjects'
+import {TargetHeader, TargetDescription, Menu} from 'components/ContextObjects'
 import {RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
 import {SpacecraftBrowseTable} from 'components/BrowseTable'
 import Loading from 'components/Loading'
@@ -9,6 +9,7 @@ import {TargetTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
+import { Container, Box } from '@material-ui/core'
 
 export default class Target extends React.Component {
     constructor(props) {
@@ -33,21 +34,21 @@ export default class Target extends React.Component {
         if (!target ) return <Loading fullscreen={true} />
         else return (
             <div className="co-main">
-                <Header model={target} type={Header.type.target} />
+                <TargetHeader model={target} />
                 <Menu/>
                 <aside className="main-aside sidebox">
                     <RelatedTargetListBox items={relatedTargets} />
                 </aside>
-                <div className="co-content">
+                <Container maxWidth="lg" className="co-content">
                     <TargetTagList tags={target.tags} />
-                    <Description model={target} type={Description.type.target} />
+                    <TargetDescription model={target} />
                     <HTMLBox markup={target.html1} />
-                    <RelatedTools tools={target.tools}/>
+                    <Box mb={3}><RelatedTools tools={target.tools}/></Box>
                     <SpacecraftBrowseTable items={spacecraft} />
                     <DatasetListBox items={datasets} groupBy={DatasetListBox.groupType.spacecraft} groupInfo={spacecraft}/>
                     <PDS3Results name={target.display_name ? target.display_name : target.title}/>
                     <HTMLBox markup={target.html2} />
-                </div>
+                </Container>
             </div>
         )
     }

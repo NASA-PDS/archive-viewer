@@ -14,6 +14,9 @@ const Theme = createMuiTheme({
         error: {
             main: "#812517"
         }
+    },
+    typography: {
+        fontFamily: "'Noto Sans', 'Helvetical', 'Arial', sans-serif",
     }
 });
 
