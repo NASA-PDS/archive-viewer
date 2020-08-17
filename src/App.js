@@ -9,7 +9,7 @@ import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
 import FrontPage from './FrontPage'
 import { initialLookup } from 'api/common.js'
-import { resolveType, types } from 'api/pages.js'
+import { resolveType, types } from 'services/pages.js'
 
 
 const oldParameters = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']

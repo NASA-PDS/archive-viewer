@@ -2,7 +2,7 @@ import web from 'axios';
 import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
-import { types, resolveType } from 'api/pages.js'
+import { types, resolveType } from 'services/pages.js'
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
