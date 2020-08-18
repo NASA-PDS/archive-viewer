@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import 'css/ListBox.scss'
 import Loading from 'components/Loading.js'
 import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
