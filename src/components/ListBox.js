@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'css/ListBox.scss'
 import Loading from 'components/Loading.js'
+import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 import { ContextLink, ContextList } from 'components/ContextLinks'
+import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 /* ------ Constants ------ */
 const listTypes = {
@@ -45,171 +48,109 @@ const listTypeValues = {
     }
 }
 
+/* ------------- CSS --------------- */
 
+const useStyles = makeStyles((theme) => ({
+    titleBox: {
+        alignItems: 'baseline',
+    }
+}));
 
 /* ------ Main Export Classes ------ */
 
-class ListBox extends React.Component {
+function AbstractListBox(props) {
+    const {groupBy, groupInfo, type, groupingFn, items} = props
+    const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
+    const classes = useStyles()
 
-    static groupType = listTypes
-
-    constructor(props, type) {
-        super(props)
-
-        // Set minimum list length for displaying a list
-        const min = 25
-        this.state = {
-            type,
-            showAll: props.items ? props.items.length <= min : false
-        }
-    }
-
-    itemCount = () => {
-        return this.props.items.length
-    }
-
-    makeList = () => {
-        const {items, groupBy, groupInfo} = this.props
-        const {type} = this.state
-        const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
-        return items.length === 1
-        ? <ItemLink item={items[0]} single={true}/> 
-        : <GroupedList groups={this.createGroupings(items, groupInfo, groupByField)} type={type}/>
-    }
-
-    createGroupings = groupByAttributedRelationship
-    
-    render() {
-        const {items} = this.props
-        const {type} = this.state
-
-        if(!items) {
-            return <Loading/>
-        } else if(this.itemCount() === 0) {
-            return <NoItems type={type}/>
-        } else {
-            const singular = items.length === 1
-            return (
-                <div className="list-box">
-                    
-                    <span className="title-box">
-                        <h2 className="title">{ singular ? listTypeValues[type].titleSingular : listTypeValues[type].title }</h2>
-                        { !singular && <h3 className="count">({ this.itemCount() })</h3> }
-                    </span>
-                    
-                    {   
-                        this.makeList()
-                    }
-                    
-                </div>
-            )
-        } 
-    }
+    if(!items) { 
+        return <Loading/> 
+    } else if(items.length === 0) {
+        return <NoItems type={type}/>
+    } else {
+        const singular = items.length === 1
+        return (
+            <List>
+                <ListItem className={classes.titleBox}>
+                    <ListItemText 
+                        primary={singular ? listTypeValues[type].titleSingular : listTypeValues[type].title}
+                        primaryTypographyProps={{variant: 'h5'}}
+                        secondary={!singular && items.length}>
+                    </ListItemText>
+                </ListItem>
+                <Divider/>
+                {
+                    items.length === 1
+                    ? <ContextLink item={items[0]}/> 
+                    : <GroupedList groups={groupingFn(items, groupInfo, groupByField)} type={type}/>
+                }
+            </List>
+        )
+    } 
 }
 
-class DatasetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.dataset)
-    }
 
-    createGroupings = groupByRelatedItems
+function DatasetListBox(props) {
+    return <AbstractListBox type={listTypes.dataset} groupingFn={groupByRelatedItems} {...props}/>
 }
-class MissionListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.mission)
-    }
+function MissionListBox(props) {
+    return <AbstractListBox type={listTypes.mission} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class TargetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.target)
-    }
+function TargetListBox(props) {
+    return <AbstractListBox type={listTypes.target} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class RelatedTargetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.relatedTarget)
-    }
-
-    makeList = () => {
-        const {items} = this.props
-        return <RelatedTargetsListBox targets={items} />
-    }
+function RelatedTargetListBox(props) {
+    return <AbstractListBox type={listTypes.relatedTarget} groupingFn={groupByFirstTag} {...props}/>
 }
-class InstrumentListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.instrument)
-    }
+function InstrumentListBox(props) {
+    return <AbstractListBox type={listTypes.instrument} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class SpacecraftListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.spacecraft)
-    }
+function SpacecraftListBox(props) {
+    return <AbstractListBox type={listTypes.spacecraft} groupingFn={groupByAttributedRelationship} {...props}/>
 }
 
-export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
-
-
-
+export {listTypes as groupType, DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
 
 /* ------ Internal Components ------ */
 
 function GroupedList({groups, type}) {
     if (groups.length === 1) {
-        return <ContextList items={groups[0].items} />
+        return <ContextList items={groups[0].items}/>
     }
     let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
-        <GroupBox group={group} type={type} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
+        <GroupBox group={group} type={type} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
 
-class GroupBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            showGroup: !props.minor,
-            showToggle: props.minor
-        }
-    }
+function GroupBox({group, type, isMinor}) {
+    const showToggle = isMinor
+    const [expanded, setExpanded] = useState(!isMinor)
+    const toggle = () => setExpanded(!expanded)
 
-    toggleList = event => {
-        event.preventDefault();
-        this.setState({ showGroup: !this.state.showGroup });
-    }
+    const { items, name } = group
 
-    render() {
-        let items = this.props.group.items, title = this.props.group.name
-        let {showToggle, showGroup} = this.state
-
-        if(!items.length) {
-            return <NoItems type={this.props.type} descriptor={title} />
-        }
-        return (
-            <div>
-                {showToggle 
-                    ?<div onClick={ this.toggleList } className="expandable">
-                        <img alt="" src={ this.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ this.state.showGroup ? 'collapse' : 'expand' } />
-                        <h3>{ title }</h3>
-                    </div>
-                    : <div><h3>{title}</h3></div>
-                }
-                
-                {showGroup
-                    ? <ContextList items={items} />
-                    : null}
-            </div>
-        )
+    if(!items.length) {
+        return <NoItems type={type} descriptor={name} />
     }
+    return (
+        <List disablePadding>
+            {showToggle 
+                ?<ListItem button onClick={ toggle }>
+                    <ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/>
+                    { expanded ? <ExpandLess /> : <ExpandMore/>}
+                </ListItem>
+                : 
+                <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
+            }
+            <Collapse in={expanded}>
+                <ContextList items={items} />
+            </Collapse>
+        </List>
+    )
 }
 
 
-
-function RelatedTargetsListBox({targets}) {
-    let groups = groupByFirstTag(targets)
-
-    return !groups.length 
-        ? <NoItems type={listTypes.relatedTarget}/> 
-        : <GroupedList groups={groups} type={listTypes.target}/>
-}
 
 function NoItems({type, descriptor}) {
     return (

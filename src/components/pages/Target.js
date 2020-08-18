@@ -2,7 +2,7 @@ import React from 'react';
 import 'css/ContextObjects.scss'
 import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
 import {TargetHeader, TargetDescription, Menu} from 'components/ContextObjects'
-import {RelatedTargetListBox, DatasetListBox} from 'components/ListBox'
+import {RelatedTargetListBox, DatasetListBox, groupType} from 'components/ListBox'
 import {SpacecraftBrowseTable} from 'components/BrowseTable'
 import Loading from 'components/Loading'
 import {TargetTagList} from 'components/TagList'
@@ -45,7 +45,7 @@ export default class Target extends React.Component {
                     <HTMLBox markup={target.html1} />
                     <Box mb={3}><RelatedTools tools={target.tools}/></Box>
                     <SpacecraftBrowseTable items={spacecraft} />
-                    <DatasetListBox items={datasets} groupBy={DatasetListBox.groupType.spacecraft} groupInfo={spacecraft}/>
+                    <DatasetListBox items={datasets} groupBy={groupType.spacecraft} groupInfo={spacecraft}/>
                     <PDS3Results name={target.display_name ? target.display_name : target.title}/>
                     <HTMLBox markup={target.html2} />
                 </Container>
