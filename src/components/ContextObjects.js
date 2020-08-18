@@ -65,7 +65,7 @@ function Description(props) {
             { !description ? 'No description is available.' : expanded ? <>
                 {description}{alwaysShow ? null : <Link onClick={ () => setExpanded(false) }>Hide Description</Link>}
             </> : <>
-                {description.length < previewLength ? description : shorten(description) + <Link onClick={ () => setExpanded(true) }>Show Description</Link>}
+                {description.length < previewLength ? description : (<>{shorten(description)}<Link onClick={ () => setExpanded(true) }>Show Description</Link></>)}
             </>}
         </Typography>
     )  
