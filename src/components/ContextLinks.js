@@ -17,8 +17,7 @@ function ContextList({items}) {
 }
 
 function ContextLink({item, displayTag}) {
-    let url = `?identifier=${item.identifier}`
-    console.log(displayTag)
+    const url = `?identifier=${item.logical_identifier ? item.logical_identifier : item.identifier}`
     return (
         <ListItem button component={Link} href={url}>
             <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')}/>

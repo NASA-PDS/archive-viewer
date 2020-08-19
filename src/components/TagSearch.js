@@ -2,6 +2,8 @@ import React from 'react';
 import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
+import { ContextList } from 'components/ContextLinks'
+import { Typography, Container, Paper } from '@material-ui/core';
 
 export const TagTypes = {
     target: 'target',
@@ -53,16 +55,10 @@ export default class TagSearch extends React.Component {
         }
         results.sort((a, b) => a.display_name.localeCompare(b.display_name))
         return (
-            <div>
-                <h1>{tags.join(' or ')}</h1>
-                <ul>
-                    {results.map(result =>
-                        <li key={result.logical_identifier}>
-                            <a href={`?identifier=${result.logical_identifier}`}>{result.display_name}</a>
-                        </li>
-                    )}
-                </ul>
-            </div>
+            <Container component={Paper}>
+                <Typography variant="h1">{tags.join(' or ')}</Typography>
+                <ContextList items={results}/>
+            </Container>
         )
         
     }
