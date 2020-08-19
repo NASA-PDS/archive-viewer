@@ -3,7 +3,7 @@ import { Box, Link,  List as MaterialList, ListItem, ListItemText } from '@mater
 
 
 function ContextList({items}) {    
-    if(!items || !items.length) { return <NoItems/>}
+    if(!items || !items.length) { return null}
     let sortedItems = items.sort((a, b) => {
         return nameFinder(a).localeCompare(nameFinder(b))
     })
@@ -22,14 +22,6 @@ function ContextLink({item, displayTag}) {
         <ListItem button component={Link} href={url}>
             <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')}/>
         </ListItem>
-    )
-}
-
-function NoItems() {
-    return (
-        <Box>
-            <p>None of this type</p>
-        </Box>
     )
 }
 

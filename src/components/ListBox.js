@@ -65,7 +65,7 @@ function AbstractListBox(props) {
     if(!items) { 
         return <Loading/> 
     } else if(items.length === 0) {
-        return <NoItems type={type}/>
+        return null
     } else {
         const singular = items.length === 1
         return (
@@ -130,7 +130,7 @@ function GroupBox({group, type, isMinor}) {
     const { items, name } = group
 
     if(!items.length) {
-        return <NoItems type={type} descriptor={name} />
+        return null
     }
     return (
         <List disablePadding>
@@ -146,15 +146,5 @@ function GroupBox({group, type, isMinor}) {
                 <ContextList items={items} />
             </Collapse>
         </List>
-    )
-}
-
-
-
-function NoItems({type, descriptor}) {
-    return (
-        <div className="no-items">
-            <p>No {descriptor} {listTypeValues[type].title}</p>
-        </div>
     )
 }
