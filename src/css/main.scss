@@ -347,35 +347,6 @@ table {
     clear: both;
  }
 
- .family-links {
-    margin-left: 5px;
-    width: calc(100% - 5px);
-    min-height: 75px;
-
-    display: inline-flex;
-    flex-flow: row wrap;
-    align-items: center;
-    
-    .bundle-ref {
-        display: flex;
-        align-items: center;
-    }
-    img {
-        max-height: 48px;
-        margin-right: 1em;
-    }
-
-    .links {
-        margin-left: auto;
-        display: flex;
-        flex-flow: row wrap;
-        a {
-            margin-right: 1em;
-
-        }
-    }
-}
-
 .dataset-quicklinks {
     display: flex;
     flex-flow: row wrap;
