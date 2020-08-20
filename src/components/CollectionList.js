@@ -1,6 +1,21 @@
 import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
+import { Box, List, ListItem, ListItemText, Avatar, ListItemAvatar, Link, Divider, Typography, ListItemSecondaryAction, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import PrimaryContent from 'components/PrimaryContent'
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+        borderLeft: '8px solid ' + theme.palette.primary.light
+    },
+    collectionList: {
+        fontSize: theme.typography.body1.fontSize * 1.2
+    },
+    downloadIcon: {
+        maxHeight: theme.typography.fontSize * 2
+    }
+}));
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -9,7 +24,7 @@ export default class Main extends React.Component {
         this.state = {
             loaded: false,
             dataset: dataset,
-            collections: dataset.collection_ref.map(ref => { return { lid: ref } })
+            collections: dataset.collection_ref.map(ref => { return { identifier: ref } })
         }
     }
 
@@ -23,77 +38,59 @@ export default class Main extends React.Component {
     }
 
     render() {
-        const { error, collections, loaded } = this.state
+        const { error, collections } = this.state
         if(error) {
             return <ErrorMessage error={error} />
         } else
-        return <CollectionList collections={collections} loaded={loaded} />
+        return <CollectionList collections={collections} />
     }
 }
 
+function CollectionList({ collections }) {
+    const classes = useStyles()
 
-
-
-function CollectionList({ collections, loaded }) {
-    let collectionElements
-    if(!loaded) {
-        collectionElements = collections.map(collection =>
-            <div key={collection.lid} className="collection collection-container">
-                <div className="header">
-                    <a href={'?dataset=' + collection.lid}>
-                        {collection.lid}
-                    </a>
-                </div>
-            </div>
-        )
-    } else {
-        let sortedCollections = collections.sort((a, b) => {
-            if (a.collection_type === "Document") { return -1}
-            if (b.collection_type === "Document") { return 1 }
-            return 0
-        })
-        collectionElements = sortedCollections.map(collection =>
-            <div key={collection.identifier} className="collection collection-container">
-                <div className="header">
-                    <a href={'?dataset=' + collection.identifier}>
-                        <span className="collection-title" title="Collection Title">{collection.display_name ? collection.display_name : collection.title}</span>
-                    </a>
-
-                    {collection.example && (
-                        <span className="example">
-                            {collection.collection_type === "Document" ? 
-                                <span className="file-label">Key Document: </span> : 
-                                <span className="file-label">Example File: </span>
-                            }
-                            <a href={collection.example.url}>{collection.example.title ? collection.example.title : collection.example.filename}</a>
-                        </span>
-                    )}
-                </div>
-                <div className="actions">
-                    {collection.download_url && (
-                        <a href={collection.download_url}>
-                            <img alt="" src="./images/icn-download-rnd.png"/> 
-                            {collection.download_size && ( 
-                                <span className="download-size">({collection.download_size})</span> 
-                            )}
-                        </a>
-                    )}
-                </div>
-            </div>
-        )
-    }
-
+    let sortedCollections = collections.sort((a, b) => {
+        if (a.collection_type === "Document") { return -1}
+        if (b.collection_type === "Document") { return 1 }
+        return 0
+    })
     return (
-        <section className="dataset-collections">
-            <div className="header">
-                <div>
-                    <span className="type-title">In this dataset...</span>
-                </div>
-            </div>
-            <div>
-                {collectionElements}
-            </div>
-
-        </section>
+        <PrimaryContent>
+            <Typography variant="h5">In this dataset...</Typography>
+            <List className={classes.container}>
+                { sortedCollections.map(collection =>
+                    <React.Fragment key={collection.identifier}>
+                        <ListItem button component={Link} href={'?dataset=' + collection.identifier} key={collection.identifier}>
+                            <ListItemAvatar>
+                                <Avatar variant="square" alt="Collection Icon" src="/images/icn-collection.png" />
+                            </ListItemAvatar>
+                            <ListItemText 
+                                primary={nameFinder(collection)} primaryTypographyProps={{variant: 'h6'}}
+                                secondary={collection.example && collection.example.url && (
+                                    <>
+                                        {collection.collection_type === "Document" ? 
+                                            <Typography component="span">Key Document: </Typography> : 
+                                            <Typography component="span">Example File: </Typography>
+                                        }
+                                        <Link href={collection.example.url}>{collection.example.title ? collection.example.title : collection.example.filename}</Link>
+                                    </>
+                                )
+                                }/>
+                                {collection.download_url && (<ListItemSecondaryAction>
+                                    <Button href={collection.download_url}><img alt="" className={classes.downloadIcon} src="./images/icn-download-rnd.png"/>{collection.download_size && ( 
+                                        <span className="download-size">({collection.download_size}12kb)</span> 
+                                    )}</Button>
+                                </ListItemSecondaryAction>
+                            )}
+                        </ListItem>
+                        <Divider variant="inset" component="li"/>
+                    </React.Fragment>
+                )}
+            </List>
+        </PrimaryContent>
     )
+}
+
+function nameFinder(collection) {
+    return collection.display_name ? collection.display_name : collection.title ? collection.title : collection.identifier
 }
