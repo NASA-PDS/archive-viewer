@@ -2,6 +2,7 @@ import React from 'react';
 import {pds3Get} from 'api/common.js';
 import Loading from 'components/Loading'
 import { Card, Link, Button, CardHeader, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
+import TangentCard from 'components/TangentCard'
 
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'
 
@@ -38,8 +39,7 @@ export default class PDS3Results extends React.Component {
 
 function ResultsList({datasets, count, resultsUrl}) {
     return (
-        <Card raised={3} p={1}>
-            <CardHeader title={`There ${count === 1 ? `is one (legacy) PDS3 dataset` : `are ${count} (legacy) PDS3 datasets`} available:`}/>
+        <TangentCard title={`There ${count === 1 ? `is one (legacy) PDS3 dataset` : `are ${count} (legacy) PDS3 datasets`} available:`}>
             <List>
                 {datasets.map(dataset => 
                     <ListItem button component={Link} key={dataset.identifier} href={dataset.resLocation.startsWith('/') ? 'https://pds.nasa.gov' + dataset.resLocation : dataset.resLocation}>
@@ -48,7 +48,7 @@ function ResultsList({datasets, count, resultsUrl}) {
                     )}
             </List>
             <CardActions><Button variant="contained" color="primary" href={resultsUrl}>View other results</Button></CardActions>
-        </Card>
+        </TangentCard>
     )
 }
 
