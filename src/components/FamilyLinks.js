@@ -5,11 +5,6 @@ import { Box, Typography, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-    bundle: {
-        display: 'flex',
-        alignItems: 'center',
-        margin: theme.spacing(1)
-    }, 
     bundleImg: {
         maxHeight: '48px',
         marginRight: theme.spacing(2)
@@ -67,8 +62,8 @@ export default class Main extends React.Component {
 
 function BundleRef({bundles}) {
     const classes = useStyles()
-    return <Box className={classes.bundle}>
-        <img class={classes.bundleImg} alt="Bundle" src="./images/icn-bundle.png" />
+    return <Box display="flex" alignItems="center" m={1} >
+        <img className={classes.bundleImg} alt="Bundle" src="./images/icn-bundle.png" />
         <Typography>Part of </Typography>
         {bundles.map(bundle => 
             <Link className={classes.bundleLink} color="primary" key={bundle.identifier} href={'?dataset=' + bundle.identifier}>{bundle.display_name ? bundle.display_name : bundle.title}</Link>

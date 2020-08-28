@@ -17,7 +17,10 @@ const Theme = createMuiTheme({
     },
     typography: {
         fontFamily: "'Noto Sans', 'Helvetical', 'Arial', sans-serif",
-    }
+        h1: {
+            fontSize: '2rem'
+        }
+    },
 });
 
 export default Theme;
