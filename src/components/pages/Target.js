@@ -9,7 +9,7 @@ import {TargetTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
-import { Container, Box } from '@material-ui/core'
+import PrimaryLayout from 'components/PrimaryLayout'
 
 export default class Target extends React.Component {
     constructor(props) {
@@ -36,19 +36,20 @@ export default class Target extends React.Component {
             <div className="co-main">
                 <TargetHeader model={target} />
                 <Menu/>
-                <aside className="main-aside sidebox">
-                    <RelatedTargetListBox items={relatedTargets} />
-                </aside>
-                <Container maxWidth="lg" className="co-content">
+                <PrimaryLayout primary={
+                    <>
                     <TargetTagList tags={target.tags} />
                     <TargetDescription model={target} />
                     <HTMLBox markup={target.html1} />
-                    <Box mb={3}><RelatedTools tools={target.tools}/></Box>
+                    <RelatedTools tools={target.tools}/>
                     <SpacecraftBrowseTable items={spacecraft} />
                     <DatasetListBox items={datasets} groupBy={groupType.spacecraft} groupInfo={spacecraft}/>
                     <PDS3Results name={target.display_name ? target.display_name : target.title}/>
                     <HTMLBox markup={target.html2} />
-                </Container>
+                    </>
+                } secondary = {
+                    <RelatedTargetListBox items={relatedTargets} />
+                }/>
             </div>
         )
     }

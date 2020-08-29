@@ -42,7 +42,7 @@ function BrowseTables(props) {
         <Box>
             {majorGroups.map(group => { return (
                 <Box key={group.name}>
-                    <Typography variant="h4" className={classes.sectionHeader}>{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
+                    <Typography variant="h2" className={classes.sectionHeader}>{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
                     { sectioned ? <SectionedTable items={group.items} /> : <ContextList items={group.items} /> }
                 </Box>
             )})}
@@ -51,7 +51,7 @@ function BrowseTables(props) {
             }
             {expanded && minorGroups.map(group => { return (
                 <Box key={group.name}>
-                    <Typography variant="h4">{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
+                    <Typography variant="h3" component="h2">{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
                     { sectioned ? <SectionedTable items={group.items} /> : <ContextList items={group.items} /> }
                 </Box>
             )})}

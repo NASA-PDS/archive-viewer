@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Grid, CardMedia, Typography, Card, CardContent } from '@material-ui/core'
+import { Link, Grid, CardMedia, Typography, Card, CardContent, Box } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -12,14 +12,14 @@ const useStyles = makeStyles({
 export default function RelatedTools({tools}){
     if(!tools) { return null }
     return (
-        <>
-            <Typography gutterBottom variant="h4" component="h2">Useful tool{tools.length > 1 ? 's' : ''} for this data:</Typography>
+        <Box m={3}>
+            <Typography gutterBottom variant="h3">Useful tool{tools.length > 1 ? 's' : ''} for this data:</Typography>
             <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
                 {tools.map(tool => (
                     <Grid item xs={6} md={2} key={tool.toolId} ><ToolLink tool={tool}/></Grid>
                 ))}
             </Grid>
-        </>
+        </Box>
     )
 }
 

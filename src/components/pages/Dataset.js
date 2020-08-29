@@ -10,6 +10,7 @@ import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Butto
 import TangentCard from 'components/TangentCard';
 import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent';
+import PrimaryLayout from 'components/PrimaryLayout'
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -79,11 +80,28 @@ class Dataset extends React.Component {
         const {dataset, targets, spacecraft, instruments} = this.state
         return (
             <>
-                <FamilyLinks dataset={dataset} />
-                <Grid itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
+                <PrimaryLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
+                    <>
                     <Title dataset={dataset} type={this.type} />
                     <DeliveryInfo dataset={dataset} />
-                    <Metadata dataset={dataset} type={this.type} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
+                    <TangentCard title={titles[this.type]}>
+                        {!!dataset.publication && !!dataset.publication.publish_status && (
+                            <MetadataList header="Status:" items={[dataset.publication.publish_status]} />)
+                        }
+                        {!!dataset.publication && !!dataset.publication.publication_date &&
+                            <MetadataList header="Date Published:" items={[dataset.publication.publication_date]} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+                        }
+                        <MetadataList header="Publisher:" items={["NASA Planetary Data System"]} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
+                        {dataset.identifier &&
+                            <MetadataList header={`${this.type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} items={[dataset.identifier]} />
+                        }
+                        {dataset.doi &&
+                            <MetadataList header="DOI:" items={[dataset.doi]} />
+                        }
+                        
+                        <AuthorList authors={dataset.citation_author_list} />
+                        <EditorList editors={dataset.citation_editor_list} />
+                    </TangentCard>
                     <DatasetTagList tags={dataset.tags}/>
                     <DatasetDescription model={dataset}/>
 
@@ -95,12 +113,42 @@ class Dataset extends React.Component {
                     <CollectionDownloads dataset={dataset} />
 
                     <Citation dataset={dataset} />
-                </Grid>
-                <Grid container direction="row" alignItems="stretch">
-                    <Grid item component={RelatedPDS3} dataset={dataset} />
-                    <Grid item component={Superseded} dataset={dataset} />
-                    <Grid item component={RelatedData} dataset={dataset} />
-                </Grid>
+                    <Grid container direction="row" alignItems="stretch">
+                        <Grid item component={RelatedPDS3} dataset={dataset} />
+                        <Grid item component={Superseded} dataset={dataset} />
+                        <Grid item component={RelatedData} dataset={dataset} />
+                    </Grid>
+                    </>
+                } secondary={
+                    <>
+                        <FamilyLinks dataset={dataset} />
+                        <TangentCard>
+                            <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
+                                <Grid item>
+                                    <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<iActionButtonIcon src="./images/icn-folder.png" />} title="Browse All"/>
+                                </Grid>
+                                {dataset.download_url &&
+                                    <Grid item><ActionButton url={dataset.download_url} icon={<ActionButtonIcon src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
+                                }
+                                {dataset.checksum_url &&
+                                    <Grid item><ActionButton url={dataset.checksum_url} icon={<ActionButtonIcon src="./images/icn-checksum.png" />} title="View Checksums"/></Grid>
+                                }
+                                {dataset.resource_url &&
+                                    <Grid item><ActionButton url={dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-external.png" />} title="View Resource"/></Grid>
+                                }
+                            </Grid>
+                        </TangentCard>
+                        <TangentCard>
+                            <TargetListBox items={targets}/>
+                            <SpacecraftListBox items={spacecraft}/>
+                            <InstrumentListBox items={instruments}/>
+                        </TangentCard>
+                    </>
+                }/>
+                {/* <Grid itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
+                    
+                </Grid> */}
+                
             </>
         )
     }
@@ -154,45 +202,8 @@ function Metadata(props) {
     const {dataset, targets, spacecraft, instruments, type} = props
     return (
         <aside className="main-aside">
-            <TangentCard title={titles[type]}>
-                {!!dataset.publication && !!dataset.publication.publish_status && (
-                    <MetadataList header="Status:" items={[dataset.publication.publish_status]} />)
-                }
-                {!!dataset.publication && !!dataset.publication.publication_date &&
-                    <MetadataList header="Date Published:" items={[dataset.publication.publication_date]} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
-                }
-                <MetadataList header="Publisher:" items={["NASA Planetary Data System"]} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
-                {dataset.identifier &&
-                    <MetadataList header={`${type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} items={[dataset.identifier]} />
-                }
-                {dataset.doi &&
-                    <MetadataList header="DOI:" items={[dataset.doi]} />
-                }
-                
-                <AuthorList authors={dataset.citation_author_list} />
-                <EditorList editors={dataset.citation_editor_list} />
-            </TangentCard>
-            <TangentCard>
-                <TargetListBox items={targets}/>
-                <SpacecraftListBox items={spacecraft}/>
-                <InstrumentListBox items={instruments}/>
-            </TangentCard>
-            <TangentCard>
-                <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
-                    <Grid item>
-                        <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<img alt="" className={classes.buttonIcon} src="./images/icn-folder.png" />} title="Browse All"/>
-                    </Grid>
-                    {dataset.download_url &&
-                        <Grid item><ActionButton url={dataset.download_url} icon={<img alt="" className={classes.buttonIcon} src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
-                    }
-                    {dataset.checksum_url &&
-                        <Grid item><ActionButton url={dataset.checksum_url} icon={<img alt="" className={classes.buttonIcon} src="./images/icn-checksum.png" />} title="View Checksums"/></Grid>
-                    }
-                    {dataset.resource_url &&
-                        <Grid item><ActionButton url={dataset.resource_url} icon={<img alt="" className={classes.buttonIcon} src="./images/icn-external.png" />} title="View Resource"/></Grid>
-                    }
-                </Grid>
-            </TangentCard>
+            
+            
         </aside>
     )
 }
@@ -200,6 +211,11 @@ function Metadata(props) {
 function ActionButton({url, icon, title}) {
     const classes = useStyles()
     return <Button color="primary" variant="contained" href={url} className={classes.primaryButton} startIcon={icon}>{title}</Button>
+}
+
+function ActionButtonIcon({src}) {
+    const classes = useStyles()
+    return <img alt="" className={classes.buttonIcon} src={src} />
 }
 
 function AuthorList({authors}) {

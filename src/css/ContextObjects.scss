@@ -1,41 +1,5 @@
 @import 'variables';
 
-.co-main {
-    @include medium-up {
-        padding: $main-padding;
-        
-        header:not(.subheader) { 
-            margin-top: -$main-padding;
-            margin-left: -$main-padding;
-            margin-right: -$main-padding;
-            margin-bottom: $main-padding
-        }
-    }
-    @include narrow-only {
-        padding: $narrow-padding;
-        
-        header:not(.subheader) { 
-            margin-top: -$narrow-padding;
-            margin-left: -$narrow-padding;
-            margin-right: -$narrow-padding;
-            margin-bottom: $narrow-padding
-        }
-    }
-}
-.co-content {
-    max-width: $readable-width;
-}
-.co-aside {
-    max-width: 300px;
-}
-.button {
-    @include button;
-    align-self: flex-start;
-    text-align: center;
-}
-.sidebox {
-    @include sidebox;
-}
 
 .mission-header, .target-header, .instrument-header, .spacecraft-header {
     color: white;
@@ -116,22 +80,6 @@
         max-width: 80px;
         ~ span {
             margin-left: 1em;
-        }
-    }
-}
-
-.pds3-results {
-    @include tangent-box;
-    @include tangent-box-default-style;
-    margin-top: 3em;
-    opacity: 0.75;
-    display: flex;
-    flex-direction: column;
-    .further-results {
-        margin: 20px 0;
-        a {
-            @include button;
-            margin: 0;
         }
     }
 }

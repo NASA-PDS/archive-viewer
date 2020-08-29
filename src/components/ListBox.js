@@ -73,8 +73,7 @@ function AbstractListBox(props) {
                 <ListItem className={classes.titleBox}>
                     <ListItemText 
                         primary={singular ? listTypeValues[type].titleSingular : listTypeValues[type].title}
-                        primaryTypographyProps={{variant: 'h5'}}
-                        secondary={!singular && items.length}>
+                        primaryTypographyProps={{variant: 'h3'}}>
                     </ListItemText>
                 </ListItem>
                 <Divider/>

@@ -9,6 +9,7 @@ import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
 import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
+import PrimaryLayout from 'components/PrimaryLayout'
 
 export default class Instrument extends React.Component {
     constructor(props) {
@@ -37,11 +38,8 @@ export default class Instrument extends React.Component {
             <div className="co-main">
                 <InstrumentHeader model={instrument} />
                 <Menu/>
-                <aside className="main-aside sidebox">
-                    <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
-                    <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
-                </aside>
-                <div className="co-content">
+                <PrimaryLayout primary={
+                    <>
                     <InstrumentTagList tags={instrument.tags} />
                     <InstrumentDescription model={instrument} />
                     <HTMLBox markup={instrument.html1} />
@@ -49,7 +47,13 @@ export default class Instrument extends React.Component {
                     <DatasetListBox items={datasets} />
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                     <HTMLBox markup={instrument.html2} />
-                </div>
+                    </>
+                } secondary = {
+                    <>
+                    <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
+                    <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
+                    </>
+                }/>
             </div>
         )
     }
