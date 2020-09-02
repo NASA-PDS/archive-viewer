@@ -86,17 +86,17 @@ class Dataset extends React.Component {
                     <DeliveryInfo dataset={dataset} />
                     <TangentCard title={titles[this.type]}>
                         {!!dataset.publication && !!dataset.publication.publish_status && (
-                            <MetadataList header="Status:" items={[dataset.publication.publish_status]} />)
+                            <MetadataItem header="Status:" item={[dataset.publication.publish_status]} />)
                         }
                         {!!dataset.publication && !!dataset.publication.publication_date &&
-                            <MetadataList header="Date Published:" items={[dataset.publication.publication_date]} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+                            <MetadataItem header="Date Published:" item={dataset.publication.publication_date} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
                         }
-                        <MetadataList header="Publisher:" items={["NASA Planetary Data System"]} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
+                        <MetadataItem header="Publisher:" item={"NASA Planetary Data System"} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
                         {dataset.identifier &&
-                            <MetadataList header={`${this.type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} items={[dataset.identifier]} />
+                            <MetadataItem header={`${this.type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} item={dataset.identifier} />
                         }
                         {dataset.doi &&
-                            <MetadataList header="DOI:" items={[dataset.doi]} />
+                            <MetadataItem header="DOI:" item={[dataset.doi]} />
                         }
                         
                         <AuthorList authors={dataset.citation_author_list} />
@@ -197,17 +197,6 @@ function DeliveryInfo({dataset}) {
     }
 }
 
-function Metadata(props) {
-    const classes = useStyles()
-    const {dataset, targets, spacecraft, instruments, type} = props
-    return (
-        <aside className="main-aside">
-            
-            
-        </aside>
-    )
-}
-
 function ActionButton({url, icon, title}) {
     const classes = useStyles()
     return <Button color="primary" variant="contained" href={url} className={classes.primaryButton} startIcon={icon}>{title}</Button>
@@ -219,31 +208,27 @@ function ActionButtonIcon({src}) {
 }
 
 function AuthorList({authors}) {
-    const list = authors ? authors.split(';').map(editor => editor.replace(' and ', '').trim()) : []
-    return list.length ? (
-        <MetadataList header={`Author${list.length > 1 ? 's:' : ':'}`} items={list} itemProp="author" itemScope itemType="http://schema.org/Person" />
+    return authors ? (
+        <MetadataItem header={`Author${authors.includes(';') ? 's:' : ':'}`} item={authors} itemProp="author" itemScope itemType="http://schema.org/Person" />
     ) : null
 }
 
 function EditorList({editors}) {
-    const list = editors ? editors.split(';').map(editor => editor.replace(' and ', '').trim()) : []
-    return list.length ? (
-        <MetadataList header={`Editor${list.length > 1 ? 's:' : ':'}`} items={list} itemProp="author" itemScope itemType="http://schema.org/Person" />
+    return editors ? (
+        <MetadataItem header={`Editor${editors.includes(';') ? 's:' : ':'}`} item={editors} itemProp="author" itemScope itemType="http://schema.org/Person" />
     ) : null
 }
 
 // Matierial UI List without padding
-function MetadataList(props) {
-    const { items, header, ...otherProps } = props
+function MetadataItem(props) {
+    const { item, header, ...otherProps } = props
     const classes = useStyles()
     return (<>
         <Typography variant="h6">{header}</Typography>
         <List disablePadding>
-            {items.map(item =>  
-                <ListItem className={classes.textListItem} {...otherProps} key={item}>
-                    <ListItemText primary={item}/>
-                </ListItem>
-            )}
+            <ListItem className={classes.textListItem} {...otherProps} key={item}>
+                <ListItemText primary={item}/>
+            </ListItem>
         </List>
     </>)
 }
