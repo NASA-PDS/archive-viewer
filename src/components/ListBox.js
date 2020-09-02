@@ -7,6 +7,7 @@ import { ContextLink, ContextList } from 'components/ContextLinks'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 /* ------ Constants ------ */
+const maxExpandedListDefault = 15
 const listTypes = {
     dataset: 'dataset',
     mission: 'mission',
@@ -47,43 +48,42 @@ const listTypeValues = {
     }
 }
 
-/* ------------- CSS --------------- */
-
-const useStyles = makeStyles((theme) => ({
-    titleBox: {
-        alignItems: 'baseline',
-    }
-}));
 
 /* ------ Main Export Classes ------ */
 
 function AbstractListBox(props) {
     const {groupBy, groupInfo, type, groupingFn, items} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
-    const classes = useStyles()
+
+    const showToggle = !!items && items.length > maxExpandedListDefault
 
     if(!items) { 
         return <Loading/> 
     } else if(items.length === 0) {
         return null
     } else {
-        const singular = items.length === 1
-        return (
-            <List>
-                <ListItem className={classes.titleBox}>
-                    <ListItemText 
-                        primary={singular ? listTypeValues[type].titleSingular : listTypeValues[type].title}
-                        primaryTypographyProps={{variant: 'h3'}}>
-                    </ListItemText>
-                </ListItem>
-                <Divider/>
-                {
-                    items.length === 1
+        const header = items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title
+        const groups = groupingFn(items, groupInfo, groupByField)
+        const list = items.length === 1
                     ? <ContextLink item={items[0]}/> 
-                    : <GroupedList groups={groupingFn(items, groupInfo, groupByField)} type={type}/>
-                }
+                    : <GroupedList groups={groups} type={type}/>
+        return showToggle && groups.length === 1
+            ? <ToggleList  
+                    header={header} 
+                    headerVariant="h3" 
+                    list={list}
+                    divider={true}/>
+            : <List disablePadding>
+                <ListItem>
+                        <ListItemText 
+                            primary={header}
+                            primaryTypographyProps={{variant: 'h3'}}>
+                        </ListItemText>
+                    </ListItem>
+                <Divider/>
+                {list}
             </List>
-        )
+        
     } 
 }
 
@@ -121,28 +121,36 @@ function GroupedList({groups, type}) {
     )
 }
 
-function GroupBox({group, type, isMinor}) {
-    const showToggle = isMinor
-    const [expanded, setExpanded] = useState(!isMinor)
-    const toggle = () => setExpanded(!expanded)
+function GroupBox({group, isMinor}) {
+    const showToggle = isMinor || group.items.length > maxExpandedListDefault
 
     const { items, name } = group
 
     if(!items.length) {
         return null
     }
+    return showToggle 
+        ?   <ToggleList header={name} headerVariant="h6" list={<ContextList items={items}/>}/>
+        :   <List disablePadding>
+                <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
+                <ContextList items={items} />
+            </List>
+    
+}
+
+function ToggleList({header, headerVariant, list, divider}) {
+    const [expanded, setExpanded] = useState(false)
+    const toggle = () => setExpanded(!expanded)
+
     return (
         <List disablePadding>
-            {showToggle 
-                ?<ListItem button onClick={ toggle }>
-                    <ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/>
-                    { expanded ? <ExpandLess /> : <ExpandMore/>}
-                </ListItem>
-                : 
-                <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
-            }
+            <ListItem button onClick={toggle}>
+                <ListItemText primary={header} primaryTypographyProps={{variant: headerVariant}}/>
+                { expanded ? <ExpandLess /> : <ExpandMore/>}
+            </ListItem>
+            {divider && <Divider/>}
             <Collapse in={expanded}>
-                <ContextList items={items} />
+            {list}
             </Collapse>
         </List>
     )
