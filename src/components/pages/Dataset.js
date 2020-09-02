@@ -125,7 +125,7 @@ class Dataset extends React.Component {
                         <TangentCard>
                             <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
                                 <Grid item>
-                                    <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<iActionButtonIcon src="./images/icn-folder.png" />} title="Browse All"/>
+                                    <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-folder.png" />} title="Browse All"/>
                                 </Grid>
                                 {dataset.download_url &&
                                     <Grid item><ActionButton url={dataset.download_url} icon={<ActionButtonIcon src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
