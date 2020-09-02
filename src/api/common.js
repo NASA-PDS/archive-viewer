@@ -59,11 +59,20 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
 export function httpGetIdentifiers(route, identifiers) {
     if(!identifiers || identifiers.length === 0) return Promise.resolve([])
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
+    
+    // if we have lots of identifiers, break it into multiple requests (recusrively!!)
+    let requests = []
+    if (lids.length > defaultFetchSize) {
+        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize)))
+        lids = lids.slice(0, defaultFetchSize)
+    }
+
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', ''),
         fl: 'identifier, title'
     }
-    return httpGet(route, params)
+    requests.push(httpGet(route, params))
+    return Promise.all(requests).then(results => results.flat())
 }
 
 export function initialLookup(identifier) {
@@ -162,30 +171,38 @@ export function stitchWithWebFields(fields, route) {
     return (previousResult) => {
         if(!previousResult || previousResult.length === 0) return Promise.resolve([])
         
-        return new Promise((resolve, _) => {
-            let identifiers = previousResult.map(doc => doc.identifier)
-            let params = {
-                q: identifiers.reduce((query, lid) => query + 'logical_identifier:"' + lid + '" ', ''),
-                fl: fields.join()
-            }
-            httpGet(route, params).then(webDocs => {
-                let toReturn = []
-                // combine documents by lid
-                for (let coreDoc of previousResult ) {
-                    let consolidated = Object.assign({}, coreDoc)
-                    let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
-                    if(!!corresponding) {
-                        toReturn.push(Object.assign(consolidated, corresponding))
-                    } else {
-                        toReturn.push(consolidated)
-                    }
+            
+        // if we have lots of identifiers, break it into multiple requests (recusrively!!)
+        let requests = []
+        if (previousResult.length > defaultFetchSize) {
+            requests.push(stitchWithWebFields(fields, route)(previousResult.slice(defaultFetchSize)))
+            previousResult = previousResult.slice(0, defaultFetchSize)
+        }
+        let identifiers = previousResult.map(doc => doc.identifier)
+        
+        let params = {
+            q: identifiers.reduce((query, lid) => query + 'logical_identifier:"' + lid + '" ', ''),
+            fl: fields.join()
+        }
+
+        requests.push(httpGet(route, params).then(webDocs => {
+            let toReturn = []
+            // combine documents by lid
+            for (let coreDoc of previousResult ) {
+                let consolidated = Object.assign({}, coreDoc)
+                let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
+                if(!!corresponding) {
+                    toReturn.push(Object.assign(consolidated, corresponding))
+                } else {
+                    toReturn.push(consolidated)
                 }
-                resolve(toReturn)
-            }, err => {
-                //ignore error, just pass original
-                resolve(previousResult)
-            })
-        })
+            }
+            return toReturn
+        }, err => {
+            //ignore error, just pass original
+            return previousResult
+        }))
+        return Promise.all(requests).then(results => results.flat())
     }
 }
 
