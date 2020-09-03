@@ -1,7 +1,7 @@
 import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
-import { Box, List, ListItem, ListItemText, Avatar, ListItemAvatar, Link, Divider, Typography, ListItemSecondaryAction, Button } from '@material-ui/core';
+import { List, ListItem, ListItemText, Avatar, ListItemAvatar, Link, Divider, Typography, ListItemSecondaryAction, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent'
 

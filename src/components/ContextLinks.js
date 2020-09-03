@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Link,  List as MaterialList, ListItem, ListItemText } from '@material-ui/core'
+import { Link,  List as MaterialList, ListItem, ListItemText } from '@material-ui/core'
 
 
 function ContextList({items}) {    

@@ -3,7 +3,7 @@ import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
 import { ContextList } from 'components/ContextLinks'
-import { Typography, Container, Paper } from '@material-ui/core';
+import { Typography, Container,  } from '@material-ui/core';
 
 export const TagTypes = {
     target: 'Targets',
@@ -16,11 +16,9 @@ export const TagTypes = {
 export default class TagSearch extends React.Component {
     constructor(props) {
         super(props)
-        const {tags, type} = props
 
         this.state = { 
-            loaded: false,
-            type
+            loaded: false
         }
 
     }

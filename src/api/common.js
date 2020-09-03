@@ -96,6 +96,8 @@ export function initialLookup(identifier) {
                 case types.COLLECTION:
                 case types.PDS3:
                     supplementalRoute = router.datasetWeb; attrname='dataset'; break;
+                default:
+                    supplementalRoute = null
             }
 
             if(!!supplementalRoute) {

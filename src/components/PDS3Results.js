@@ -1,7 +1,7 @@
 import React from 'react';
 import {pds3Get} from 'api/common.js';
 import Loading from 'components/Loading'
-import { Card, Link, Button, CardHeader, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
+import { Link, Button, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
 import TangentCard from 'components/TangentCard'
 
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'

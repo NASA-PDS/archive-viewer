@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import 'css/BrowseTable.scss'
 import Loading from 'components/Loading.js'
 import { ContextList } from 'components/ContextLinks'
-import { Box, Typography, Paper, TableContainer, Table, TableRow, TableCell } from '@material-ui/core'
+import { Box, Typography, TableContainer, Table, TableRow, TableCell } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { groupByAttributedRelationship, groupByFirstTag, miscGroupName, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Loading from 'components/Loading.js'
 import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 import { ContextLink, ContextList } from 'components/ContextLinks'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
