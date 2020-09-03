@@ -1,6 +1,6 @@
 import React from 'react';
-import {TagTypes} from 'components/TagSearch.js'
-import { Chip, Link, Typography, Box, Hidden } from '@material-ui/core'
+import TagSearch, {TagTypes} from 'components/TagSearch.js'
+import { Chip, Link, Typography, Box, Hidden, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,17 +16,36 @@ const useStyles = makeStyles((theme) => ({
   
 function TagList({tags, type}) {
     const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+    const [currentTag, setTag] = React.useState(null);
+    const openTag = (tag) => {
+        setTag(tag)
+        setOpen(true)
+    }
     if(!tags || tags.length === 0) return null
 
     return (
+        <>
         <Box>
             <Hidden mdDown><Typography component="span" variant="h5" className={classes.header}> Relevant Tags: </Typography></Hidden>
             {tags.map(tag => 
-                <Link key={tag} href={`?tag=${tag}&type=${type}`}>
+                <Link key={tag} onClick={() => openTag(tag)}>
                     <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
                 </Link>
             )}
         </Box>
+        <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            scroll={'paper'}
+            aria-labelledby="scroll-dialog-title"
+        >
+            <DialogTitle id="scroll-dialog-title">{type} tagged with {currentTag}</DialogTitle>
+            <DialogContent>
+                <TagSearch type={type} tags={[currentTag]} embedded={true}/>
+            </DialogContent>
+        </Dialog>
+        </>
     )
 }
 
