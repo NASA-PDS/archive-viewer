@@ -134,7 +134,7 @@ class Dataset extends React.Component {
                                     <Grid item><ActionButton url={dataset.checksum_url} icon={<ActionButtonIcon src="./images/icn-checksum.png" />} title="View Checksums"/></Grid>
                                 }
                                 {dataset.resource_url &&
-                                    <Grid item><ActionButton url={dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-external.png" />} title="View Resource"/></Grid>
+                                    <Grid item><ActionButton url={dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-external.png" />} title="View Dataset"/></Grid>
                                 }
                             </Grid>
                         </TangentCard>
