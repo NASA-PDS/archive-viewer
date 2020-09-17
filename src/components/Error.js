@@ -1,5 +1,6 @@
 import React from 'react';
+import { Box, Typography } from '@material-ui/core'
 
 export default function Error({error}) {
-    return <div className="error">{error.message ? error.message : error}</div>
+    return <Typography component={Box} color="error">{error.message ? error.message : error}</Typography>
 }

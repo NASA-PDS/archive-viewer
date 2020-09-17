@@ -1,10 +1,11 @@
 import React from 'react';
+import { CircularProgress, Backdrop } from '@material-ui/core'
 
 export default function Loading({fullscreen}) {
     if(fullscreen) {
-        return <div className="loading-container">{loadingCircle}</div>
+        return <Backdrop open={true}>{loadingCircle}</Backdrop>
     }   
     else return loadingCircle
 }
 
-const loadingCircle = <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+const loadingCircle = <CircularProgress />

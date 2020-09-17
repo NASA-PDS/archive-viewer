@@ -1,15 +1,17 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import {TargetListBox, DatasetListBox} from 'components/ListBox'
+import {TargetListBox, DatasetListBox, groupType} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
-import {Header, Description, Menu} from 'components/ContextObjects'
+import {MissionHeader, SpacecraftHeader, MissionDescription, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
+import PrimaryLayout from 'components/PrimaryLayout'
+import { Button } from '@material-ui/core'
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -38,27 +40,30 @@ export default class Spacecraft extends React.Component {
         else {
             return (
                 <div className="co-main">
-                    <Header model={mission} type={Header.type.mission} />
+                    <MissionHeader model={mission} /> {/* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
                     <Menu/>
-                    <aside className="main-aside sidebox">
-                        {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <a href={`?mission=${mission.identifier}`}><div className="button">Visit Mission Page</div></a>
-                        }
-                        <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
-                    </aside>
-                    <div className="co-content">
+                    <PrimaryLayout primary={   
+                        <>
                         <SpacecraftTagList tags={spacecraft.tags} />
-                        <Description model={mission} type={Description.type.mission} />
+                        <MissionDescription model={mission} /> {/* this is intentionally a mission description on the spacecraft page, since that is likely more relevant */}
                         {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <Header model={spacecraft} type={Header.type.spacecraft}/>
+                            <SpacecraftHeader model={spacecraft} />
                         }
                         <HTMLBox markup={spacecraft.html1} />
                         <RelatedTools tools={spacecraft.tools}/>
                         <InstrumentBrowseTable items={this.state.instruments} />
-                        <DatasetListBox items={this.state.datasets} groupBy={DatasetListBox.groupType.instrument} groupInfo={this.state.instruments} />
+                        <DatasetListBox items={this.state.datasets} groupBy={groupType.instrument} groupInfo={this.state.instruments} />
                         <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
                         <HTMLBox markup={spacecraft.html2} />
-                    </div>
+                        </>
+                    } secondary = {
+                        <>
+                        {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
+                            <Button color="primary" variant="contained" href={`?identifier=${mission.identifier}`} style={{width: "100%"}}>Visit Mission Page</Button>
+                        }
+                        <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
+                        </>
+                    }/>
                 </div>
             )
         }

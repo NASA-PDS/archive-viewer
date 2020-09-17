@@ -2,33 +2,32 @@ import React from 'react';
 import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
+import { ContextList } from 'components/ContextLinks'
+import { Typography, Container,  } from '@material-ui/core';
 
 export const TagTypes = {
-    target: 'target',
-    mission: 'mission',
-    spacecraft: 'spacecraft',
-    instrument: 'instrument',
-    dataset: 'dataset',
+    target: 'Targets',
+    mission: 'Missions',
+    spacecraft: 'Spacecraft',
+    instrument: 'Instrument',
+    dataset: 'Dataset',
 }
 
 export default class TagSearch extends React.Component {
     constructor(props) {
         super(props)
-        const {tags, type} = props
 
         this.state = { 
-            loaded: false,
-            tags: tags,
-            type
+            loaded: false
         }
 
     }
     
     componentDidMount() {
-        const {tags, type} = this.state
+        const {tags, type} = this.props
 
         // validate input
-        if(!TagTypes[type]) {
+        if(!Object.values(TagTypes).includes(type)) {
             this.setState({
                 error: new Error('Invalid tag type ' + type)
             })
@@ -44,7 +43,8 @@ export default class TagSearch extends React.Component {
     }
     
     render() {
-        const {loaded, results, error, tags} = this.state
+        const {loaded, results, error} = this.state
+        const {tags, type, embedded} = this.props
 
         if(error) {
             return <ErrorMessage error={error}></ErrorMessage>
@@ -53,16 +53,10 @@ export default class TagSearch extends React.Component {
         }
         results.sort((a, b) => a.display_name.localeCompare(b.display_name))
         return (
-            <div>
-                <h1>{tags.join(' or ')}</h1>
-                <ul>
-                    {results.map(result =>
-                        <li key={result.logical_identifier}>
-                            <a href={`?identifier=${result.logical_identifier}`}>{result.display_name}</a>
-                        </li>
-                    )}
-                </ul>
-            </div>
+            <Container>
+                {!embedded && <Typography variant="h1">{type} tagged with {tags.join(' or ')}</Typography>}
+                <ContextList items={results}/>
+            </Container>
         )
         
     }

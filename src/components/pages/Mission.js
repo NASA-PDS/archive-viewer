@@ -1,9 +1,10 @@
 import React from 'react';
 import 'css/ContextObjects.scss'
 import {getSpacecraftForMission} from 'api/mission.js'
-import {Header, Description, Menu} from 'components/ContextObjects'
+import {MissionHeader, MissionDescription, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import Spacecraft from 'components/pages/Spacecraft'
+import PrimaryLayout from 'components/PrimaryLayout';
 
 export default class Mission extends React.Component {
     constructor(props) {
@@ -29,18 +30,20 @@ export default class Mission extends React.Component {
         // otherwise, show simple page with list of this mission's spacecraft
         else return (
             <div className="co-main">
-                <Header model={mission} type={Header.type.mission} />
+                <MissionHeader model={mission} />
                 <Menu/>
-                <div className="co-content">
-                    <Description model={mission} type={Description.type.mission} />
-                    {!!spacecraft ? 
-                        (<div className="mission-spacecraft-list">
-                            <h2>View the mission's data for:</h2>
-                            { spacecraft.map(ButtonForSpacecraft)}
-                        </div>)
-                        : <Loading/>
-                    }
-                </div>
+                <PrimaryLayout primary={
+                    <>
+                        <MissionDescription model={mission} />
+                        {!!spacecraft ? 
+                            (<div className="mission-spacecraft-list">
+                                <h2>View the mission's data for:</h2>
+                                { spacecraft.map(ButtonForSpacecraft)}
+                            </div>)
+                            : <Loading/>
+                        }
+                    </>
+                }/>
             </div>
         )
     }

@@ -1,9 +1,12 @@
-import React from 'react';
-import 'css/ListBox.scss'
-import LID from 'services/LogicalIdentifier'
+import React, { useState } from 'react';
 import Loading from 'components/Loading.js'
+import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
+import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
+import { ContextLink, ContextList } from 'components/ContextLinks'
+import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 /* ------ Constants ------ */
+const maxExpandedListDefault = 15
 const listTypes = {
     dataset: 'dataset',
     mission: 'mission',
@@ -43,286 +46,111 @@ const listTypeValues = {
         fieldName: 'instrument_host_ref'
     }
 }
-const downplayGroupsThreshold = 100
-const hiddenGroupsThreshold = 1000
 
-/* ------ Internal Logic ------ */
-
-class Group {
-    constructor(name, items, order) {
-        this.name = name
-        this.items = items
-        this.order = order !== undefined ? order : name
-    }
-}
-
-function nameFinder(item) {
-    return item.display_name ? item.display_name : item.title
-}
-
-const groupByAttributedRelationship = (items, relationshipInfo) => {
-    let insert = (item, groupName, order) => {
-        let existingGroup = groups.find(group => group.name === groupName)
-        if (!!existingGroup) {existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], order))
-    }
-    let groups = []
-
-    // first insert any mandatory groups
-    if(!!relationshipInfo) {
-        for(let relationship of relationshipInfo) {
-            if (relationship.order !== undefined && relationship.order < downplayGroupsThreshold) {
-                groups.push(new Group(relationship.name, [], relationship.order))
-            }
-        }
-    }
-    for (let item of items) {
-
-        // if possible, group by relationships already in data
-        const relationship = item.relatedBy
-        if(!!relationship) { insert(item, relationship.name, relationship.order) }
-        else { insert(item, 'Other', 999) }
-        
-    }
-    return groups
-}
-
-const groupByRelatedItems = (items, relatedItems, field) => {
-    let insert = (item, groupName, order) => {
-        let existingGroup = groups.find(group => group.name === groupName)
-        if (!!existingGroup) {existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], order))
-    }
-    let groups = []
-    for (let item of items) {
-        if(!field || !item[field] || !item[field].length) {
-            insert(item, 'Other', 999)
-        }
-        else {
-            const lids = item[field]
-            // an item might appear in many groups simultaneously. add it to each group it references
-            lids.forEach(lidvid => {
-                let host_name
-                const lid = new LID(lidvid).lid
-                const groupInfoSource = relatedItems ? relatedItems.find(a => a.identifier === lid) : null
-                
-                if (groupInfoSource) host_name = nameFinder(groupInfoSource)
-                else host_name = lid
-                
-                insert(item, host_name)
-            })
-        }
-    }
-    return groups
-}
-
-const groupByFirstTag = (items) => {
-    let insert = (item, groupName, order) => {
-        let existingGroup = groups.find(group => group.name === groupName)
-        if (!!existingGroup) {existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], order))
-    }
-    let groups = []
-    for (let item of items) {
-        if(!item.tags || !item.tags.length) {
-            insert(item, 'Other', 999)
-        }
-        else {
-            insert(item, item.tags[0])
-        }
-    }
-    return groups
-}
 
 /* ------ Main Export Classes ------ */
 
-class ListBox extends React.Component {
+function AbstractListBox(props) {
+    const {groupBy, groupInfo, type, groupingFn, items} = props
+    const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
 
-    static groupType = listTypes
+    const showToggle = !!items && items.length > maxExpandedListDefault
 
-    constructor(props, type) {
-        super(props)
-
-        // Set minimum list length for displaying a list
-        const min = 25
-        this.state = {
-            type,
-            showAll: props.items ? props.items.length <= min : false
-        }
-    }
-
-    itemCount = () => {
-        return this.props.items.length
-    }
-
-    makeList = () => {
-        const {items, groupBy, groupInfo} = this.props
-        const {type} = this.state
-        const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
-        return items.length === 1
-        ? <ItemLink item={items[0]} single={true}/> 
-        : <GroupedList groups={this.createGroupings(items, groupInfo, groupByField)} type={type}/>
-    }
-
-    createGroupings = groupByAttributedRelationship
-    
-    render() {
-        const {items} = this.props
-        const {type} = this.state
-
-        if(!items) {
-            return <Loading/>
-        } else if(this.itemCount() === 0) {
-            return <NoItems type={type}/>
-        } else {
-            const singular = items.length === 1
-            return (
-                <div className="list-box">
-                    
-                    <span className="title-box">
-                        <h2 className="title">{ singular ? listTypeValues[type].titleSingular : listTypeValues[type].title }</h2>
-                        { !singular && <h3 className="count">({ this.itemCount() })</h3> }
-                    </span>
-                    
-                    {   
-                        this.makeList()
-                    }
-                    
-                </div>
-            )
-        } 
-    }
+    if(!items) { 
+        return <Loading/> 
+    } else if(items.length === 0) {
+        return null
+    } else {
+        const header = items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title
+        const groups = groupingFn(items, groupInfo, groupByField)
+        const list = items.length === 1
+                    ? <ContextLink item={items[0]}/> 
+                    : <GroupedList groups={groups} type={type}/>
+        return showToggle && groups.length === 1
+            ? <ToggleList  
+                    header={header} 
+                    headerVariant="h3" 
+                    list={list}
+                    divider={true}/>
+            : <List disablePadding>
+                <ListItem>
+                        <ListItemText 
+                            primary={header}
+                            primaryTypographyProps={{variant: 'h3'}}>
+                        </ListItemText>
+                    </ListItem>
+                <Divider/>
+                {list}
+            </List>
+        
+    } 
 }
 
-class DatasetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.dataset)
-    }
 
-    createGroupings = groupByRelatedItems
+function DatasetListBox(props) {
+    return <AbstractListBox type={listTypes.dataset} groupingFn={groupByRelatedItems} {...props}/>
 }
-class MissionListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.mission)
-    }
+function MissionListBox(props) {
+    return <AbstractListBox type={listTypes.mission} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class TargetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.target)
-    }
+function TargetListBox(props) {
+    return <AbstractListBox type={listTypes.target} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class RelatedTargetListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.relatedTarget)
-    }
-
-    makeList = () => {
-        const {items} = this.props
-        return <RelatedTargetsListBox targets={items} />
-    }
+function RelatedTargetListBox(props) {
+    return <AbstractListBox type={listTypes.relatedTarget} groupingFn={groupByFirstTag} {...props}/>
 }
-class InstrumentListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.instrument)
-    }
+function InstrumentListBox(props) {
+    return <AbstractListBox type={listTypes.instrument} groupingFn={groupByAttributedRelationship} {...props}/>
 }
-class SpacecraftListBox extends ListBox {
-    constructor(props) {
-        super(props, listTypes.spacecraft)
-    }
+function SpacecraftListBox(props) {
+    return <AbstractListBox type={listTypes.spacecraft} groupingFn={groupByAttributedRelationship} {...props}/>
 }
 
-export {DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
-
-
-
+export {listTypes as groupType, DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
 
 /* ------ Internal Components ------ */
 
 function GroupedList({groups, type}) {
     if (groups.length === 1) {
-        return <List items={groups[0].items} />
+        return <ContextList items={groups[0].items}/>
     }
     let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
-        <GroupBox group={group} type={type} minor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
+        <GroupBox group={group} type={type} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
 
-class GroupBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            showGroup: !props.minor,
-            showToggle: props.minor
-        }
+function GroupBox({group, isMinor}) {
+    const showToggle = isMinor || group.items.length > maxExpandedListDefault
+
+    const { items, name } = group
+
+    if(!items.length) {
+        return null
     }
-
-    toggleList = event => {
-        event.preventDefault();
-        this.setState({ showGroup: !this.state.showGroup });
-    }
-
-    render() {
-        let items = this.props.group.items, title = this.props.group.name
-        let {showToggle, showGroup} = this.state
-
-        if(!items.length) {
-            return <NoItems type={this.props.type} descriptor={title} />
-        }
-        return (
-            <div>
-                {showToggle 
-                    ?<div onClick={ this.toggleList } className="expandable">
-                        <img alt="" src={ this.state.showGroup ? `images/collapse.svg` : `images/expand.svg` } className={ this.state.showGroup ? 'collapse' : 'expand' } />
-                        <h3>{ title }</h3>
-                    </div>
-                    : <div><h3>{title}</h3></div>
-                }
-                
-                {showGroup
-                    ? <List items={items} />
-                    : null}
-            </div>
-        )
-    }
+    return showToggle 
+        ?   <ToggleList header={name} headerVariant="h6" list={<ContextList items={items}/>}/>
+        :   <List disablePadding>
+                <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
+                <ContextList items={items} />
+            </List>
+    
 }
 
-function List({items}) {    
-    let sortedItems = items.sort((a, b) => {
-        return nameFinder(a).localeCompare(nameFinder(b))
-    })
+function ToggleList({header, headerVariant, list, divider}) {
+    const [expanded, setExpanded] = useState(false)
+    const toggle = () => setExpanded(!expanded)
+
     return (
-        <ul className="list">
-            {sortedItems.map((item,idx) => 
-                <li key={item.identifier + idx}><ItemLink item={item} single={false}/></li>
-            )}
-        </ul>
-    )
-}
-
-function ItemLink({item, single}) {
-    let url = `?identifier=${item.identifier}`
-    return (
-        <a href={url} className={single ? 'single-item' : ''}>
-            <span className="list-item-name">{ nameFinder(item) }</span>
-            { item.tags && <span className="list-item-tag"> - { item.tags[0]}</span> }
-        </a>
-    )
-}
-
-function RelatedTargetsListBox({targets}) {
-    let groups = groupByFirstTag(targets)
-
-    return !groups.length 
-        ? <NoItems type={listTypes.relatedTarget}/> 
-        : <GroupedList groups={groups} type={listTypes.target}/>
-}
-
-function NoItems({type, descriptor}) {
-    return (
-        <div className="no-items">
-            <p>No {descriptor} {listTypeValues[type].title}</p>
-        </div>
+        <List disablePadding>
+            <ListItem button onClick={toggle}>
+                <ListItemText primary={header} primaryTypographyProps={{variant: headerVariant}}/>
+                { expanded ? <ExpandLess /> : <ExpandMore/>}
+            </ListItem>
+            {divider && <Divider/>}
+            <Collapse in={expanded}>
+            {list}
+            </Collapse>
+        </List>
     )
 }

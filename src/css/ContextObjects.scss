@@ -1,41 +1,5 @@
 @import 'variables';
 
-.co-main {
-    @include medium-up {
-        padding: $main-padding;
-        
-        header:not(.subheader) { 
-            margin-top: -$main-padding;
-            margin-left: -$main-padding;
-            margin-right: -$main-padding;
-            margin-bottom: $main-padding
-        }
-    }
-    @include narrow-only {
-        padding: $narrow-padding;
-        
-        header:not(.subheader) { 
-            margin-top: -$narrow-padding;
-            margin-left: -$narrow-padding;
-            margin-right: -$narrow-padding;
-            margin-bottom: $narrow-padding
-        }
-    }
-}
-.co-content {
-    max-width: $readable-width;
-}
-.co-aside {
-    max-width: 300px;
-}
-.button {
-    @include button;
-    align-self: flex-start;
-    text-align: center;
-}
-.sidebox {
-    @include sidebox;
-}
 
 .mission-header, .target-header, .instrument-header, .spacecraft-header {
     color: white;
@@ -53,9 +17,6 @@
                 margin-left: 1em;
             }
         }
-        h1 {
-            font-size: 1.5em;
-        }
         & ~ aside {
             margin-top: -15px;
         }
@@ -66,9 +27,6 @@
             ~ h1 {
                 margin-left: 1em;
             }
-        }
-        h1 {
-            font-size: 2em;
         }
         & ~ aside {
             margin-top: -2em;
@@ -122,76 +80,6 @@
         max-width: 80px;
         ~ span {
             margin-left: 1em;
-        }
-    }
-}
-
-.related-tools {
-    list-style: none;
-    display: flex;
-    flex-flow: column nowrap;
-    @include medium-up {
-        flex-flow: row wrap;
-    }
-    .related-tool {
-        display: flex;
-        flex-flow: row nowrap;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        img {
-            max-width: 75px;
-            border-radius: 5px 0 0 5px;
-        }
-        @include medium-up {
-            flex-direction: column;
-            width: 150px;
-            border-radius: 10px;
-            img {
-                max-width: 150px;
-                border-radius: 10px 10px 0 0;
-    
-            }
-            .tool-longname {
-                display:block;
-            }
-        }
-        .tool-shortname {
-            font-size: 2em;
-        }
-        .tool-longname {
-            margin-left: 12px;
-        }
-        @include narrow-only {
-            .tool-shortname {
-                display: none;
-            }
-            .tool-longname {
-                font-size: 1.2em;
-                height: 65px;
-            }
-        }
-        align-items: center;
-        text-align: center;
-        box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0);
-        margin-right: 20px;
-        .tool-names {
-            padding: 5px;
-        }
-        
-    }
-}
-.pds3-results {
-    @include tangent-box;
-    @include tangent-box-default-style;
-    margin-top: 3em;
-    opacity: 0.75;
-    display: flex;
-    flex-direction: column;
-    .further-results {
-        margin: 20px 0;
-        a {
-            @include button;
-            margin: 0;
         }
     }
 }

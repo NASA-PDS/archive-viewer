@@ -1,6 +1,19 @@
 import React from 'react';
 import {getBundlesForCollection} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
+import { Box, Typography, Grid, Button, Link } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    bundleImg: {
+        maxHeight: '48px',
+        marginRight: theme.spacing(2)
+    },
+    bundleLink: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1)
+    }
+}));
 
 export default class Main extends React.Component {
 
@@ -28,25 +41,33 @@ export default class Main extends React.Component {
             return <ErrorMessage error={error}></ErrorMessage>
         } else if((isBundle || bundles.length === 0) && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
         return (
-            <div className="family-links">
+            <Grid container direction="row" justify="space-between" alignItems="center">
                 {!isBundle && bundles.length > 0 &&
-                    <div className="bundle-ref">
-                        <img alt="Bundle" src="./images/icn-bundle.png" />
-                        Part of 
-                        {bundles.map(bundle => 
-                            <a key={bundle.identifier} className="adjacent-link" href={'?dataset=' + bundle.identifier}><span>{bundle.display_name ? bundle.display_name : bundle.title}</span></a>
-                        )}
-                    </div>
+                    <BundleRef bundles={bundles}/>
                 }
-                <div className="links">
-                    {dataset.other_instruments_url &&
-                        <a className="big-ugly-button" href={`?dataset=${dataset.other_instruments_url}`}>Other Instruments</a>
-                    }
-                    {dataset.mission_bundle &&
-                        <a className="big-ugly-button" href={`?dataset=${dataset.mission_bundle}`}>Mission Information Bundle</a>
-                    }
-                </div>
-            </div>
+                <Box p={1}>
+                    <Grid container direction="row" alignItems="center">
+                        {dataset.other_instruments_url &&
+                            <Button color="primary" variant="contained" href={`?identifier=${dataset.other_instruments_url}`}>Other Instruments</Button>
+                        }
+                        {dataset.mission_bundle &&
+                            <Button color="primary" variant="contained" href={`?identifier=${dataset.mission_bundle}`}>Mission Information Bundle</Button>
+                        }
+                    </Grid>
+                </Box>
+            </Grid>
         )
     }
 }
+
+function BundleRef({bundles}) {
+    const classes = useStyles()
+    return <Box display="flex" alignItems="center" m={1} >
+        <img className={classes.bundleImg} alt="Bundle" src="./images/icn-bundle.png" />
+        <Typography>Part of </Typography>
+        {bundles.map(bundle => 
+            <Link className={classes.bundleLink} color="primary" key={bundle.identifier} href={'?dataset=' + bundle.identifier}>{bundle.display_name ? bundle.display_name : bundle.title}</Link>
+        )}
+    </Box>
+}
+

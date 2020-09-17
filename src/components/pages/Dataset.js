@@ -4,13 +4,62 @@ import FamilyLinks from 'components/FamilyLinks.js'
 import RelatedTools from 'components/RelatedTools'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
-import {Description} from 'components/ContextObjects'
+import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
+import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box } from '@material-ui/core'
+import TangentCard from 'components/TangentCard';
+import { makeStyles } from '@material-ui/core/styles';
+import PrimaryContent from 'components/PrimaryContent';
+import PrimaryLayout from 'components/PrimaryLayout'
+
+const useStyles = makeStyles((theme) => ({
+    citation: {
+        padding: theme.spacing(2),
+        color: theme.palette.secondary.dark
+    },
+    citationIcon: {
+        maxHeight: '50px',
+        maxWidth: '50px',
+    },
+    citationEnd: {
+        alignSelf: 'flex-end'
+    },
+    quickLink: {
+        maxWidth: 200
+    },
+    primaryButton: {
+        width: '100%'
+    },
+    datasetIcon: {
+        maxHeight: '50px',
+        maxWidth: '50px',
+        marginRight: theme.spacing(2)
+    },
+    textListItem: {
+        paddingTop: 0,
+        paddingBottom: 0
+    },
+    deliveryInfo: {
+        backgroundColor: theme.palette.primary.light,
+        padding: '15px',
+        color: theme.palette.common.white,
+        textAlign: 'center'
+    },
+    buttonIcon: {
+        maxHeight: '25px'
+    }
+}));
 
 const types = {
     BUNDLE: 1,
     COLLECTION: 2,
     PDS3: 3,
+}
+
+const titles = {
+    [types.BUNDLE]: "PDS4 Bundle",
+    [types.COLLECTION]: "PDS4 Collection",
+    [types.PDS3]: "PDS3 Dataset"
 }
 
 class Dataset extends React.Component {
@@ -30,14 +79,31 @@ class Dataset extends React.Component {
     render() {    
         const {dataset, targets, spacecraft, instruments} = this.state
         return (
-            <div>
-                <FamilyLinks dataset={dataset} />
-                <div itemScope itemType="https://schema.org/Dataset" className={ `clearfix ${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
-                    <Title dataset={dataset} />
+            <>
+                <PrimaryLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
+                    <>
+                    <Title dataset={dataset} type={this.type} />
                     <DeliveryInfo dataset={dataset} />
-                    <Metadata dataset={dataset} type={this.type} targets={targets} spacecraft={spacecraft} instruments={instruments}/>
+                    <TangentCard title={titles[this.type]}>
+                        {!!dataset.publication && !!dataset.publication.publish_status && (
+                            <MetadataItem header="Status:" item={[dataset.publication.publish_status]} />)
+                        }
+                        {!!dataset.publication && !!dataset.publication.publication_date &&
+                            <MetadataItem header="Date Published:" item={dataset.publication.publication_date} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+                        }
+                        <MetadataItem header="Publisher:" item={"NASA Planetary Data System"} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
+                        {dataset.identifier &&
+                            <MetadataItem header={`${this.type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} item={dataset.identifier} />
+                        }
+                        {dataset.doi &&
+                            <MetadataItem header="DOI:" item={[dataset.doi]} />
+                        }
+                        
+                        <AuthorList authors={dataset.citation_author_list} />
+                        <EditorList editors={dataset.citation_editor_list} />
+                    </TangentCard>
                     <DatasetTagList tags={dataset.tags}/>
-                    <Description model={dataset} type={Description.type.dataset}/>
+                    <DatasetDescription model={dataset}/>
 
                     { this.type === types.BUNDLE && 
                         <CollectionList dataset={dataset} />
@@ -47,13 +113,43 @@ class Dataset extends React.Component {
                     <CollectionDownloads dataset={dataset} />
 
                     <Citation dataset={dataset} />
-                </div>
-                <div className="related-references">
-                    <RelatedPDS3 dataset={dataset} />
-                    <Superseded dataset={dataset} />
-                    <RelatedData dataset={dataset} />
-                </div>
-            </div>
+                    <Grid container direction="row" alignItems="stretch">
+                        <Grid item component={RelatedPDS3} dataset={dataset} />
+                        <Grid item component={Superseded} dataset={dataset} />
+                        <Grid item component={RelatedData} dataset={dataset} />
+                    </Grid>
+                    </>
+                } secondary={
+                    <>
+                        <FamilyLinks dataset={dataset} />
+                        <TangentCard>
+                            <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
+                                <Grid item>
+                                    <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-folder.png" />} title="Browse All"/>
+                                </Grid>
+                                {dataset.download_url &&
+                                    <Grid item><ActionButton url={dataset.download_url} icon={<ActionButtonIcon src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
+                                }
+                                {dataset.checksum_url &&
+                                    <Grid item><ActionButton url={dataset.checksum_url} icon={<ActionButtonIcon src="./images/icn-checksum.png" />} title="View Checksums"/></Grid>
+                                }
+                                {dataset.resource_url &&
+                                    <Grid item><ActionButton url={dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-external.png" />} title="View Dataset"/></Grid>
+                                }
+                            </Grid>
+                        </TangentCard>
+                        <TangentCard>
+                            <TargetListBox items={targets}/>
+                            <SpacecraftListBox items={spacecraft}/>
+                            <InstrumentListBox items={instruments}/>
+                        </TangentCard>
+                    </>
+                }/>
+                {/* <Grid itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
+                    
+                </Grid> */}
+                
+            </>
         )
     }
 }
@@ -68,149 +164,114 @@ export class PDS3Dataset extends Dataset {
     type = types.PDS3
 }
 
-function Title({dataset}) {
+function Title({dataset, type}) {
+    const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
     return (
-        <h1 itemProp="name">
-            <div className="image-container">
-                <img alt="Bundle" src="./images/icn-bundle.png" />
-            </div>
-            <div className="resource-title">
+        <Box display="flex" alignItems="center" m={1}>
+            <Box >
+                { type === types.COLLECTION ? 
+                    <img className={classes.datasetIcon} alt="Collection" src="./images/icn-collection.png" /> : 
+                    <img className={classes.datasetIcon} alt="Bundle" src="./images/icn-bundle.png" />
+                }
+            </Box>
+            <Typography variant="h1">
                 { title }
-            </div>
-        </h1>
+            </Typography>
+        </Box>
     )
 }
 
 function DeliveryInfo({dataset}) {
+    const classes = useStyles()
     const publication = dataset.publication
     if(publication && publication.delivery_info) {
         return (
-            <div className="dataset-delivery">
-                <p>{publication.delivery_info}</p>
-                <p>Latest release date: <span className="datum">{publication.publication_date}</span></p>
-            </div>
+            <Paper className={classes.deliveryInfo}>
+                <Typography>{publication.delivery_info}</Typography>
+                <Typography>Latest release date: {publication.publication_date}</Typography>
+            </Paper>
         )
     } else {
         return null
     }
 }
 
-function Metadata(props) {
-    const {dataset, targets, spacecraft, instruments, type} = props
-    return (
-        <aside className="main-aside">
-            <section className="dataset-metadata">
-                {(() => {switch(type) {
-                    case types.BUNDLE: return <h2>PDS4 Bundle</h2>
-                    case types.COLLECTION: return <h2>PDS4 Collection</h2>
-                    case types.PDS3: return <h2>PDS3 Dataset</h2>
-                }})()}
-                {!!dataset.publication && !!dataset.publication.publish_status && (
-                    <p>Status: <br/>
-                        <span className="datum">{dataset.publication.publish_status}</span>
-                    </p>)
-                }
-                {!!dataset.publication && !!dataset.publication.publication_date &&
-                    <p>Date Published: <br/><span className="datum" itemProp="datePublished" itemScope itemType="http://schema.org/Date">{dataset.publication.publication_date}</span></p>
-                }
-                <p>Publisher:<br/>
-                    <span className="datum" itemProp="publisher" itemScope itemType="http://schema.org/Organization">NASA Planetary Data System</span>
-                </p>
-                {dataset.identifier &&
-                    <p>{type === types.PDS3 ? 'PDS3' : 'PDS4'} ID: <br/><span className="datum">{dataset.identifier}</span></p>
-                }
-                {dataset.doi &&
-                    <p>DOI: <br/><span className="datum">{dataset.doi}</span></p>
-                }
-                
-                <AuthorList authors={dataset.citation_author_list} />
-                <EditorList editors={dataset.citation_editor_list} />
-                
-                {/* Hidden Data Values */}
-                {/* <span className="datum" itemProp="provider" style="display:none" itemScope itemType="http://schema.org/Organization">{{ data.provider.name }}</span> */}
-            </section>
-            <section className="related-context-objects">
-                <TargetListBox items={targets}/>
-                <SpacecraftListBox items={spacecraft}/>
-                <InstrumentListBox items={instruments}/>
-            </section>
-            <section className="dataset-links">
-                <BrowseButton dataset={dataset}></BrowseButton>
-                {dataset.download_url &&
-                    <a href={dataset.download_url}><img alt="" src="./images/icn-download.png" /><span> Download All 
-                        {dataset.download_size && 
-                            <span className="adjacent-link download-size">({ dataset.download_size })</span>
-                        }
-                        </span></a>
-                }
-                {dataset.checksum_url &&
-                    <a href={dataset.checksum_url}><img alt="" src="./images/icn-checksum.png" /><span> View Checksums </span></a>
-                }
-                {dataset.resource_url &&
-                    <a href={dataset.resource_url}><img alt="" src="./images/icn-external.png" /><span> View Resource </span></a>
-                }
-            </section>
-        </aside>
-    )
+function ActionButton({url, icon, title}) {
+    const classes = useStyles()
+    return <Button color="primary" variant="contained" href={url} className={classes.primaryButton} startIcon={icon}>{title}</Button>
+}
+
+function ActionButtonIcon({src}) {
+    const classes = useStyles()
+    return <img alt="" className={classes.buttonIcon} src={src} />
 }
 
 function AuthorList({authors}) {
-    const list = authors ? authors.split(';') : []
-    return list.length ? (
-        <ul>Author(s):<br/>
-            {list.map(author =>  
-                <li key={author} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ author.replace(' and ', '').trim() }</li>   
-            )}
-        </ul>
+    return authors ? (
+        <MetadataItem header={`Author${authors.includes(';') ? 's:' : ':'}`} item={authors} itemProp="author" itemScope itemType="http://schema.org/Person" />
     ) : null
 }
 
 function EditorList({editors}) {
-    const list = editors ? editors.split(';') : []
-    return list.length ? (
-        <ul>Editor(s):<br/>
-            {list.map(editor =>  
-                <li key={editor} className="datum" itemProp="author" itemScope itemType="http://schema.org/Person">{ editor.replace(' and ', '').trim() }</li>   
-            )}
-        </ul>
+    return editors ? (
+        <MetadataItem header={`Editor${editors.includes(';') ? 's:' : ':'}`} item={editors} itemProp="author" itemScope itemType="http://schema.org/Person" />
     ) : null
 }
 
-function BrowseButton({dataset}) {
-    let url = dataset.browse_url ? dataset.browse_url : dataset.resource_url
-    return <a href={url}><img alt="" src="./images/icn-folder.png" /><span> Browse All </span></a>
+// Matierial UI List without padding
+function MetadataItem(props) {
+    const { item, header, ...otherProps } = props
+    const classes = useStyles()
+    return (<>
+        <Typography variant="h6">{header}</Typography>
+        <List disablePadding>
+            <ListItem className={classes.textListItem} {...otherProps} key={item}>
+                <ListItemText primary={item}/>
+            </ListItem>
+        </List>
+    </>)
 }
 
 function CollectionQuickLinks({dataset}) {
+    const classes = useStyles()
     return (
-        <section className="dataset-quicklinks">
-            { dataset.local_documents_url &&
-                <div>
-                    <h3>View Local Documents</h3>
-                    <a href={dataset.local_documents_url}>
-                        <img alt="" src="./images/icn-documents.png" />
-                        <span>View Local Documents</span>
-                    </a>
-                </div>
-            }
-            { dataset.example && 
-                <div>
-                    { dataset.collection_type === "Document"?     
-                        <h3>Key Document</h3> :
-                        <h3>Example File</h3>
-                    }
-                    
-                    <a href={dataset.example.url}>
-                        { dataset.example.thumbnail_url ?
-                            <img alt={"Thumbnail for " + dataset.title} src={dataset.example.thumbnail_url} /> :
-                            <img alt="Placeholder thumbnail" src="./images/icn-file.png" />
-                        }
-                        <span>{ dataset.example.title }</span>
-                    </a>
-                </div>
-            }
-        </section>
+        <PrimaryContent>
+            <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
+                { dataset.local_documents_url &&
+                    <Grid item xs={6} md={2} >
+                        <Link href={dataset.local_documents_url} >
+                            <Card raised={true} className={classes.quickLink} p={1}>
+                                <CardMedia component="img" image="./images/icn-documents.png" alt={'Icon for documents'} title={'View Local Documents'}/>
+                                <CardContent p="1">
+                                    <Typography p="3" variant="h5" component="h2">View Local Documents</Typography>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    </Grid>
+                }
+                { dataset.example &&
+                    <Grid item xs={6} md={2} >
+                        <Link href={dataset.example.url} >
+                            <Card raised={true} className={classes.quickLink} p={1}>
+                                <CardMedia component="img" image={
+                                    dataset.example.thumbnail_url ?
+                                        dataset.example.thumbnail_url :
+                                        './images/icn-file.png'
+                                } alt={'Icon for documents'} title={'Example file'}/>
+                                <CardContent p="1">
+                                    <Typography p="3" variant="h5" component="h2">{ dataset.collection_type === "Document"?     
+                                        'Key Document' :
+                                        'Example File'
+                                    }</Typography>
+                                    <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    </Grid>
+                }
+            </Grid>
+        </PrimaryContent>
     )
 }
 
@@ -251,16 +312,19 @@ function CollectionDownloads({dataset}) {
 
 function Citation(props) {
     const citation = props.dataset.citation
+    const classes = useStyles()
     if(citation) {
         return (
-            <section className="dataset-citation">
-                <img alt="" className="start-quote" src="./images/quotes-start.png" />
-                <div>
-                    <p>Use the following citation to reference this data set:</p>
-                    <p className="citation">"{ citation }"</p>
-                </div>
-                <img alt="" className="end-quote" src="./images/quotes-end.png" />
-            </section>
+            <PrimaryContent>
+                <Grid container direction="row" alignItems="flex-start">
+                    <Grid item component="img" alt="" className={classes.citationIcon} src="./images/quotes-start.png" />
+                    <Grid item xs={6} className={classes.citation}>
+                        <Typography variant="body2">Use the following citation to reference this data set:</Typography>
+                        <Typography>"{citation}"</Typography>
+                    </Grid>
+                    <Grid item component="img" alt="" className={`${classes.citationIcon} ${classes.citationEnd}`} src="./images/quotes-end.png" />
+                </Grid>
+            </PrimaryContent>
         )
     } else return null
 }
@@ -269,10 +333,16 @@ function RelatedPDS3(props) {
     const pds3 = props.dataset.pds3_version_url
     if(pds3) {
         return (
-            <section className="dataset-pds3">
-                <h3 className="header"> PDS3 versions of this dataset: </h3>
-                <a href={pds3}><img alt="" className="tiny-icon" src="./images/icn-folder-rnd.png" />Click here to browse</a>
-            </section>
+            <TangentCard title="PDS3 versions of this dataset:">
+                <List>
+                    <ListItem button component={Link} href={pds3}>
+                        <ListItemAvatar>
+                            <Avatar variant="square" alt="Folder Icon" src="/images/icn-folder-rnd.png" />
+                        </ListItemAvatar>
+                        <ListItemText primary="Click here to browse"/>
+                    </ListItem>
+                </List>
+            </TangentCard>
         )
     } else return null
 }
@@ -281,17 +351,18 @@ function Superseded(props) {
     const superseded = props.dataset.superseded_data
     if(superseded) {
         return (
-            <section className="dataset-superseded">
-                <h3 className="header"> Superseded versions of this data set: </h3>
-                <ul>
+            <TangentCard title="Superseded versions of this data set:">
+                <List>
                     {superseded.map(ref => 
-                        <li key={ref.browse_url}>
-                            {ref.name}
-                            <a href={ref.browse_url}><img alt="" className="tiny-icon" src="./images/icn-folder-rnd.png" /></a>
-                        </li>
-                    )}
-                </ul>
-            </section>
+                        <ListItem button component={Link} key={ref.browse_url} href={ref.browse_url}>
+                            <ListItemAvatar>
+                                <Avatar variant="square" alt="Folder Icon" src="/images/icn-folder-rnd.png" />
+                            </ListItemAvatar>
+                            <ListItemText primary={ref.name}/>
+                        </ListItem>
+                        )}
+                </List>
+            </TangentCard>
         )
     } else return null
 }
@@ -300,16 +371,15 @@ function RelatedData(props) {
     const data = props.dataset.related_data
     if(data) {
         return (
-            <section className="dataset-related">
-                <h3 className="header"> Related data: </h3>
-                <ul>
+            <TangentCard title="Related data:">
+                <List>
                     {data.map(ref => 
-                        <li key={ref.lid}>
-                            <a href={'?dataset=' + ref.lid}>{ref.name}</a>
-                        </li>
-                    )}
-                </ul>
-            </section>
+                        <ListItem button component={Link} key={ref.lid} href={'?dataset=' + ref.lid}>
+                            <ListItemText primary={ref.name}/>
+                        </ListItem>
+                        )}
+                </List>
+            </TangentCard>
         )
     } else return null
 }
