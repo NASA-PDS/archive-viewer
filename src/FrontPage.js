@@ -58,15 +58,15 @@ export default function Index() {
                                     <h3>Asteroids</h3>
                                     <ul className="front-page-list">
                                         <li>
-                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Near-Earth%20Asteroid&type=target">Near-Earth Asteroid</a>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Near-Earth%20Asteroid&type=Targets">Near-Earth Asteroid</a>
                                             <ul className="front-page-list"><li>e.g. 433 Eros</li></ul>
                                         </li>
                                         <li>
-                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Main%20Belt%20Asteroid&type=target">Main Belt Asteroid</a>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Main%20Belt%20Asteroid&type=Targets">Main Belt Asteroid</a>
                                             <ul className="front-page-list"><li>e.g. 4 Vesta</li></ul>
                                         </li>
                                         <li>
-                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Kuiper%20Belt%20Object&type=target">Kuiper Belt Object</a>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Kuiper%20Belt%20Object&type=Targets">Kuiper Belt Object</a>
                                             <ul className="front-page-list"><li>e.g. 486958 Arrokoth</li></ul>
                                         </li>
                                     </ul>
@@ -81,11 +81,11 @@ export default function Index() {
                                     <h3>Comets</h3>
                                     <ul className="front-page-list">
                                         <li>
-                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Short-Period%20Comet&type=target">Short-Period Comets</a>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Short-Period%20Comet&type=Targets">Short-Period Comets</a>
                                             <ul className="front-page-list"><li>e.g. 9P Tempel 1</li></ul>
                                         </li>
                                         <li>
-                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Long-Period%20Comet&type=target">Long-Period Comets</a>
+                                            <a href="https://sbnarchivedemo.psi.edu/?tag=Long-Period%20Comet&type=Targets">Long-Period Comets</a>
                                             <ul className="front-page-list"><li>e.g. C/1996 B2 Hyakutake</li></ul>
                                         </li>
                                     </ul>
@@ -99,37 +99,37 @@ export default function Index() {
                             <ul className="front-page-list">
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Orbiter.png" alt="imgOrb" /><a href="?tag=Orbiter&type=spacecraft">Orbiter</a>
+                                    <img className="sc-img" src="images/front/Orbiter.png" alt="imgOrb" /><a href="?tag=Orbiter&type=Spacecraft">Orbiter</a>
                                     <ul className="front-page-list"><li>e.g. Mariner 9</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Flyby.png" alt="imgFb" /><a href="?tag=Flyby&type=spacecraft">Flyby</a>
+                                    <img className="sc-img" src="images/front/Flyby.png" alt="imgFb" /><a href="?tag=Flyby&type=Spacecraft">Flyby</a>
                                     <ul className="front-page-list"><li>e.g. Voyager 1</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Lander.png" alt="imgLand" /><a href="?tag=Lander&type=spacecraft">Lander</a>
+                                    <img className="sc-img" src="images/front/Lander.png" alt="imgLand" /><a href="?tag=Lander&type=Spacecraft">Lander</a>
                                     <ul className="front-page-list"><li>e.g. Apollo 17 LSEP</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Rover.png" alt="imgRov" /><a href="?tag=Rover&type=spacecraft">Rover</a>
+                                    <img className="sc-img" src="images/front/Rover.png" alt="imgRov" /><a href="?tag=Rover&type=Spacecraft">Rover</a>
                                     <ul className="front-page-list"><li>e.g. Mars Science Laboratory (Curiosity)</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Impactor.png" alt="imgImpa" /><a href="?tag=Impactor&type=spacecraft">Impactor</a>
+                                    <img className="sc-img" src="images/front/Impactor.png" alt="imgImpa" /><a href="?tag=Impactor&type=Spacecraft">Impactor</a>
                                     <ul className="front-page-list"><li>e.g. Deep Impact Impactor</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Sample_Return.png" alt="imgSaRe" /><a href="?tag=Sample%20Return&type=spacecraft">Sample Return</a>
+                                    <img className="sc-img" src="images/front/Sample_Return.png" alt="imgSaRe" /><a href="?tag=Sample%20Return&type=Spacecraft">Sample Return</a>
                                     <ul className="front-page-list"><li>e.g. Stardust</li></ul>
                                 </li>
 
                                 <li>
-                                    <img className="sc-img" src="images/front/Atmos_Probe.png" alt="imgAtPr" /><a href="?tag=Atmospheric%20Probe&type=spacecraft">Atmospheric Probe</a>
+                                    <img className="sc-img" src="images/front/Atmos_Probe.png" alt="imgAtPr" /><a href="?tag=Atmospheric%20Probe&type=Spacecraft">Atmospheric Probe</a>
                                     <ul className="front-page-list"><li>e.g. Galileo Probe</li></ul>
                                 </li>
                             </ul>
