@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CollectionList from 'components/CollectionList.js'
-import FamilyLinks from 'components/FamilyLinks.js'
+import LogicalIdentifier from 'services/LogicalIdentifier.js'
 import RelatedTools from 'components/RelatedTools'
+import CitationBuilder from 'components/CitationBuilder'
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
 import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
-import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box } from '@material-ui/core'
+import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Collapse } from '@material-ui/core'
+import { ExpandLess, ExpandMore, Info } from '@material-ui/icons'
 import TangentCard from 'components/TangentCard';
 import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent';
@@ -47,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonIcon: {
         maxHeight: '25px'
+    },
+    metadataLabel: {
+        width: '200px'
     }
 }));
 
@@ -71,6 +76,7 @@ class Dataset extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.state.dataset)
         getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
         getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
         getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
@@ -82,50 +88,29 @@ class Dataset extends React.Component {
             <>
                 <PrimaryLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
                     <>
-                    <Title dataset={dataset} type={this.type} />
-                    <DeliveryInfo dataset={dataset} />
-                    <TangentCard title={titles[this.type]}>
-                        {!!dataset.publication && !!dataset.publication.publish_status && (
-                            <MetadataItem header="Status:" item={[dataset.publication.publish_status]} />)
-                        }
-                        {!!dataset.publication && !!dataset.publication.publication_date &&
-                            <MetadataItem header="Date Published:" item={dataset.publication.publication_date} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
-                        }
-                        <MetadataItem header="Publisher:" item={"NASA Planetary Data System"} itemProp="publisher" itemScope itemType="http://schema.org/Organization"/>
-                        {dataset.identifier &&
-                            <MetadataItem header={`${this.type === types.PDS3 ? 'PDS3' : 'PDS4'} ID:`} item={dataset.identifier} />
-                        }
-                        {dataset.doi &&
-                            <MetadataItem header="DOI:" item={[dataset.doi]} />
-                        }
-                        
-                        <AuthorList authors={dataset.citation_author_list} />
-                        <EditorList editors={dataset.citation_editor_list} />
-                    </TangentCard>
                     <DatasetTagList tags={dataset.tags}/>
-                    <DatasetDescription model={dataset}/>
+                    <Title dataset={dataset} type={this.type} />
+                    <RelatedTools tools={dataset.tools}/>
+
+                    <Metadata dataset={dataset}/>
+                    { this.type === types.COLLECTION && 
+                        <BundleNotice collection={dataset.identifier} />
+                    }
+                    <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} />
 
                     { this.type === types.BUNDLE && 
                         <CollectionList dataset={dataset} />
                     }
-                    <RelatedTools tools={dataset.tools}/>
                     <CollectionQuickLinks dataset={dataset} />
                     <CollectionDownloads dataset={dataset} />
 
-                    <Citation dataset={dataset} />
-                    <Grid container direction="row" alignItems="stretch">
-                        <Grid item component={RelatedPDS3} dataset={dataset} />
-                        <Grid item component={Superseded} dataset={dataset} />
-                        <Grid item component={RelatedData} dataset={dataset} />
-                    </Grid>
+                    <CitationBuilder dataset={dataset} />
                     </>
                 } secondary={
                     <>
-                        <FamilyLinks dataset={dataset} />
                         <TangentCard>
                             <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
                                 <Grid item>
-                                    <ActionButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-folder.png" />} title="Browse All"/>
                                 </Grid>
                                 {dataset.download_url &&
                                     <Grid item><ActionButton url={dataset.download_url} icon={<ActionButtonIcon src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
@@ -142,6 +127,11 @@ class Dataset extends React.Component {
                             <TargetListBox items={targets}/>
                             <SpacecraftListBox items={spacecraft}/>
                             <InstrumentListBox items={instruments}/>
+                        </TangentCard>
+                        <TangentCard>
+                            <Grid item component={RelatedPDS3} dataset={dataset} />
+                            <Grid item component={Superseded} dataset={dataset} />
+                            <Grid item component={RelatedData} dataset={dataset} />
                         </TangentCard>
                     </>
                 }/>
@@ -177,24 +167,85 @@ function Title({dataset, type}) {
             </Box>
             <Typography variant="h1">
                 { title }
+                <Chip color="primary" label={titles[type]}/>
             </Typography>
         </Box>
     )
 }
 
-function DeliveryInfo({dataset}) {
+function Metadata({dataset}) {
+    const [expanded, setExpanded] = useState(false)
+    return <List>
+            <MetadataItem label="Date Published" item={dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+            <TemporalMedatata label="Temporal Extent" dataset={dataset} />
+            <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
+            <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
+            <MetadataItem label="Description" item={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
+            <MetadataItem label="DOI" item={dataset.doi} />
+            <ListItem button onClick={() => setExpanded(!expanded)}>
+                <ListItemText primary={`Show ${expanded ? 'Less' : 'More'}`} />
+                { expanded ? <ExpandLess /> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+
+                <MetadataItem label="Type" item={"Data"} />
+                <MetadataItem label="Identifier" item={dataset.identifier} />
+                <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
+                <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
+                <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
+                <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
+                <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+                
+
+            </Collapse>
+    </List>
+}
+
+function TemporalMedatata({label, dataset}) {
+    let times = []
+    if(!!dataset.observation_start_date_time) { times.push("Start Time: " + dataset.observation_start_date_time) }
+    if(!!dataset.observation_stop_date_time) { times.push("Start Time: " + dataset.observation_stop_date_time) }
+    if(times.length === 0) { return null }
+
+    return <MetadataItem label={label} item={times.join(' - ')} />
+}
+
+function MetadataItem({ item, label, ...otherProps }) {
     const classes = useStyles()
-    const publication = dataset.publication
-    if(publication && publication.delivery_info) {
-        return (
-            <Paper className={classes.deliveryInfo}>
-                <Typography>{publication.delivery_info}</Typography>
-                <Typography>Latest release date: {publication.publication_date}</Typography>
-            </Paper>
-        )
-    } else {
-        return null
-    }
+    if(!item) return null
+    return <ListItem component={Grid} container direction="row" justify="flex-start">
+        <Grid item className={classes.metadataLabel}>
+            <Typography variant="h6"> { label }</Typography>
+        </Grid>
+        <Grid item>
+            <Typography {...otherProps}>{item}</Typography>
+        </Grid>
+    </ListItem>
+}
+
+function BundleNotice({collection}) {
+    const lidComponents = new LogicalIdentifier(collection).lid.split(':')
+    if(lidComponents.length !== 5) { return null } // if this collection lid isn't five parts, we don't know how to deal with it
+    lidComponents.pop()
+    const url = `?identifier=${lidComponents.join(':')}`
+    return <Grid container direction="row" alignItems="center" spacing={1}>
+        <Grid item><Info/></Grid>
+        <Grid item>
+            <Grid container direction="column" justify="flex-start">
+                <Typography component={Grid} item variant="h6">Bundle</Typography>
+                <Typography component={Grid} item >This data can be found as part of a bundle. <Link href={url}>See this bundle</Link></Typography>
+            </Grid>
+        </Grid>
+    </Grid>
+}
+
+function DatasetButton({url}) {
+    return <Button  color="primary" 
+                    variant="contained" 
+                    href={url} 
+                    startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
+                    style={{width: '50%', height: '100px'}}
+                    >Browse this Dataset</Button>
 }
 
 function ActionButton({url, icon, title}) {
@@ -207,31 +258,7 @@ function ActionButtonIcon({src}) {
     return <img alt="" className={classes.buttonIcon} src={src} />
 }
 
-function AuthorList({authors}) {
-    return authors ? (
-        <MetadataItem header={`Author${authors.includes(';') ? 's:' : ':'}`} item={authors} itemProp="author" itemScope itemType="http://schema.org/Person" />
-    ) : null
-}
 
-function EditorList({editors}) {
-    return editors ? (
-        <MetadataItem header={`Editor${editors.includes(';') ? 's:' : ':'}`} item={editors} itemProp="author" itemScope itemType="http://schema.org/Person" />
-    ) : null
-}
-
-// Matierial UI List without padding
-function MetadataItem(props) {
-    const { item, header, ...otherProps } = props
-    const classes = useStyles()
-    return (<>
-        <Typography variant="h6">{header}</Typography>
-        <List disablePadding>
-            <ListItem className={classes.textListItem} {...otherProps} key={item}>
-                <ListItemText primary={item}/>
-            </ListItem>
-        </List>
-    </>)
-}
 
 function CollectionQuickLinks({dataset}) {
     const classes = useStyles()
