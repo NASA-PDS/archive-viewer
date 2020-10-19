@@ -26,7 +26,7 @@ function ContextLink({item, displayTag}) {
 }
 
 function nameFinder(item) {
-    return item.display_name ? item.display_name : item.title
+    return item.display_name ? item.display_name : item.title ? item.title : item.identifier
 }
 
 

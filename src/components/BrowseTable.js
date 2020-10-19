@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import 'css/BrowseTable.scss'
 import Loading from 'components/Loading.js'
 import { ContextList } from 'components/ContextLinks'
-import { Box, Typography, TableContainer, Table, TableRow, TableCell } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import { groupByAttributedRelationship, groupByFirstTag, miscGroupName, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
+import { groupByAttributedRelationship, groupByFirstTag, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
+import SectionedTable from './SectionedTable';
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
     sectionHeader: {
       margin: theme.spacing(1)
     },
@@ -43,7 +44,7 @@ function BrowseTables(props) {
             {majorGroups.map(group => { return (
                 <Box key={group.name}>
                     <Typography variant="h2" className={classes.sectionHeader}>{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
-                    { sectioned ? <SectionedTable items={group.items} /> : <ContextList items={group.items} /> }
+                    { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
                 </Box>
             )})}
             {expanded === false && minorGroups.length > 0 && 
@@ -52,7 +53,7 @@ function BrowseTables(props) {
             {expanded && minorGroups.map(group => { return (
                 <Box key={group.name}>
                     <Typography variant="h3" component="h2">{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
-                    { sectioned ? <SectionedTable items={group.items} /> : <ContextList items={group.items} /> }
+                    { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
                 </Box>
             )})}
         </Box>
@@ -65,28 +66,3 @@ export function SpacecraftBrowseTable(props) {
 export function InstrumentBrowseTable(props) {
     return <BrowseTables type="Instruments" sectioned={true} {...props}/>
 }
-
-function SectionedTable({items}) {
-    const classes = useStyles();
-    let groups = groupByFirstTag(items)
-    groups.sort((a, b) => a.order.localeCompare(b.order))
-    return (
-        <TableContainer>
-            <Table padding="none" className={classes.table}>
-                {groups.map(group => { return (
-                    <TableRow key={group.name}>
-                        <TableCell className={classes.cell} align="center" component="th" scope="row">
-                            {(groups.length > 1 || group.name !== miscGroupName) &&
-                                <Typography variant="h6"> { group.name }</Typography>
-                            }
-                        </TableCell>
-                        <TableCell className={classes.cell}>
-                            <ContextList items={group.items} />
-                        </TableCell>
-                    </TableRow>
-                )})}
-            </Table>
-        </TableContainer>
-    )
-}
-
