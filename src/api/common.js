@@ -102,13 +102,32 @@ export function initialLookup(identifier) {
 
             if(!!supplementalRoute) {
                 httpGet(supplementalRoute, {
-                    q: `logical_identifier:"${lid.escapedLid}"`,
+                    q: `logical_identifier:("${lid.escaped}" OR ${lid.escapedLid})`,
                     fl: `*,[child parentFilter=attrname:${attrname}]`,
                 }).then(result => {
-                    if(result.length === 1) {
-                        Object.assign(doc, result[0]);
+                    if(result.length > 0) {
+                        let matchingDoc = result[0]
+                        if(result.length > 1) {
+                            if(!!lid.vid) {
+                                // find the document that matches the lidvid
+                                matchingDoc = result.find(r => r.logical_identifier === lid.lidvid)
+                            } else {
+                                // find the document with the latest version ID
+                                try {
+                                    const sorted = result.sort((r1, r2) => {
+                                        const vid1 = new LID(r1.logical_identifier).vid, vid2 = new LID(r2.logical_identifier).vid
+                                        return parseFloat(vid2) - parseFloat(vid1)
+                                    })
+                                    matchingDoc = sorted[0]
+                                } catch(err) {
+                                    // just give up
+                                    matchingDoc = {}
+                                }
+                            }
+                        }
+                        Object.assign(doc, matchingDoc)
                     }
-                    resolve(doc);
+                    resolve(doc)
                 }, error => {
                     reject(error)
                 })
