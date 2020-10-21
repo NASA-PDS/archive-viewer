@@ -25,10 +25,6 @@ const useStyles = makeStyles((theme) => ({
     citation: {
         width: '100%'
     },
-    citationIcon: {
-        maxHeight: '50px',
-        maxWidth: '50px',
-    },
 }))
 
 export default function CitationBuilder({dataset}) {
@@ -37,26 +33,20 @@ export default function CitationBuilder({dataset}) {
 
     return <Box m={1}>
         <Typography variant="h3">Citation</Typography>
-        <Grid container direction="row" alignItems="flex-start">
-            <Grid item component="img" alt="" className={classes.citationIcon} src="./images/quotes-start.png" />
-            <Grid item style={{flexGrow: '1'}}>
-                <Grid container direction="column" spacing={1} className={classes.container}>
-                    <Grid item container spacing={1} direction="row" alignItems="center">
-                        <Grid item>
-                            <CitationSelector current={format} setter={setFormat}/>
-                        </Grid>
-                        <Grid item>
-                            <Tooltip placement="right" title="Select a format, then copy the citation out below">
-                                <Help/>
-                            </Tooltip>
-                        </Grid>
-                    </Grid>
-                    <Grid item>
-                        <TextField multiline rows={4} value={buildCitation(format, dataset)} variant="outlined" className={classes.citation}/>
-                    </Grid>
+        <Grid container direction="column" spacing={1} className={classes.container}>
+            <Grid item container spacing={1} direction="row" alignItems="center">
+                <Grid item>
+                    <CitationSelector current={format} setter={setFormat}/>
+                </Grid>
+                <Grid item>
+                    <Tooltip placement="right" title="Select a format, then copy the citation out below">
+                        <Help/>
+                    </Tooltip>
                 </Grid>
             </Grid>
-            <Grid item component="img" alt="" className={classes.citationIcon} style={{alignSelf: 'flex-end'}} src="./images/quotes-end.png" />
+            <Grid item>
+                <TextField multiline rows={4} value={buildCitation(format, dataset)} variant="outlined" className={classes.citation}/>
+            </Grid>
         </Grid>
         </Box>
 }

@@ -19,10 +19,6 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         color: theme.palette.secondary.dark
     },
-    citationIcon: {
-        maxHeight: '50px',
-        maxWidth: '50px',
-    },
     citationEnd: {
         alignSelf: 'flex-end'
     },
@@ -32,10 +28,29 @@ const useStyles = makeStyles((theme) => ({
     primaryButton: {
         width: '100%'
     },
-    datasetIcon: {
-        maxHeight: '50px',
-        maxWidth: '50px',
-        marginRight: theme.spacing(2)
+    [theme.breakpoints.up('xs')]: {
+        datasetIcon: {
+            display: 'none'
+        },
+        datasetButton: {
+            width: '100%', 
+            boxSizing: 'border-box',
+            height: '80px', 
+            marginTop: theme.spacing(1)
+        }
+    },
+    [theme.breakpoints.up('sm')]: {
+        datasetIcon: {
+            display: 'block',
+            maxHeight: '50px',
+            maxWidth: '50px',
+            marginRight: theme.spacing(2)
+        },
+        datasetButton: {
+            width: '50%', 
+            height: '100px', 
+            marginTop: theme.spacing(1)
+        }
     },
     textListItem: {
         paddingTop: 0,
@@ -195,11 +210,11 @@ function TemporalMedatata({label, dataset}) {
 function MetadataItem({ item, label, ...otherProps }) {
     const classes = useStyles()
     if(!item) return null
-    return <ListItem component={Grid} container direction="row" justify="flex-start">
-        <Grid item className={classes.metadataLabel}>
+    return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
+        <Grid item sm={3} xs={12}>
             <Typography variant="h6"> { label }</Typography>
         </Grid>
-        <Grid item>
+        <Grid item sm={9} xs={12}>
             <Typography {...otherProps}>{item}</Typography>
         </Grid>
     </ListItem>
@@ -210,7 +225,7 @@ function BundleNotice({collection}) {
     if(lidComponents.length !== 5) { return null } // if this collection lid isn't five parts, we don't know how to deal with it
     lidComponents.pop()
     const url = `?identifier=${lidComponents.join(':')}`
-    return <Grid container direction="row" alignItems="center" spacing={1}>
+    return <Grid container direction="row" alignItems="center" spacing={1} wrap="nowrap">
         <Grid item><Info/></Grid>
         <Grid item>
             <Grid container direction="column" justify="flex-start">
@@ -222,11 +237,12 @@ function BundleNotice({collection}) {
 }
 
 function DatasetButton({url}) {
+    const classes = useStyles()
     return <Button  color="primary" 
                     variant="contained" 
                     href={url} 
                     startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
-                    style={{width: '50%', height: '100px', margin: '8px'}}
+                    className={classes.datasetButton}
                     >Browse this Dataset</Button>
 }
 
