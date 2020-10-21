@@ -1,6 +1,6 @@
 import React from 'react';
 import { ContextList } from 'components/ContextLinks';
-import { Typography, TableContainer, Table, TableRow, TableCell } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { miscGroupName } from 'services/groupings';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -19,7 +19,7 @@ export default function SectionedTable({ groups }) {
     groups.sort((a, b) => a.order.localeCompare(b.order));
     return (
         <TableContainer>
-            <Table padding="none" className={classes.table}>
+            <Table padding="none" className={classes.table}><TableBody>
                 {groups.map(group => {
                     return (
                         <TableRow key={group.name}>
@@ -33,7 +33,7 @@ export default function SectionedTable({ groups }) {
                         </TableRow>
                     );
                 })}
-            </Table>
+            </TableBody></Table>
         </TableContainer>
     );
 }

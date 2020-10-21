@@ -3,8 +3,8 @@ import CollectionList from 'components/CollectionList.js'
 import LogicalIdentifier from 'services/LogicalIdentifier.js'
 import RelatedTools from 'components/RelatedTools'
 import CitationBuilder from 'components/CitationBuilder'
-import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset} from 'api/dataset.js'
-import {InstrumentListBox, SpacecraftListBox, TargetListBox} from 'components/ListBox'
+import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
+import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
 import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
 import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Collapse } from '@material-ui/core'
@@ -12,7 +12,7 @@ import { ExpandLess, ExpandMore, Info } from '@material-ui/icons'
 import TangentCard from 'components/TangentCard';
 import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent';
-import PrimaryLayout from 'components/PrimaryLayout'
+import ResponsiveLayout from 'components/ResponsiveLayout'
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -76,17 +76,17 @@ class Dataset extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.state.dataset)
-        getInstrumentsForDataset(this.state.dataset).then(instruments => this.setState({instruments}))
-        getSpacecraftForDataset(this.state.dataset).then(spacecraft => this.setState({spacecraft}))
-        getTargetsForDataset(this.state.dataset).then(targets => this.setState({targets}))
+        getInstrumentsForDataset(this.state.dataset).then(instruments => instruments && this.setState({instruments}))
+        getSpacecraftForDataset(this.state.dataset).then(spacecraft => spacecraft && this.setState({spacecraft}))
+        getMissionsForDataset(this.state.dataset).then(missions => missions && this.setState({missions}))
+        getTargetsForDataset(this.state.dataset).then(targets => targets && this.setState({targets}))
     }   
 
     render() {    
-        const {dataset, targets, spacecraft, instruments} = this.state
+        const {dataset, targets, spacecraft, instruments, missions} = this.state
         return (
             <>
-                <PrimaryLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
+                <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
                     <>
                     <DatasetTagList tags={dataset.tags}/>
                     <Title dataset={dataset} type={this.type} />
@@ -94,9 +94,11 @@ class Dataset extends React.Component {
 
                     <Metadata dataset={dataset}/>
                     { this.type === types.COLLECTION && 
-                        <BundleNotice collection={dataset.identifier} />
+                        <>
+                            <BundleNotice collection={dataset.identifier} />
+                            <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} />
+                        </>
                     }
-                    <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} />
 
                     { this.type === types.BUNDLE && 
                         <CollectionList dataset={dataset} />
@@ -108,36 +110,17 @@ class Dataset extends React.Component {
                     </>
                 } secondary={
                     <>
-                        <TangentCard>
-                            <Grid container direction="column" spacing={2} justify="center" alignItems="stretch">
-                                <Grid item>
-                                </Grid>
-                                {dataset.download_url &&
-                                    <Grid item><ActionButton url={dataset.download_url} icon={<ActionButtonIcon src="./images/icn-download.png" />} title={`Download All ${dataset.download_size && ('(' + dataset.download_size + ')')}` }/></Grid>
-                                }
-                                {dataset.checksum_url &&
-                                    <Grid item><ActionButton url={dataset.checksum_url} icon={<ActionButtonIcon src="./images/icn-checksum.png" />} title="View Checksums"/></Grid>
-                                }
-                                {dataset.resource_url &&
-                                    <Grid item><ActionButton url={dataset.resource_url} icon={<ActionButtonIcon src="./images/icn-external.png" />} title="View Dataset"/></Grid>
-                                }
-                            </Grid>
-                        </TangentCard>
-                        <TangentCard>
-                            <TargetListBox items={targets}/>
-                            <SpacecraftListBox items={spacecraft}/>
-                            <InstrumentListBox items={instruments}/>
-                        </TangentCard>
-                        <TangentCard>
+                        { targets && targets.length > 0 && <TangentCard><TargetListBox items={targets}/></TangentCard> }
+                        { missions && missions.length > 0 && <TangentCard><MissionListBox items={missions}/></TangentCard> }
+                        { spacecraft && spacecraft.length > 0 && <TangentCard><SpacecraftListBox items={spacecraft}/></TangentCard> }
+                        { instruments && instruments.length > 0 && <TangentCard><InstrumentListBox items={instruments}/></TangentCard> }
+                        {/* <TangentCard>
                             <Grid item component={RelatedPDS3} dataset={dataset} />
                             <Grid item component={Superseded} dataset={dataset} />
                             <Grid item component={RelatedData} dataset={dataset} />
-                        </TangentCard>
+                        </TangentCard> */}
                     </>
                 }/>
-                {/* <Grid itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`}>
-                    
-                </Grid> */}
                 
             </>
         )
@@ -167,7 +150,7 @@ function Title({dataset, type}) {
             </Box>
             <Typography variant="h1">
                 { title }
-                <Chip color="primary" label={titles[type]}/>
+                <Chip color="primary" label={titles[type]} style={{marginLeft: '5px'}}/>
             </Typography>
         </Box>
     )
@@ -196,7 +179,6 @@ function Metadata({dataset}) {
                 <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
                 <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
                 
-
             </Collapse>
     </List>
 }
@@ -204,7 +186,7 @@ function Metadata({dataset}) {
 function TemporalMedatata({label, dataset}) {
     let times = []
     if(!!dataset.observation_start_date_time) { times.push("Start Time: " + dataset.observation_start_date_time) }
-    if(!!dataset.observation_stop_date_time) { times.push("Start Time: " + dataset.observation_stop_date_time) }
+    if(!!dataset.observation_stop_date_time) { times.push("Stop Time: " + dataset.observation_stop_date_time) }
     if(times.length === 0) { return null }
 
     return <MetadataItem label={label} item={times.join(' - ')} />
@@ -244,7 +226,7 @@ function DatasetButton({url}) {
                     variant="contained" 
                     href={url} 
                     startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
-                    style={{width: '50%', height: '100px'}}
+                    style={{width: '50%', height: '100px', margin: '8px'}}
                     >Browse this Dataset</Button>
 }
 
@@ -335,25 +317,6 @@ function CollectionDownloads({dataset}) {
             </section>
         )
     } else { return null }
-}
-
-function Citation(props) {
-    const citation = props.dataset.citation
-    const classes = useStyles()
-    if(citation) {
-        return (
-            <PrimaryContent>
-                <Grid container direction="row" alignItems="flex-start">
-                    <Grid item component="img" alt="" className={classes.citationIcon} src="./images/quotes-start.png" />
-                    <Grid item xs={6} className={classes.citation}>
-                        <Typography variant="body2">Use the following citation to reference this data set:</Typography>
-                        <Typography>"{citation}"</Typography>
-                    </Grid>
-                    <Grid item component="img" alt="" className={`${classes.citationIcon} ${classes.citationEnd}`} src="./images/quotes-end.png" />
-                </Grid>
-            </PrimaryContent>
-        )
-    } else return null
 }
 
 function RelatedPDS3(props) {
