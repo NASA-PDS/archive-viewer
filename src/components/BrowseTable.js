@@ -21,7 +21,7 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 function BrowseTables(props) {
-    const [expanded, setExpanded] = useState(false)
+    let [expanded, setExpanded] = useState(false)
     const {items, sectioned, type} = props
     const classes = useStyles();
 
@@ -37,7 +37,7 @@ function BrowseTables(props) {
         }
     })
     
-    if(majorGroups.length === 0 && minorGroups.length > 0) { setExpanded(true) }
+    if(majorGroups.length === 0 && minorGroups.length > 0) { expanded = true }
 
     return (
         <Box>
