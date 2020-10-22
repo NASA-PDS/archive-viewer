@@ -3,7 +3,7 @@ import 'css/ContextObjects.scss'
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
 import {TargetListBox, DatasetListBox, groupType} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
-import {MissionHeader, SpacecraftHeader, MissionDescription, Menu} from 'components/ContextObjects'
+import {MissionHeader, SpacecraftHeader, MissionDescription, Menu, SpacecraftDescription} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
@@ -12,6 +12,7 @@ import PDS3Results from 'components/PDS3Results'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
 import { Button } from '@material-ui/core'
+import { isPdsOnlyMode } from 'api/mock';
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -40,12 +41,15 @@ export default class Spacecraft extends React.Component {
         else {
             return (
                 <div className="co-main">
-                    <MissionHeader model={mission} /> {/* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
+                    { isPdsOnlyMode() ? <SpacecraftHeader model={spacecraft}/> : <MissionHeader model={mission} />
+                    /* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
+
                     <Menu/>
                     <PrimaryLayout primary={   
                         <>
                         <SpacecraftTagList tags={spacecraft.tags} />
-                        <MissionDescription model={mission} /> {/* this is intentionally a mission description on the spacecraft page, since that is likely more relevant */}
+                        { isPdsOnlyMode() ? <SpacecraftDescription model={spacecraft}/> : <MissionDescription model={mission} />
+                        /* this is intentionally a mission description on the spacecraft page, since that is likely more relevant */}
                         {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                             <SpacecraftHeader model={spacecraft} />
                         }
