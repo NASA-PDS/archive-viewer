@@ -6,7 +6,7 @@ import { ContextLink, ContextList } from 'components/ContextLinks'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 /* ------ Constants ------ */
-const maxExpandedListDefault = 15
+const maxExpandedListDefault = 3
 const listTypes = {
     dataset: 'dataset',
     mission: 'mission',

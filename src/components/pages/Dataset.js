@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
+import {stitchDatasetWithMockData} from 'api/mock'
 import CollectionList from 'components/CollectionList.js'
 import LogicalIdentifier from 'services/LogicalIdentifier.js'
 import RelatedTools from 'components/RelatedTools'
 import CitationBuilder from 'components/CitationBuilder'
-import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
 import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
@@ -86,7 +87,8 @@ class Dataset extends React.Component {
 
     constructor(props) {
         super(props)
-        const {dataset} = props
+        let {dataset} = props
+        stitchDatasetWithMockData(dataset)
         this.state = { dataset }
     }
 
@@ -129,11 +131,11 @@ class Dataset extends React.Component {
                         { missions && missions.length > 0 && <TangentCard><MissionListBox items={missions}/></TangentCard> }
                         { spacecraft && spacecraft.length > 0 && <TangentCard><SpacecraftListBox items={spacecraft}/></TangentCard> }
                         { instruments && instruments.length > 0 && <TangentCard><InstrumentListBox items={instruments}/></TangentCard> }
-                        {/* <TangentCard>
-                            <Grid item component={RelatedPDS3} dataset={dataset} />
-                            <Grid item component={Superseded} dataset={dataset} />
-                            <Grid item component={RelatedData} dataset={dataset} />
-                        </TangentCard> */}
+                        
+                        <RelatedData dataset={dataset}/>
+                        <Superseded dataset={dataset}/>
+                        <RelatedPDS3 dataset={dataset}/>
+                        <LegacyDOIs dataset={dataset}/>                        
                     </>
                 }/>
                 
@@ -188,6 +190,9 @@ function Metadata({dataset}) {
 
                 <MetadataItem label="Type" item={"Data"} />
                 <MetadataItem label="Identifier" item={dataset.identifier} />
+                <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
+                <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
+                <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
                 <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
                 <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
                 <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
@@ -342,9 +347,6 @@ function RelatedPDS3(props) {
             <TangentCard title="PDS3 versions of this dataset:">
                 <List>
                     <ListItem button component={Link} href={pds3}>
-                        <ListItemAvatar>
-                            <Avatar variant="square" alt="Folder Icon" src="/images/icn-folder-rnd.png" />
-                        </ListItemAvatar>
                         <ListItemText primary="Click here to browse"/>
                     </ListItem>
                 </List>
@@ -361,9 +363,6 @@ function Superseded(props) {
                 <List>
                     {superseded.map(ref => 
                         <ListItem button component={Link} key={ref.browse_url} href={ref.browse_url}>
-                            <ListItemAvatar>
-                                <Avatar variant="square" alt="Folder Icon" src="/images/icn-folder-rnd.png" />
-                            </ListItemAvatar>
                             <ListItemText primary={ref.name}/>
                         </ListItem>
                         )}
@@ -380,8 +379,25 @@ function RelatedData(props) {
             <TangentCard title="Related data:">
                 <List>
                     {data.map(ref => 
-                        <ListItem button component={Link} key={ref.lid} href={'?dataset=' + ref.lid}>
+                        <ListItem button component={Link} key={ref.lid} href={'?identifier=' + ref.lid}>
                             <ListItemText primary={ref.name}/>
+                        </ListItem>
+                        )}
+                </List>
+            </TangentCard>
+        )
+    } else return null
+}
+
+function LegacyDOIs(props) {
+    const data = props.dataset.legacy_dois
+    if(data) {
+        return (
+            <TangentCard title="Legacy DOIs:">
+                <List>
+                    {data.map(ref => 
+                        <ListItem button component={Link} key={ref.lid} href={'https://doi.org/' + ref.doi}>
+                            <ListItemText primary={`${ref.date}: ${ref.doi}`}/>
                         </ListItem>
                         )}
                 </List>

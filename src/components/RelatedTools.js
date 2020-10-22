@@ -13,7 +13,7 @@ export default function RelatedTools({tools}){
     if(!tools) { return null }
     return (
         <Box m={3}>
-            <Typography gutterBottom variant="h3">Useful tool{tools.length > 1 ? 's' : ''} for this data:</Typography>
+            <Typography gutterBottom variant="h3">Tool{tools.length > 1 ? 's' : ''} for viewing this data:</Typography>
             <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
                 {tools.map(tool => (
                     <Grid item xs={6} md={2} key={tool.toolId} ><ToolLink tool={tool}/></Grid>
