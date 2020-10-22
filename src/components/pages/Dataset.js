@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
-import {stitchDatasetWithMockData} from 'api/mock'
+import {isMockupMode, isPdsOnlyMode, stitchDatasetWithMockData} from 'api/mock'
 import CollectionList from 'components/CollectionList.js'
 import LogicalIdentifier from 'services/LogicalIdentifier.js'
 import RelatedTools from 'components/RelatedTools'
@@ -88,7 +88,7 @@ class Dataset extends React.Component {
     constructor(props) {
         super(props)
         let {dataset} = props
-        stitchDatasetWithMockData(dataset)
+        if(isMockupMode()) {stitchDatasetWithMockData(dataset)}
         this.state = { dataset }
     }
 
@@ -229,7 +229,9 @@ function BundleNotice({collection}) {
     const lidComponents = new LogicalIdentifier(collection).lid.split(':')
     if(lidComponents.length !== 5) { return null } // if this collection lid isn't five parts, we don't know how to deal with it
     lidComponents.pop()
-    const url = `?identifier=${lidComponents.join(':')}`
+    let url = `?identifier=${lidComponents.join(':')}`
+    if(isPdsOnlyMode()) { url += "&pdsOnly=true"}
+    if(isMockupMode()) { url += "&mockup=true"}
     return <Grid container direction="row" alignItems="center" spacing={1} wrap="nowrap">
         <Grid item><Info/></Grid>
         <Grid item>

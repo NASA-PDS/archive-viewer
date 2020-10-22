@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link,  List as MaterialList, ListItem, ListItemText } from '@material-ui/core'
+import { isPdsOnlyMode, isMockupMode } from 'api/mock.js'
 
 
 function ContextList({items}) {    
@@ -17,7 +18,10 @@ function ContextList({items}) {
 }
 
 function ContextLink({item, displayTag}) {
-    const url = `?identifier=${item.logical_identifier ? item.logical_identifier : item.identifier}`
+    let url = `?identifier=${item.logical_identifier ? item.logical_identifier : item.identifier}`
+    if(isPdsOnlyMode()) { url += "&pdsOnly=true" }
+    if(isMockupMode() === "true") { url += "&mockup=true" }
+
     return (
         <ListItem button component={Link} href={url}>
             <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')}/>

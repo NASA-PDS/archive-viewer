@@ -123,3 +123,13 @@ export function stitchDatasetWithMockData(dataset) {
         if(!dataset[key]) dataset[key] = model[key]
     }
 }
+
+export function isMockupMode() {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('mockup') === "true"
+}
+
+export function isPdsOnlyMode() {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('pdsOnly') === "true"
+}
