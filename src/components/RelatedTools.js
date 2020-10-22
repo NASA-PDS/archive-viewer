@@ -9,28 +9,28 @@ const useStyles = makeStyles({
     },
 });
 
-export default function RelatedTools({tools}){
+export default function RelatedTools({tools, noImages}){
     if(!tools) { return null }
     return (
         <Box m={3}>
             <Typography gutterBottom variant="h3">Tool{tools.length > 1 ? 's' : ''} for viewing this data:</Typography>
             <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
                 {tools.map(tool => (
-                    <Grid item xs={6} md={2} key={tool.toolId} ><ToolLink tool={tool}/></Grid>
+                    <Grid item xs={6} md={2} key={tool.toolId} ><ToolLink tool={tool} noImages={noImages}/></Grid>
                 ))}
             </Grid>
         </Box>
     )
 }
 
-function ToolLink({tool}) {
+function ToolLink({tool, noImages}) {
     const classes = useStyles();
     return (
         <Link href={tool.directUrl ? tool.directUrl : tool.url} >
             <Card raised={true} className={classes.tool} p={1}>
-                <CardMedia component="img" image={tool.image_url} alt={'Icon for ' + tool.display_name} title={tool.display_name}/>
+                {!noImages && <CardMedia component="img" image={tool.image_url} alt={'Icon for ' + tool.display_name} title={tool.display_name}/>}
                 <CardContent p="1">
-                    <Typography p="3" variant="h5" component="h2">{tool.display_name}</Typography>
+                    <Typography p="3" variant="h5" component="h2" color="primary">{tool.display_name}</Typography>
                     <Typography variant="body2" color="textSecondary" component="p">{tool.name}</Typography>
                 </CardContent>
             </Card>

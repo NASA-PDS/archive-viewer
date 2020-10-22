@@ -107,7 +107,7 @@ class Dataset extends React.Component {
                     <>
                     <DatasetTagList tags={dataset.tags}/>
                     <Title dataset={dataset} type={this.type} />
-                    <RelatedTools tools={dataset.tools}/>
+                    <RelatedTools tools={dataset.tools} noImages={isMockupMode()}/>
 
                     <Metadata dataset={dataset}/>
                     { this.type === types.COLLECTION && 
