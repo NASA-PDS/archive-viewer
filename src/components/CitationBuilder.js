@@ -4,15 +4,19 @@ import { Help } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles';
 
 const FORMAT = {
-    ADS: 'ADS',
-    APA: 'APA'
+    one: 'Format 1',
+    two: 'Format 2',
+    three: 'Format 3',
+    four: 'Format 4',
 }
 
 const buildCitation = (format, dataset) => {
     switch(format) {
         default:
-        case FORMAT.ADS: 
-        case FORMAT.APA: return `${dataset.title} ${dataset.citation_publication_year} ${dataset.citation_author_list} ${dataset.citation_description}`
+        case FORMAT.one: return `${dataset.title} ${dataset.citation_publication_year} ${dataset.citation_author_list} ${dataset.citation_description}`
+        case FORMAT.two: return `${dataset.citation_publication_year}: ${dataset.citation_description}\n${dataset.citation_author_list}`
+        case FORMAT.three: return `${dataset.title} (${dataset.citation_publication_year}) - ${dataset.citation_description}${dataset.citation_author_list}`
+        case FORMAT.four: return `${dataset.citation_author_list} - ${dataset.citation_publication_year} - ${dataset.citation_description}`
     }
 }
 
@@ -28,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function CitationBuilder({dataset}) {
-    const [format, setFormat] = useState(FORMAT.ADS)
+    const [format, setFormat] = useState(FORMAT.one)
     const classes = useStyles()
 
     return <Box m={1}>
