@@ -174,6 +174,7 @@ function Metadata({dataset}) {
     return <List>
             <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
             <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+            <MetadataItem label="Version" item={dataset.version_id} />   
             <TemporalMedatata label="Temporal Extent" dataset={dataset} />
             <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
             <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
@@ -240,9 +241,11 @@ function BundleNotice({collection}) {
     </Grid>
 }
 
-function DatasetButton({url}) {
+function DatasetButton({url, checksums, downloadUrl, downloadSize}) {
     const classes = useStyles()
-    return <Button  color="primary" 
+    return <Grid container direction="row" alignItems="stretch" spacing={2}>
+        <Grid item xs={12} md={6}>
+            <Button color="primary" 
                     variant="contained" 
                     href={url} 
                     startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
@@ -365,7 +368,7 @@ function RelatedPDS3(props) {
     const pds3 = props.dataset.pds3_version_url
     if(pds3) {
         return (
-            <TangentCard title="PDS3 versions of this dataset:">
+            <TangentCard title="PDS3 version">
                 <List>
                     <ListItem button component={Link} href={pds3}>
                         <ListItemText primary="Click here to browse"/>
@@ -380,7 +383,7 @@ function Superseded(props) {
     const superseded = props.dataset.superseded_data
     if(superseded) {
         return (
-            <TangentCard title="Superseded versions of this data set:">
+            <TangentCard title="Other versions">
                 <List>
                     {superseded.map(ref => 
                         <ListItem button component={Link} key={ref.browse_url} href={ref.browse_url}>
@@ -397,7 +400,7 @@ function RelatedData(props) {
     const data = props.dataset.related_data
     if(data) {
         return (
-            <TangentCard title="Related data:">
+            <TangentCard title="Related data">
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.lid} href={'?identifier=' + ref.lid}>
@@ -414,7 +417,7 @@ function LegacyDOIs(props) {
     const data = props.dataset.legacy_dois
     if(data) {
         return (
-            <TangentCard title="Legacy DOIs:">
+            <TangentCard title="Legacy DOIs">
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.lid} href={'https://doi.org/' + ref.doi}>
