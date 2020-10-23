@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: 0
     },
     deliveryInfo: {
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.secondary.main,
         padding: '15px',
         color: theme.palette.common.white,
         textAlign: 'center'
@@ -168,7 +168,7 @@ function Title({dataset, type}) {
             </Box>
             <Typography variant="h1">
                 { title }
-                <Chip color="primary" label={titles[type]} style={{marginLeft: '5px'}}/>
+                <Chip color="secondary" label={titles[type]} style={{marginLeft: '5px'}}/>
             </Typography>
         </Box>
     )
