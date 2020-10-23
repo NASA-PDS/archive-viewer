@@ -13,8 +13,8 @@ import Box from '@material-ui/core/Box';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { withStyles } from '@material-ui/core/styles';
-import logo from '../assets/images/pdsLogo.png';
-import infoImg from '../assets/images/info.png';
+import logo from 'assets/images/pdsLogo.png';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 const useStyles = (theme) => ({
     titleLink: {
@@ -38,7 +38,8 @@ const useStyles = (theme) => ({
         width: '48px'
     },
     pdsBanner: {
-        background: '#000000'
+        background: '#000000',
+        height: '32px'
     },
     pdsBannerText:{
         color: '#ffffff',
@@ -66,6 +67,8 @@ const useStyles = (theme) => ({
         borderRadius: '0',
         padding: '5px 0 6px 5px',
         textTransform: 'none',
+        fontWeight: '400',
+        height: '32px',
         '&:hover': {
             backgroundColor: 'rgb(23, 23, 23)',
             boxShadow: 'none'
@@ -83,9 +86,9 @@ const useStyles = (theme) => ({
     arrowIcon: {
         marginLeft: '40px'
     },
-    infoImg: {
-        height: '14px',
-        width: '14px'
+    infoIcon: {
+        height: '17px',
+        width: '17px'
     },
     infoButton: {
         padding: '0 0 0 5px'
@@ -95,6 +98,10 @@ const useStyles = (theme) => ({
     },
     infoText: {
         fontSize: '12px'
+    },
+    listItemTextFirst: {
+        height:'0',
+        margin:'0'
     }
 });
 
@@ -248,11 +255,12 @@ class Banner extends Component {
                         onMouseLeave={this.handleInfoMouseLeave}
                         onKeyDown={this.handleInfoEnterOpen}
                     >
-                        <img
-                            src={infoImg}
-                            className={classes.infoImg}
-                            alt=''
-                        />
+                        <SvgIcon className={classes.infoIcon}>
+                            <path 
+                                fill="white" 
+                                d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z">
+                            </path>
+                        </SvgIcon>
                     </IconButton>
                     <Popover
                         id="info-menu"
@@ -264,7 +272,8 @@ class Banner extends Component {
                             horizontal: 'left'
                         }}
                         transformOrigin={{
-                            horizontal: '40px'
+                            horizontal: 'left',
+                            vertical: 'top',
                         }}
                         PaperProps={{
                             style: {
@@ -315,6 +324,9 @@ class Banner extends Component {
                             }
                         }}
                     >
+                        <StyledMenuItem>
+                            <ListItemText className={classes.listItemTextFirst}/>
+                        </StyledMenuItem>
                         <StyledMenuItem onClick={() => {this.handleNodeSelect('https://pds-atmospheres.nmsu.edu')}}>
                             <Link
                                 className={classes.menuLink}
@@ -347,7 +359,6 @@ class Banner extends Component {
                                 className={classes.menuLink}
                                 href='https://naif.jpl.nasa.gov/naif'
                                 rel='noopener'
-                                inputRef={this.textFieldRef}
                             >
                                 <ListItemText className={classes.listItemText} primary='Navigational and Ancillary Information (NAIF)'/>
                             </Link>

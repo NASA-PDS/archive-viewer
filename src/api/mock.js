@@ -112,8 +112,8 @@ const model = {
             date: '2017',
             doi: '10.13481/2'
         },{
-            date: '2017',
-            doi: '10.13481/2'
+            date: '2019',
+            doi: '10.13352/8'
         }],
     pds3_version_url: 'http://example.com'
 }

@@ -8,7 +8,7 @@ import CitationBuilder from 'components/CitationBuilder'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
 import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
-import { Avatar, ListItemAvatar, Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Collapse } from '@material-ui/core'
+import { Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Collapse } from '@material-ui/core'
 import { ExpandLess, ExpandMore, Info } from '@material-ui/icons'
 import TangentCard from 'components/TangentCard';
 import { makeStyles } from '@material-ui/core/styles';
@@ -211,7 +211,6 @@ function TemporalMedatata({label, dataset}) {
 }
 
 function MetadataItem({ item, label, ...otherProps }) {
-    const classes = useStyles()
     if(!item) return null
     return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
         <Grid item sm={3} xs={12}>
@@ -386,7 +385,7 @@ function Superseded(props) {
             <TangentCard title="Other versions">
                 <List>
                     {superseded.map(ref => 
-                        <ListItem button component={Link} key={ref.browse_url} href={ref.browse_url}>
+                        <ListItem button component={Link} key={ref.browse_url + ref.name} href={ref.browse_url}>
                             <ListItemText primary={ref.name}/>
                         </ListItem>
                         )}
@@ -420,7 +419,7 @@ function LegacyDOIs(props) {
             <TangentCard title="Legacy DOIs">
                 <List>
                     {data.map(ref => 
-                        <ListItem button component={Link} key={ref.lid} href={'https://doi.org/' + ref.doi}>
+                        <ListItem button component={Link} key={ref.doi} href={'https://doi.org/' + ref.doi}>
                             <ListItemText primary={`${ref.date}: ${ref.doi}`}/>
                         </ListItem>
                         )}
