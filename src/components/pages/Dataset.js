@@ -34,10 +34,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'none'
         },
         datasetButton: {
-            width: '100%', 
-            boxSizing: 'border-box',
             height: '80px', 
-            marginTop: theme.spacing(1)
         }
     },
     [theme.breakpoints.up('sm')]: {
@@ -48,9 +45,7 @@ const useStyles = makeStyles((theme) => ({
             marginRight: theme.spacing(2)
         },
         datasetButton: {
-            width: '50%', 
             height: '100px', 
-            marginTop: theme.spacing(1)
         }
     },
     textListItem: {
@@ -114,7 +109,7 @@ class Dataset extends React.Component {
                     { this.type === types.COLLECTION && 
                         <>
                             <BundleNotice collection={dataset.identifier} />
-                            <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} />
+                            <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} checksums={dataset.checksum_url} downloadUrl={dataset.download_url} downloadSize={dataset.download_size}/>
                         </>
                     }
 
@@ -251,12 +246,21 @@ function DatasetButton({url}) {
                     variant="contained" 
                     href={url} 
                     startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
-                    className={classes.datasetButton}
+                    className={`${classes.datasetButton} ${classes.primaryButton}`}
                     >Browse this Dataset</Button>
+        </Grid>
+        <Grid item xs={12} md={6} >
+            <Grid container direction="column" justify="space-between" spacing={1} style={{height: '100%'}}>
+                <Grid item><ActionButton url={downloadUrl} title={`Download${downloadSize ? ' (' + downloadSize + ')' : ''}`} icon={<ActionButtonIcon src="./images/icn-download.png" />}/></Grid>
+                <Grid item><ActionButton url={checksums} title={`View Checksums`} icon={<ActionButtonIcon src="./images/icn-checksum.png" />}/></Grid>
+            </Grid>
+        </Grid>
+    </Grid>
 }
 
 function ActionButton({url, icon, title}) {
     const classes = useStyles()
+    if(!url) return null
     return <Button color="primary" variant="contained" href={url} className={classes.primaryButton} startIcon={icon}>{title}</Button>
 }
 
