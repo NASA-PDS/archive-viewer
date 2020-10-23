@@ -24,7 +24,8 @@ function ContextLink({item, displayTag}) {
 
     return (
         <ListItem button component={Link} href={url}>
-            <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')}/>
+            <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')} 
+            primaryTypographyProps={{color: "primary"}}/>
         </ListItem>
     )
 }

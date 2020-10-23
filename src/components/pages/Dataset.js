@@ -370,7 +370,7 @@ function RelatedPDS3(props) {
             <TangentCard title="PDS3 version">
                 <List>
                     <ListItem button component={Link} href={pds3}>
-                        <ListItemText primary="Click here to browse"/>
+                        <ListItemText primary="Click here to browse" primaryTypographyProps={{color: "primary"}}/>
                     </ListItem>
                 </List>
             </TangentCard>
@@ -386,7 +386,7 @@ function Superseded(props) {
                 <List>
                     {superseded.map(ref => 
                         <ListItem button component={Link} key={ref.browse_url + ref.name} href={ref.browse_url}>
-                            <ListItemText primary={ref.name}/>
+                            <ListItemText primary={ref.name} primaryTypographyProps={{color: "primary"}}/>
                         </ListItem>
                         )}
                 </List>
@@ -403,7 +403,7 @@ function RelatedData(props) {
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.lid} href={'?identifier=' + ref.lid}>
-                            <ListItemText primary={ref.name}/>
+                            <ListItemText primary={ref.name} primaryTypographyProps={{color: "primary"}}/>
                         </ListItem>
                         )}
                 </List>
@@ -420,7 +420,7 @@ function LegacyDOIs(props) {
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.doi} href={'https://doi.org/' + ref.doi}>
-                            <ListItemText primary={`${ref.date}: ${ref.doi}`}/>
+                            <ListItemText primary={`${ref.date}: ${ref.doi}`} primaryTypographyProps={{color: "primary"}}/>
                         </ListItem>
                         )}
                 </List>

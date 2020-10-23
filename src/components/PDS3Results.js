@@ -43,7 +43,7 @@ function ResultsList({datasets, count, resultsUrl}) {
             <List>
                 {datasets.map(dataset => 
                     <ListItem button component={Link} key={dataset.identifier} href={dataset.resLocation.startsWith('/') ? 'https://pds.nasa.gov' + dataset.resLocation : dataset.resLocation}>
-                        <ListItemText primary={dataset.title}/>
+                        <ListItemText primary={dataset.title} primaryTypographyProps={{color: "primary"}}/>
                     </ListItem>
                     )}
             </List>
