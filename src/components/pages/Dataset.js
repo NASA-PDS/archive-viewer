@@ -107,6 +107,7 @@ class Dataset extends React.Component {
                     <>
                     <DatasetTagList tags={dataset.tags}/>
                     <Title dataset={dataset} type={this.type} />
+                    <DeliveryInfo dataset={dataset} />
                     <RelatedTools tools={dataset.tools} noImages={isMockupMode()}/>
 
                     <Metadata dataset={dataset}/>
@@ -176,7 +177,8 @@ function Title({dataset, type}) {
 function Metadata({dataset}) {
     const [expanded, setExpanded] = useState(false)
     return <List>
-            <MetadataItem label="Date Published" item={dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+            <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
+            <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
             <TemporalMedatata label="Temporal Extent" dataset={dataset} />
             <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
             <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
@@ -263,7 +265,20 @@ function ActionButtonIcon({src}) {
     return <img alt="" className={classes.buttonIcon} src={src} />
 }
 
-
+function DeliveryInfo({dataset}) {
+    const classes = useStyles()
+    const publication = dataset.publication
+    if(publication && publication.delivery_info) {
+        return (
+            <Paper className={classes.deliveryInfo}>
+                <Typography>{publication.delivery_info}</Typography>
+                <Typography>Latest release date: {publication.publication_date}</Typography>
+            </Paper>
+        )
+    } else {
+        return null
+    }
+}
 
 function CollectionQuickLinks({dataset}) {
     const classes = useStyles()
