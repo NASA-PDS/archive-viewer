@@ -128,3 +128,11 @@ main aside.main-aside {
         }
     }
 }
+
+.mission-phase-table {
+    border-collapse: collapse;
+    td, th {
+        padding: 5px;
+        border: 1px solid #ddd
+    }
+}
