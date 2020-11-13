@@ -5,6 +5,10 @@ body {
     padding: 0;
     font-family: 'Noto Sans', sans-serif;
 }
+html, body, main {
+    min-height: 100%;
+    background-color: #12181D;
+}
 .menu-link {
     position: absolute;
     top: 5px;
@@ -91,14 +95,6 @@ main aside.main-aside {
     }
 }
 
-
-.collection-container {
-    margin-left: 5px;
-    border-left: 8px solid $blue;
-    box-sizing: border-box;
-    padding: 20px 0 0 20px;
-}
-
 .clearfix:after {
     content: " "; 
     visibility: hidden;
@@ -133,6 +129,6 @@ main aside.main-aside {
     border-collapse: collapse;
     td, th {
         padding: 5px;
-        border: 1px solid #ddd
+        border: 1px solid #444
     }
 }

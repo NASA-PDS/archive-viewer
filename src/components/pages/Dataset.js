@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     deliveryInfo: {
         backgroundColor: theme.palette.secondary.main,
         padding: '15px',
-        color: theme.palette.common.white,
+        color: theme.palette.getContrastText(theme.palette.secondary.main),
         textAlign: 'center'
     },
     buttonIcon: {
@@ -163,7 +163,7 @@ function Title({dataset, type}) {
             </Box>
             <Typography variant="h1">
                 { title }
-                <Chip color="secondary" label={titles[type]} style={{marginLeft: '5px'}}/>
+                <Chip color="info" variant="outlined" label={titles[type]} style={{marginLeft: '10px'}}/>
             </Typography>
         </Box>
     )
