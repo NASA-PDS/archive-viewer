@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent';
 import ResponsiveLayout from 'components/ResponsiveLayout'
 import TangentAccordion from 'components/TangentAccordion';
+import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -96,27 +97,23 @@ class Dataset extends React.Component {
     render() {    
         const {dataset, targets, spacecraft, instruments, missions} = this.state
         return (
-            <>
-                <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" className={ `${this.type === types.BUNDLE ? 'bundle-container' : 'collection-container'}`} primary={
-                    <>
-                    <DatasetTagList tags={dataset.tags}/>
-                    <Title dataset={dataset} type={this.type} />
-                    <DeliveryInfo dataset={dataset} />
-                    <RelatedTools tools={dataset.tools} noImages={isMockupMode()}/>
+            <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
+                <>
+                <DatasetTagList tags={dataset.tags}/>
+                <Title dataset={dataset} type={this.type} />
+                <DeliveryInfo dataset={dataset} />
+                <RelatedTools tools={dataset.tools} noImages={isMockupMode()}/>
 
-                    <Metadata dataset={dataset}/>
-                    { this.type === types.COLLECTION && 
-                        <>
-                            <BundleNotice collection={dataset.identifier} />
-                            <DatasetButton url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} checksums={dataset.checksum_url} downloadUrl={dataset.download_url} downloadSize={dataset.download_size}/>
-                        </>
-                    }
+                <Metadata dataset={dataset}/>
+                { this.type === types.COLLECTION && 
+                    <CollectionBrowseLinks dataset={dataset}/>
+                }
 
-                    { this.type === types.BUNDLE && 
-                        <CollectionList dataset={dataset} />
-                    }
-                    <CollectionQuickLinks dataset={dataset} />
-                    <CollectionDownloads dataset={dataset} />
+                { this.type === types.BUNDLE && 
+                    <CollectionList dataset={dataset} />
+                }
+                <CollectionQuickLinks dataset={dataset} />
+                <CollectionDownloads dataset={dataset} />
 
                 <TangentAccordion title="Citation">
                     <CitationBuilder dataset={dataset} />
@@ -215,54 +212,6 @@ function MetadataItem({ item, label, ...otherProps }) {
     </ListItem>
 }
 
-function BundleNotice({collection}) {
-    const lidComponents = new LogicalIdentifier(collection).lid.split(':')
-    if(lidComponents.length !== 5) { return null } // if this collection lid isn't five parts, we don't know how to deal with it
-    lidComponents.pop()
-    let url = `?identifier=${lidComponents.join(':')}`
-    if(isPdsOnlyMode()) { url += "&pdsOnly=true"}
-    if(isMockupMode()) { url += "&mockup=true"}
-    return <Grid container direction="row" alignItems="center" spacing={1} wrap="nowrap">
-        <Grid item><Info/></Grid>
-        <Grid item>
-            <Grid container direction="column" justify="flex-start">
-                <Typography component={Grid} item variant="h6">Bundle</Typography>
-                <Typography component={Grid} item >This data can be found as part of a bundle. <Link href={url}>See this bundle</Link></Typography>
-            </Grid>
-        </Grid>
-    </Grid>
-}
-
-function DatasetButton({url, checksums, downloadUrl, downloadSize}) {
-    const classes = useStyles()
-    return <Grid container direction="row" alignItems="stretch" spacing={2}>
-        <Grid item xs={12} md={6}>
-            <Button color="primary" 
-                    variant="contained" 
-                    href={url} 
-                    startIcon={<ActionButtonIcon src="./images/icn-folder.png" />}
-                    className={`${classes.datasetButton} ${classes.primaryButton}`}
-                    >Browse this Dataset</Button>
-        </Grid>
-        <Grid item xs={12} md={6} >
-            <Grid container direction="column" justify="space-between" spacing={1} style={{height: '100%'}}>
-                <Grid item><ActionButton url={downloadUrl} title={`Download${downloadSize ? ' (' + downloadSize + ')' : ''}`} icon={<ActionButtonIcon src="./images/icn-download.png" />}/></Grid>
-                <Grid item><ActionButton url={checksums} title={`View Checksums`} icon={<ActionButtonIcon src="./images/icn-checksum.png" />}/></Grid>
-            </Grid>
-        </Grid>
-    </Grid>
-}
-
-function ActionButton({url, icon, title}) {
-    const classes = useStyles()
-    if(!url) return null
-    return <Button color="primary" variant="contained" href={url} className={classes.primaryButton} startIcon={icon}>{title}</Button>
-}
-
-function ActionButtonIcon({src}) {
-    const classes = useStyles()
-    return <img alt="" className={classes.buttonIcon} src={src} />
-}
 
 function DeliveryInfo({dataset}) {
     const classes = useStyles()
