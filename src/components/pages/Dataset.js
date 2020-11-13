@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
         datasetIcon: {
             display: 'block',
-            maxHeight: '50px',
-            maxWidth: '50px',
+            height: '50px',
+            width: '50px',
             marginRight: theme.spacing(2)
         },
         datasetButton: {
@@ -153,8 +153,8 @@ function Title({dataset, type}) {
         <Box display="flex" alignItems="center" my={3}>
             <Box >
                 { type === types.COLLECTION ? 
-                    <img className={classes.datasetIcon} alt="Collection" src="./images/icn-collection.png" /> : 
-                    <img className={classes.datasetIcon} alt="Bundle" src="./images/icn-bundle.png" />
+                    <FolderOutlined className={classes.datasetIcon}/> : 
+                    <UnarchiveOutlined className={classes.datasetIcon}/>
                 }
             </Box>
             <Typography variant="h1">
