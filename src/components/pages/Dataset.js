@@ -14,6 +14,7 @@ import PrimaryContent from 'components/PrimaryContent';
 import ResponsiveLayout from 'components/ResponsiveLayout'
 import TangentAccordion from 'components/TangentAccordion';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
+import { Helmet } from 'react-helmet'
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -149,7 +150,7 @@ export class PDS3Dataset extends Dataset {
 function Title({dataset, type}) {
     const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
-    return (
+    return <>
         <Box display="flex" alignItems="center" my={3}>
             <Box >
                 { type === types.COLLECTION ? 
@@ -162,7 +163,10 @@ function Title({dataset, type}) {
                 <Chip color="info" variant="outlined" label={titles[type]} style={{marginLeft: '10px'}}/>
             </Typography>
         </Box>
-    )
+        <Helmet>
+            <title>{ title }</title>
+        </Helmet>
+    </>
 }
 
 function Metadata({dataset}) {
