@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     title: {
-      fontWeight: 'bold'
     }, 
     description: {
         whiteSpace: 'pre-line',
