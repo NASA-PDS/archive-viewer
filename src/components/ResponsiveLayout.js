@@ -9,24 +9,33 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         height: "100%"
     },
-    outerPrimary: {
-        padding: theme.spacing(2)
+    [theme.breakpoints.up('xs')]: {
+        outerPrimary: {
+            paddingTop: theme.spacing(2),
+            paddingBottom: theme.spacing(2)
+        }
     },
-    innerPrimary: {
-        padding: theme.spacing(2)
+    [theme.breakpoints.up('md')]: {
+        outerPrimary: {
+            padding: theme.spacing(2)
+        },
+        innerPrimary: {
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2)
+        }
     }
 }));
 
-export default function({primary, secondary}) {
+export default function({primary, secondary, ...otherProps}) {
     const classes = useStyles()
     return (
         <div className={classes.root}>
         <Container maxWidth="lg" >
-            <Grid container direction="row" component={Paper} square elevation={2} className={classes.outerPrimary}>
-                <Grid item xs >
+            <Grid container direction="row" className={classes.outerPrimary} {...otherProps}>
+                <Grid item xs className={classes.innerPrimary}>
                     {primary}
                 </Grid>
-                <Grid item xs={12} sm={5} md={3} >
+                <Grid item xs={12} md={3} className={classes.innerPrimary}>
                     {secondary}
                 </Grid>
             </Grid>

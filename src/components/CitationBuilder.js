@@ -36,7 +36,6 @@ export default function CitationBuilder({dataset}) {
     const classes = useStyles()
 
     return <Box m={1}>
-        <Typography variant="h3">Citation</Typography>
         <Grid container direction="column" spacing={1} className={classes.container}>
             <Grid item container spacing={1} direction="row" alignItems="center">
                 <Grid item>

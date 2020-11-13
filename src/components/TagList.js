@@ -26,8 +26,7 @@ function TagList({tags, type}) {
 
     return (
         <>
-        <Box>
-            <Hidden mdDown><Typography component="span" variant="h5" className={classes.header}> Relevant Tags: </Typography></Hidden>
+        <Box mb={1}>
             {tags.map(tag => 
                 <Link key={tag} onClick={() => openTag(tag)}>
                     <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>

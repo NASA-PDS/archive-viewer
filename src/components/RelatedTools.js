@@ -6,17 +6,18 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     tool: {
         maxWidth: 150,
+        height: '100%'
     },
 });
 
 export default function RelatedTools({tools, noImages}){
     if(!tools) { return null }
     return (
-        <Box m={3}>
+        <Box my={2}>
             <Typography gutterBottom variant="h3">Tool{tools.length > 1 ? 's' : ''} for viewing this data:</Typography>
             <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
                 {tools.map(tool => (
-                    <Grid item xs={6} md={2} key={tool.toolId} ><ToolLink tool={tool} noImages={noImages}/></Grid>
+                    <Grid item xs={6} sm={4} md={2} key={tool.toolId} ><ToolLink tool={tool} noImages={noImages}/></Grid>
                 ))}
             </Grid>
         </Box>

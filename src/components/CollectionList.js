@@ -2,7 +2,7 @@ import React from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
 import SectionedTable from 'components/SectionedTable.js'
-import { Card, Typography, CardContent } from '@material-ui/core';
+import { Card, Typography, CardContent, Box } from '@material-ui/core';
 import { groupByLabelArray } from 'services/groupings';
 
 export default class Main extends React.Component {
@@ -35,11 +35,13 @@ export default class Main extends React.Component {
 function CollectionList({ collections, labels }) {
 
     return (
-        <Card variant="outlined" >
-            <CardContent p={1}>
-            <Typography variant="h5">Data in this bundle</Typography>
-            <SectionedTable groups={groupByLabelArray(collections, labels)}/>
-            </CardContent>
-        </Card>
+        <Box my={2}>
+            <Card variant="outlined" >
+                <CardContent p={1}>
+                <Typography variant="h5">Data in this bundle</Typography>
+                <SectionedTable groups={groupByLabelArray(collections, labels)}/>
+                </CardContent>
+            </Card>
+        </Box>
     )
 }

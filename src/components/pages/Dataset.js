@@ -150,7 +150,7 @@ function Title({dataset, type}) {
     const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
     return (
-        <Box display="flex" alignItems="center" m={1}>
+        <Box display="flex" alignItems="center" my={3}>
             <Box >
                 { type === types.COLLECTION ? 
                     <img className={classes.datasetIcon} alt="Collection" src="./images/icn-collection.png" /> : 
