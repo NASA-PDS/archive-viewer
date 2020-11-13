@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Loading from 'components/Loading.js'
+import TangentAccordion from 'components/TangentAccordion'
 import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
 import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 import { ContextLink, ContextList } from 'components/ContextLinks'
@@ -66,22 +67,10 @@ function AbstractListBox(props) {
         const list = items.length === 1
                     ? <ContextLink item={items[0]}/> 
                     : <GroupedList groups={groups} type={type}/>
-        return showToggle && groups.length === 1
-            ? <ToggleList  
-                    header={header} 
-                    headerVariant="h3" 
-                    list={list}
-                    divider={true}/>
-            : <List disablePadding>
-                <ListItem>
-                        <ListItemText 
-                            primary={header}
-                            primaryTypographyProps={{variant: 'h3'}}>
-                        </ListItemText>
-                    </ListItem>
-                <Divider/>
-                {list}
-            </List>
+
+        return <TangentAccordion title={header} defaultExpanded={items.length <= maxExpandedListDefault}>
+            {list}
+        </TangentAccordion>
         
     } 
 }

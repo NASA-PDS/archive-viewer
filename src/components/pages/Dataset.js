@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
-import {isMockupMode, isPdsOnlyMode, stitchDatasetWithMockData} from 'api/mock'
+import {isMockupMode, stitchDatasetWithMockData} from 'api/mock'
 import CollectionList from 'components/CollectionList.js'
-import LogicalIdentifier from 'services/LogicalIdentifier.js'
 import RelatedTools from 'components/RelatedTools'
 import CitationBuilder from 'components/CitationBuilder'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
 import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
-import { Link, Grid, Card, CardMedia, CardContent, Button, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Collapse } from '@material-ui/core'
-import { ExpandLess, ExpandMore, Info } from '@material-ui/icons'
-import TangentCard from 'components/TangentCard';
+import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip } from '@material-ui/core'
+import { UnarchiveOutlined, FolderOutlined } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles';
 import PrimaryContent from 'components/PrimaryContent';
 import ResponsiveLayout from 'components/ResponsiveLayout'
+import TangentAccordion from 'components/TangentAccordion';
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -119,23 +118,23 @@ class Dataset extends React.Component {
                     <CollectionQuickLinks dataset={dataset} />
                     <CollectionDownloads dataset={dataset} />
 
+                <TangentAccordion title="Citation">
                     <CitationBuilder dataset={dataset} />
-                    </>
-                } secondary={
-                    <>
-                        { targets && targets.length > 0 && <TangentCard><TargetListBox items={targets}/></TangentCard> }
-                        { missions && missions.length > 0 && <TangentCard><MissionListBox items={missions}/></TangentCard> }
-                        { spacecraft && spacecraft.length > 0 && <TangentCard><SpacecraftListBox items={spacecraft}/></TangentCard> }
-                        { instruments && instruments.length > 0 && <TangentCard><InstrumentListBox items={instruments}/></TangentCard> }
-                        
-                        <RelatedData dataset={dataset}/>
-                        <Superseded dataset={dataset}/>
-                        <RelatedPDS3 dataset={dataset}/>
-                        <LegacyDOIs dataset={dataset}/>                        
-                    </>
-                }/>
-                
-            </>
+                </TangentAccordion>
+                </>
+            } secondary={
+                <Box p={1}>
+                    { targets && targets.length > 0 && <TargetListBox items={targets}/> }
+                    { missions && missions.length > 0 && <MissionListBox items={missions}/> }
+                    { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft}/> }
+                    { instruments && instruments.length > 0 && <InstrumentListBox items={instruments}/> }
+                    
+                    <RelatedData dataset={dataset}/>
+                    <Superseded dataset={dataset}/>
+                    <RelatedPDS3 dataset={dataset}/>
+                    <LegacyDOIs dataset={dataset}/>                        
+                </Box>
+            }/>
         )
     }
 }
@@ -170,7 +169,6 @@ function Title({dataset, type}) {
 }
 
 function Metadata({dataset}) {
-    const [expanded, setExpanded] = useState(false)
     return <List>
             <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
             <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
@@ -180,12 +178,8 @@ function Metadata({dataset}) {
             <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
             <MetadataItem label="Description" item={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
             <MetadataItem label="DOI" item={dataset.doi} />
-            <ListItem button onClick={() => setExpanded(!expanded)}>
-                <ListItemText primary={`Show ${expanded ? 'Less' : 'More'}`} />
-                { expanded ? <ExpandLess /> : <ExpandMore/>}
-            </ListItem>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
 
+            <TangentAccordion title="More Information">
                 <MetadataItem label="Type" item={"Data"} />
                 <MetadataItem label="Identifier" item={dataset.identifier} />
                 <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
@@ -196,8 +190,7 @@ function Metadata({dataset}) {
                 <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
                 <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
                 <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
-                
-            </Collapse>
+            </TangentAccordion>
     </List>
 }
 
@@ -367,13 +360,13 @@ function RelatedPDS3(props) {
     const pds3 = props.dataset.pds3_version_url
     if(pds3) {
         return (
-            <TangentCard title="PDS3 version">
+            <TangentAccordion title="PDS3 version">
                 <List>
                     <ListItem button component={Link} href={pds3}>
                         <ListItemText primary="Click here to browse" primaryTypographyProps={{color: "primary"}}/>
                     </ListItem>
                 </List>
-            </TangentCard>
+            </TangentAccordion>
         )
     } else return null
 }
@@ -382,7 +375,7 @@ function Superseded(props) {
     const superseded = props.dataset.superseded_data
     if(superseded) {
         return (
-            <TangentCard title="Other versions">
+            <TangentAccordion title="Other versions">
                 <List>
                     {superseded.map(ref => 
                         <ListItem button component={Link} key={ref.browse_url + ref.name} href={ref.browse_url}>
@@ -390,7 +383,7 @@ function Superseded(props) {
                         </ListItem>
                         )}
                 </List>
-            </TangentCard>
+            </TangentAccordion>
         )
     } else return null
 }
@@ -399,7 +392,7 @@ function RelatedData(props) {
     const data = props.dataset.related_data
     if(data) {
         return (
-            <TangentCard title="Related data">
+            <TangentAccordion title="Related data">
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.lid} href={'?identifier=' + ref.lid}>
@@ -407,7 +400,7 @@ function RelatedData(props) {
                         </ListItem>
                         )}
                 </List>
-            </TangentCard>
+            </TangentAccordion>
         )
     } else return null
 }
@@ -416,7 +409,7 @@ function LegacyDOIs(props) {
     const data = props.dataset.legacy_dois
     if(data) {
         return (
-            <TangentCard title="Legacy DOIs">
+            <TangentAccordion title="Legacy DOIs">
                 <List>
                     {data.map(ref => 
                         <ListItem button component={Link} key={ref.doi} href={'https://doi.org/' + ref.doi}>
@@ -424,7 +417,7 @@ function LegacyDOIs(props) {
                         </ListItem>
                         )}
                 </List>
-            </TangentCard>
+            </TangentAccordion>
         )
     } else return null
 }
