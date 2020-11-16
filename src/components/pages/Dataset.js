@@ -124,10 +124,10 @@ class Dataset extends React.Component {
                 </>
             } secondary={
                 <Box p={1}>
-                    { targets && targets.length > 0 && <TargetListBox items={targets}/> }
-                    { missions && missions.length > 0 && <MissionListBox items={missions}/> }
-                    { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft}/> }
-                    { instruments && instruments.length > 0 && <InstrumentListBox items={instruments}/> }
+                    { targets && targets.length > 0 && <TargetListBox items={targets} compact={true}/> }
+                    { missions && missions.length > 0 && <MissionListBox items={missions} compact={true}/> }
+                    { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft} compact={true}/> }
+                    { instruments && instruments.length > 0 && <InstrumentListBox items={instruments} compact={true}/> }
                     
                     <RelatedData dataset={dataset}/>
                     <Superseded dataset={dataset}/>

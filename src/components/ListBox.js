@@ -7,7 +7,8 @@ import { ContextLink, ContextList } from 'components/ContextLinks'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
 /* ------ Constants ------ */
-const maxExpandedListDefault = 3
+const maxExpandedListDefault = 15
+const maxExpandedListCompact = 3
 const listTypes = {
     dataset: 'dataset',
     mission: 'mission',
@@ -55,8 +56,7 @@ function AbstractListBox(props) {
     const {groupBy, groupInfo, type, groupingFn, items} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
 
-    const showToggle = !!items && items.length > maxExpandedListDefault
-
+    
     if(!items) { 
         return <Loading/> 
     } else if(items.length === 0) {
@@ -64,11 +64,16 @@ function AbstractListBox(props) {
     } else {
         const header = items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title
         const groups = groupingFn(items, groupInfo, groupByField)
+        
+        const defaultExpanded = 
+            props.compact ? items.length <= maxExpandedListCompact
+                          : items.length <= maxExpandedListDefault || groups.length > 1
+
         const list = items.length === 1
                     ? <ContextLink item={items[0]}/> 
                     : <GroupedList groups={groups} type={type}/>
 
-        return <TangentAccordion title={header} defaultExpanded={items.length <= maxExpandedListDefault}>
+        return <TangentAccordion title={header} defaultExpanded={defaultExpanded}>
             {list}
         </TangentAccordion>
         
