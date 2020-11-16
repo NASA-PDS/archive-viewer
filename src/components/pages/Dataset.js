@@ -182,7 +182,7 @@ function Metadata({dataset}) {
             <TemporalMedatata label="Time Range" dataset={dataset} />
             <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
             <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
-            <MetadataItem label="Description" item={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
+            <MetadataItem label="Description" itemComponent={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
             <MetadataItem label="DOI" item={dataset.doi} />            
     </List>
 }
@@ -210,14 +210,14 @@ function TemporalMedatata({label, dataset}) {
     return <MetadataItem label={label} item={times.join(' - ')} />
 }
 
-function MetadataItem({ item, label, ...otherProps }) {
-    if(!item) return null
+function MetadataItem({ item, itemComponent, label, ...otherProps }) {
+    if(!item && !itemComponent) return null
     return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
         <Grid item sm={3} xs={12}>
             <Typography variant="h6"> { label }</Typography>
         </Grid>
         <Grid item sm={9} xs={12}>
-            <Typography {...otherProps}>{item}</Typography>
+            {itemComponent || <Typography {...otherProps}>{item}</Typography> }
         </Grid>
     </ListItem>
 }

@@ -1,7 +1,7 @@
-import React from 'react';
-import TagSearch, {TagTypes} from 'components/TagSearch.js'
-import { Chip, Link, Typography, Box, Hidden, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import TagSearch, { TagTypes } from 'components/TagSearch.js';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
     header: {

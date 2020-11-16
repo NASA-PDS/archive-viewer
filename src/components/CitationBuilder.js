@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import { FormControl, InputLabel, Select, MenuItem, TextField, Grid, Typography, Box, Tooltip } from '@material-ui/core'
-import { Help } from '@material-ui/icons'
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { Help } from '@material-ui/icons';
+import React, { useState } from 'react';
 
 const FORMAT = {
     one: 'Format 1',

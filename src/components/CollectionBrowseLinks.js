@@ -1,11 +1,10 @@
-import React from 'react';
-import {getBundlesForCollection} from 'api/dataset.js';
-import Loading from 'components/Loading.js'
-import ErrorMessage from 'components/Error.js'
-import { Typography, Grid, Button, List, ListItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import {isMockupMode, isPdsOnlyMode} from 'api/mock'
+import { Button, Grid, List, ListItem, Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { getBundlesForCollection } from 'api/dataset.js';
+import { isMockupMode, isPdsOnlyMode } from 'api/mock';
+import ErrorMessage from 'components/Error.js';
+import Loading from 'components/Loading.js';
+import React from 'react';
 
 export default class Main extends React.Component {
 
@@ -70,7 +69,6 @@ function BrowseItem({ label, identifier, url, buttonTitle, isPrimary }) {
 }
 
 function BrowseButton({url, title, isPrimary}) {
-    console.log(`${url}: ${isPrimary}`)
     if(!url) return null
     return <Button color="primary" variant={isPrimary ? "contained" : "text"} size={isPrimary ? "large" : "medium"} href={url} endIcon={isPrimary ? <OpenInNewIcon/> : null}>{title}</Button>
 }
