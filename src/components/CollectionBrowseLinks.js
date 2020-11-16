@@ -1,5 +1,6 @@
 import React from 'react';
 import {getBundlesForCollection} from 'api/dataset.js';
+import Loading from 'components/Loading.js'
 import ErrorMessage from 'components/Error.js'
 import { Typography, Grid, Button, List, ListItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,14 +25,15 @@ export default class Main extends React.Component {
     }
 
     render() {
-        const {bundles, error} = this.state
+        const {bundles, error, loaded} = this.state
         const { dataset } = this.props
+        if(!loaded) { return <Loading />}
         if(error) {
             return <ErrorMessage error={error}></ErrorMessage>
         } else if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
         return (
             <List>
-                { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
+                { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
                     <>{bundles.map(bundle => {
                         return <BrowseButton key={bundle.identifier} url={buildUrl(bundle.identifier)} title={bundle.display_name ? bundle.display_name : bundle.title} />
                     })}</>

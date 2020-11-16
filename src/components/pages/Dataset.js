@@ -116,6 +116,8 @@ class Dataset extends React.Component {
                 <CollectionQuickLinks dataset={dataset} />
                 <CollectionDownloads dataset={dataset} />
 
+                <MoreInformation dataset={dataset} />
+                
                 <TangentAccordion title="Citation">
                     <CitationBuilder dataset={dataset} />
                 </TangentAccordion>
@@ -151,7 +153,7 @@ function Title({dataset, type}) {
     const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
     return <>
-        <Box display="flex" alignItems="center" my={3}>
+        <Box display="flex" alignItems="top" my={3}>
             <Box >
                 { type === types.COLLECTION ? 
                     <FolderOutlined className={classes.datasetIcon}/> : 
@@ -160,7 +162,9 @@ function Title({dataset, type}) {
             </Box>
             <Typography variant="h1">
                 { title }
-                <Chip color="info" variant="outlined" label={titles[type]} style={{marginLeft: '10px'}}/>
+                <Chip color="primary" variant="outlined" label={
+                    <Typography variant="body2">{titles[type]}</Typography>
+                    } style={{marginLeft: '10px'}}/>
             </Typography>
         </Box>
         <Helmet>
@@ -171,28 +175,30 @@ function Title({dataset, type}) {
 
 function Metadata({dataset}) {
     return <List>
+            <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
             <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
             <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
             <MetadataItem label="Version" item={dataset.version_id} />   
-            <TemporalMedatata label="Temporal Extent" dataset={dataset} />
+            <TemporalMedatata label="Time Range" dataset={dataset} />
             <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
             <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
             <MetadataItem label="Description" item={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
-            <MetadataItem label="DOI" item={dataset.doi} />
-
-            <TangentAccordion title="More Information">
-                <MetadataItem label="Type" item={"Data"} />
-                <MetadataItem label="Identifier" item={dataset.identifier} />
-                <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
-                <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
-                <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
-                <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
-                <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
-                <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
-                <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
-                <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
-            </TangentAccordion>
+            <MetadataItem label="DOI" item={dataset.doi} />            
     </List>
+}
+
+function MoreInformation({dataset}) {
+    return <TangentAccordion title="More Information">
+        <MetadataItem label="Type" item={"Data"} />
+        <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
+        <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
+        <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
+        <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
+        <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
+        <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
+        <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
+        <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+    </TangentAccordion>
 }
 
 function TemporalMedatata({label, dataset}) {
