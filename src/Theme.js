@@ -73,6 +73,11 @@ const Theme = createMuiTheme({
                 backgroundColor: "#192028"
             }
         }
+    },
+    props: {
+        MuiLink: {
+            underline: 'none'
+        }
     }
 });
 
