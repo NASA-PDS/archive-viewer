@@ -1,3 +1,5 @@
+import { isPdsOnlyMode, isMockupMode } from 'api/mock.js'
+
 const localSolr = process.env.REACT_APP_SUPPLEMENTAL_SOLR
 const remoteSolr = process.env.REACT_APP_CORE_SOLR
 
@@ -31,4 +33,11 @@ export default {
     targetSpacecraftRelationshipTypes: `${localSolr}/${targetSpacecraftRelationshipTypesCollection}/select`,
     instrumentSpacecraftRelationshipTypes: `${localSolr}/${instrumentSpacecraftRelationshipTypesCollection}/select`,
     tools: `${localSolr}/${toolsCollection}/select`,
+}
+
+export function buildUrl(identifier) {
+    let url = `?identifier=${identifier}`
+    if(isPdsOnlyMode()) { url += "&pdsOnly=true"}
+    if(isMockupMode()) { url += "&mockup=true"}
+    return url
 }

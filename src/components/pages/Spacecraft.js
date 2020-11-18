@@ -13,6 +13,7 @@ import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
 import { Button } from '@material-ui/core'
 import { isPdsOnlyMode } from 'api/mock';
+import { buildUrl } from 'api/router';
 
 export default class Spacecraft extends React.Component {
     constructor(props) {
@@ -63,7 +64,7 @@ export default class Spacecraft extends React.Component {
                     } secondary = {
                         <>
                         {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                            <Button color="primary" variant="contained" href={`?identifier=${mission.identifier}`} style={{width: "100%"}}>Visit Mission Page</Button>
+                            <Button color="primary" variant="contained" href={buildUrl(mission.identifier)} style={{width: "100%"}}>Visit Mission Page</Button>
                         }
                         <TargetListBox items={this.state.targets} groupInfo={targetSpacecraftRelationshipTypes}/>
                         </>

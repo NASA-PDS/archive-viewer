@@ -1,7 +1,7 @@
 import { Button, Grid, List, ListItem, Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { getBundlesForCollection } from 'api/dataset.js';
-import { isMockupMode, isPdsOnlyMode } from 'api/mock';
+import { buildUrl } from 'api/router';
 import ErrorMessage from 'components/Error.js';
 import Loading from 'components/Loading.js';
 import React from 'react';
@@ -71,11 +71,4 @@ function BrowseItem({ label, identifier, url, buttonTitle, isPrimary }) {
 function BrowseButton({url, title, isPrimary}) {
     if(!url) return null
     return <Button color="primary" variant={isPrimary ? "contained" : "text"} size={isPrimary ? "large" : "medium"} href={url} endIcon={isPrimary ? <OpenInNewIcon/> : null}>{title}</Button>
-}
-
-function buildUrl(identifier) {
-    let url = `?identifier=${identifier}`
-    if(isPdsOnlyMode()) { url += "&pdsOnly=true"}
-    if(isMockupMode()) { url += "&mockup=true"}
-    return url
 }
