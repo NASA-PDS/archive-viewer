@@ -2,6 +2,7 @@ import web from 'axios';
 import desolrize from 'desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
+import { isPdsOnlyMode } from 'api/mock.js'
 import { types, resolveType } from 'services/pages.js'
 
 const defaultFetchSize = 50
@@ -86,6 +87,10 @@ export function initialLookup(identifier) {
                 reject(new Error(`None found`))
             }
             let doc = Object.assign({}, result[0]);
+
+            // skip supplemental metadata if pdsOnly flag set
+            if(isPdsOnlyMode()) { resolve(doc); return}
+
             let supplementalRoute, attrname;
             switch (resolveType(doc)) {
                 case types.INSTRUMENT: supplementalRoute = router.instrumentsWeb; attrname='instrument'; break;
@@ -191,7 +196,7 @@ export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
     return (previousResult) => {
         if(!previousResult || previousResult.length === 0) return Promise.resolve([])
-        
+        if(isPdsOnlyMode()) { return Promise.resolve(previousResult)}
             
         // if we have lots of identifiers, break it into multiple requests (recusrively!!)
         let requests = []

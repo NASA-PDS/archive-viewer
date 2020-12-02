@@ -3,7 +3,12 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    color: $fontColor;
+}
+html, body, main {
+    min-height: 100%;
+    background-color: #12181D;
 }
 .menu-link {
     position: absolute;
@@ -12,7 +17,7 @@ body {
     height: 30px;
     z-index: 99;
 }
-a, .link {
+a:not(.MuiButtonBase-root), .link {
     cursor: pointer;
     color: $link;
     text-decoration: none;
@@ -91,14 +96,6 @@ main aside.main-aside {
     }
 }
 
-
-.collection-container {
-    margin-left: 5px;
-    border-left: 8px solid $blue;
-    box-sizing: border-box;
-    padding: 20px 0 0 20px;
-}
-
 .clearfix:after {
     content: " "; 
     visibility: hidden;
@@ -126,5 +123,13 @@ main aside.main-aside {
             height: 1.5em;
             margin-right: 0.8em;
         }
+    }
+}
+
+.mission-phase-table {
+    border-collapse: collapse;
+    td, th {
+        padding: 5px;
+        border: 1px solid #444
     }
 }

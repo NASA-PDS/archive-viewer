@@ -82,8 +82,22 @@ const groupByFirstTag = (items) => {
     return groups
 }
 
+const groupByLabelArray = (items, labels) => {
+    let insert = (item, groupName) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], groupName))
+    }
+    let groups = []
+    items.forEach((item, index) => {
+        insert(item, labels[index] ? labels[index] : miscGroupName)
+    })
+    return groups
+
+}
+
 const downplayGroupsThreshold = 100
 const hiddenGroupsThreshold = 1000
 const miscGroupName = 'Other'
 
-export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
+export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}

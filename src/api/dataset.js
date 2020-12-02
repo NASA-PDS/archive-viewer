@@ -48,6 +48,9 @@ export function getTargetsForDataset(dataset) {
 export function getSpacecraftForDataset(dataset) {
     return httpGetIdentifiers(router.spacecraftCore, dataset.instrument_host_ref).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
 }
+export function getMissionsForDataset(dataset) {
+    return httpGetIdentifiers(router.missionsCore, dataset.investigation_ref).then(stitchWithWebFields(['display_name', 'image_url'], router.missionsWeb))
+}
 export function getInstrumentsForDataset(dataset) {
     return httpGetIdentifiers(router.instrumentsCore, dataset.instrument_ref).then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
 }

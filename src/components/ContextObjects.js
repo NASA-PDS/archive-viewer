@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     title: {
-      fontWeight: 'bold'
     }, 
     description: {
         whiteSpace: 'pre-line',
@@ -61,7 +60,7 @@ function Description(props) {
     const classes = useStyles();
 
     return (
-        <Typography variant="body1" itemProp="description" className={classes.description}>
+        <Typography variant="body1" className={classes.description}>
             { !description ? 'No description is available.' : expanded ? <>
                 {description}{alwaysShow ? null : <Link onClick={ () => setExpanded(false) }>Hide Description</Link>}
             </> : <>
