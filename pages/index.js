@@ -1,3 +1,4 @@
+import { LensTwoTone } from '@material-ui/icons'
 import InternalLink from 'components/InternalLink'
 import Link from 'next/link'
 
@@ -141,4 +142,20 @@ export default function Index() {
           </div>
       </div>
   )
+}
+
+// redirect previous URL formats (lid as query string parameter) to new address
+export async function getServerSideProps({query,res}) {
+    let {identifier, dataset, target, instrument, mission, spacecraft, ...otherQueries} = query
+    
+    identifier = identifier || dataset || target || instrument || mission || spacecraft
+
+    if(!!identifier) {
+        const combined = Object.keys(otherQueries).map(q => `${q}=${otherQueries[q]}`).join('&')
+        res.setHeader('Location', `/${identifier}${combined ? '?' + combined : combined}`);
+        res.statusCode = 301;
+    }
+
+    return { props: {} }
+
 }

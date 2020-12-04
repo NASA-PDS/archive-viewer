@@ -10,8 +10,6 @@ import FrontPage from 'pages/index'
 import { initialLookup } from 'api/common'
 import { resolveType, types } from 'services/pages.js'
 
-const oldParameters = ['dataset', 'target', 'instrument', 'mission', 'spacecraft']
-
 function ProductPage({error, loaded, model, type, lidvid, pdsOnly, mockup}) {
 
     if(error) {
@@ -40,13 +38,7 @@ function ProductPage({error, loaded, model, type, lidvid, pdsOnly, mockup}) {
 export default ProductPage
 
 export async function getServerSideProps({params, query}) {
-        
-    let lidvid
-    // get lid from url
-    // backwards compatibility: also look at old accepted parameters
-    [...oldParameters, 'identifier'].forEach(type => {
-        if(!!params[type]) lidvid = params[type]
-    })
+    let lidvid = params.identifier
     let props = { lidvid };
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
@@ -65,8 +57,7 @@ export async function getServerSideProps({params, query}) {
             props.model = result
         }
     } catch(err) {
-        console.log(err)
-        props.error = 'idk'
+        props.error = err.message
     }
 
     return { props }
