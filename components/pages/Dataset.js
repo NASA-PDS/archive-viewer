@@ -355,8 +355,8 @@ function RelatedData(props) {
             <TangentAccordion title="Related data">
                 <List>
                     {data.map(ref => 
-                        <InternalLink identifier={ref.lid} passHref>
-                            <ListItem button component="a" key={ref.lid} href={'?identifier=' + ref.lid}>
+                        <InternalLink identifier={ref.lid} key={ref.lid} passHref>
+                            <ListItem button component="a" href={'?identifier=' + ref.lid}>
                                 <ListItemText primary={ref.name} primaryTypographyProps={{color: "primary"}}/>
                             </ListItem>
                         </InternalLink>
