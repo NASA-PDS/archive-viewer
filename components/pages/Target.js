@@ -15,9 +15,9 @@ export default function Target({target, lidvid}) {
     const [relatedTargets, setRelatedTargets] = useState(null)
 
     useEffect(() => {
-        getDatasetsForTarget(target).then(setDatasets, er => console.log(er))
-        getSpacecraftForTarget(target).then(setSpacecraft, er => console.log(er))
-        getRelatedTargetsForTarget(target).then(setRelatedTargets, er => console.log(er))
+        getDatasetsForTarget(target).then(setDatasets, er => console.error(er))
+        getSpacecraftForTarget(target).then(setSpacecraft, er => console.error(er))
+        getRelatedTargetsForTarget(target).then(setRelatedTargets, er => console.error(er))
 
         return function cleanup() {
             setDatasets(null)

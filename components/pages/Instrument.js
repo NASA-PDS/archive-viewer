@@ -18,9 +18,9 @@ export default function Instrument({instrument, lidvid}) {
     useEffect(() => {
         getSpacecraftForInstrument(instrument).then(spacecraft => {
             setSpacecraft(spacecraft)
-            getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.log(er))
-        }, er => console.log(er))
-        getDatasetsForInstrument(instrument).then(setDatasets, er => console.log(er))
+            getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.error(er))
+        }, er => console.error(er))
+        getDatasetsForInstrument(instrument).then(setDatasets, er => console.error(er))
 
         return function cleanup() {
             setInstruments(null)

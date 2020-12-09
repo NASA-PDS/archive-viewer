@@ -10,7 +10,7 @@ export default function Mission({mission, lidvid}) {
     const [spacecraft, setSpacecraft] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForMission(mission).then(setSpacecraft, er => console.log(er))
+        getSpacecraftForMission(mission).then(setSpacecraft, er => console.error(er))
 
         return function cleanup() { setSpacecraft(null) }
     }, [lidvid])

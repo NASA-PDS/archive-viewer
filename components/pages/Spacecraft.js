@@ -20,10 +20,10 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
 
     useEffect(() => {
-        getMissionsForSpacecraft(spacecraft).then(missions => setMission((missions && missions.length > 0) ? missions[0] : null), er => console.log(er))
-        getTargetsForSpacecraft(spacecraft).then(setTargets, er => console.log(er))
-        getInstrumentsForSpacecraft(spacecraft).then(setInstruments, er => console.log(er))
-        getDatasetsForSpacecraft(spacecraft).then(setDatasets, er => console.log(er))
+        getMissionsForSpacecraft(spacecraft).then(missions => setMission((missions && missions.length > 0) ? missions[0] : null), er => console.error(er))
+        getTargetsForSpacecraft(spacecraft).then(setTargets, er => console.error(er))
+        getInstrumentsForSpacecraft(spacecraft).then(setInstruments, er => console.error(er))
+        getDatasetsForSpacecraft(spacecraft).then(setDatasets, er => console.error(er))
 
         return function cleanup() {
             setMission(null)
