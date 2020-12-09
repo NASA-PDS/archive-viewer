@@ -14,7 +14,7 @@ export function getCollectionsForDataset(dataset) {
     return new Promise((resolve, reject) => {
         Promise.all([httpGetIdentifiers(router.datasetCore, lids), httpGet(router.datasetWeb, params)]).then(results => {
             let [coreDocs, webDocs] = results 
-            if(coreDocs.length ===  webDocs.length) {
+            if(coreDocs.length <=  webDocs.length) {
                 let toReturn = []
                 // combine documents by lid
                 for (let coreDoc of coreDocs ) {
