@@ -1,0 +1,13 @@
+@import 'variables';
+
+$border: 1px solid $grey;
+
+
+.browse-tables {
+    border-left: 2px solid $blue;
+    padding-left: 10px;
+
+    ul, ol {
+        @include list;
+    }
+}
