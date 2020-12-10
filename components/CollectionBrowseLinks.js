@@ -3,49 +3,40 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { getBundlesForCollection } from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js';
 import Loading from 'components/Loading.js';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InternalLink from './InternalLink';
 
-export default class Main extends React.Component {
+export default function CollectionBrowseLinks({dataset}) {
+    const [bundles, setBundles] = useState([])
+    const [loaded, setLoaded] = useState(false) 
+    const [error, setError] = useState(null)
 
-    constructor(props) {
-        super(props)
-        this.state = { bundles: [], loaded: false }
-    }
+    useEffect(() => {
+        getBundlesForCollection(dataset).then(result => {
+            setBundles(result)
+            setLoaded(true)
+        }, setError)
+    }, [dataset.identifier])
 
-    componentDidMount() {
-        getBundlesForCollection(this.props.dataset).then(result => {
-                this.setState({
-                    bundles: result,
-                    loaded: true
-                })
-            }, error => 
-            this.setState({ error }))
-    }
+    if(!loaded) { return <Loading />}
+    if(error) {
+        return <ErrorMessage error={error}></ErrorMessage>
+    } else if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
+    return (
+        <List>
+            { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
+                <>{bundles.map(bundle => {
+                    return <BrowseButton key={bundle.identifier} identifier={bundle.identifier} title={bundle.display_name ? bundle.display_name : bundle.title} />
+                })}</>
+            } />}
+            <BrowseItem url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} label="Browse" buttonTitle="Browse this Collection" isPrimary={true} />
+            <BrowseItem identifier={dataset.mission_bundle} label="Mission Bundle"/>
+            <BrowseItem identifier={dataset.mission_bundle} label="Other Instruments"/>
+            <BrowseItem identifier={dataset.checksums_url} label="Checksums"/>
+            <BrowseItem identifier={dataset.mission_bundle} label="Download" buttonTitle={`Download Collection${dataset.download_size ? ' (' + dataset.download_size + ')' : ''}`}/>
+        </List>
 
-    render() {
-        const {bundles, error, loaded} = this.state
-        const { dataset } = this.props
-        if(!loaded) { return <Loading />}
-        if(error) {
-            return <ErrorMessage error={error}></ErrorMessage>
-        } else if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
-        return (
-            <List>
-                { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
-                    <>{bundles.map(bundle => {
-                        return <BrowseButton key={bundle.identifier} identifier={bundle.identifier} title={bundle.display_name ? bundle.display_name : bundle.title} />
-                    })}</>
-                } />}
-                <BrowseItem url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} label="Browse" buttonTitle="Browse this Collection" isPrimary={true} />
-                <BrowseItem identifier={dataset.mission_bundle} label="Mission Bundle"/>
-                <BrowseItem identifier={dataset.mission_bundle} label="Other Instruments"/>
-                <BrowseItem identifier={dataset.checksums_url} label="Checksums"/>
-                <BrowseItem identifier={dataset.mission_bundle} label="Download" buttonTitle={`Download Collection${dataset.download_size ? ' (' + dataset.download_size + ')' : ''}`}/>
-            </List>
-
-        )
-    }
+    )
 }
 
 function SplitListItem({left, right}) {
@@ -69,7 +60,7 @@ function BrowseItem({ label, identifier, url, buttonTitle, isPrimary }) {
 }
 
 function BrowseButton({url, identifier, title, isPrimary}) {
-    if(!url) return null
+    if(!url && !identifier) return null
     const button = <Button color="primary" variant={isPrimary ? "contained" : "text"} href={url} size={isPrimary ? "large" : "medium"} endIcon={isPrimary ? <OpenInNewIcon/> : null}>{title}</Button>
     return (
         identifier ? <InternalLink identifier={identifier} passHref>{button}</InternalLink> : button

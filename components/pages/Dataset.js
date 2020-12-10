@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
 import {stitchDatasetWithMockData} from 'api/mock'
 import CollectionList from 'components/CollectionList.js'
@@ -80,74 +80,69 @@ const titles = {
     [types.PDS3]: "PDS3 Dataset"
 }
 
-class Dataset extends React.Component {
+function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
+    const [instruments, setInstruments] = useState(null)
+    const [spacecraft, setSpacecraft] = useState(null)
+    const [missions, setMissions] = useState(null)
+    const [targets, setTargets] = useState(null)
 
-    constructor(props) {
-        super(props)
-        let {dataset} = props
-        if(props.mockup) {stitchDatasetWithMockData(dataset)}
-        this.state = { dataset }
-    }
+    useEffect(() => {
+        if(mockup) { stitchDatasetWithMockData(dataset) }
+        getInstrumentsForDataset(dataset).then(setInstruments, console.error)
+        getSpacecraftForDataset(dataset).then(setSpacecraft, console.error)
+        getMissionsForDataset(dataset).then(setMissions, console.error)
+        getTargetsForDataset(dataset).then(setTargets, console.error)
+    }, [lidvid])
 
-    componentDidMount() {
-        getInstrumentsForDataset(this.state.dataset).then(instruments => instruments && this.setState({instruments}))
-        getSpacecraftForDataset(this.state.dataset).then(spacecraft => spacecraft && this.setState({spacecraft}))
-        getMissionsForDataset(this.state.dataset).then(missions => missions && this.setState({missions}))
-        getTargetsForDataset(this.state.dataset).then(targets => targets && this.setState({targets}))
-    }   
+    return (
+        <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
+            <>
+            <DatasetTagList tags={dataset.tags}/>
+            <Title dataset={dataset} type={type} />
+            <DeliveryInfo dataset={dataset} />
+            <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
-    render() {    
-        const {dataset, targets, spacecraft, instruments, missions} = this.state
-        return (
-            <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
-                <>
-                <DatasetTagList tags={dataset.tags}/>
-                <Title dataset={dataset} type={this.type} />
-                <DeliveryInfo dataset={dataset} />
-                <RelatedTools tools={dataset.tools} noImages={this.props.mockup}/>
+            <Metadata dataset={dataset}/>
+            { type === types.COLLECTION && 
+                <CollectionBrowseLinks dataset={dataset}/>
+            }
 
-                <Metadata dataset={dataset}/>
-                { this.type === types.COLLECTION && 
-                    <CollectionBrowseLinks dataset={dataset}/>
-                }
+            { type === types.BUNDLE && 
+                <CollectionList dataset={dataset} />
+            }
+            <CollectionQuickLinks dataset={dataset} />
+            <CollectionDownloads dataset={dataset} />
 
-                { this.type === types.BUNDLE && 
-                    <CollectionList dataset={dataset} />
-                }
-                <CollectionQuickLinks dataset={dataset} />
-                <CollectionDownloads dataset={dataset} />
-
-                <MoreInformation dataset={dataset} />
+            <MoreInformation dataset={dataset} />
+            
+            <TangentAccordion title="Citation">
+                <CitationBuilder dataset={dataset} />
+            </TangentAccordion>
+            </>
+        } secondary={
+            <Box p={1}>
+                { targets && targets.length > 0 && <TargetListBox items={targets} compact={true}/> }
+                { missions && missions.length > 0 && <MissionListBox items={missions} compact={true}/> }
+                { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft} compact={true}/> }
+                { instruments && instruments.length > 0 && <InstrumentListBox items={instruments} compact={true}/> }
                 
-                <TangentAccordion title="Citation">
-                    <CitationBuilder dataset={dataset} />
-                </TangentAccordion>
-                </>
-            } secondary={
-                <Box p={1}>
-                    { targets && targets.length > 0 && <TargetListBox items={targets} compact={true}/> }
-                    { missions && missions.length > 0 && <MissionListBox items={missions} compact={true}/> }
-                    { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft} compact={true}/> }
-                    { instruments && instruments.length > 0 && <InstrumentListBox items={instruments} compact={true}/> }
-                    
-                    <RelatedData dataset={dataset}/>
-                    <Superseded dataset={dataset}/>
-                    <RelatedPDS3 dataset={dataset}/>
-                    <LegacyDOIs dataset={dataset}/>                        
-                </Box>
-            }/>
-        )
-    }
+                <RelatedData dataset={dataset}/>
+                <Superseded dataset={dataset}/>
+                <RelatedPDS3 dataset={dataset}/>
+                <LegacyDOIs dataset={dataset}/>                        
+            </Box>
+        }/>
+    )
 }
 
-export class Bundle extends Dataset {
-    type = types.BUNDLE
+export function Bundle({...props}) {
+    return <Dataset type={types.BUNDLE} {...props} />
 }
-export class Collection extends Dataset {
-    type = types.COLLECTION
+export function Collection({...props}) {
+    return <Dataset type={types.COLLECTION} {...props} />
 }
-export class PDS3Dataset extends Dataset {
-    type = types.PDS3
+export function PDS3Dataset({...props}) {
+    return <Dataset type={types.PDS3} {...props} />
 }
 
 function Title({dataset, type}) {

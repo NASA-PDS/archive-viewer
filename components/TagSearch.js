@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
@@ -13,51 +13,32 @@ export const TagTypes = {
     dataset: 'Dataset',
 }
 
-export default class TagSearch extends React.Component {
-    constructor(props) {
-        super(props)
+export default function TagSearch({tags, type, embedded}) {
+    const [results, setResults] = useState([])
+    const [loaded, setLoaded] = useState(false) 
+    const [error, setError] = useState(null)
 
-        this.state = { 
-            loaded: false
-        }
-
+    if(!Object.values(TagTypes).includes(type)) {
+        return <ErrorMessage error={error}></ErrorMessage>
     }
-    
-    componentDidMount() {
-        const {tags, type} = this.props
 
-        // validate input
-        if(!Object.values(TagTypes).includes(type)) {
-            this.setState({
-                error: new Error('Invalid tag type ' + type)
-            })
-        } else {
-            lookupTags(tags, type).then(result => {
-                this.setState({
-                    results: result,
-                    loaded: true
-                })
-            }, error => 
-            this.setState({ error }))
-        }
-    }
-    
-    render() {
-        const {loaded, results, error} = this.state
-        const {tags, type, embedded} = this.props
+    useEffect(() => {
+        lookupTags(tags, type).then(result => {
+            setResults(result)
+            setLoaded(true)
+        }, setError)
+    }, [tags, type])
 
-        if(error) {
-            return <ErrorMessage error={error}></ErrorMessage>
-        } else if(!loaded) {
-            return <Loading fullscreen={true}/>
-        }
-        results.sort((a, b) => a.display_name.localeCompare(b.display_name))
-        return (
-            <Container>
-                {!embedded && <Typography variant="h1">{type} tagged with {tags.join(' or ')}</Typography>}
-                <ContextList items={results}/>
-            </Container>
-        )
-        
+    if(error) {
+        return <ErrorMessage error={error}></ErrorMessage>
+    } else if(!loaded) {
+        return <Loading fullscreen={true}/>
     }
+    results.sort((a, b) => a.display_name.localeCompare(b.display_name))
+    return (
+        <Container>
+            {!embedded && <Typography variant="h1">{type} tagged with {tags.join(' or ')}</Typography>}
+            <ContextList items={results}/>
+        </Container>
+    )
 }

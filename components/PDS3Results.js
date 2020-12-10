@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import {pds3Get} from 'api/common.js';
 import Loading from 'components/Loading'
 import { Link, Button, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
@@ -6,35 +6,26 @@ import TangentCard from 'components/TangentCard'
 
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'
 
-export default class PDS3Results extends React.Component {
+export default function PDS3Results(props) {
+    const [docs, setDocs] = useState([])
+    const [count, setCount] = useState(null) 
+    const [loaded, setLoaded] = useState(false)
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            loading: true
-        }
-    }
-
-    componentDidMount() {
-        pds3Get({q: buildQuery(this.props)}).then(response => {
-            this.setState({
-                docs: response.docs,
-                count: response.count,
-                loading: false
-            })
+    useEffect(() => {
+        pds3Get({q: buildQuery(props)}).then(response => {
+            setDocs(response.docs)
+            setCount(response.count)
+            setLoaded(true)
         })
-    }
+    }, [props.name])
 
-    render() {
-        const {docs, count, loading} = this.state
-        if(!!loading) { return <Loading/> }
-        if(!docs || count === 0) { return null }
+    if(!loaded) { return <Loading/> }
+    if(!docs || count === 0) { return null }
 
-        let params = buildParams()
-        params.q = buildQuery(this.props)
-        let url = `${searchPage}?${new URLSearchParams(params).toString()}`
-        return <ResultsList datasets={docs} count={count} resultsUrl={url}/>
-    }
+    let params = buildParams()
+    params.q = buildQuery(props)
+    let url = `${searchPage}?${new URLSearchParams(params).toString()}`
+    return <ResultsList datasets={docs} count={count} resultsUrl={url}/>
 }
 
 function ResultsList({datasets, count, resultsUrl}) {
