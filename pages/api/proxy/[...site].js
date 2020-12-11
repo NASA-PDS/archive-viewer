@@ -1,7 +1,7 @@
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 const localSolr = process.env.NEXT_PUBLIC_SUPPLEMENTAL_SOLR || 'https://sbnpds4.psi.edu/solr'
-const remoteSolr = process.env.NEXT_PUBLIC_CORE_SOLR || 'https://pds-gamma.jpl.nasa.gov/services/search'
+const remoteSolr = process.env.NEXT_PUBLIC_CORE_SOLR || 'https://pds.nasa.gov/services/search'
 
 // Helper method to wait for a middleware to execute before continuing
 // And to throw an error when an error happens in a middleware
