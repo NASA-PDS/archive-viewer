@@ -20,7 +20,7 @@ export function getDatasetsForInstrument(instrument) {
 
     let params = {
         q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
-        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, collection_ref', 
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
@@ -52,4 +52,9 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
             reject)
         })
     }
+}
+
+export function getPrimaryBundleForInstrument(instrument) {
+    if(!instrument || !instrument.mission_bundle) { return Promise.resolve(null) }
+    return initialLookup(instrument.mission_bundle)
 }

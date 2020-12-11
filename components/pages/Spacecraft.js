@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
+import {getPrimaryBundleForMission} from 'api/mission.js'
 import {TargetListBox, DatasetListBox, groupType} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
 import {MissionHeader, SpacecraftHeader, MissionDescription, Menu, SpacecraftDescription} from 'components/ContextObjects'
@@ -7,9 +8,11 @@ import {SpacecraftTagList} from 'components/TagList'
 import HTMLBox from 'components/HTMLBox'
 import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
+import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Dataset.js'
+import CollectionList from 'components/CollectionList.js'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import InternalLink from 'components/InternalLink'
 import Loading from 'components/Loading';
 
@@ -18,9 +21,20 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
     const [targets, setTargets] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [datasets, setDatasets] = useState(null)
-
+    const [primaryBundle, setPrimaryBundle] = useState(null)
+    
+    
     useEffect(() => {
-        getMissionsForSpacecraft(spacecraft).then(missions => setMission((missions && missions.length > 0) ? missions[0] : null), er => console.error(er))
+        const handleMissions = (missions) => {
+            if(missions && missions.length > 0) {
+                const primaryMission = missions[0]
+                setMission(primaryMission)
+                getPrimaryBundleForMission(primaryMission).then((bundle) => {
+                    setPrimaryBundle(bundle)
+                }, er => console.error(er))
+            }
+        }
+        getMissionsForSpacecraft(spacecraft).then(handleMissions, er => console.error(er))
         getTargetsForSpacecraft(spacecraft).then(setTargets, er => console.error(er))
         getInstrumentsForSpacecraft(spacecraft).then(setInstruments, er => console.error(er))
         getDatasetsForSpacecraft(spacecraft).then(setDatasets, er => console.error(er))
@@ -30,6 +44,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             setTargets(null)
             setInstruments(null)
             setDatasets(null)
+            setPrimaryBundle(null)
         }
     }, [lidvid])
 
@@ -52,7 +67,9 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>
                 <InstrumentBrowseTable items={instruments} />
-                <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} />
+                { primaryBundle ? 
+                    <DatasetSynopsis dataset={primaryBundle} />
+                    : <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} /> }
                 <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
                 <HTMLBox markup={spacecraft.html2} />
                 </>
@@ -66,4 +83,14 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             }/>
         </div>
     )
+}
+
+function DatasetSynopsis({dataset}) {
+    return <>
+        <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
+        <DeliveryInfo dataset={dataset} />
+        <Metadata dataset={dataset} />
+        <MoreInformation dataset={dataset} />
+        <CollectionList dataset={dataset} />
+    </>
 }

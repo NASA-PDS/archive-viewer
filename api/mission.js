@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetRelated, stitchWithWebFields} from 'api/common.js'
+import {httpGetRelated, initialLookup, stitchWithWebFields} from 'api/common.js'
 
 export function getSpacecraftForMission(mission) {
     let missionLid = new LID(mission.identifier)
@@ -10,6 +10,11 @@ export function getSpacecraftForMission(mission) {
         fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
     }
     return httpGetRelated(params, router.spacecraftCore, knownSpacecraft).then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
+}
+
+export function getPrimaryBundleForMission(mission) {
+    if(!mission || !mission.mission_bundle) { return Promise.resolve(null) }
+    return initialLookup(mission.mission_bundle)
 }
 
 export function getTargetsForMission(mission) {

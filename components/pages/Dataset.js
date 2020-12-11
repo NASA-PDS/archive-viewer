@@ -169,7 +169,7 @@ function Title({dataset, type}) {
     </>
 }
 
-function Metadata({dataset}) {
+export function Metadata({dataset}) {
     return <List>
             <MetadataItem label="Description" itemComponent={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
             <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
@@ -181,7 +181,7 @@ function Metadata({dataset}) {
     </List>
 }
 
-function MoreInformation({dataset}) {
+export function MoreInformation({dataset}) {
     return <TangentAccordion title="More Information">
         <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
         <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
@@ -219,7 +219,7 @@ function MetadataItem({ item, itemComponent, label, ...otherProps }) {
 }
 
 
-function DeliveryInfo({dataset}) {
+export function DeliveryInfo({dataset}) {
     const classes = useStyles()
     const publication = dataset.publication
     if(publication && publication.delivery_info) {

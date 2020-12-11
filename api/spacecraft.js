@@ -9,7 +9,7 @@ export function getMissionsForSpacecraft(spacecraft) {
 
     if(!!spacecraft.mission_override) {
         return httpGetIdentifiers(router.missionsCore, [spacecraft.mission_override])
-            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description', 'mission_bundle'], router.missionsWeb))
     } else {
         let knownMissions = spacecraft.investigation_ref
         let params = {
@@ -17,7 +17,7 @@ export function getMissionsForSpacecraft(spacecraft) {
             fl: 'identifier, title, investigation_description, instrument_host_ref'
         }
         return httpGetRelated(params, router.missionsCore, knownMissions)
-            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description', 'mission_bundle'], router.missionsWeb))
     }
 }
 
