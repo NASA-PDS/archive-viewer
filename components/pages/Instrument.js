@@ -13,7 +13,7 @@ import PrimaryLayout from 'components/PrimaryLayout'
 import { Typography } from '@material-ui/core';
 
 
-export default function Instrument({instrument, lidvid}) {
+export default function Instrument({instrument, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
     const [spacecraft, setSpacecraft] = useState(null)
     const [instruments, setInstruments] = useState(null)
@@ -31,6 +31,7 @@ export default function Instrument({instrument, lidvid}) {
             setInstruments(null)
             setDatasets(null)
             setSpacecraft(null)
+            setPrimaryBundle(null)
         }
     }, [lidvid])
 
@@ -44,7 +45,7 @@ export default function Instrument({instrument, lidvid}) {
                 <InstrumentDescription model={instrument} />
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
-                { primaryBundle ? 
+                { primaryBundle && !pdsOnly ? 
                     <DatasetSynopsis dataset={primaryBundle}/>
                     : <DatasetListBox items={datasets} />
                 }

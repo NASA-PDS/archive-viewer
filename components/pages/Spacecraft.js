@@ -29,9 +29,11 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             if(missions && missions.length > 0) {
                 const primaryMission = missions[0]
                 setMission(primaryMission)
-                getPrimaryBundleForMission(primaryMission).then((bundle) => {
-                    setPrimaryBundle(bundle)
-                }, er => console.error(er))
+                if(!pdsOnly) { 
+                    getPrimaryBundleForMission(primaryMission).then((bundle) => {
+                        setPrimaryBundle(bundle)
+                    }, er => console.error(er))
+                }
             }
         }
         getMissionsForSpacecraft(spacecraft).then(handleMissions, er => console.error(er))
@@ -67,7 +69,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>
                 <InstrumentBrowseTable items={instruments} />
-                { primaryBundle ? 
+                { primaryBundle && !pdsOnly ? 
                     <DatasetSynopsis dataset={primaryBundle} />
                     : <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} /> }
                 <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>

@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
+import {httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields, initialLookup} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function getSpacecraftForInstrument(instrument) {
@@ -55,6 +55,6 @@ export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecr
 }
 
 export function getPrimaryBundleForInstrument(instrument) {
-    if(!instrument || !instrument.mission_bundle) { return Promise.resolve(null) }
-    return initialLookup(instrument.mission_bundle)
+    if(!instrument || !instrument.instrument_bundle) { return Promise.resolve(null) }
+    return initialLookup(instrument.instrument_bundle)
 }
