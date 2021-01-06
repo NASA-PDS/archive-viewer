@@ -57,7 +57,7 @@ export async function getServerSideProps({params, query}) {
             props.model = result
         }
     } catch(err) {
-        props.error = err.message
+        props.error = err instanceof Error ? err.message : err
     }
 
     return { props }

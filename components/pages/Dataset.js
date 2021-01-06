@@ -171,20 +171,20 @@ function Title({dataset, type}) {
 
 function Metadata({dataset}) {
     return <List>
-            <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
-            <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
-            <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
-            <MetadataItem label="Version" item={dataset.version_id} />   
-            <TemporalMedatata label="Time Range" dataset={dataset} />
-            <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
-            <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
             <MetadataItem label="Description" itemComponent={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
+            <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
+            <MetadataItem label="Version" item={dataset.version_id} />   
             <MetadataItem label="DOI" item={dataset.doi} />            
+            <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
+            <TemporalMedatata label="Time Range" dataset={dataset} />
+            <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
     </List>
 }
 
 function MoreInformation({dataset}) {
     return <TangentAccordion title="More Information">
+        <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+        <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
         <MetadataItem label="Type" item={"Data"} />
         <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
         <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
