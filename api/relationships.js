@@ -36,6 +36,7 @@ export const types = {
     fromTargetToSpacecraft: 'fromTargetToSpacecraft',
     fromInstrumentToSpacecraft: 'fromInstrumentToSpacecraft',
     fromSpacecraftToInstrument: 'fromSpacecraftToInstrument',
+    fromInstrumentToBundle: 'fromInstrumentToBundle'
 }
 
 const configureForType = (type) => {
@@ -60,6 +61,11 @@ const configureForType = (type) => {
             sourceType: 'instrument_host',
             relatedType: 'instrument'
         }
+        case types.fromInstrumentToBundle: return {
+            relationshipTypes: [],
+            sourceType: 'instrument',
+            relatedType: 'bundle'
+        }
         default: console.error("Invalid relationship type")
     }
 }
@@ -78,8 +84,8 @@ export function stitchWithRelationships(type, sourceLID) {
 
             let identifiers = results.map(doc => doc.identifier)
             let params = {
-                q: `${sourceType}:${sourceLID.escapedLid} AND (` + identifiers.reduce((query, lid) => `${query}${relatedType}:"${lid}" `, '') + ')',
-                fl: `relationshipId,${sourceType},${relatedType}`
+                q: `${sourceType}:${sourceLID.escapedLid} AND (` + identifiers.reduce((query, lid) => `${query.length > 0 ? query + " OR ": query}${relatedType}:"${lid}" `, '') + ')',
+                fl: `relationshipId,${sourceType},${relatedType},label`
             }
             // get attributed relationships
             httpGet(router.relationships, params).then(webDocs => {

@@ -10,8 +10,8 @@ import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
 import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
-import { Typography } from '@material-ui/core';
-
+import { Typography, Box } from '@material-ui/core';
+import TangentAccordion from 'components/TangentAccordion';
 
 export default function Instrument({instrument, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
@@ -35,6 +35,10 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
         }
     }, [lidvid])
 
+    const showPrimaryBundle = false//primaryBundle && !pdsOnly
+    const showLabeledDatasets = !showPrimaryBundle && datasets && datasets.some(dataset => !!dataset.relatedBy.label)
+    const showDatasetList = !showPrimaryBundle && !showLabeledDatasets
+
     return (
         <div className="co-main">
             <InstrumentHeader model={instrument} />
@@ -45,14 +49,16 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
                 <InstrumentDescription model={instrument} />
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
-                { primaryBundle && !pdsOnly ? 
-                    <DatasetSynopsis dataset={primaryBundle}/>
-                    : <DatasetListBox items={datasets} />
-                }
-                <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
+                {showPrimaryBundle && <DatasetSynopsis dataset={primaryBundle}/>}
+                {showDatasetList && <DatasetListBox items={datasets} />}
                 <HTMLBox markup={instrument.html2} />
                 </>
             } secondary = {
+                <>
+                    {showLabeledDatasets && <LabeledDatasetList datasets={datasets}/> }
+                    <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
+                </>
+            } navigational = {
                 <>
                 <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
                 <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
@@ -63,11 +69,20 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
 }
 
 function DatasetSynopsis({dataset}) {
-    return <>
+    return <Box p={2}>
         <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
         <DeliveryInfo dataset={dataset} />
         <Metadata dataset={dataset} />
-        <MoreInformation dataset={dataset} />
+        {/* <MoreInformation dataset={dataset} /> */}
         <CollectionList dataset={dataset} />
+    </Box>
+}
+
+function LabeledDatasetList({datasets}) {
+    if(!datasets) return null;
+    return <>
+        {datasets.map(dataset => {
+            return <TangentAccordion key={dataset.identifier}title={dataset.relatedBy.label}><DatasetSynopsis dataset={dataset}/></TangentAccordion>
+        })}
     </>
 }

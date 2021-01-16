@@ -20,10 +20,11 @@ export function getDatasetsForInstrument(instrument) {
 
     let params = {
         q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
-        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, collection_ref', 
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, collection_ref, collection_type', 
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToBundle, instrumentLid))
 }
 
 export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecraft) {
