@@ -17,17 +17,20 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function({primary, secondary}) {
+export default function({primary, secondary, navigational}) {
     const classes = useStyles()
     return (
         <div>
             <Grid container direction="row" className={classes.root}>
                 <Grid item xs={12} sm={5} md={3} className={classes.outerPrimary}>
-                    {secondary}
+                    {navigational}
                 </Grid>
                 <Grid item xs className={classes.outerPrimary}>
-                    <Container maxWidth="lg" component={Paper} square elevation={2} className={classes.innerPrimary} >
-                        {primary}
+                    <Container maxWidth="lg" >
+                        <Paper square elevation={2} className={classes.innerPrimary}  >
+                            {primary}
+                        </Paper>
+                        { secondary }
                     </Container>
                 </Grid>
             </Grid>

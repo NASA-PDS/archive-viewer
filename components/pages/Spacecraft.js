@@ -72,10 +72,11 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                 { primaryBundle && !pdsOnly ? 
                     <DatasetSynopsis dataset={primaryBundle} />
                     : <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} /> }
-                <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
                 <HTMLBox markup={spacecraft.html2} />
                 </>
             } secondary = {
+                <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
+            } navigational = {
                 <>
                 {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
                     <InternalLink identifier={mission.identifier}><Button color="primary" variant="contained" style={{width: "100%"}}>Visit Mission Page</Button></InternalLink>

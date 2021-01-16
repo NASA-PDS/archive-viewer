@@ -3,6 +3,7 @@ import {pds3Get} from 'api/common.js';
 import Loading from 'components/Loading'
 import { Link, Button, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
 import TangentCard from 'components/TangentCard'
+import TangentAccordion from './TangentAccordion';
 
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'
 
@@ -30,7 +31,7 @@ export default function PDS3Results(props) {
 
 function ResultsList({datasets, count, resultsUrl}) {
     return (
-        <TangentCard title={`There ${count === 1 ? `is one (legacy) PDS3 dataset` : `are ${count} (legacy) PDS3 datasets`} available:`}>
+        <TangentAccordion title={`${count} (legacy) PDS3 dataset${count > 1 ? 's' : ''}`}>
             <List>
                 {datasets.map(dataset => 
                     <ListItem button component={Link} key={dataset.identifier} href={dataset.resLocation.startsWith('/') ? 'https://pds.nasa.gov' + dataset.resLocation : dataset.resLocation}>
@@ -39,7 +40,7 @@ function ResultsList({datasets, count, resultsUrl}) {
                     )}
             </List>
             <CardActions><Button variant="contained" color="primary" href={resultsUrl}>View other results</Button></CardActions>
-        </TangentCard>
+        </TangentAccordion>
     )
 }
 

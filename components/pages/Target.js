@@ -38,10 +38,11 @@ export default function Target({target, lidvid}) {
                 <RelatedTools tools={target.tools}/>
                 <SpacecraftBrowseTable items={spacecraft} />
                 <DatasetListBox items={datasets} groupBy={groupType.spacecraft} groupInfo={spacecraft}/>
-                <PDS3Results name={target.display_name ? target.display_name : target.title}/>
                 <HTMLBox markup={target.html2} />
                 </>
             } secondary = {
+                <PDS3Results name={target.display_name ? target.display_name : target.title}/>
+            } navigational = {
                 <RelatedTargetListBox items={relatedTargets} />
             }/>
         </div>
