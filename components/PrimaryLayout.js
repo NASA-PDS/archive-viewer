@@ -14,7 +14,10 @@ const useStyles = makeStyles((theme) => ({
     innerPrimary: {
         backgroundColor: theme.palette.grey[800],
         padding: theme.spacing(2)
-    }
+    },
+    innerContainer: {
+        padding: 0
+    } 
 }));
 
 export default function({primary, secondary, navigational}) {
@@ -26,7 +29,7 @@ export default function({primary, secondary, navigational}) {
                     {navigational}
                 </Grid>
                 <Grid item xs className={classes.outerPrimary}>
-                    <Container maxWidth="lg" >
+                    <Container maxWidth="lg" className={classes.innerContainer}>
                         <Paper square elevation={2} className={classes.innerPrimary}  >
                             {primary}
                         </Paper>
