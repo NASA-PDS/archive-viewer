@@ -53,7 +53,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
     if(!mission) { return <Loading fullscreen={true}/> }
 
     return (
-        <div className="co-main">
+        <>
             { pdsOnly ? <SpacecraftHeader model={spacecraft}/> : <MissionHeader model={mission} />
             /* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
 
@@ -84,7 +84,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                 <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes}/>
                 </>
             }/>
-        </div>
+        </>
     )
 }
 

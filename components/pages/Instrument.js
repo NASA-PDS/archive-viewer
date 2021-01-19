@@ -40,7 +40,7 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
     const showDatasetList = !showPrimaryBundle && !showLabeledDatasets
 
     return (
-        <div className="co-main">
+        <>
             <InstrumentHeader model={instrument} />
             <Menu/>
             <PrimaryLayout primary={
@@ -64,7 +64,7 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
                 <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
                 </>
             }/>
-        </div>
+        </>
     )
 }
 

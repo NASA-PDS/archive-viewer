@@ -1,6 +1,5 @@
 import React from 'react';
 import 'css/FrontPage.scss'
-import 'css/ContextObjects.scss'
 import 'css/main.scss';
 import { ThemeProvider } from '@material-ui/core/styles';
 import Theme from 'Theme';

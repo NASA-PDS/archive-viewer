@@ -27,7 +27,7 @@ export default function Target({target, lidvid}) {
     }, [lidvid])
 
     return (
-        <div className="co-main">
+        <>
             <TargetHeader model={target} />
             <Menu/>
             <PrimaryLayout primary={
@@ -45,6 +45,6 @@ export default function Target({target, lidvid}) {
             } navigational = {
                 <RelatedTargetListBox items={relatedTargets} />
             }/>
-        </div>
+        </>
     )
 }

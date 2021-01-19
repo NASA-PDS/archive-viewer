@@ -1,13 +1,41 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet'
-import { Box, Typography, Link } from '@material-ui/core'
+import { Grid, Typography, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-    title: {
-    }, 
     description: {
         whiteSpace: 'pre-line',
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2)
+    },
+    header: {
+        boxSizing: 'content-box',
+        [theme.breakpoints.down('sm')]: {
+            height: '75px'
+        },
+        [theme.breakpoints.up('md')]: {
+            height: '160px'
+        },
+        padding: theme.spacing(2)
+    },
+    headerImage: {
+        height: "100%"
+    },
+    targetHeader: {
+        backgroundColor: theme.palette.common.black
+    },
+    spacecraftHeader: {
+        backgroundColor: theme.palette.common.black
+    },
+    missionHeader: {
+        backgroundColor: "#085898"
+    },
+    instrumentHeader: {
+        backgroundColor: theme.palette.grey[600]
+    },
+    subheader: {
+        height: 75,
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
     }
@@ -19,16 +47,16 @@ function Header(props) {
     const name = display_name ? display_name : title
     const pageTitle = name + ' - PDS Archive Viewer'
     const classes = useStyles();
-    return (
-        <Box component="header" className={`co-header ${type}-header ${type === "spacecraft" ? 'subheader' : ''}`}>
-            <Helmet>
-                <title>{ pageTitle }</title>
-                <meta charSet="utf-8" />
-            </Helmet>
-            { image_url && <img alt={"Image of " + name} src={image_url} /> }
-            <Typography variant="h1" className={classes.title}> { name } Data Archive </Typography>
-        </Box>
-    )
+    return <>
+        <Helmet>
+            <title>{ pageTitle }</title>
+            <meta charSet="utf-8" />
+        </Helmet>
+        <Grid container spacing={2} component="header" direction="row" alignItems="center" className={`${classes.header} ${classes[type + 'Header']} ${type === "spacecraft" ? classes.subheader : ''}`}>
+            { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
+            <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
+        </Grid>
+    </>
 }
 
 function TargetHeader(props) {
