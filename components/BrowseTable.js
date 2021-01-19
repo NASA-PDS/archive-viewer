@@ -5,10 +5,13 @@ import { Box, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import { groupByAttributedRelationship, groupByFirstTag, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 import SectionedTable from './SectionedTable';
+import TangentAccordion from './TangentAccordion';
 
 export const useStyles = makeStyles((theme) => ({
     sectionHeader: {
-      margin: theme.spacing(1)
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(2),
+      marginLeft: theme.spacing(1)
     },
     table: {
         border: 0
@@ -20,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 function BrowseTables(props) {
-    let [expanded, setExpanded] = useState(false)
+    let expanded = false
     const {items, sectioned, type} = props
     const classes = useStyles();
 
@@ -46,15 +49,15 @@ function BrowseTables(props) {
                     { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
                 </Box>
             )})}
-            {expanded === false && minorGroups.length > 0 && 
-                <Box className="browse-expand" onClick={() => setExpanded(true)}>See more</Box>
-            }
-            {expanded && minorGroups.map(group => { return (
-                <Box key={group.name}>
-                    <Typography variant="h3" component="h2">{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
-                    { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
-                </Box>
-            )})}
+
+            <TangentAccordion title={expanded ? null : 'See more'}>
+                {minorGroups.map(group => { return (
+                    <Box key={group.name}>
+                        <Typography variant="h3" component="h2" m={2} className={classes.sectionHeader} >{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
+                        { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
+                    </Box>
+                )})}
+            </TangentAccordion>
         </Box>
     )
 

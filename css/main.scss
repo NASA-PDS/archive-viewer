@@ -25,84 +25,10 @@ a:not(.MuiButtonBase-root), .link {
         text-decoration: underline;
     }
 }
-.inline-link {
-    margin: 0 0.3em;
-    text-decoration: underline;
-}
-.sidebox {
-    display: flex;
-    flex-flow: column;
-    position: relative;
-}
-.resource-description {
-    margin-bottom: 2em;
-    white-space: pre-line;
-    max-width: $readable-width;
-
-}
-
-.tiny-icon {
-    height: 1.5em;
-}
-
-main aside.main-aside {
-    box-sizing: border-box;
-    @include narrow-only {
-        width: 100%;
-        margin-bottom: 1em;
-    }
-    @include medium-up {
-        float: right;
-        margin-left: 10px;
-        section {
-            margin-right: 15px;
-            margin-bottom: 1em;
-        }
-    }
-    @include wide-up {
-        max-width: 35%;
-    }
-    display: flex;
-    flex-direction: column;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    
-}
 
 .download-size {
     font-size: 0.7em;
 }
-
-.related-context-objects {
-    @include sidebox;
-
-    ul, p {
-        font-weight: bold;
-        list-style: none;
-        padding-left: 0;
-        .datum {
-            margin-left: 1em;
-            font-weight: normal;
-        }        
-    }
-}
-
-.related-references {
-    display: flex;
-    flex-flow: row wrap;
-    section {
-        flex: 1;
-        min-width: 350px;
-    }
-}
-
-.clearfix:after {
-    content: " "; 
-    visibility: hidden;
-    display: block;
-    height: 0;
-    clear: both;
- }
 
 .dataset-downloads {
     ul {
@@ -132,14 +58,4 @@ main aside.main-aside {
         padding: 5px;
         border: 1px solid #444
     }
-}
-
-
-.browse-expand {
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $blue;
-    color: white;
-    cursor: pointer;
 }
