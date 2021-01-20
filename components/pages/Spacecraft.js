@@ -12,7 +12,7 @@ import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Datase
 import CollectionList from 'components/CollectionList.js'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, Box } from '@material-ui/core'
 import InternalLink from 'components/InternalLink'
 import Loading from 'components/Loading';
 
@@ -89,11 +89,11 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
 }
 
 function DatasetSynopsis({dataset}) {
-    return <>
+    return <Box my={2}>
         <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
         <DeliveryInfo dataset={dataset} />
         <Metadata dataset={dataset} />
         <MoreInformation dataset={dataset} />
         <CollectionList dataset={dataset} />
-    </>
+    </Box>
 }

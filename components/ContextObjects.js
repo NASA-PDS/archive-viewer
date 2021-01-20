@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('md')]: {
             height: '160px'
         },
-        padding: theme.spacing(2)
+        padding: theme.spacing(1)
     },
     headerImage: {
         height: "100%"
@@ -38,6 +38,13 @@ const useStyles = makeStyles((theme) => ({
         height: 75,
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
+    },
+    menu: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        height: 30,
+        zIndex: 99
     }
 }));
 
@@ -52,10 +59,12 @@ function Header(props) {
             <title>{ pageTitle }</title>
             <meta charSet="utf-8" />
         </Helmet>
-        <Grid container spacing={2} component="header" direction="row" alignItems="center" className={`${classes.header} ${classes[type + 'Header']} ${type === "spacecraft" ? classes.subheader : ''}`}>
-            { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-            <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
-        </Grid>
+        <header className={`${classes.header} ${classes[type + 'Header']} ${type === "spacecraft" ? classes.subheader : ''}`}>
+            <Grid container spacing={2} className={classes.header} direction="row" alignItems="center" style={{maxHeight: '100%'}}>
+                { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
+                <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
+            </Grid>
+        </header>
     </>
 }
 
@@ -119,7 +128,8 @@ function DatasetDescription(props) {
 }
 
 function Menu() {
-    return <Link href="/"><a className="menu-link"><img alt="Menu icon" src="/images/menu.svg"/></a></Link>
+    const classes = useStyles()
+    return <Link href="/" className={classes.menu}><img alt="Menu icon" src="/images/menu.svg"/></Link>
 }
 export {TargetHeader, SpacecraftHeader, InstrumentHeader, MissionHeader, DatasetHeader,
     TargetDescription, SpacecraftDescription, InstrumentDescription, MissionDescription, DatasetDescription, 
