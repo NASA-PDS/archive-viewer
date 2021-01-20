@@ -50,14 +50,16 @@ function BrowseTables(props) {
                 </Box>
             )})}
 
-            <TangentAccordion title={expanded ? null : 'See more'}>
-                {minorGroups.map(group => { return (
-                    <Box key={group.name}>
-                        <Typography variant="h3" component="h2" m={2} className={classes.sectionHeader} >{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
-                        { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
-                    </Box>
-                )})}
-            </TangentAccordion>
+            { minorGroups.length > 0 && 
+                <TangentAccordion title={expanded ? null : 'See more'}>
+                    {minorGroups.map(group => { return (
+                        <Box key={group.name}>
+                            <Typography variant="h3" component="h2" m={2} className={classes.sectionHeader} >{group.name} {group.order < downplayGroupsThreshold ? type : ''}</Typography>
+                            { sectioned ? <SectionedTable groups={groupByFirstTag(group.items)} /> : <ContextList items={group.items} /> }
+                        </Box>
+                    )})}
+                </TangentAccordion>
+            }
         </Box>
     )
 
