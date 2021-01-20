@@ -104,7 +104,10 @@ export function stitchWithRelationships(type, sourceLID) {
                 resolve(results)
             }, err => {
                 console.log(err)
-                //ignore error, just pass original
+                //ignore error, throw in unknown relationships and return
+                for (let doc of results ) {
+                    doc.relatedBy = unknownRelationship
+                }
                 resolve(results)
             })
         })
