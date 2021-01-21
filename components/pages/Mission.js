@@ -13,6 +13,9 @@ const useStyles = makeStyles({
         minWith: 160,
         height: '100%'
     },
+    spacecraftImage: {
+        maxWidth: 250
+    }
 });
 
 export default function Mission({mission, lidvid}) {
@@ -55,9 +58,9 @@ function ButtonForSpacecraft({spacecraft}) {
         <Card raised={true} className={classes.spacecraftButton} p={1}>
             <InternalLink identifier={spacecraft.identifier} passHref>
             <CardActionArea className={classes.spacecraftButton} underline="none">
-                {spacecraft.image_url && <CardMedia component="img" image={spacecraft.image_url} alt={'Image of ' + spacecraft.title} title={spacecraft.title}/>}
+                {spacecraft.image_url && <CardMedia component="img" className={classes.spacecraftImage} image={spacecraft.image_url} alt={'Image of ' + spacecraft.title} title={spacecraft.title}/>}
                 <CardContent p="1">
-                    <Typography p="3" variant="h5" component="h2" color="primary">{spacecraft.title}</Typography>
+                    <Typography p="3" variant="h5" component="h2" color="primary">{spacecraft.display_name ? spacecraft.display_name : spacecraft.title}</Typography>
                 </CardContent>
             </CardActionArea>
             </InternalLink>
