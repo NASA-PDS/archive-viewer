@@ -99,9 +99,9 @@ function Description(props) {
     return (
         <Typography variant="body1" className={classes.description}>
             { !description ? 'No description is available.' : expanded ? <>
-                {description}{alwaysShow ? null : <Link onClick={ () => setExpanded(false) }>Hide Description</Link>}
+                {description}{alwaysShow ? null : <Link onClick={ () => setExpanded(false) }>Hide</Link>}
             </> : <>
-                {description.length < previewLength ? description : (<>{shorten(description)}<Link onClick={ () => setExpanded(true) }>Show Description</Link></>)}
+                {description.length < previewLength ? description : (<>{shorten(description)}<Link onClick={ () => setExpanded(true) }>...Show More</Link></>)}
             </>}
         </Typography>
     )  
