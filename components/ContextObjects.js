@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet'
-import { Grid, Typography, Link } from '@material-ui/core'
+import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import InternalLink from './InternalLink';
+import { getInstrumentsForSpacecraft } from 'api/spacecraft';
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -10,34 +12,24 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(2)
     },
     header: {
-        boxSizing: 'content-box',
+        backgroundColor: "#085898",
+        zIndex: theme.zIndex.drawer + 1,
         [theme.breakpoints.down('sm')]: {
-            height: '75px'
+            height: theme.custom.header.height.sm
         },
         [theme.breakpoints.up('md')]: {
-            height: '160px'
+            height: theme.custom.header.height.md
         },
-        padding: theme.spacing(1)
+        display: 'flex',
+        flexFlow: 'column nowrap',
+    },
+    banner: {
+        minHeight: 0,
+        flexGrow: 1
     },
     headerImage: {
-        height: "100%"
-    },
-    targetHeader: {
-        backgroundColor: theme.palette.common.black
-    },
-    spacecraftHeader: {
-        backgroundColor: theme.palette.common.black
-    },
-    missionHeader: {
-        backgroundColor: "#085898"
-    },
-    instrumentHeader: {
-        backgroundColor: theme.palette.grey[600]
-    },
-    subheader: {
-        height: 75,
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2)
+        padding: '8px',
+        height: '100%'
     },
     menu: {
         position: 'absolute',
@@ -45,27 +37,66 @@ const useStyles = makeStyles((theme) => ({
         right: 5,
         height: 30,
         zIndex: 99
+    },
+    target: {
+        backgroundColor: theme.palette.common.black
     }
 }));
 
 function Header(props) {
-    const {model,type} = props
-    const {display_name, title, image_url} = model
-    const name = display_name ? display_name : title
-    const pageTitle = name + ' - PDS Archive Viewer'
+    const {model, type, mission} = props
     const classes = useStyles();
+    
+    let {display_name, title, image_url} = model
+    const pageTitle = (display_name ? display_name : title) + ' - NASA Planetary Data System'
+
+    if (!!mission) {
+        display_name = mission.display_name
+        title = mission.title
+        image_url = mission.image_url
+    }
+
+    const headerName = display_name ? display_name : title
+
     return <>
         <Helmet>
             <title>{ pageTitle }</title>
             <meta charSet="utf-8" />
         </Helmet>
-        <header className={`${classes.header} ${classes[type + 'Header']} ${type === "spacecraft" ? classes.subheader : ''}`}>
-            <Grid container spacing={2} className={classes.header} direction="row" alignItems="center" style={{maxHeight: '100%'}}>
-                { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-                <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
-            </Grid>
-        </header>
+        <AppBar className={`${classes.header} ${classes[type]}`} position="fixed" color="inherit">
+            <Banner name={headerName} image_url={image_url} />
+            {!!mission && <TabBar type={type} mission={mission} />}
+        </AppBar>
     </>
+}
+
+function TabBar({type, mission}) {
+    const [instruments, setInstruments] = useState(null)
+
+    if(!mission) { return <Tabs />}
+
+    let spacecraft = mission.instrument_host_ref && mission.instrument_host_ref.length > 0 ? mission.instrument_host_ref[0] : null
+    useEffect(() => {
+        getInstrumentsForSpacecraft(spacecraft).then(setInstruments, console.error)
+
+        return function cleanup() { 
+            setInstruments(null)
+        }
+    }, [spacecraft])
+
+    if(!spacecraft) {
+        console.log('wtf')
+    }
+    return <Tabs value={type}>
+                <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
+                <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft}/>
+                <LinkTab label="Instruments" value="instrument" identifier={instruments && instruments.length > 0 ? instruments[0].identifier : null}/>
+            </Tabs>
+}
+
+function LinkTab(props) {
+    const {label, value, ...otherProps} = props
+    return props.identifier ? <InternalLink passHref {...otherProps}><Tab label={label} value={value} /></InternalLink> : <Tab {...props} />
 }
 
 function TargetHeader(props) {
@@ -82,6 +113,14 @@ function MissionHeader(props) {
 }
 function DatasetHeader(props) {
     return <Header type="dataset" {...props}/>
+}
+
+function Banner({name, image_url}) {
+    const classes = useStyles();
+    return <Grid container direction="row" alignItems="center" className={classes.banner}>
+        { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
+        <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
+    </Grid>
 }
 
 const ridiculousLength = 100

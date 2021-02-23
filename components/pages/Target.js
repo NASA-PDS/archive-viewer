@@ -28,9 +28,10 @@ export default function Target({target, lidvid}) {
 
     return (
         <>
-            <TargetHeader model={target} />
             <Menu/>
-            <PrimaryLayout primary={
+            <PrimaryLayout header={
+                <TargetHeader model={target} />
+            } primary={
                 <>
                 <TargetTagList tags={target.tags} />
                 <TargetDescription model={target} />
@@ -43,7 +44,7 @@ export default function Target({target, lidvid}) {
             } secondary = {
                 <PDS3Results name={target.display_name ? target.display_name : target.title}/>
             } navigational = {
-                <RelatedTargetListBox items={relatedTargets} />
+                relatedTargets && relatedTargets.length > 0 && <RelatedTargetListBox items={relatedTargets} />
             }/>
         </>
     )

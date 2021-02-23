@@ -1,66 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import {getSpacecraftForMission} from 'api/mission.js'
+import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
+import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import {MissionHeader, MissionDescription, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
-import Spacecraft from 'components/pages/Spacecraft'
 import PrimaryLayout from 'components/PrimaryLayout';
 import InternalLink from 'components/InternalLink'
 import { Typography, Grid, Card, CardActionArea, CardContent, CardMedia } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { TargetListBox } from 'components/ListBox';
 
 const useStyles = makeStyles({
-    spacecraftButton: {
+    targetButton: {
         minWith: 160,
         height: '100%'
     },
-    spacecraftImage: {
+    targetImage: {
         maxWidth: 250
     }
 });
 
 export default function Mission({mission, lidvid}) {
-    const [spacecraft, setSpacecraft] = useState(null)
+    const [targets, setTargets] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForMission(mission).then(setSpacecraft, er => console.error(er))
+        getTargetsForMission(mission).then(setTargets, console.error)
 
-        return function cleanup() { setSpacecraft(null) }
+        return function cleanup() { 
+            setTargets(null)
+        }
     }, [lidvid])
-
-    // if this mission only has one spacecraft, we should just show that spacecraft's page
-    if(spacecraft && spacecraft.length === 1) return <Spacecraft spacecraft={spacecraft[0]}></Spacecraft>
 
     return (
         <>
-            <MissionHeader model={mission} />
             <Menu/>
-            <PrimaryLayout primary={
+            <PrimaryLayout header={
+                <MissionHeader model={mission} mission={mission}/>
+            } primary={
                 <>
                     <MissionDescription model={mission} />
-                    {!!spacecraft ? 
-                        <Grid container direction="column" alignItems="flex-start" spacing="2">
-                            <Grid item component={Typography} variant="h2">View the mission's data for:</Grid>
-                            { spacecraft.map(spacecraft => (
-                                <Grid item key={spacecraft.identifier} ><ButtonForSpacecraft spacecraft={spacecraft}/></Grid>
-                            ))}
-                        </Grid>
+                    {!!targets ? 
+                        <>
+                            <Typography variant="h2" gutterBottom>Targets of observation</Typography>
+                            { targets.length > 6 ? 
+                                <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
+                            : 
+                                <Grid container direction="row" alignItems="flex-start" justify="center" spacing="2" style={{width: '100%'}}>
+                                    { targets.map(target => (
+                                        <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
+                                    ))}
+                                </Grid>
+                            } 
+                        </>
                         : <Loading/>
                     }
                 </>
-            }/>
+            } />
         </>
     )
 }
 
-function ButtonForSpacecraft({spacecraft}) {
+function ButtonForTarget({target}) {
     const classes = useStyles()
     return (
-        <Card raised={true} className={classes.spacecraftButton} p={1}>
-            <InternalLink identifier={spacecraft.identifier} passHref>
-            <CardActionArea className={classes.spacecraftButton} underline="none">
-                {spacecraft.image_url && <CardMedia component="img" className={classes.spacecraftImage} image={spacecraft.image_url} alt={'Image of ' + spacecraft.title} title={spacecraft.title}/>}
+        <Card raised={true} className={classes.targetButton} p={1}>
+            <InternalLink identifier={target.identifier} passHref>
+            <CardActionArea className={classes.targetButton} underline="none">
+                {target.image_url && <CardMedia component="img" className={classes.targetImage} image={target.image_url} alt={'Image of ' + target.title} title={target.title}/>}
                 <CardContent p="1">
-                    <Typography p="3" variant="h5" component="h2" color="primary">{spacecraft.display_name ? spacecraft.display_name : spacecraft.title}</Typography>
+                    <Typography p="3" variant="h5" component="h2" color="primary">{target.display_name ? target.display_name : target.title}</Typography>
                 </CardContent>
             </CardActionArea>
             </InternalLink>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import {getPrimaryBundleForMission} from 'api/mission.js'
-import {TargetListBox, DatasetListBox, groupType} from 'components/ListBox'
+import {getPrimaryBundleForMission, getSpacecraftForMission} from 'api/mission.js'
+import {TargetListBox, DatasetListBox, groupType, SpacecraftListBox} from 'components/ListBox'
 import {InstrumentBrowseTable} from 'components/BrowseTable'
 import {MissionHeader, SpacecraftHeader, MissionDescription, Menu, SpacecraftDescription} from 'components/ContextObjects'
 import {SpacecraftTagList} from 'components/TagList'
@@ -10,7 +10,6 @@ import RelatedTools from 'components/RelatedTools'
 import PDS3Results from 'components/PDS3Results'
 import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Dataset.js'
 import CollectionList from 'components/CollectionList.js'
-import {targetSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
 import { Button, Typography, Box } from '@material-ui/core'
 import InternalLink from 'components/InternalLink'
@@ -18,6 +17,7 @@ import Loading from 'components/Loading';
 
 export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
     const [mission, setMission] = useState(null)
+    const [relatedSpacecraft, setRelatedSpacecraft] = useState(null)
     const [targets, setTargets] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [datasets, setDatasets] = useState(null)
@@ -33,6 +33,8 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                     getPrimaryBundleForMission(primaryMission).then((bundle) => {
                         setPrimaryBundle(bundle)
                     }, er => console.error(er))
+                    getSpacecraftForMission(primaryMission).then(setRelatedSpacecraft, console.error)
+
                 }
             }
         }
@@ -54,18 +56,15 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
 
     return (
         <>
-            { pdsOnly ? <SpacecraftHeader model={spacecraft}/> : <MissionHeader model={mission} />
-            /* this is intentionally a mission header on the spacecraft page, since that is likely more relevant */}
+            
 
             <Menu/>
-            <PrimaryLayout primary={   
+            <PrimaryLayout header={<SpacecraftHeader model={spacecraft} mission={mission}/>}
+                primary={   
                 <>
                 <SpacecraftTagList tags={spacecraft.tags} />
-                { pdsOnly ? <SpacecraftDescription model={spacecraft}/> : <MissionDescription model={mission} />
-                /* this is intentionally a mission description on the spacecraft page, since that is likely more relevant */}
-                {mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                    <SpacecraftHeader model={spacecraft} />
-                }
+                <SpacecraftDescription model={spacecraft}/>
+                
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>
                 <InstrumentBrowseTable items={instruments} />
@@ -77,12 +76,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             } secondary = {
                 <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
             } navigational = {
-                <>
-                {mission && mission.instrument_host_ref && mission.instrument_host_ref.length > 1 &&
-                    <InternalLink identifier={mission.identifier}><Button color="primary" variant="contained" style={{width: "100%"}}>Visit Mission Page</Button></InternalLink>
-                }
-                <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes}/>
-                </>
+                relatedSpacecraft && relatedSpacecraft.length > 1 && <SpacecraftListBox items={relatedSpacecraft} active={spacecraft.identifier} hideHeader/>
             }/>
         </>
     )

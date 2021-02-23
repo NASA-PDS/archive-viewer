@@ -1,6 +1,7 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGetRelated, initialLookup, stitchWithWebFields} from 'api/common.js'
+import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function getSpacecraftForMission(mission) {
     let missionLid = new LID(mission.identifier)
@@ -24,5 +25,7 @@ export function getTargetsForMission(mission) {
         q: `investigation_ref:${missionLid.escapedLid}\\:\\:* AND data_class:"Target"`,
         fl: 'identifier, title'
     }
-    return httpGetRelated(params, router.targetsCore, knownTargets).then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb))
+    return httpGetRelated(params, router.targetsCore, knownTargets)
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, new LID(mission.instrument_host_ref[0])))
 }

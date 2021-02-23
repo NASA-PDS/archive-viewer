@@ -22,8 +22,16 @@ export function getMissionsForSpacecraft(spacecraft) {
 }
 
 export function getInstrumentsForSpacecraft(spacecraft) {
-    let spacecraftLid = new LID(spacecraft.identifier)
-    let knownInstruments = spacecraft.instrument_ref
+    if(!spacecraft) { return Promise.resolve([])}
+    
+    let spacecraftLid, knownInstruments
+    if(typeof spacecraft === 'string') {
+        spacecraftLid = new LID(spacecraft)
+        knownInstruments = []
+    } else {
+        spacecraftLid = new LID(spacecraft.identifier)
+        knownInstruments = spacecraft.instrument_ref
+    }
     let params = {
         q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Instrument"`,
         fl: 'identifier, title, instrument_host_ref'

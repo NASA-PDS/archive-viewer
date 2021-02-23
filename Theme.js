@@ -78,6 +78,14 @@ const Theme = createMuiTheme({
         MuiLink: {
             underline: 'none'
         }
+    },
+    custom: {
+        header: {
+            height: {
+                sm: '115px',
+                md: '200px'
+            },
+        }
     }
 });
 

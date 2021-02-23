@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument, getPrimaryBundleForInstrument} from 'api/instrument.js'
+import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument, getPrimaryBundleForInstrument, getMissionsForInstrument} from 'api/instrument.js'
 import {InstrumentHeader, InstrumentDescription, Menu} from 'components/ContextObjects'
 import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
 import {InstrumentTagList} from 'components/TagList'
@@ -12,38 +12,45 @@ import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
 import PrimaryLayout from 'components/PrimaryLayout'
 import { Typography, Box } from '@material-ui/core';
 import TangentAccordion from 'components/TangentAccordion';
+import Loading from 'components/Loading';
+import { getMissionsForSpacecraft } from 'api/spacecraft';
 
 export default function Instrument({instrument, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
+    const [mission, setMission] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
         getSpacecraftForInstrument(instrument).then(spacecraft => {
-            setSpacecraft(spacecraft)
             getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.error(er))
+            if(!mission && !!spacecraft) {
+                getMissionsForSpacecraft(spacecraft[0]).then(missions => setMission(missions && missions.length > 0 ? missions[0] : null), console.error)
+            }
         }, er => console.error(er))
         getDatasetsForInstrument(instrument).then(setDatasets, er => console.error(er))
         getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, er => console.error(er))
-        
+        getMissionsForInstrument(instrument).then(missions => setMission(missions && missions.length > 0 ? missions[0] : null), console.error)
+
         return function cleanup() {
             setInstruments(null)
             setDatasets(null)
-            setSpacecraft(null)
             setPrimaryBundle(null)
+            setMission(null)
         }
     }, [lidvid])
 
-    const showPrimaryBundle = false//primaryBundle && !pdsOnly
+    const showPrimaryBundle = primaryBundle && !pdsOnly
     const showLabeledDatasets = !showPrimaryBundle && datasets && datasets.some(dataset => !!dataset.relatedBy.label)
     const showDatasetList = !showPrimaryBundle && !showLabeledDatasets
+    
 
     return (
         <>
-            <InstrumentHeader model={instrument} />
             <Menu/>
-            <PrimaryLayout primary={
+            <PrimaryLayout header={
+                <InstrumentHeader model={instrument} mission={mission}/>
+            } primary={
                 <>
                 <InstrumentTagList tags={instrument.tags} />
                 <InstrumentDescription model={instrument} />
@@ -59,10 +66,7 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
             } navigational = {
-                <>
-                <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
-                <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
-                </>
+                <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} active={instrument.identifier} hideHeader/>
             }/>
         </>
     )

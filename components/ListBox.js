@@ -53,7 +53,7 @@ const listTypeValues = {
 /* ------ Main Export Classes ------ */
 
 function AbstractListBox(props) {
-    const {groupBy, groupInfo, type, groupingFn, items} = props
+    const {groupBy, groupInfo, type, groupingFn, items, active, hideHeader} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
 
     
@@ -62,7 +62,7 @@ function AbstractListBox(props) {
     } else if(items.length === 0) {
         return null
     } else {
-        const header = items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title
+        const header = !hideHeader ? (items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title) : null
         const groups = groupingFn(items, groupInfo, groupByField)
         
         const defaultExpanded = 
@@ -71,7 +71,7 @@ function AbstractListBox(props) {
 
         const list = items.length === 1
                     ? <ContextLink item={items[0]}/> 
-                    : <GroupedList groups={groups} type={type}/>
+                    : <GroupedList groups={groups} type={type} active={active}/>
 
         return <TangentAccordion title={header} defaultExpanded={defaultExpanded}>
             {list}
@@ -104,17 +104,17 @@ export {listTypes as groupType, DatasetListBox, MissionListBox, TargetListBox, R
 
 /* ------ Internal Components ------ */
 
-function GroupedList({groups, type}) {
+function GroupedList({groups, type, active}) {
     if (groups.length === 1) {
-        return <ContextList items={groups[0].items}/>
+        return <ContextList items={groups[0].items} active={active}/>
     }
     let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
-        <GroupBox group={group} type={type} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
+        <GroupBox group={group} type={type} active={active} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
 
-function GroupBox({group, isMinor}) {
+function GroupBox({group, isMinor, active}) {
     const showToggle = isMinor || group.items.length > maxExpandedListDefault
 
     const { items, name } = group
@@ -126,7 +126,7 @@ function GroupBox({group, isMinor}) {
         ?   <ToggleList header={name} headerVariant="h6" list={<ContextList items={items}/>}/>
         :   <List disablePadding>
                 <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
-                <ContextList items={items} />
+                <ContextList items={items} active={active}/>
             </List>
     
 }

@@ -8,6 +8,5 @@ export default function InternalLink({identifier, component, children, ...otherP
     if(pdsOnly === 'true') params.push("pdsOnly=true")
     if(mockup === 'true') params.push("mockup=true")
     url += params.length > 0 ? `?${params.join('&')}` : ''
-
     return <Link href={url} {...otherProps}>{children}</Link>
 }
