@@ -11,7 +11,7 @@ function ContextList({items, active}) {
     return (
         <MaterialList>
             {sortedItems.map((item,idx) => 
-                <ContextLink key={item.identifier + idx} item={item} active={active}/>
+                <ContextLink key={item.identifier + '' +  idx} item={item} active={active}/>
             )}
         </MaterialList>
     )

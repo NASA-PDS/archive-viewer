@@ -1,38 +1,50 @@
 import React from 'react';
 import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
-import Target from 'components/pages/Target.js'
-import Mission from 'components/pages/Mission.js'
-import Spacecraft from 'components/pages/Spacecraft.js'
-import Instrument from 'components/pages/Instrument.js'
 import Loading from 'components/Loading'
 import ErrorMessage from 'components/Error.js'
 import FrontPage from 'pages/index'
 import { initialLookup } from 'api/common'
 import { resolveType, types } from 'services/pages.js'
+import MissionContext from 'components/contexts/MissionContext';
+import TargetContext from 'components/contexts/TargetContext';
+import { Helmet } from 'react-helmet'
 
-function ProductPage({error, loaded, model, type, lidvid, pdsOnly, mockup}) {
+function ProductPageContent({error, loaded, model, type, lidvid, pdsOnly, mockup}) {
 
     if(error) {
         return <ErrorMessage error={error} />
     } else if (!loaded) {
         return <Loading fullscreen={true} />
-    } else if (type === types.BUNDLE) {
-        return <Bundle lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup}/>
-    } else if (type === types.COLLECTION) {
-        return <Collection lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
-    } else if (type === types.PDS3) {
-        return <PDS3Dataset lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
-    } else if (type === types.TARGET) {
-        return <Target lidvid={lidvid} target={model} pdsOnly={pdsOnly} mockup={mockup}  />
-    } else if (type === types.INSTRUMENT) {
-        return <Instrument lidvid={lidvid} instrument={model} pdsOnly={pdsOnly} mockup={mockup}  />
-    } else if (type === types.MISSION) {
-        return <Mission lidvid={lidvid} mission={model} pdsOnly={pdsOnly} mockup={mockup}  />
-    } else if (type === types.SPACECRAFT) {
-        return <Spacecraft lidvid={lidvid} spacecraft={model} pdsOnly={pdsOnly} mockup={mockup} />
     } else {
-        return <FrontPage />
+        switch(type) {
+            case types.BUNDLE: return <Bundle lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup}/>
+            case types.COLLECTION: return <Collection lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
+            case types.PDS3: return <PDS3Dataset lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
+            case types.TARGET: return <TargetContext lidvid={lidvid} model={model} pdsOnly={pdsOnly} mockup={mockup} />
+            case types.INSTRUMENT: 
+            case types.SPACECRAFT:
+            case types.MISSION: return <MissionContext type={type} lidvid={lidvid} model={model} pdsOnly={pdsOnly} mockup={mockup} />
+            default: return <FrontPage />
+        }
     }
+}
+
+function ProductPage(props) {
+    const {model, pdsOnly} = props
+    const {display_name, title} = model
+    const pageTitle = (display_name && !pdsOnly ? display_name : title) + ' - NASA Planetary Data System'
+
+    return <>
+        <PageMetadata pageTitle={pageTitle}/>
+        <ProductPageContent {...props} />
+    </>
+}
+
+function PageMetadata({pageTitle}) {
+    return <Helmet>
+        <title>{ pageTitle }</title>
+        <meta charSet="utf-8" />
+    </Helmet>
 }
 
 export default ProductPage

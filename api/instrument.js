@@ -2,6 +2,7 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields, initialLookup} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
+import { getMissionsForSpacecraft } from './spacecraft'
 
 
 export function getMissionsForInstrument(instrument) {
@@ -17,7 +18,17 @@ export function getMissionsForInstrument(instrument) {
             fl: 'identifier, title, instrument_ref, instrument_host_ref'
         }
         return httpGetRelated(params, router.missionsCore, knownMissions)
-            .then(stitchWithWebFields(['display_name', 'image_url'], router.missionsWeb))
+            .then(results => {
+                if(!results || results.length === 0) {
+                    return getSpacecraftForInstrument(instrument).then(results => {
+                        if(!!results && results.length > 0) { return getMissionsForSpacecraft(results[0]) }
+                        return Promise.resolve([])
+                    })
+                }
+                else {
+                    return stitchWithWebFields(['display_name', 'image_url'], router.missionsWeb)(results)
+                }
+            })
     }
 }
 

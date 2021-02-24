@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {getSpacecraftForMission, getTargetsForMission} from 'api/mission.js'
+import {getTargetsForMission, getPrimaryBundleForMission} from 'api/mission.js'
 import {targetSpacecraftRelationshipTypes} from 'api/relationships'
-import {MissionHeader, MissionDescription, Menu} from 'components/ContextObjects'
+import {MissionDescription, Menu} from 'components/ContextObjects'
 import Loading from 'components/Loading'
 import PrimaryLayout from 'components/PrimaryLayout';
 import InternalLink from 'components/InternalLink'
-import { Typography, Grid, Card, CardActionArea, CardContent, CardMedia } from '@material-ui/core';
+import { Typography, Grid, Card, CardActionArea, CardContent, CardMedia, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TargetListBox } from 'components/ListBox';
+import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Dataset.js'
+import CollectionList from 'components/CollectionList.js'
 
 const useStyles = makeStyles({
     targetButton: {
@@ -19,11 +21,17 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Mission({mission, lidvid}) {
+export default function Mission({mission, lidvid, pdsOnly}) {
     const [targets, setTargets] = useState(null)
+    const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
         getTargetsForMission(mission).then(setTargets, console.error)
+        if(!pdsOnly) { 
+            getPrimaryBundleForMission(mission).then((bundle) => {
+                setPrimaryBundle(bundle)
+            }, er => console.error(er))
+        }
 
         return function cleanup() { 
             setTargets(null)
@@ -33,11 +41,12 @@ export default function Mission({mission, lidvid}) {
     return (
         <>
             <Menu/>
-            <PrimaryLayout header={
-                <MissionHeader model={mission} mission={mission}/>
-            } primary={
+            <PrimaryLayout primary={
                 <>
                     <MissionDescription model={mission} />
+
+                    { primaryBundle && <DatasetSynopsis dataset={primaryBundle} /> }
+
                     {!!targets ? 
                         <>
                             <Typography variant="h2" gutterBottom>Targets of observation</Typography>
@@ -73,4 +82,14 @@ function ButtonForTarget({target}) {
             </InternalLink>
         </Card>
     )
+}
+
+function DatasetSynopsis({dataset}) {
+    return <Box my={2}>
+        <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
+        <DeliveryInfo dataset={dataset} />
+        <Metadata dataset={dataset} />
+        <MoreInformation dataset={dataset} />
+        <CollectionList dataset={dataset} />
+    </Box>
 }

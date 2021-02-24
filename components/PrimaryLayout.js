@@ -6,9 +6,7 @@ const drawerWidth = 360;
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: theme.palette.background.default,
-        // width: "100%",
-        // height: "100%",
+        width: "100%",
         display: 'flex'
     },
     outerPrimary: {
@@ -47,11 +45,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function PrimaryLayout({primary, secondary, navigational, header}) {
+export default function PrimaryLayout({primary, secondary, navigational}) {
     const classes = useStyles()
     return (
         <div className={classes.root}>
-            {header}
             { navigational && 
                 <Drawer variant="permanent" className={classes.drawer} classes={{ paper: classes.drawerPaper }}>
                     <Box className={classes.drawerContainer}>

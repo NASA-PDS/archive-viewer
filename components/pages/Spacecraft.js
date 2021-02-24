@@ -1,66 +1,43 @@
+import { getSpacecraftForMission } from 'api/mission.js';
+import { getDatasetsForSpacecraft, getInstrumentsForSpacecraft, getMissionsForSpacecraft } from 'api/spacecraft.js';
+import { InstrumentBrowseTable } from 'components/BrowseTable';
+import { Menu, SpacecraftDescription } from 'components/ContextObjects';
+import HTMLBox from 'components/HTMLBox';
+import { DatasetListBox, groupType, SpacecraftListBox } from 'components/ListBox';
+import PDS3Results from 'components/PDS3Results';
+import PrimaryLayout from 'components/PrimaryLayout';
+import RelatedTools from 'components/RelatedTools';
+import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
-import {getMissionsForSpacecraft, getTargetsForSpacecraft, getInstrumentsForSpacecraft, getDatasetsForSpacecraft} from 'api/spacecraft.js'
-import {getPrimaryBundleForMission, getSpacecraftForMission} from 'api/mission.js'
-import {TargetListBox, DatasetListBox, groupType, SpacecraftListBox} from 'components/ListBox'
-import {InstrumentBrowseTable} from 'components/BrowseTable'
-import {MissionHeader, SpacecraftHeader, MissionDescription, Menu, SpacecraftDescription} from 'components/ContextObjects'
-import {SpacecraftTagList} from 'components/TagList'
-import HTMLBox from 'components/HTMLBox'
-import RelatedTools from 'components/RelatedTools'
-import PDS3Results from 'components/PDS3Results'
-import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Dataset.js'
-import CollectionList from 'components/CollectionList.js'
-import PrimaryLayout from 'components/PrimaryLayout'
-import { Button, Typography, Box } from '@material-ui/core'
-import InternalLink from 'components/InternalLink'
-import Loading from 'components/Loading';
 
 export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
-    const [mission, setMission] = useState(null)
     const [relatedSpacecraft, setRelatedSpacecraft] = useState(null)
-    const [targets, setTargets] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [datasets, setDatasets] = useState(null)
-    const [primaryBundle, setPrimaryBundle] = useState(null)
     
     
     useEffect(() => {
         const handleMissions = (missions) => {
             if(missions && missions.length > 0) {
                 const primaryMission = missions[0]
-                setMission(primaryMission)
-                if(!pdsOnly) { 
-                    getPrimaryBundleForMission(primaryMission).then((bundle) => {
-                        setPrimaryBundle(bundle)
-                    }, er => console.error(er))
-                    getSpacecraftForMission(primaryMission).then(setRelatedSpacecraft, console.error)
-
-                }
+                getSpacecraftForMission(primaryMission).then(setRelatedSpacecraft, console.error)
             }
         }
         getMissionsForSpacecraft(spacecraft).then(handleMissions, er => console.error(er))
-        getTargetsForSpacecraft(spacecraft).then(setTargets, er => console.error(er))
         getInstrumentsForSpacecraft(spacecraft).then(setInstruments, er => console.error(er))
         getDatasetsForSpacecraft(spacecraft).then(setDatasets, er => console.error(er))
 
         return function cleanup() {
-            setMission(null)
-            setTargets(null)
             setInstruments(null)
             setDatasets(null)
-            setPrimaryBundle(null)
+            setRelatedSpacecraft(null)
         }
     }, [lidvid])
 
-    if(!mission) { return <Loading fullscreen={true}/> }
-
     return (
         <>
-            
-
             <Menu/>
-            <PrimaryLayout header={<SpacecraftHeader model={spacecraft} mission={mission}/>}
-                primary={   
+            <PrimaryLayout primary={   
                 <>
                 <SpacecraftTagList tags={spacecraft.tags} />
                 <SpacecraftDescription model={spacecraft}/>
@@ -68,9 +45,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>
                 <InstrumentBrowseTable items={instruments} />
-                { primaryBundle && !pdsOnly ? 
-                    <DatasetSynopsis dataset={primaryBundle} />
-                    : <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} /> }
+                <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} />
                 <HTMLBox markup={spacecraft.html2} />
                 </>
             } secondary = {
@@ -80,14 +55,4 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             }/>
         </>
     )
-}
-
-function DatasetSynopsis({dataset}) {
-    return <Box my={2}>
-        <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
-        <DeliveryInfo dataset={dataset} />
-        <Metadata dataset={dataset} />
-        <MoreInformation dataset={dataset} />
-        <CollectionList dataset={dataset} />
-    </Box>
 }

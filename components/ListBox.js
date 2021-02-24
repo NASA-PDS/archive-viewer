@@ -52,7 +52,7 @@ const listTypeValues = {
 
 /* ------ Main Export Classes ------ */
 
-function AbstractListBox(props) {
+function AbstractUnmemoizedListBox(props) {
     const {groupBy, groupInfo, type, groupingFn, items, active, hideHeader} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
 
@@ -79,6 +79,12 @@ function AbstractListBox(props) {
         
     } 
 }
+
+const AbstractListBox = React.memo(AbstractUnmemoizedListBox, (prevProps, newProps) => {
+    if(!prevProps.items) { return false }
+    if(!newProps.items) { return true }
+    return prevProps.active === newProps.active && prevProps.items === newProps.items 
+})
 
 
 function DatasetListBox(props) {

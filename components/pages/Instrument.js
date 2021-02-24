@@ -17,26 +17,20 @@ import { getMissionsForSpacecraft } from 'api/spacecraft';
 
 export default function Instrument({instrument, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
-    const [mission, setMission] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
         getSpacecraftForInstrument(instrument).then(spacecraft => {
             getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.error(er))
-            if(!mission && !!spacecraft) {
-                getMissionsForSpacecraft(spacecraft[0]).then(missions => setMission(missions && missions.length > 0 ? missions[0] : null), console.error)
-            }
         }, er => console.error(er))
         getDatasetsForInstrument(instrument).then(setDatasets, er => console.error(er))
         getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, er => console.error(er))
-        getMissionsForInstrument(instrument).then(missions => setMission(missions && missions.length > 0 ? missions[0] : null), console.error)
 
         return function cleanup() {
             setInstruments(null)
             setDatasets(null)
             setPrimaryBundle(null)
-            setMission(null)
         }
     }, [lidvid])
 
@@ -48,9 +42,7 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
     return (
         <>
             <Menu/>
-            <PrimaryLayout header={
-                <InstrumentHeader model={instrument} mission={mission}/>
-            } primary={
+            <PrimaryLayout primary={
                 <>
                 <InstrumentTagList tags={instrument.tags} />
                 <InstrumentDescription model={instrument} />

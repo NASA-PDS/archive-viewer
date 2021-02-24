@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet'
 import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import InternalLink from './InternalLink';
@@ -43,31 +42,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Header(props) {
-    const {model, type, mission} = props
+function MissionHeader(props) {
+    const {type, mission, pdsOnly} = props
     const classes = useStyles();
     
-    let {display_name, title, image_url} = model
-    const pageTitle = (display_name ? display_name : title) + ' - NASA Planetary Data System'
-
-    if (!!mission) {
-        display_name = mission.display_name
-        title = mission.title
-        image_url = mission.image_url
+    if(!mission) {
+        return <AppBar className={classes.header} position="fixed" color="inherit"></AppBar>
     }
 
-    const headerName = display_name ? display_name : title
+    const {display_name, title, image_url} = mission
+    const headerName = (display_name && !pdsOnly ? display_name : title)
 
-    return <>
-        <Helmet>
-            <title>{ pageTitle }</title>
-            <meta charSet="utf-8" />
-        </Helmet>
-        <AppBar className={`${classes.header} ${classes[type]}`} position="fixed" color="inherit">
-            <Banner name={headerName} image_url={image_url} />
-            {!!mission && <TabBar type={type} mission={mission} />}
-        </AppBar>
-    </>
+    return <AppBar className={classes.header} position="fixed" color="inherit">
+        <Banner name={headerName} image_url={image_url} />
+        <TabBar type={type} mission={mission} />
+    </AppBar>
 }
 
 function TabBar({type, mission}) {
@@ -84,9 +73,6 @@ function TabBar({type, mission}) {
         }
     }, [spacecraft])
 
-    if(!spacecraft) {
-        console.log('wtf')
-    }
     return <Tabs value={type}>
                 <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft}/>
@@ -100,19 +86,19 @@ function LinkTab(props) {
 }
 
 function TargetHeader(props) {
-    return <Header type="target" {...props}/>
-}
-function SpacecraftHeader(props) {
-    return <Header type="spacecraft" {...props}/>
-}
-function InstrumentHeader(props) {
-    return <Header type="instrument" {...props}/>
-}
-function MissionHeader(props) {
-    return <Header type="mission" {...props}/>
-}
-function DatasetHeader(props) {
-    return <Header type="dataset" {...props}/>
+    const {target, pdsOnly} = props
+    const classes = useStyles();
+
+    if(!target) {
+        return <AppBar className={`${classes.header} ${classes.target}`} position="fixed" color="inherit"></AppBar>
+    }
+    
+    const {display_name, title, image_url} = target
+    const headerName = display_name && !pdsOnly ? display_name : title
+
+    return  <AppBar className={`${classes.header} ${classes.target}`} position="fixed" color="inherit">
+        <Banner name={headerName} image_url={image_url} />
+    </AppBar>
 }
 
 function Banner({name, image_url}) {
@@ -170,6 +156,6 @@ function Menu() {
     const classes = useStyles()
     return <Link href="/" className={classes.menu}><img alt="Menu icon" src="/images/menu.svg"/></Link>
 }
-export {TargetHeader, SpacecraftHeader, InstrumentHeader, MissionHeader, DatasetHeader,
+export {MissionHeader, TargetHeader,
     TargetDescription, SpacecraftDescription, InstrumentDescription, MissionDescription, DatasetDescription, 
     Menu }
