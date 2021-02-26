@@ -53,7 +53,7 @@ function MissionHeader(props) {
     const {display_name, title, image_url} = mission
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
-    return <AppBar className={classes.header} position="fixed" color="inherit">
+    return <AppBar className={classes.header} position="static" color="inherit">
         <Banner name={headerName} image_url={image_url} />
         <TabBar type={type} mission={mission} />
     </AppBar>

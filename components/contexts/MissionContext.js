@@ -15,7 +15,6 @@ const drawerWidth = 360;
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.default,
-        display: 'flex'
     }
 }));
 

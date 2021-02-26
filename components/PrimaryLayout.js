@@ -12,12 +12,6 @@ const useStyles = makeStyles((theme) => ({
     outerPrimary: {
         padding: theme.spacing(2),
         flexGrow: 1,
-        [theme.breakpoints.down('sm')]: {
-            paddingTop: theme.custom.header.height.sm
-        },
-        [theme.breakpoints.up('md')]: {
-            paddingTop: theme.custom.header.height.md
-        },
     },
     innerPrimary: {
         backgroundColor: theme.palette.grey[800],
@@ -36,12 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        [theme.breakpoints.down('sm')]: {
-            paddingTop: theme.custom.header.height.sm
-        },
-        [theme.breakpoints.up('md')]: {
-            paddingTop: theme.custom.header.height.md
-        },
+        position: 'static',
     }
 }));
 
@@ -50,7 +39,7 @@ export default function PrimaryLayout({primary, secondary, navigational}) {
     return (
         <div className={classes.root}>
             { navigational && 
-                <Drawer variant="permanent" className={classes.drawer} classes={{ paper: classes.drawerPaper }}>
+                <Drawer variant="persistent" open={true} className={classes.drawer} classes={{ paper: classes.drawerPaper }}>
                     <Box className={classes.drawerContainer}>
                         {navigational}
                     </Box>
