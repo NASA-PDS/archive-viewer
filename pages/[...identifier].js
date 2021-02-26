@@ -9,7 +9,7 @@ import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import { Helmet } from 'react-helmet'
 
-function ProductPageContent({error, loaded, model, type, lidvid, pdsOnly, mockup}) {
+function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
     if(error) {
         return <ErrorMessage error={error} />
@@ -17,27 +17,32 @@ function ProductPageContent({error, loaded, model, type, lidvid, pdsOnly, mockup
         return <Loading fullscreen={true} />
     } else {
         switch(type) {
-            case types.BUNDLE: return <Bundle lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup}/>
-            case types.COLLECTION: return <Collection lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
-            case types.PDS3: return <PDS3Dataset lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />
-            case types.TARGET: return <TargetContext lidvid={lidvid} model={model} pdsOnly={pdsOnly} mockup={mockup} />
+            case types.BUNDLE: return <Bundle dataset={model} {...otherProps}/>
+            case types.COLLECTION: return <Collection dataset={model} {...otherProps}/>
+            case types.PDS3: return <PDS3Dataset dataset={model} {...otherProps}/>
+            case types.TARGET: return <TargetContext model={model} {...otherProps}/>
             case types.INSTRUMENT: 
             case types.SPACECRAFT:
-            case types.MISSION: return <MissionContext type={type} lidvid={lidvid} model={model} pdsOnly={pdsOnly} mockup={mockup} />
+            case types.MISSION: return <MissionContext type={type} model={model} {...otherProps}/>
             default: return <FrontPage />
         }
     }
 }
 
 function ProductPage(props) {
-    const {model, pdsOnly} = props
-    const {display_name, title} = model
-    const pageTitle = (display_name && !pdsOnly ? display_name : title) + ' - NASA Planetary Data System'
+    const {error, model, pdsOnly} = props
+    if(!error) {
 
-    return <>
-        <PageMetadata pageTitle={pageTitle}/>
-        <ProductPageContent {...props} />
-    </>
+        const {display_name, title} = model
+        const pageTitle = (display_name && !pdsOnly ? display_name : title) + ' - NASA Planetary Data System'
+
+        return <>
+            <PageMetadata pageTitle={pageTitle}/>
+            <ProductPageContent {...props} />
+        </>
+    } else {
+        return <ErrorMessage error={error} />
+    }
 }
 
 function PageMetadata({pageTitle}) {
@@ -50,8 +55,12 @@ function PageMetadata({pageTitle}) {
 export default ProductPage
 
 export async function getServerSideProps({params, query}) {
-    let lidvid = params.identifier
+    const [lidvid, ...extraPath] = params.identifier
     let props = { lidvid };
+    if(!!extraPath && extraPath.length > 0) {
+        if(extraPath.includes('targets')) { props.showTargets = true }
+    }
+    
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
 

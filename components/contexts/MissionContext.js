@@ -9,6 +9,7 @@ import { MissionHeader } from 'components/ContextObjects'
 import Instrument from 'components/pages/Instrument';
 import Spacecraft from 'components/pages/Spacecraft';
 import Mission from 'components/pages/Mission';
+import MissionTargets from 'components/pages/MissionTargets';
 
 const drawerWidth = 360;
 
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function MissionContext({lidvid, model, type, pdsOnly, mockup}) {
+export default function MissionContext({lidvid, model, type, pdsOnly, mockup, showTargets}) {
     const [mission, setMission] = useState(null)
 
     useEffect(() => {
@@ -47,18 +48,22 @@ export default function MissionContext({lidvid, model, type, pdsOnly, mockup}) {
     const classes = useStyles()
 
     let mainContent = null
-    switch(type) {
-        case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} pdsOnly={pdsOnly} mockup={mockup}  />; break;
-        case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} pdsOnly={pdsOnly} mockup={mockup}  />; break;
-        case types.SPACECRAFT: mainContent = <Spacecraft lidvid={lidvid} spacecraft={model} pdsOnly={pdsOnly} mockup={mockup} />; break;
-        case types.BUNDLE: mainContent = <Bundle lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup}/>; break;
-        case types.COLLECTION: mainContent = <Collection lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />; break;
-        default: console.error('unable to determine main content')
+    
+    if(!!showTargets) {
+        mainContent = <MissionTargets lidvid={lidvid} mission={model} pdsOnly={pdsOnly} mockup={mockup} />
+    } else {
+        switch(type) {
+            case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} pdsOnly={pdsOnly} mockup={mockup}  />; break;
+            case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} pdsOnly={pdsOnly} mockup={mockup}  />; break;
+            case types.SPACECRAFT: mainContent = <Spacecraft lidvid={lidvid} spacecraft={model} pdsOnly={pdsOnly} mockup={mockup} />; break;
+            case types.BUNDLE: mainContent = <Bundle lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup}/>; break;
+            case types.COLLECTION: mainContent = <Collection lidvid={lidvid} dataset={model} pdsOnly={pdsOnly} mockup={mockup} />; break;
+            default: console.error('unable to determine main content')
+        }
     }
-
     return (
         <div className={classes.root}>
-            <MissionHeader type={type} mission={mission} pdsOnly={pdsOnly}/>
+            <MissionHeader type={showTargets ? 'target' : type} mission={mission} pdsOnly={pdsOnly}/>
             { mainContent }
         </div>
     )
