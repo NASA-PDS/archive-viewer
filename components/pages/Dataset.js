@@ -5,7 +5,6 @@ import CollectionList from 'components/CollectionList.js'
 import RelatedTools from 'components/RelatedTools'
 import CitationBuilder from 'components/CitationBuilder'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
-import {DatasetDescription} from 'components/ContextObjects'
 import {DatasetTagList} from 'components/TagList'
 import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip } from '@material-ui/core'
 import InternalLink from 'components/InternalLink'
@@ -16,6 +15,7 @@ import ResponsiveLayout from 'components/ResponsiveLayout'
 import TangentAccordion from 'components/TangentAccordion';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
 import { Helmet } from 'react-helmet'
+import { Metadata, MetadataItem } from 'components/Metadata';
 
 const useStyles = makeStyles((theme) => ({
     citation: {
@@ -102,7 +102,7 @@ function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
             <DeliveryInfo dataset={dataset} />
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
-            <Metadata dataset={dataset}/>
+            <Metadata model={dataset}/>
             { type === types.COLLECTION && 
                 <CollectionBrowseLinks dataset={dataset}/>
             }
@@ -169,18 +169,6 @@ function Title({dataset, type}) {
     </>
 }
 
-export function Metadata({dataset}) {
-    return <List>
-            <MetadataItem label="Description" itemComponent={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
-            <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
-            <MetadataItem label="Version" item={dataset.version_id} />   
-            <MetadataItem label="DOI" item={dataset.doi} />            
-            <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
-            <TemporalMedatata label="Time Range" dataset={dataset} />
-            <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
-    </List>
-}
-
 export function MoreInformation({dataset}) {
     return <TangentAccordion title="More Information">
         <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
@@ -195,27 +183,6 @@ export function MoreInformation({dataset}) {
         <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
         <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
     </TangentAccordion>
-}
-
-function TemporalMedatata({label, dataset}) {
-    let times = []
-    if(!!dataset.observation_start_date_time) { times.push("Start Time: " + dataset.observation_start_date_time) }
-    if(!!dataset.observation_stop_date_time) { times.push("Stop Time: " + dataset.observation_stop_date_time) }
-    if(times.length === 0) { return null }
-
-    return <MetadataItem label={label} item={times.join(' - ')} />
-}
-
-function MetadataItem({ item, itemComponent, label, ...otherProps }) {
-    if(!item && !itemComponent) return null
-    return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
-        <Grid item sm={3} xs={12}>
-            <Typography variant="h6"> { label }</Typography>
-        </Grid>
-        <Grid item sm={9} xs={12}>
-            {itemComponent || <Typography {...otherProps}>{item}</Typography> }
-        </Grid>
-    </ListItem>
 }
 
 

@@ -110,53 +110,9 @@ function Banner({name, image_url}) {
     </Grid>
 }
 
-const ridiculousLength = 100
-const previewLength = 750
-
-
-function Description(props) {
-    const {type, model} = props
-    const {display_description} = model
-    const description = !!display_description ? display_description : (model[`${type}description`] ? model[`${type}description`] : '')
-    const alwaysShow = description.length < ridiculousLength
-    const [expanded, setExpanded] = useState(alwaysShow)
-    const classes = useStyles();
-
-    return (
-        <Typography variant="body1" className={classes.description}>
-            { !description ? 'No description is available.' : expanded ? <>
-                {description}{alwaysShow ? null : <Link onClick={ () => setExpanded(false) }>Hide</Link>}
-            </> : <>
-                {description.length < previewLength ? description : (<>{shorten(description)}<Link onClick={ () => setExpanded(true) }>...Show More</Link></>)}
-            </>}
-        </Typography>
-    )  
-}
-
-function shorten(description) {
-    return description.split('').splice(0,previewLength).join('') + '... '
-}
-
-function TargetDescription(props) {
-    return <Description type="target_" {...props}/>
-}
-function SpacecraftDescription(props) {
-    return <Description type="instrument_host_" {...props}/>
-}
-function InstrumentDescription(props) {
-    return <Description type="instrument_" {...props}/>
-}
-function MissionDescription(props) {
-    return <Description type="investigation_" {...props}/>
-}
-function DatasetDescription(props) {
-    return <Description type="" {...props}/>
-}
 
 function Menu() {
     const classes = useStyles()
     return <Link href="/" className={classes.menu}><img alt="Menu icon" src="/images/menu.svg"/></Link>
 }
-export {MissionHeader, TargetHeader,
-    TargetDescription, SpacecraftDescription, InstrumentDescription, MissionDescription, DatasetDescription, 
-    Menu }
+export {MissionHeader, TargetHeader, Menu }

@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument, getPrimaryBundleForInstrument, getMissionsForInstrument} from 'api/instrument.js'
-import {InstrumentHeader, InstrumentDescription, Menu} from 'components/ContextObjects'
-import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
-import {InstrumentTagList} from 'components/TagList'
-import { Metadata, MoreInformation, DeliveryInfo } from 'components/pages/Dataset.js'
-import CollectionList from 'components/CollectionList.js'
-import HTMLBox from 'components/HTMLBox'
-import RelatedTools from 'components/RelatedTools'
-import PDS3Results from 'components/PDS3Results'
-import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
-import PrimaryLayout from 'components/PrimaryLayout'
-import { Typography, Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
+import { getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSpacecraftForInstrument } from 'api/instrument.js';
+import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
+import CollectionList from 'components/CollectionList.js';
+import { Menu } from 'components/ContextObjects';
+import HTMLBox from 'components/HTMLBox';
+import { DatasetListBox, InstrumentListBox } from 'components/ListBox';
+import { DeliveryInfo } from 'components/pages/Dataset.js';
+import { Metadata } from "components/Metadata";
+import PDS3Results from 'components/PDS3Results';
+import PrimaryLayout from 'components/PrimaryLayout';
+import RelatedTools from 'components/RelatedTools';
+import { InstrumentTagList } from 'components/TagList';
 import TangentAccordion from 'components/TangentAccordion';
-import Loading from 'components/Loading';
-import { getMissionsForSpacecraft } from 'api/spacecraft';
+import React, { useEffect, useState } from 'react';
+import Description from 'components/Description'
 
 export default function Instrument({instrument, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
@@ -45,7 +45,7 @@ export default function Instrument({instrument, lidvid, pdsOnly}) {
             <PrimaryLayout primary={
                 <>
                 <InstrumentTagList tags={instrument.tags} />
-                <InstrumentDescription model={instrument} />
+                <Description model={instrument} />
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
                 {showPrimaryBundle && <DatasetSynopsis dataset={primaryBundle}/>}

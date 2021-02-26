@@ -1,7 +1,7 @@
 import { getSpacecraftForMission } from 'api/mission.js';
 import { getDatasetsForSpacecraft, getInstrumentsForSpacecraft, getMissionsForSpacecraft } from 'api/spacecraft.js';
 import { InstrumentBrowseTable } from 'components/BrowseTable';
-import { Menu, SpacecraftDescription } from 'components/ContextObjects';
+import { Menu } from 'components/ContextObjects';
 import HTMLBox from 'components/HTMLBox';
 import { DatasetListBox, groupType, SpacecraftListBox } from 'components/ListBox';
 import PDS3Results from 'components/PDS3Results';
@@ -9,6 +9,7 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
 import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
+import Description from 'components/Description'
 
 export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
     const [relatedSpacecraft, setRelatedSpacecraft] = useState(null)
@@ -40,7 +41,7 @@ export default function Spacecraft({spacecraft, lidvid, pdsOnly}) {
             <PrimaryLayout primary={   
                 <>
                 <SpacecraftTagList tags={spacecraft.tags} />
-                <SpacecraftDescription model={spacecraft}/>
+                <Description model={spacecraft}/>
                 
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>

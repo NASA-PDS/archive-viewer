@@ -1,13 +1,14 @@
+import { getDatasetsForTarget, getRelatedTargetsForTarget, getSpacecraftForTarget } from 'api/target';
+import { SpacecraftBrowseTable } from 'components/BrowseTable';
+import { Menu } from 'components/ContextObjects';
+import Description from 'components/Description';
+import HTMLBox from 'components/HTMLBox';
+import { DatasetListBox, groupType, RelatedTargetListBox } from 'components/ListBox';
+import PDS3Results from 'components/PDS3Results';
+import PrimaryLayout from 'components/PrimaryLayout';
+import RelatedTools from 'components/RelatedTools';
+import { TargetTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
-import {getDatasetsForTarget, getSpacecraftForTarget, getRelatedTargetsForTarget} from 'api/target'
-import {TargetHeader, TargetDescription, Menu} from 'components/ContextObjects'
-import {RelatedTargetListBox, DatasetListBox, groupType} from 'components/ListBox'
-import {SpacecraftBrowseTable} from 'components/BrowseTable'
-import {TargetTagList} from 'components/TagList'
-import HTMLBox from 'components/HTMLBox'
-import RelatedTools from 'components/RelatedTools'
-import PDS3Results from 'components/PDS3Results'
-import PrimaryLayout from 'components/PrimaryLayout'
 
 export default function Target({target, lidvid}) {
     const [datasets, setDatasets] = useState(null)
@@ -32,7 +33,7 @@ export default function Target({target, lidvid}) {
             <PrimaryLayout primary={
                 <>
                 <TargetTagList tags={target.tags} />
-                <TargetDescription model={target} />
+                <Description model={target} />
                 <HTMLBox markup={target.html1} />
                 <RelatedTools tools={target.tools}/>
                 <SpacecraftBrowseTable items={spacecraft} />
