@@ -75,6 +75,96 @@ export function httpGetIdentifiers(route, identifiers) {
     return Promise.all(requests).then(results => results.flat())
 }
 
+export function familyLookup(initial, previousKnown) {
+    const initialLid = new LID(initial.identifier).escapedLid
+
+    // figure out which lids we will have looked up
+    let knownLids = previousKnown ? 
+        [initial.identifier, ...previousKnown.instruments, ...previousKnown.missions, ...previousKnown.spacecraft, ...previousKnown.targets] : 
+        [initial.identifier, ...initial.instrument_ref || [], ...initial.investigation_ref || [], ...initial.instrument_host_ref || [], ...initial.target_ref || []] 
+    knownLids = knownLids.map(unsanitary => new LID(unsanitary).lid)
+    
+    let toReturn = previousKnown || mergeFamilyResults({
+        instruments: [], targets: [], spacecraft: [], missions: []
+    }, initial)
+    
+    return new Promise((resolve, reject) => {
+        // lookup anything that references the initial lid
+        let queries = [`(instrument_ref:${initialLid}\\:\\:* OR
+                        investigation_ref:${initialLid}\\:\\:* OR
+                        instrument_host_ref:${initialLid}\\:\\:* OR
+                        target_ref:${initialLid}\\:\\:*)`]
+
+        // also look up anything that references its instruments/spacecraft/missions (but NOT targets)
+        initial.instrument_ref && initial.instrument_ref.forEach(lid => queries.push(`instrument_ref:${new LID(lid).escapedLid}\\:\\:*`))
+        initial.investigation_ref && initial.investigation_ref.forEach(lid => queries.push(`investigation_ref:${new LID(lid).escapedLid}\\:\\:*`))
+        initial.instrument_host_ref && initial.instrument_host_ref.forEach(lid => queries.push(`instrument_host_ref:${new LID(lid).escapedLid}\\:\\:*`))
+        
+        const params = {
+            q: `data_class:* AND (${queries.join(' OR ')})`,
+            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref'
+        }
+        httpGet(router.defaultCore, params).then(results => {
+            if(!results || results.length === 0) {
+                reject(new Error(`None found`))
+            }
+            
+            // figure out which lids we've found in the family
+            let foundLids = results.reduce((prev, current) => {
+                prev.push(new LID(current.identifier).lid)
+                return prev.concat([...current.instrument_ref || [], ...current.instrument_host_ref || [], ...current.investigation_ref || [], ...current.target_ref || []].map(lidvid => new LID(lidvid).lid))
+            }, [])
+
+            // if we have already looked up all of them, we're done
+            if(foundLids.every(entry => knownLids.includes(entry))) {
+                resolve(toReturn)
+            } else {
+                // otherwise, merge in our new knowledge and create new requests to follow up for any of the related objects
+                let newRequests = []
+                results.forEach(result => {
+                    toReturn = mergeFamilyResults(toReturn, result)
+                })
+                results.forEach(result => {
+                    newRequests.push(familyLookup(result, toReturn))
+                })
+                Promise.all(newRequests).then(ancestorResults => {
+                    resolve({
+                        targets: [...new Set(ancestorResults.map(r => r.targets).reduce((prev, current) => prev.concat(current)))],
+                        instruments: [...new Set(ancestorResults.map(r => r.instruments).reduce((prev, current) => prev.concat(current)))],
+                        missions: [...new Set(ancestorResults.map(r => r.missions).reduce((prev, current) => prev.concat(current)))],
+                        spacecraft: [...new Set(ancestorResults.map(r => r.spacecraft).reduce((prev, current) => prev.concat(current)))],
+                    })
+                }, reject)
+            }
+            
+        })
+    })
+}
+
+function mergeFamilyResults(initial, incoming) {
+    // sanitize
+    let targets = (incoming.target_ref || []).map(lidvid => new LID(lidvid).lid)
+    let instruments = (incoming.instrument_ref || []).map(lidvid => new LID(lidvid).lid)
+    let spacecraft = (incoming.instrument_host_ref || []).map(lidvid => new LID(lidvid).lid)
+    let missions = (incoming.investigation_ref || []).map(lidvid => new LID(lidvid).lid)
+
+    // include source
+    switch (incoming.data_class) {
+        case "Instrument_Host": spacecraft.push(incoming.identifier); break;
+        case "Instrument": instruments.push(incoming.identifier); break;
+        case "Target": targets.push(incoming.identifier); break;
+        case "Investigation": missions.push(incoming.identifier); break;
+    }
+
+    // merge and de-dup
+    return {
+        targets: [...new Set([...initial.targets, ...targets])],
+        instruments: [...new Set([...initial.instruments, ...instruments])],
+        spacecraft: [...new Set([...initial.spacecraft, ...spacecraft])],
+        missions: [...new Set([...initial.missions, ...missions])],
+    }
+}
+
 export function initialLookup(identifier, pdsOnly) {
     let lid = new LID(identifier)
     return new Promise((resolve, reject) => {

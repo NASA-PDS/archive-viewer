@@ -14,7 +14,7 @@ export function getMissionsForSpacecraft(spacecraft) {
         let knownMissions = spacecraft.investigation_ref
         let params = {
             q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`,
-            fl: 'identifier, title, investigation_description, instrument_host_ref'
+            fl: 'identifier, title, investigation_description, instrument_host_ref, instrument_ref'
         }
         return httpGetRelated(params, router.missionsCore, knownMissions)
             .then(stitchWithWebFields(['display_name', 'image_url', 'display_description', 'mission_bundle'], router.missionsWeb))

@@ -3,6 +3,7 @@ import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import InternalLink from './InternalLink';
 import { getInstrumentsForSpacecraft } from 'api/spacecraft';
+import { familyLookup } from 'api/common';
 
 const useStyles = makeStyles((theme) => ({
     description: {
@@ -61,22 +62,27 @@ function MissionHeader(props) {
 
 function TabBar({type, mission}) {
     const [instruments, setInstruments] = useState(null)
+    const [spacecraft, setSpacecraft] = useState(null)
 
     if(!mission) { return <Tabs />}
 
-    let spacecraft = mission.instrument_host_ref && mission.instrument_host_ref.length > 0 ? mission.instrument_host_ref[0] : null
     useEffect(() => {
-        getInstrumentsForSpacecraft(spacecraft).then(setInstruments, console.error)
+        familyLookup(mission).then(results => {
+            setInstruments(results.instruments)
+            setSpacecraft(results.spacecraft)
+            console.log(results)
+        })
 
         return function cleanup() { 
             setInstruments(null)
+            setSpacecraft(null)
         }
-    }, [spacecraft])
+    }, [mission.identifier])
 
     return <Tabs value={type}>
                 <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
-                <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft}/>
-                <LinkTab label="Instruments" value="instrument" identifier={instruments && instruments.length > 0 ? instruments[0].identifier : null}/>
+                <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0] : null}/>
+                <LinkTab label="Instruments" value="instrument" identifier={instruments && instruments.length > 0 ? instruments[0] : null}/>
                 <LinkTab label="Targets" value="target" identifier={mission.identifier} additionalPath={'targets'}/>
             </Tabs>
 }
