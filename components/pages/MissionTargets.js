@@ -39,7 +39,7 @@ export default function Mission({mission, lidvid}) {
                     { targets.length > 6 ? 
                         <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
                     : 
-                        <Grid container direction="row" alignItems="flex-start" justify="center" spacing="2" style={{width: '100%'}}>
+                        <Grid container direction="row" alignItems="flex-start" justify="center" spacing={2} style={{width: '100%'}}>
                             { targets.map(target => (
                                 <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
                             ))}

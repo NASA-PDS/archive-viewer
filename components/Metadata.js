@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export function Metadata({ model }) {
+    if(!model) return null
     return <List>
         <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" itemScope itemType="http://schema.org/Text" />
         <MetadataItem label="Identifier (LID)" item={model.identifier} />

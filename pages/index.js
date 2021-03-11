@@ -152,7 +152,7 @@ export default function Index() {
                                     <InternalLink identifier={"urn:nasa:pds:context:instrument_host:spacecraft.insight"}>InSight</InternalLink>
                                 </li>
                                 <li>
-                                    <InternalLink identifier={"https://sbnarchivedemo.psi.edu/urn:nasa:pds:context:investigation:mission.international_rosetta_mission"}>Rosetta</InternalLink>
+                                    <InternalLink identifier={"urn:nasa:pds:context:investigation:mission.international_rosetta_mission"}>Rosetta</InternalLink>
                                 </li>
                                 <li>
                                     <InternalLink identifier={"urn:nasa:pds:context:instrument_host:spacecraft.ladee"}>LADEE</InternalLink>
