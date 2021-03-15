@@ -52,13 +52,12 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
                 <Description model={instrument} />
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
-                {showPrimaryBundle && <DatasetSynopsis dataset={primaryBundle}/>}
                 {showDatasetList && <DatasetListBox items={datasets} />}
                 <HTMLBox markup={instrument.html2} />
                 </>
             } secondary = {
                 <>
-                    {showLabeledDatasets && <LabeledDatasetList datasets={datasets}/> }
+                    {showLabeledDatasets && <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/> }
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
             } navigational = {
@@ -80,9 +79,10 @@ function DatasetSynopsis({dataset}) {
 
 function LabeledDatasetList({datasets}) {
     if(!datasets) return null;
+    
     return <>
         {datasets.map(dataset => {
-            return <TangentAccordion key={dataset.identifier}title={dataset.relatedBy.label}><DatasetSynopsis dataset={dataset}/></TangentAccordion>
+            return <TangentAccordion key={dataset.identifier} title={datasets.length === 1 ? null : dataset.relatedBy.label}><DatasetSynopsis dataset={dataset}/></TangentAccordion>
         })}
     </>
 }

@@ -80,6 +80,7 @@ function AbstractUnmemoizedListBox(props) {
     } 
 }
 
+// prevents re-renders when underlying items aren't actually changing
 const AbstractListBox = React.memo(AbstractUnmemoizedListBox, (prevProps, newProps) => {
     if(!prevProps.items) { return false }
     if(!newProps.items) { return true }

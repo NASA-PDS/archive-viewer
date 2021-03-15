@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.default,
         // width: "100%",
         // height: "100%",
-        display: 'flex'
+        // display: 'flex'
     }
 }));
 

@@ -13,10 +13,14 @@ import React, { useEffect, useState } from 'react';
 const useStyles = makeStyles({
     targetButton: {
         minWith: 160,
-        height: '100%'
+        height: '100%',
+        display: 'flex',
+        flexFlow: 'column nowrap',
+        alignItems: 'flex-start'
     },
     targetImage: {
-        maxWidth: 250
+        maxWidth: 250,
+        flexGrow: 1
     }
 });
 
@@ -39,7 +43,7 @@ export default function Mission(props) {
                     { targets.length > 6 ? 
                         <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
                     : 
-                        <Grid container direction="row" alignItems="flex-start" justify="center" spacing={2} style={{width: '100%'}}>
+                        <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
                             { targets.map(target => (
                                 <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
                             ))}

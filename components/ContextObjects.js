@@ -48,7 +48,7 @@ function MissionHeader(props) {
     const classes = useStyles();
     
     if(!mission) {
-        return <AppBar className={classes.header} position="fixed" color="inherit"></AppBar>
+        return <AppBar className={classes.header} position="static" color="inherit"></AppBar>
     }
 
     const {display_name, title, image_url} = mission
@@ -82,13 +82,13 @@ function TargetHeader(props) {
     const classes = useStyles();
 
     if(!target) {
-        return <AppBar className={`${classes.header} ${classes.target}`} position="fixed" color="inherit"></AppBar>
+        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"></AppBar>
     }
     
     const {display_name, title, image_url} = target
     const headerName = display_name && !pdsOnly ? display_name : title
 
-    return  <AppBar className={`${classes.header} ${classes.target}`} position="fixed" color="inherit">
+    return  <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
         <Banner name={headerName} image_url={image_url} />
     </AppBar>
 }
