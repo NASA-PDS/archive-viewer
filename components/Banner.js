@@ -320,7 +320,8 @@ class Banner extends Component {
                             vertical: 'bottom'
                         }}
                         transformOrigin={{
-                            horizontal: '40px'
+                            vertical: 'top',
+                            horizontal: 'left'
                         }}
                         PaperProps={{
                             style: {
