@@ -70,7 +70,7 @@ const configureForType = (type) => {
     }
 }
 
-export function stitchWithRelationships(type, sourceLID) {
+export function stitchWithRelationships(type, sourceLids) {
     return (results) => {
         if(!results || results.length === 0) return Promise.resolve([])
         // for client side requests that are in pds-only mode, skip this step entirely
@@ -84,7 +84,7 @@ export function stitchWithRelationships(type, sourceLID) {
 
             let identifiers = results.map(doc => doc.identifier)
             let params = {
-                q: `${sourceType}:${sourceLID.escapedLid} AND (` + identifiers.reduce((query, lid) => `${query.length > 0 ? query + " OR ": query}${relatedType}:"${lid}" `, '') + ')',
+                q: `(${sourceLids.map(lid => sourceType + ':' + new LID(lid).escapedLid).join(' OR ')}) AND (` + identifiers.reduce((query, lid) => `${query.length > 0 ? query + " OR ": query}${relatedType}:"${lid}" `, '') + ')',
                 fl: `relationshipId,${sourceType},${relatedType},label`
             }
             // get attributed relationships

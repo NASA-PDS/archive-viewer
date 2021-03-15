@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import { getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSpacecraftForInstrument } from 'api/instrument.js';
+import { getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
 import CollectionList from 'components/CollectionList.js';
 import { Menu } from 'components/ContextObjects';
@@ -15,27 +15,31 @@ import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
 import Description from 'components/Description'
 
-export default function Instrument({instrument, lidvid, pdsOnly}) {
+export default function Instrument({instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForInstrument(instrument).then(spacecraft => {
-            getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.error(er))
-        }, er => console.error(er))
-        getDatasetsForInstrument(instrument).then(setDatasets, er => console.error(er))
-        getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, er => console.error(er))
+        getDatasetsForInstrument(instrument).then(setDatasets, console.error)
+        getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, console.error)
 
         return function cleanup() {
-            setInstruments(null)
             setDatasets(null)
             setPrimaryBundle(null)
         }
     }, [lidvid])
 
+    useEffect(() => {
+        if(!!siblings && !!spacecraft) getSiblingInstruments(siblings, spacecraft).then(setInstruments, console.error)
+
+        return function cleanup() {
+            setInstruments(null)
+        }
+    }, [siblings, spacecraft])
+
     const showPrimaryBundle = primaryBundle && !pdsOnly
-    const showLabeledDatasets = !showPrimaryBundle && datasets && datasets.some(dataset => !!dataset.relatedBy.label)
+    const showLabeledDatasets = datasets && datasets.some(dataset => !!dataset.relatedBy.label)
     const showDatasetList = !showPrimaryBundle && !showLabeledDatasets
     
 

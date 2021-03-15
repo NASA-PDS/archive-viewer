@@ -4,14 +4,13 @@ import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from '
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function getSpacecraftForTarget(target) {
-    let targetLid = new LID(target.identifier)
     let params = {
-        q: `target_ref:${targetLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
+        q: `target_ref:${new LID(target.identifier).escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
         fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
     }
     return httpGetRelated(params, router.spacecraftCore, [])
         .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromTargetToSpacecraft, targetLid))
+        .then(stitchWithRelationships(relationshipTypes.fromTargetToSpacecraft, [target.identifier]))
 }
 
 export function getDatasetsForTarget(target) {

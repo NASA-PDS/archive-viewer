@@ -33,49 +33,31 @@ export function getMissionsForInstrument(instrument) {
 }
 
 export function getSpacecraftForInstrument(instrument) {
-    let instrumentLid = new LID(instrument.identifier)
     let knownSpacecraft = instrument.instrument_host_ref
     let params = {
-        q: `instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
+        q: `instrument_ref:${new LID(instrument.identifier).escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
         fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
     }
     return httpGetRelated(params, router.spacecraftCore, knownSpacecraft)
         .then(stitchWithWebFields(['display_name', 'image_url'], router.spacecraftWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToSpacecraft, instrumentLid))
+        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToSpacecraft, [instrument.identifier]))
 }
 
 export function getDatasetsForInstrument(instrument) {
-    let instrumentLid = new LID(instrument.identifier)
 
     let params = {
-        q: `(instrument_ref:${instrumentLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
+        q: `(instrument_ref:${new LID(instrument.identifier).escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
         fl: 'identifier, title, description, instrument_ref, target_ref, instrument_host_ref, collection_ref, collection_type', 
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToBundle, instrumentLid))
+        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToBundle, [instrument.identifier]))
 }
 
-export function getRelatedInstrumentsForInstrument(instrument, prefetchedSpacecraft) {
-    
-    if(!!prefetchedSpacecraft) { return gatherInstruments(prefetchedSpacecraft) }
-
-    return new Promise((resolve, reject) => {
-        getSpacecraftForInstrument(instrument).then(parent => {
-            if(!!parent[0]) {
-                gatherInstruments(parent).then(resolve, reject)
-            } else {
-                reject(new Error("Couldn't find parent object"))
-            }
-        }, reject)
-    })
-
-    function gatherInstruments(spacecraft) {
-        let childrenLids = spacecraft[0].instrument_ref
-        return httpGetIdentifiers(router.instrumentsCore, childrenLids)
-            .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
-            .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, new LID(spacecraft[0].identifier)))
-    }
+export function getSiblingInstruments(siblings, spacecraft) {
+    return httpGetIdentifiers(router.instrumentsCore, siblings)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraft))
 }
 
 export function getPrimaryBundleForInstrument(instrument) {

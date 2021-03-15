@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function MissionHeader(props) {
-    const {type, mission, pdsOnly} = props
+    const {type, mission, pdsOnly, instruments, spacecraft} = props
     const classes = useStyles();
     
     if(!mission) {
@@ -56,28 +56,13 @@ function MissionHeader(props) {
 
     return <AppBar className={classes.header} position="static" color="inherit">
         <Banner name={headerName} image_url={image_url} />
-        <TabBar type={type} mission={mission} />
+        <TabBar type={type} mission={mission} instruments={instruments} spacecraft={spacecraft}/>
     </AppBar>
 }
 
-function TabBar({type, mission}) {
-    const [instruments, setInstruments] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
+function TabBar({type, mission, instruments, spacecraft}) {
 
     if(!mission) { return <Tabs />}
-
-    useEffect(() => {
-        familyLookup(mission).then(results => {
-            setInstruments(results.instruments)
-            setSpacecraft(results.spacecraft)
-            console.log(results)
-        })
-
-        return function cleanup() { 
-            setInstruments(null)
-            setSpacecraft(null)
-        }
-    }, [mission.identifier])
 
     return <Tabs value={type}>
                 <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>

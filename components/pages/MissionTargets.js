@@ -2,6 +2,7 @@ import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '
 import { makeStyles } from '@material-ui/core/styles';
 import { getTargetsForMission } from 'api/mission.js';
 import { targetSpacecraftRelationshipTypes } from 'api/relationships';
+import { getTargetsForSpacecraft } from 'api/spacecraft';
 import { Menu } from 'components/ContextObjects';
 import InternalLink from 'components/InternalLink';
 import { TargetListBox } from 'components/ListBox';
@@ -19,16 +20,15 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Mission({mission, lidvid}) {
+export default function Mission(props) {
     const [targets, setTargets] = useState(null)
 
     useEffect(() => {
-        getTargetsForMission(mission).then(setTargets, console.error)
-
+        getTargetsForSpacecraft(props.targets, props.spacecraft).then(setTargets, console.error)
         return function cleanup() { 
             setTargets(null)
         }
-    }, [lidvid])
+    }, [props.targets, props.spacecraft])
 
     return (
         <>
