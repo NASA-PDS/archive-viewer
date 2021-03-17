@@ -48,8 +48,10 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
             <Menu/>
             <PrimaryLayout primary={
                 <>
+                <Typography variant="h1" gutterBottom> { instrument.display_name ? instrument.display_name : instrument.title } </Typography>
                 <InstrumentTagList tags={instrument.tags} />
-                <Description model={instrument} />
+                <Metadata model={instrument} />
+                {/* <Description model={instrument} /> */}
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
                 {showDatasetList && <DatasetListBox items={datasets} />}

@@ -28,6 +28,7 @@ export default function Mission({mission, lidvid, pdsOnly}) {
             <Menu/>
             <PrimaryLayout primary={
                 <>
+                    <Typography variant="h1" gutterBottom> { mission.display_name ? mission.display_name : mission.title } </Typography>
                     <Metadata model={mission} />
 
                     { primaryBundle && <DatasetSynopsis dataset={primaryBundle} /> }

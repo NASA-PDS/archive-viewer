@@ -1,30 +1,31 @@
-import { getDatasetsForSpacecraft, getInstrumentsForSpacecraft, getSiblingSpacecraft } from 'api/spacecraft.js';
+import { Typography } from '@material-ui/core';
+import { getInstrumentsForSpacecraft, getSiblingSpacecraft } from 'api/spacecraft.js';
 import { InstrumentBrowseTable } from 'components/BrowseTable';
 import { Menu } from 'components/ContextObjects';
 import HTMLBox from 'components/HTMLBox';
-import { DatasetListBox, groupType, SpacecraftListBox } from 'components/ListBox';
+import { SpacecraftListBox } from 'components/ListBox';
+import Loading from 'components/Loading';
+import { Metadata } from "components/Metadata";
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
 import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
-import Description from 'components/Description'
-import Loading from 'components/Loading';
 
 export default function Spacecraft(props) {
     const {spacecraft, lidvid, siblings} = props
     const [relatedSpacecraft, setRelatedSpacecraft] = useState(null)
     const [instruments, setInstruments] = useState(null)
-    const [datasets, setDatasets] = useState(null)
+    // const [datasets, setDatasets] = useState(null)
     
     
-    useEffect(() => {
-        getDatasetsForSpacecraft(spacecraft).then(setDatasets, console.error)
+    // useEffect(() => {
+    //     getDatasetsForSpacecraft(spacecraft).then(setDatasets, console.error)
 
-        return function cleanup() {
-            setDatasets(null)
-        }
-    }, [lidvid])
+    //     return function cleanup() {
+    //         setDatasets(null)
+    //     }
+    // }, [lidvid])
 
     useEffect(() => {
         getInstrumentsForSpacecraft(spacecraft, props.instruments).then(setInstruments, console.error)
@@ -47,13 +48,15 @@ export default function Spacecraft(props) {
             <Menu/>
             <PrimaryLayout primary={   
                 <>
+                <Typography variant="h1" gutterBottom> { spacecraft.display_name ? spacecraft.display_name : spacecraft.title } </Typography>
                 <SpacecraftTagList tags={spacecraft.tags} />
-                <Description model={spacecraft}/>
+                <Metadata model={spacecraft} />
+                {/* <Description model={spacecraft}/> */}
                 
                 <HTMLBox markup={spacecraft.html1} />
                 <RelatedTools tools={spacecraft.tools}/>
                 <InstrumentBrowseTable items={instruments} />
-                <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} />
+                {/* <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} /> */}
                 <HTMLBox markup={spacecraft.html2} />
                 </>
             } secondary = {
