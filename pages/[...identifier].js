@@ -59,6 +59,7 @@ export async function getServerSideProps({params, query}) {
     let props = { lidvid };
     if(!!extraPath && extraPath.length > 0) {
         if(extraPath.includes('targets')) { props.showTargets = true }
+        if(extraPath.includes('data')) { props.showData = true }
     }
     
     if(query.pdsOnly === 'true') { props.pdsOnly = true }

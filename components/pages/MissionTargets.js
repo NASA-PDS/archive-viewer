@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default function Mission(props) {
+export default function MissionTargets(props) {
     const [targets, setTargets] = useState(null)
 
     useEffect(() => {

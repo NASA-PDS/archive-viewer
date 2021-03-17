@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetRelated, initialLookup, stitchWithWebFields} from 'api/common.js'
+import {httpGetRelated, initialLookup, stitchWithWebFields, httpGet} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function getSpacecraftForMission(mission) {
@@ -28,4 +28,15 @@ export function getTargetsForMission(mission) {
     return httpGetRelated(params, router.targetsCore, knownTargets)
         .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, new LID(mission.instrument_host_ref[0])))
+}
+
+export function getDatasetsForMission(mission, spacecraft, instruments) {
+    const missionQuery = `investigation_ref:${new LID(mission.identifier).escapedLid}\\:\\:*`
+    const spacecraftQuery = spacecraft.map(lid => `instrument_host_ref:${new LID(lid).escapedLid}\\:\\:*`).join(' OR ')
+    const instrumentQuery = instruments.map(lid => `instrument_ref:${new LID(lid).escapedLid}\\:\\:*`).join(' OR ')
+    let params = {
+        q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].join(' OR ')}))`,
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
+    }
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }

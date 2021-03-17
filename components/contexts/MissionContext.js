@@ -10,6 +10,7 @@ import Instrument from 'components/pages/Instrument';
 import Spacecraft from 'components/pages/Spacecraft';
 import Mission from 'components/pages/Mission';
 import MissionTargets from 'components/pages/MissionTargets';
+import MissionData from 'components/pages/MissionData';
 
 const drawerWidth = 360;
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MissionContext(props) {
-    const {lidvid, model, type, showTargets, ...otherProps} = props
+    const {lidvid, model, type, showTargets, showData, ...otherProps} = props
     const [mission, setMission] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [spacecraft, setSpacecraft] = useState(null)
@@ -48,10 +49,15 @@ export default function MissionContext(props) {
 
     const classes = useStyles()
 
-    let mainContent = null
+    let mainContent = null, tabType = null
     if(!!showTargets) {
         mainContent = <MissionTargets lidvid={lidvid} mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
+        tabType = 'target'
+    } else if(!!showData) {
+        mainContent = <MissionData lidvid={lidvid} mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
+        tabType = 'data'
     } else {
+        tabType = type
         switch(type) {
             case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} {...otherProps}  />; break;
             case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} siblings={instruments} spacecraft={spacecraft} {...otherProps}  />; break;
@@ -63,7 +69,7 @@ export default function MissionContext(props) {
     }
     return (
         <div className={classes.root}>
-            <MissionHeader type={showTargets ? 'target' : type} mission={mission} instruments={instruments} spacecraft={spacecraft} pdsOnly={props.pdsOnly}/>
+            <MissionHeader type={tabType} mission={mission} instruments={instruments} spacecraft={spacecraft} pdsOnly={props.pdsOnly}/>
             { mainContent }
         </div>
     )
