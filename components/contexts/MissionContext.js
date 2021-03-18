@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { familyLookup, initialLookup } from 'api/common';
-import { types } from 'services/pages.js'
-import { getMissionsForInstrument } from 'api/instrument';
-import { getMissionsForSpacecraft } from 'api/spacecraft';
-import { getMissionsForDataset } from 'api/dataset';
-import { MissionHeader } from 'components/ContextObjects'
+import { familyLookup } from 'api/common';
+import { getFriendlyMissions } from 'api/mission';
+import { MissionHeader } from 'components/ContextObjects';
+import ErrorMessage from 'components/Error.js';
 import Instrument from 'components/pages/Instrument';
-import Spacecraft from 'components/pages/Spacecraft';
 import Mission from 'components/pages/Mission';
-import MissionTargets from 'components/pages/MissionTargets';
 import MissionData from 'components/pages/MissionData';
+import MissionTargets from 'components/pages/MissionTargets';
+import Spacecraft from 'components/pages/Spacecraft';
+import React, { useEffect, useState } from 'react';
+import { types } from 'services/pages.js';
 
 const drawerWidth = 360;
 
@@ -26,25 +25,37 @@ export default function MissionContext(props) {
     const [instruments, setInstruments] = useState(null)
     const [spacecraft, setSpacecraft] = useState(null)
     const [targets, setTargets] = useState(null)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         if(type === types.MISSION) {
             setMission(model)
         } 
         familyLookup(model).then(results => {
-            setInstruments(results.instruments)
-            setSpacecraft(results.spacecraft)
-            setTargets(results.targets)
-            if(!mission && results.missions && results.missions.length > 0) { 
-                initialLookup(results.missions[0].identifier).then(setMission)
+            if(results.missions && results.missions.length > 0) { 
+                let newMissionLid = results.missions[0].identifier
+                if(!mission || newMissionLid !== mission.identifier) {
+                    setInstruments(results.instruments)
+                    setSpacecraft(results.spacecraft)
+                    setTargets(results.targets)
+                    getFriendlyMissions(results.missions).then(missions => {
+                        setMission(missions.find(mission => mission.identifier === newMissionLid))
+                    })
+                }
+            } else {
+                setError(new Error("Could not find mission context for LIDVID"))
             }
-        })
+        }, setError)
 
         return function cleanup() {
             // don't actually clear the mission here because it will break the illusion
             // setMission(null)
         }
     }, [lidvid])
+
+    if(!!error) {
+        return <ErrorMessage error={error} />
+    }
 
 
     const classes = useStyles()

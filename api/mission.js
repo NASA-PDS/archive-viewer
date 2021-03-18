@@ -40,3 +40,8 @@ export function getDatasetsForMission(mission, spacecraft, instruments) {
     }
     return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
+
+export function getFriendlyMissions(missions) {
+    return Promise.resolve(missions)
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.missionsWeb))
+}

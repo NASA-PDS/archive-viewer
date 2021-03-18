@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import InternalLink from './InternalLink';
-import { getInstrumentsForSpacecraft } from 'api/spacecraft';
-import { familyLookup } from 'api/common';
 
 const useStyles = makeStyles((theme) => ({
     description: {
