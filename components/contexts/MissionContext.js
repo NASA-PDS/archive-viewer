@@ -36,7 +36,7 @@ export default function MissionContext(props) {
             setSpacecraft(results.spacecraft)
             setTargets(results.targets)
             if(!mission && results.missions && results.missions.length > 0) { 
-                initialLookup(results.missions[0]).then(setMission)
+                initialLookup(results.missions[0].identifier).then(setMission)
             }
         })
 

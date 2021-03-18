@@ -21,15 +21,32 @@ export function getMissionsForSpacecraft(spacecraft) {
     }
 }
 
+export function getFriendlyInstrumentsForSpacecraft(instruments, spacecraft) {
+    return Promise.resolve(instruments)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraft.map(sp => sp.identifier)))
+}
+
 export function getInstrumentsForSpacecraft(spacecraft, instruments) {
     return httpGetIdentifiers(router.instrumentsCore, instruments)
         .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, [spacecraft.identifier]))
 }
 
+export function getFriendlySiblingSpacecraft(siblings) {
+    return Promise.resolve(siblings)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
+}
+
 export function getSiblingSpacecraft(siblings) {
     return httpGetIdentifiers(router.spacecraftCore, siblings)
         .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
+}
+
+export function getFriendlyTargetsForSpacecraft(targets, spacecraft) {
+    return Promise.resolve(targets)
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraft.map(sp => sp.identifier)))
 }
 
 export function getTargetsForSpacecraft(targets, spacecraft) {

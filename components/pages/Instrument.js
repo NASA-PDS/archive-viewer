@@ -1,5 +1,6 @@
 import { Box, Typography } from '@material-ui/core';
 import { getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
+import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft'
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
 import CollectionList from 'components/CollectionList.js';
 import { Menu } from 'components/ContextObjects';
@@ -17,7 +18,7 @@ import Description from 'components/Description'
 
 export default function Instrument({instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
-    const [instruments, setInstruments] = useState(null)
+    const [instruments, setInstruments] = useState(siblings)
     const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
     }, [lidvid])
 
     useEffect(() => {
-        if(!!siblings && !!spacecraft) getSiblingInstruments(siblings, spacecraft).then(setInstruments, console.error)
+        if(!!siblings && !!spacecraft) getFriendlyInstrumentsForSpacecraft(siblings, spacecraft).then(setInstruments, console.error)
 
         return function cleanup() {
             setInstruments(null)

@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import { getInstrumentsForSpacecraft, getSiblingSpacecraft } from 'api/spacecraft.js';
+import { getFriendlyInstrumentsForSpacecraft, getFriendlySiblingSpacecraft, getInstrumentsForSpacecraft, getSiblingSpacecraft } from 'api/spacecraft.js';
 import { InstrumentBrowseTable } from 'components/BrowseTable';
 import { Menu } from 'components/ContextObjects';
 import HTMLBox from 'components/HTMLBox';
@@ -13,9 +13,9 @@ import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
 
 export default function Spacecraft(props) {
-    const {spacecraft, lidvid, siblings} = props
-    const [relatedSpacecraft, setRelatedSpacecraft] = useState(null)
-    const [instruments, setInstruments] = useState(null)
+    const {spacecraft, siblings} = props
+    const [relatedSpacecraft, setRelatedSpacecraft] = useState(siblings)
+    const [instruments, setInstruments] = useState(props.instruments)
     // const [datasets, setDatasets] = useState(null)
     
     
@@ -28,7 +28,7 @@ export default function Spacecraft(props) {
     // }, [lidvid])
 
     useEffect(() => {
-        getInstrumentsForSpacecraft(spacecraft, props.instruments).then(setInstruments, console.error)
+        getFriendlyInstrumentsForSpacecraft(props.instruments, [spacecraft]).then(setInstruments, console.error)
         return function cleanup() {
             setInstruments(null)
         }
@@ -36,7 +36,7 @@ export default function Spacecraft(props) {
 
     useEffect(() => {
         if(siblings && siblings.length > 1) {
-            getSiblingSpacecraft(siblings).then(setRelatedSpacecraft, console.error)
+            getFriendlySiblingSpacecraft(siblings).then(setRelatedSpacecraft, console.error)
         }
         return function cleanup() {
             setRelatedSpacecraft(null)
@@ -62,9 +62,8 @@ export default function Spacecraft(props) {
             } secondary = {
                 <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
             } navigational = {
-                siblings && siblings.length > 1 && (relatedSpacecraft && relatedSpacecraft.length > 1 ? 
+                siblings && siblings.length > 1 &&
                     <SpacecraftListBox items={relatedSpacecraft} active={spacecraft.identifier} hideHeader/>
-                    : <Loading/>)
             }/>
         </>
     )

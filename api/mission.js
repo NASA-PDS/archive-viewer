@@ -32,8 +32,8 @@ export function getTargetsForMission(mission) {
 
 export function getDatasetsForMission(mission, spacecraft, instruments) {
     const missionQuery = `investigation_ref:${new LID(mission.identifier).escapedLid}\\:\\:*`
-    const spacecraftQuery = spacecraft.map(lid => `instrument_host_ref:${new LID(lid).escapedLid}\\:\\:*`).join(' OR ')
-    const instrumentQuery = instruments.map(lid => `instrument_ref:${new LID(lid).escapedLid}\\:\\:*`).join(' OR ')
+    const spacecraftQuery = spacecraft.map(sp => `instrument_host_ref:${new LID(sp.identifier).escapedLid}\\:\\:*`).join(' OR ')
+    const instrumentQuery = instruments.map(inst => `instrument_ref:${new LID(inst.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
         q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].join(' OR ')}))`,
         fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
