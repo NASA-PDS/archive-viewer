@@ -6,6 +6,7 @@ import ErrorMessage from 'components/Error.js';
 import Instrument from 'components/pages/Instrument';
 import Mission from 'components/pages/Mission';
 import MissionData from 'components/pages/MissionData';
+import MissionInstruments from 'components/pages/MissionInstruments';
 import MissionTargets from 'components/pages/MissionTargets';
 import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MissionContext(props) {
-    const {lidvid, model, type, showTargets, showData, ...otherProps} = props
+    const {lidvid, model, type, extraPath, ...otherProps} = props
     const [mission, setMission] = useState(null)
     const [instruments, setInstruments] = useState(null)
     const [spacecraft, setSpacecraft] = useState(null)
@@ -61,12 +62,17 @@ export default function MissionContext(props) {
     const classes = useStyles()
 
     let mainContent = null, tabType = null
-    if(!!showTargets) {
-        mainContent = <MissionTargets lidvid={lidvid} mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
-        tabType = 'target'
-    } else if(!!showData) {
-        mainContent = <MissionData lidvid={lidvid} mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
-        tabType = 'data'
+    if(!!extraPath && extraPath.length > 0) {
+        if(!!extraPath.includes('targets')) {
+            mainContent = <MissionTargets mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
+            tabType = 'target'
+        } else if(!!extraPath.includes('instruments')) {
+            mainContent = <MissionInstruments spacecraft={spacecraft} instruments={instruments} {...otherProps} />
+            tabType = types.INSTRUMENT
+        } else if(!!extraPath.includes('data')) {
+            mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
+            tabType = 'data'
+        }
     } else {
         tabType = type
         switch(type) {

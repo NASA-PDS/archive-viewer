@@ -1,7 +1,7 @@
 export default class LogicalIdentifier {
 
     constructor(original, vid) {
-        if(!original) { return }
+        if(!original || typeof original !== 'string') { throw new Error('Invalid Logical Identifier ' + original) }
         let identifier = original.toLowerCase()
         if(!!vid) {
             this.lidvid = `${identifier}::${vid}`
@@ -24,6 +24,22 @@ export default class LogicalIdentifier {
     get escapedVid() {
         return escape(this.vid)
     }
+
+    get isContextObject() {
+        // split up lid
+        const [urn, nasa, pds, context, ...otherParts] = this.lid.split(":")
+        
+        // assert individual parts
+        return (urn === "urn" &&
+            nasa === "nasa" &&
+            pds === "pds" &&
+            context === "context") 
+    }
+    get finalFragment() {
+        let fragments =  this.lid.split(":")
+        return fragments[fragments.length-1]
+    }
+
 }
 function escape(str) {
     return str.replace(/:/g, '\\:')

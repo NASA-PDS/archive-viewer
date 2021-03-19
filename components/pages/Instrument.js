@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import { getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
+import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft'
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
 import CollectionList from 'components/CollectionList.js';
@@ -15,6 +15,7 @@ import { InstrumentTagList } from 'components/TagList';
 import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
 import Description from 'components/Description'
+import Loading from 'components/Loading';
 
 export default function Instrument({instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
@@ -63,8 +64,14 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
                     {showLabeledDatasets && <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/> }
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
-            } navigational = {
-                <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} active={instrument.identifier} hideHeader/>
+            } navigational = {!!spacecraft ? spacecraft.map(sp => 
+                <Box key={sp.identifier} py={2}>
+                    { spacecraft.length > 1 && <Box px={2} >
+                        <Typography variant="h3" gutterBottom>{sp.display_name || sp.title}</Typography>
+                    </Box> }
+                    <InstrumentListBox items={filterInstrumentsForSpacecraft(instruments, sp)} groupInfo={instrumentSpacecraftRelationshipTypes} active={instrument.identifier} hideHeader/>
+                </Box>
+            ) : <Loading/>
             }/>
         </>
     )

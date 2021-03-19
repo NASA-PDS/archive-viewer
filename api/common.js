@@ -165,12 +165,16 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
 
 function mergeFamilyResults(initial, incoming) {
     let { spacecraft, instruments, targets, missions } = initial
+    let ignored = []
+
+    if(!new LID(incoming.identifier).isContextObject) {
+        return { spacecraft, instruments, targets, missions, ignored: [incoming.identifier, ...initial.ignored]}
+    }
 
     const alreadyKnowAboutIt = (destination, addition) => {
         return destination.some(item => item.identifier === addition.identifier)
     }
 
-    let ignored = []
     switch (incoming.data_class) {
         case "Instrument_Host": if(!alreadyKnowAboutIt(spacecraft, incoming)) { spacecraft.push(incoming); } break;
         case "Instrument": if(!alreadyKnowAboutIt(instruments, incoming)) { instruments.push(incoming); } break;

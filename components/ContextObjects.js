@@ -65,7 +65,7 @@ function TabBar({type, mission, instruments, spacecraft}) {
     return <Tabs value={type}>
                 <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0].identifier : null}/>
-                <LinkTab label="Instruments" value="instrument" identifier={instruments && instruments.length > 0 ? instruments[0].identifier : null}/>
+                <LinkTab label="Instruments" value="instrument" identifier={mission.identifier} additionalPath={'instruments'}/>
                 <LinkTab label="Targets" value="target" identifier={mission.identifier} additionalPath={'targets'}/>
                 <LinkTab label="Data" value="data" identifier={mission.identifier} additionalPath={'data'}/>
             </Tabs>

@@ -64,3 +64,24 @@ export function getPrimaryBundleForInstrument(instrument) {
     if(!instrument || !instrument.instrument_bundle) { return Promise.resolve(null) }
     return initialLookup(instrument.instrument_bundle)
 }
+
+export function filterInstrumentsForSpacecraft(instruments, spacecraft) {
+    if(!instruments) return null
+
+    // get final fragments of this mission's instrument and spacecraft lids (example: ocams.orex)
+    const spacecraftLidFragments = new LID(spacecraft.identifier).finalFragment.split('.')
+    let instrumentLidFragments = instruments.map(inst => new LID(inst.identifier).finalFragment)
+
+    // split on the dot and flatten
+    instrumentLidFragments = instrumentLidFragments.map(frag => frag.split(".")).flat()
+
+    const missionFragment = instrumentLidFragments.find(frag => spacecraftLidFragments.includes(frag))
+
+    if(!!missionFragment) {
+        return instruments.filter(inst => inst.identifier.includes(missionFragment + '.') || inst.identifier.includes('.' + missionFragment))
+    } else {
+        // can't figure it out
+        return instruments
+    }
+
+}

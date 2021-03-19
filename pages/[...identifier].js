@@ -56,11 +56,7 @@ export default ProductPage
 
 export async function getServerSideProps({params, query}) {
     const [lidvid, ...extraPath] = params.identifier
-    let props = { lidvid };
-    if(!!extraPath && extraPath.length > 0) {
-        if(extraPath.includes('targets')) { props.showTargets = true }
-        if(extraPath.includes('data')) { props.showData = true }
-    }
+    let props = { lidvid, extraPath };
     
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }

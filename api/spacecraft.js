@@ -33,7 +33,7 @@ export function getInstrumentsForSpacecraft(spacecraft, instruments) {
         .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, [spacecraft.identifier]))
 }
 
-export function getFriendlySiblingSpacecraft(siblings) {
+export function getFriendlySpacecraft(siblings) {
     return Promise.resolve(siblings)
         .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
 }
