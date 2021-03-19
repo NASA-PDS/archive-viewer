@@ -11,7 +11,6 @@ export const useStyles = makeStyles((theme) => ({
     sectionHeader: {
       marginTop: theme.spacing(3),
       marginBottom: theme.spacing(2),
-      marginLeft: theme.spacing(1)
     },
     table: {
         border: 0

@@ -13,12 +13,8 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         flexGrow: 1,
     },
-    innerPrimary: {
-        backgroundColor: theme.palette.grey[800],
-        padding: theme.spacing(2)
-    },
     innerContainer: {
-        padding: 0
+        padding: theme.spacing(2)
     },
     drawer: {
         width: drawerWidth,
@@ -47,9 +43,8 @@ export default function PrimaryLayout({primary, secondary, navigational}) {
             }
             <Box className={classes.outerPrimary}>
                 <Container maxWidth="lg" className={classes.innerContainer}>
-                    <Paper square elevation={2} className={classes.innerPrimary}  >
-                        {primary}
-                    </Paper>
+                    { primary }
+                    <Box my={3}/>
                     { secondary }
                 </Container>
             </Box>

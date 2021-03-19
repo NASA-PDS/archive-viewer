@@ -39,7 +39,7 @@ export default function MissionTargets(props) {
             <Menu/>
             <PrimaryLayout primary={!!targets ? 
                 <>
-                    <Typography variant="h2" gutterBottom>Targets of observation</Typography>
+                    <Typography variant="h1" gutterBottom>Targets of observation</Typography>
                     { targets.length > 6 ? 
                         <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
                     : 

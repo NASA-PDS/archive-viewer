@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
             height: theme.custom.headerBanner.height.md
         },
     },
+    bannerTitle: {
+        fontSize: '3.5rem'
+    },
     headerImage: {
         padding: '8px',
         [theme.breakpoints.down('sm')]: {
@@ -110,7 +113,7 @@ function Banner({name, image_url}) {
     const classes = useStyles();
     return <Grid container direction="row" alignItems="center" className={classes.banner}>
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-        <Grid item component={Typography} variant="h1"> { name } Data Archive </Grid>
+        <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } Data Archive </Grid>
     </Grid>
 }
 

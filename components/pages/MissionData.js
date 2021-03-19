@@ -41,7 +41,7 @@ export default function MissionData({mission, spacecraft, instruments}) {
             <Menu/>
             <PrimaryLayout primary={!!datasets ? 
                 <>
-                    <Typography variant="h2" gutterBottom>All datasets</Typography>
+                    <Typography variant="h1" gutterBottom>All datasets</Typography>
                     <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} />
                 </>
                 : <Loading/>

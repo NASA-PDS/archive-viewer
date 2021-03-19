@@ -49,22 +49,30 @@ const Theme = createMuiTheme({
     },
     typography: {
         h1: {
-            fontSize: '2.5rem'
+            fontSize: '2.5rem',
+            marginTop: 24,
+            marginBottom: 24
         },
         h2: {
-            fontSize: '2rem'
+            fontSize: '2rem',
+            marginTop: 24,
+            marginBottom: 16
         },
         h3: {
-            fontSize: '1.5rem'
+            fontSize: '1.5rem',
+            marginTop: 16,
+            marginBottom: 12
         },
         h4: {
-            fontSize: '1.3rem'
+            fontSize: '1.3rem',
+            marginTop: 16,
+            marginBottom: 12
         },
         h5: {
-            fontSize: '1.3rem'
+            fontSize: '1.3rem',
         },
         h6: {
-            fontSize: '1.3rem'
+            fontSize: '1.3rem',
         },
     },
     overrides: {
