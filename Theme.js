@@ -80,7 +80,7 @@ const Theme = createMuiTheme({
         }
     },
     custom: {
-        header: {
+        headerBanner: {
             height: {
                 sm: '115px',
                 md: '200px'

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import Skeleton from '@material-ui/lab/Skeleton';
 import InternalLink from './InternalLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -12,22 +13,25 @@ const useStyles = makeStyles((theme) => ({
     header: {
         backgroundColor: "#085898",
         zIndex: theme.zIndex.drawer + 1,
-        [theme.breakpoints.down('sm')]: {
-            height: theme.custom.header.height.sm
-        },
-        [theme.breakpoints.up('md')]: {
-            height: theme.custom.header.height.md
-        },
         display: 'flex',
         flexFlow: 'column nowrap',
     },
     banner: {
-        minHeight: 0,
-        flexGrow: 1
+        [theme.breakpoints.down('sm')]: {
+            height: theme.custom.headerBanner.height.sm
+        },
+        [theme.breakpoints.up('md')]: {
+            height: theme.custom.headerBanner.height.md
+        },
     },
     headerImage: {
         padding: '8px',
-        height: '100%'
+        [theme.breakpoints.down('sm')]: {
+            height: theme.custom.headerBanner.height.sm
+        },
+        [theme.breakpoints.up('md')]: {
+            height: theme.custom.headerBanner.height.md
+        },
     },
     menu: {
         position: 'absolute',
@@ -46,7 +50,7 @@ function MissionHeader(props) {
     const classes = useStyles();
     
     if(!mission) {
-        return <AppBar className={classes.header} position="static" color="inherit"></AppBar>
+        return <AppBar className={classes.header} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
     }
 
     const {display_name, title, image_url} = mission
@@ -71,6 +75,16 @@ function TabBar({type, mission, instruments, spacecraft}) {
             </Tabs>
 }
 
+function SkeletonTabBar() {
+    return <Grid container direction="row" alignItems="center">
+        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+    </Grid>
+}
+
 function LinkTab(props) {
     const {label, value, ...otherProps} = props
     return props.identifier ? <InternalLink passHref {...otherProps}><Tab label={label} value={value} /></InternalLink> : <Tab {...props} />
@@ -81,7 +95,7 @@ function TargetHeader(props) {
     const classes = useStyles();
 
     if(!target) {
-        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"></AppBar>
+        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
     }
     
     const {display_name, title, image_url} = target
@@ -100,6 +114,13 @@ function Banner({name, image_url}) {
     </Grid>
 }
 
+function SkeletonBanner() {
+    const classes = useStyles();
+    return <Grid container direction="row" alignItems="center" className={classes.banner}>
+        <Grid item style={{margin: 10}} component={Skeleton} variant="circle" width={140} height={140} />
+        <Grid item component={Typography} variant="h1"> <Skeleton variant="text" width={400}/> </Grid>
+    </Grid>
+}
 
 function Menu() {
     const classes = useStyles()
