@@ -12,6 +12,7 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
 import { groupByRelatedItems } from 'services/groupings';
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
+import { getFriendlyInstrumentsForSpacecraft, getFriendlySpacecraft } from 'api/spacecraft';
 
 
 export const useStyles = makeStyles((theme) => ({
@@ -27,16 +28,34 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function MissionData({mission, spacecraft, instruments}) {
+export default function MissionData(props) {
+    const {mission} = props
     const [datasets, setDatasets] = useState(null)
     const [groupMode, setGroupMode] = useState(groupType.instrument)
+    const [instruments, setInstruments] = useState(props.instruments)
+    const [spacecraft, setSpacecraft] = useState(props.spacecraft)
+    
+    useEffect(() => {
+        if (!!props.spacecraft) getFriendlySpacecraft(props.spacecraft).then(setSpacecraft, console.error)
+        return function cleanup() {
+            setSpacecraft(null)
+        }
+    }, [props.spacecraft])
+    
+    useEffect(() => {
+        if (!!props.instruments && !!props.spacecraft) getFriendlyInstrumentsForSpacecraft(props.instruments, props.spacecraft).then(setInstruments, console.error)
+        return function cleanup() {
+            setInstruments(null)
+        }
+    }, [props.instruments, props.spacecraft])
 
     useEffect(() => {
-        if(!!mission && !!instruments && !!spacecraft) getDatasetsForMission(mission, spacecraft, instruments).then(setDatasets, console.error)
+        if(!!mission && !!props.instruments && !!props.spacecraft) getDatasetsForMission(mission, props.spacecraft, props.instruments).then(setDatasets, console.error)
         return function cleanup() { 
             setDatasets(null)
         }
-    }, [mission, spacecraft, instruments])
+    }, [mission, props.spacecraft, props.instruments])
+
 
     let groupObjects, groupField
     switch(groupType) {
