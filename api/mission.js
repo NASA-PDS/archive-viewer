@@ -36,7 +36,6 @@ export function getDatasetsForMission(mission, spacecraft, instruments) {
     const instrumentQuery = instruments.map(inst => `instrument_ref:${new LID(inst.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
         q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].join(' OR ')}))`,
-        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
     }
     return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }

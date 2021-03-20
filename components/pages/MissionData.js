@@ -1,33 +1,35 @@
-import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
+import { Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDatasetsForMission } from 'api/mission.js';
-import { targetSpacecraftRelationshipTypes } from 'api/relationships';
-import { getTargetsForSpacecraft } from 'api/spacecraft';
+import CollectionList from 'components/CollectionList.js';
+import { ContextLink } from 'components/ContextLinks';
 import { Menu } from 'components/ContextObjects';
-import InternalLink from 'components/InternalLink';
-import { DatasetListBox, groupType } from 'components/ListBox';
+import { groupType } from 'components/ListBox';
 import Loading from 'components/Loading';
+import { Metadata } from "components/Metadata";
+import { DeliveryInfo } from 'components/pages/Dataset.js';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
+import { groupByRelatedItems } from 'services/groupings';
+import { ExpandLess, ExpandMore } from '@material-ui/icons'
 
-const useStyles = makeStyles({
-    targetButton: {
-        minWith: 160,
-        height: '100%',
-        display: 'flex',
-        flexFlow: 'column nowrap',
-        alignItems: 'flex-start'
+
+export const useStyles = makeStyles((theme) => ({
+    table: {
+        border: 0
     },
-    targetImage: {
-        maxWidth: 250,
-        flexGrow: 1
+    cell: {
+        border: 0
+    },
+    headerCell: {
+        paddingRight: theme.spacing(2)
     }
-});
+}));
+
 
 export default function MissionData({mission, spacecraft, instruments}) {
     const [datasets, setDatasets] = useState(null)
-    console.log(spacecraft)
-    console.log(instruments)
+    const [groupMode, setGroupMode] = useState(groupType.instrument)
 
     useEffect(() => {
         if(!!mission && !!instruments && !!spacecraft) getDatasetsForMission(mission, spacecraft, instruments).then(setDatasets, console.error)
@@ -36,16 +38,102 @@ export default function MissionData({mission, spacecraft, instruments}) {
         }
     }, [mission, spacecraft, instruments])
 
+    let groupObjects, groupField
+    switch(groupType) {
+        case groupType.spacecraft:
+            groupObjects = spacecraft
+            groupField = 'instrument_host_ref'
+        case groupType.instrument:
+        default: 
+            groupObjects = instruments
+            groupField = 'instrument_ref'
+            
+    }
+
     return (
         <>
             <Menu/>
             <PrimaryLayout primary={!!datasets ? 
                 <>
                     <Typography variant="h1" gutterBottom>All datasets</Typography>
-                    <DatasetListBox items={datasets} groupBy={groupType.instrument} groupInfo={instruments} />
+                    <MissionDataTable groups={groupByRelatedItems(datasets, groupObjects, groupField)} />
                 </>
                 : <Loading/>
             }/>
         </>
     )
+}
+
+function MissionDataTable({ groups }) {
+    const classes = useStyles();
+    // groups.sort((a, b) => a.order.localeCompare(b.order));
+    return (
+        <TableContainer>
+            <Table stickyHeader padding="none"  className={classes.table}>
+                <TableHead>
+                    <TableCell/>
+                    <TableCell className={classes.headerCell}>Title</TableCell>
+                    <TableCell className={classes.headerCell}>Processing Level</TableCell>
+                    <TableCell className={classes.headerCell}>Publish Date</TableCell>
+                    <TableCell className={classes.headerCell}>Start Time</TableCell>
+                    <TableCell className={classes.headerCell}>End Time</TableCell>
+                </TableHead>
+                <TableBody>
+                    {groups.map(group => 
+                        <>
+                            {groups.length > 1 && <TableRow>
+                                <TableCell/>
+                                <TableCell colSpan={5}><Typography variant="h4">{group.name}</Typography></TableCell>
+                            </TableRow>}
+                            {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier}/>)}
+                        </>
+                    )}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+}
+
+function DatasetRow({dataset}) {
+    const classes = useStyles();
+    const [open, setOpen] = useState(false)
+
+    return <>
+        <TableRow >
+            <TableCell className={classes.cell}>
+                <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+            </TableCell>            
+            <TableCell className={classes.cell}>
+                <ContextLink item={dataset}/>
+            </TableCell>
+            <TableCell className={classes.cell}>
+                {dataset.primary_result_processing_level}
+            </TableCell>
+            <TableCell className={classes.cell}>
+                {dataset.citation_publication_year}
+            </TableCell>
+            <TableCell className={classes.cell}>
+                {dataset.observation_start_date_time}
+            </TableCell>
+            <TableCell className={classes.cell}>
+                {dataset.observation_start_date_time}
+            </TableCell>
+        </TableRow>
+        <TableRow>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                <DatasetSynopsis dataset={dataset}/>
+            </Collapse>
+            </TableCell>
+        </TableRow>
+        </>
+}
+
+function DatasetSynopsis({dataset}) {
+    return <Box p={2}>
+        <Metadata model={dataset} />
+        <CollectionList dataset={dataset} />
+    </Box>
 }

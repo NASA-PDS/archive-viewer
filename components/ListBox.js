@@ -149,7 +149,7 @@ function ToggleList({header, headerVariant, list, divider}) {
                 { expanded ? <ExpandLess /> : <ExpandMore/>}
             </ListItem>
             {divider && <Divider/>}
-            <Collapse in={expanded}>
+            <Collapse in={expanded} unmountOnExit>
             {list}
             </Collapse>
         </List>

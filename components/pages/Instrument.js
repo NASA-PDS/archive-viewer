@@ -81,7 +81,7 @@ function DatasetSynopsis({dataset}) {
     return <Box p={2}>
         <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
         <DeliveryInfo dataset={dataset} />
-        <Metadata dataset={dataset} />
+        <Metadata model={dataset} />
         {/* <MoreInformation dataset={dataset} /> */}
         <CollectionList dataset={dataset} />
     </Box>
