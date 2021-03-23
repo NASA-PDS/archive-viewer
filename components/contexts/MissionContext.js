@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { familyLookup } from 'api/common';
 import { getFriendlyMissions } from 'api/mission';
+import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
 import { MissionHeader } from 'components/ContextObjects';
 import ErrorMessage from 'components/Error.js';
 import Instrument from 'components/pages/Instrument';
@@ -65,9 +66,9 @@ export default function MissionContext(props) {
     if(!!extraPath && extraPath.length > 0) {
         if(!!extraPath.includes('targets')) {
             mainContent = <MissionTargets mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
-            tabType = 'target'
+            tabType = types.TARGET
         } else if(!!extraPath.includes('instruments')) {
-            mainContent = <MissionInstruments spacecraft={spacecraft} instruments={instruments} {...otherProps} />
+            mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
             tabType = types.INSTRUMENT
         } else if(!!extraPath.includes('data')) {
             mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
@@ -77,10 +78,10 @@ export default function MissionContext(props) {
         tabType = type
         switch(type) {
             case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} {...otherProps}  />; break;
-            case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} siblings={instruments} spacecraft={spacecraft} {...otherProps}  />; break;
-            case types.SPACECRAFT: mainContent = <Spacecraft lidvid={lidvid} spacecraft={model} siblings={spacecraft} instruments={instruments} {...otherProps} />; break;
-            case types.BUNDLE: mainContent = <Bundle lidvid={lidvid} dataset={model} {...otherProps}/>; break;
-            case types.COLLECTION: mainContent = <Collection lidvid={lidvid} dataset={model} {...otherProps} />; break;
+            case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} {...otherProps}  />; break;
+            case types.SPACECRAFT: mainContent = <Spacecraft lidvid={lidvid} spacecraft={model} siblings={spacecraft} instruments={instruments} mission={mission} {...otherProps} />; break;
+            case types.BUNDLE: mainContent = <Bundle lidvid={lidvid} dataset={model} mission={mission} {...otherProps}/>; break;
+            case types.COLLECTION: mainContent = <Collection lidvid={lidvid} dataset={model} mission={mission} {...otherProps} />; break;
             default: console.error('unable to determine main content')
         }
     }

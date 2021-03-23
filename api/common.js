@@ -168,7 +168,7 @@ function mergeFamilyResults(initial, incoming) {
     let ignored = []
 
     if(!new LID(incoming.identifier).isContextObject) {
-        return { spacecraft, instruments, targets, missions, ignored: [incoming.identifier, ...initial.ignored]}
+        return { spacecraft, instruments, targets, missions, ignored: [incoming.identifier, ...(initial.ignored || [])]}
     }
 
     const alreadyKnowAboutIt = (destination, addition) => {

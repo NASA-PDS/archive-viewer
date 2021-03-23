@@ -5,6 +5,7 @@ import ErrorMessage from 'components/Error.js';
 import Loading from 'components/Loading.js';
 import React, { useEffect, useState } from 'react';
 import InternalLink from './InternalLink';
+import {SplitListItem} from './SplitListItem';
 
 export default function CollectionBrowseLinks({dataset}) {
     const [bundles, setBundles] = useState([])
@@ -37,17 +38,6 @@ export default function CollectionBrowseLinks({dataset}) {
         </List>
 
     )
-}
-
-function SplitListItem({left, right}) {
-    return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
-    <Grid item sm={3} xs={12}>
-        {left}
-    </Grid>
-    <Grid item sm={9} xs={12}>
-        {right}
-    </Grid>
-</ListItem>
 }
 
 function BrowseItem({ label, identifier, url, buttonTitle, isPrimary }) {

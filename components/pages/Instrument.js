@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Breadcrumbs, Typography, Button } from '@material-ui/core';
 import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft'
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
@@ -16,8 +16,12 @@ import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
 import Description from 'components/Description'
 import Loading from 'components/Loading';
+import InternalLink from 'components/InternalLink';
+import Skeleton from '@material-ui/lab/Skeleton';
+import { LabeledListItem } from 'components/SplitListItem';
+import { ExitToApp } from '@material-ui/icons';
 
-export default function Instrument({instrument, siblings, spacecraft, lidvid, pdsOnly}) {
+export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
     const [instruments, setInstruments] = useState(siblings)
     const [primaryBundle, setPrimaryBundle] = useState(null)
@@ -50,18 +54,17 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
             <Menu/>
             <PrimaryLayout primary={
                 <>
-                <Typography variant="h1" gutterBottom> { instrument.display_name ? instrument.display_name : instrument.title } </Typography>
+                <InstrumentBreadcrumbs mission={mission} primary={instrument}/>
+                <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
                 <InstrumentTagList tags={instrument.tags} />
                 <Metadata model={instrument} />
-                {/* <Description model={instrument} /> */}
+                <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/>
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
-                {showDatasetList && <DatasetListBox items={datasets} />}
                 <HTMLBox markup={instrument.html2} />
                 </>
             } secondary = {
                 <>
-                    {showLabeledDatasets && <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/> }
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
             } navigational = {!!spacecraft ? spacecraft.map(sp => 
@@ -77,22 +80,32 @@ export default function Instrument({instrument, siblings, spacecraft, lidvid, pd
     )
 }
 
-function DatasetSynopsis({dataset}) {
-    return <Box p={2}>
-        <Typography variant="h2" gutterBottom>{dataset.display_name || dataset.title}</Typography>
-        <DeliveryInfo dataset={dataset} />
-        <Metadata model={dataset} />
-        {/* <MoreInformation dataset={dataset} /> */}
-        <CollectionList dataset={dataset} />
-    </Box>
+function LabeledDatasetList({datasets}) {
+    console.log(datasets)
+    if(!datasets) return null;
+
+    return <>
+        {datasets.map(dataset => 
+            <LabeledListItem key={dataset.identifier} label="Data" item={
+                <BundleLink identifier={dataset.identifier} label={dataset.relatedBy ? dataset.relatedBy.label : (dataset.display_name || dataset.title)}/>
+            }/>
+        )}
+    </>
 }
 
-function LabeledDatasetList({datasets}) {
-    if(!datasets) return null;
-    
-    return <>
-        {datasets.map(dataset => {
-            return <TangentAccordion key={dataset.identifier} title={datasets.length === 1 ? null : dataset.relatedBy.label}><DatasetSynopsis dataset={dataset}/></TangentAccordion>
-        })}
-    </>
+function BundleLink({identifier, label}) {
+    return <InternalLink identifier={identifier} passHref>
+            <Button color="primary" variant={"contained"} size={"large"} endIcon={<ExitToApp/>}>{label}</Button>
+    </InternalLink>
+}
+
+function InstrumentBreadcrumbs({mission, primary}) {
+    if(!mission) {
+        return <Breadcrumbs><Skeleton variant="text"></Skeleton></Breadcrumbs>
+    }
+    return <Breadcrumbs>
+        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
+        <InternalLink identifier={mission.identifier} additionalPath="instruments">Instruments</InternalLink>
+        <Typography color="textPrimary" nowrap>{primary.display_name || primary.title}</Typography>
+    </Breadcrumbs>
 }

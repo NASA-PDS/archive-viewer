@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
+import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography, Breadcrumbs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getTargetsForMission } from 'api/mission.js';
 import { targetSpacecraftRelationshipTypes } from 'api/relationships';
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 });
 
 export default function MissionTargets(props) {
+    const { mission } = props
     const [targets, setTargets] = useState(props.targets)
 
     useEffect(() => {
@@ -39,6 +40,10 @@ export default function MissionTargets(props) {
             <Menu/>
             <PrimaryLayout primary={!!targets ? 
                 <>
+                    <Breadcrumbs>
+                        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
+                        <Typography color="textPrimary" nowrap>Targets</Typography>
+                    </Breadcrumbs>
                     <Typography variant="h1" gutterBottom>Targets of observation</Typography>
                     { targets.length > 6 ? 
                         <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>

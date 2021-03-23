@@ -1,13 +1,9 @@
-import { List, ListItem, Grid, Typography, makeStyles } from '@material-ui/core';
+import { List, Typography } from '@material-ui/core';
+import Description from 'components/Description';
 import React from 'react';
-import Description from 'components/Description'
+import { LabeledListItem } from './SplitListItem';
 
 
-const useStyles = makeStyles((theme) => ({
-    metadataLabel: {
-        marginBottom: 'auto'
-    },
-}))
 
 export function Metadata({ model }) {
     if(!model) return null
@@ -33,15 +29,9 @@ function TemporalMedatata({label, model}) {
 }
 
 export function MetadataItem({ item, itemComponent, label, ...otherProps }) {
-    const classes = useStyles()
 
     if(!item && !itemComponent) return null
-    return <ListItem component={Grid} container direction="row" spacing={1} alignItems="flex-start">
-        <Grid item sm={3} xs={12}>
-            <Typography variant="h6" className={classes.metadataLabel}> { label }</Typography>
-        </Grid>
-        <Grid item sm={9} xs={12}>
-            {itemComponent || <Typography {...otherProps}>{item}</Typography> }
-        </Grid>
-    </ListItem>
+    return <LabeledListItem label={label} item = {
+            itemComponent || <Typography {...otherProps}>{item}</Typography> 
+        }/>
 }

@@ -1,4 +1,4 @@
-import { Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box } from '@material-ui/core';
+import { Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Breadcrumbs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDatasetsForMission } from 'api/mission.js';
 import CollectionList from 'components/CollectionList.js';
@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { groupByRelatedItems } from 'services/groupings';
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 import { getFriendlyInstrumentsForSpacecraft, getFriendlySpacecraft } from 'api/spacecraft';
+import InternalLink from 'components/InternalLink';
 
 
 export const useStyles = makeStyles((theme) => ({
@@ -74,6 +75,10 @@ export default function MissionData(props) {
             <Menu/>
             <PrimaryLayout primary={!!datasets ? 
                 <>
+                    <Breadcrumbs>
+                        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
+                        <Typography color="textPrimary" nowrap>Data</Typography>
+                    </Breadcrumbs>
                     <Typography variant="h1" gutterBottom>All datasets</Typography>
                     <MissionDataTable groups={groupByRelatedItems(datasets, groupObjects, groupField)} />
                 </>

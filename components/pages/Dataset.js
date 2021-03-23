@@ -6,7 +6,7 @@ import RelatedTools from 'components/RelatedTools'
 import CitationBuilder from 'components/CitationBuilder'
 import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
 import {DatasetTagList} from 'components/TagList'
-import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip } from '@material-ui/core'
+import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Breadcrumbs } from '@material-ui/core'
 import InternalLink from 'components/InternalLink'
 import { UnarchiveOutlined, FolderOutlined } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,8 +16,12 @@ import TangentAccordion from 'components/TangentAccordion';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
 import { Helmet } from 'react-helmet'
 import { Metadata, MetadataItem } from 'components/Metadata';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const useStyles = makeStyles((theme) => ({
+    mainTitle: {
+        marginTop: 0
+    },
     citation: {
         padding: theme.spacing(2),
         color: theme.palette.secondary.dark
@@ -80,10 +84,10 @@ const titles = {
     [types.PDS3]: "PDS3 Dataset"
 }
 
-function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
+function Dataset({dataset, lidvid, mockup, mission, pdsOnly, type}) {
     const [instruments, setInstruments] = useState(null)
     const [spacecraft, setSpacecraft] = useState(null)
-    const [missions, setMissions] = useState(null)
+    const [missions, setMissions] = useState([mission])
     const [targets, setTargets] = useState(null)
 
     useEffect(() => {
@@ -97,8 +101,9 @@ function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
     return (
         <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
             <>
-            <DatasetTagList tags={dataset.tags}/>
+            <DatasetBreadcrumbs mission={mission} dataset={dataset}/>
             <Title dataset={dataset} type={type} />
+            <DatasetTagList tags={dataset.tags}/>
             <DeliveryInfo dataset={dataset} />
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
@@ -121,11 +126,6 @@ function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
             </>
         } secondary={
             <Box p={1}>
-                { targets && targets.length > 0 && <TargetListBox items={targets} compact={true}/> }
-                { missions && missions.length > 0 && <MissionListBox items={missions} compact={true}/> }
-                { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft} compact={true}/> }
-                { instruments && instruments.length > 0 && <InstrumentListBox items={instruments} compact={true}/> }
-                
                 <RelatedData dataset={dataset}/>
                 <Superseded dataset={dataset}/>
                 <RelatedPDS3 dataset={dataset}/>
@@ -145,6 +145,17 @@ export function PDS3Dataset({...props}) {
     return <Dataset type={types.PDS3} {...props} />
 }
 
+function DatasetBreadcrumbs({mission, dataset}) {
+    if(!mission) {
+        return <Breadcrumbs><Skeleton variant="text"></Skeleton></Breadcrumbs>
+    }
+    return <Breadcrumbs>
+        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
+        <InternalLink identifier={mission.identifier} additionalPath="data">Data</InternalLink>
+        <Typography color="textPrimary" nowrap>{dataset.display_name || dataset.title}</Typography>
+    </Breadcrumbs>
+}
+
 function Title({dataset, type}) {
     const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
@@ -156,7 +167,7 @@ function Title({dataset, type}) {
                     <UnarchiveOutlined className={classes.datasetIcon}/>
                 }
             </Box>
-            <Typography variant="h1">
+            <Typography variant="h1" className={classes.mainTitle}>
                 { title }
                 <Chip color="primary" variant="outlined" label={
                     <Typography variant="body2">{titles[type]}</Typography>

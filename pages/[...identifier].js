@@ -17,10 +17,10 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
         return <Loading fullscreen={true} />
     } else {
         switch(type) {
-            case types.BUNDLE: return <Bundle dataset={model} {...otherProps}/>
-            case types.COLLECTION: return <Collection dataset={model} {...otherProps}/>
             case types.PDS3: return <PDS3Dataset dataset={model} {...otherProps}/>
             case types.TARGET: return <TargetContext model={model} {...otherProps}/>
+            case types.BUNDLE: 
+            case types.COLLECTION: 
             case types.INSTRUMENT: 
             case types.SPACECRAFT:
             case types.MISSION: return <MissionContext type={type} model={model} {...otherProps}/>

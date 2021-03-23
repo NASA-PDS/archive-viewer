@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
+import { types } from 'services/pages.js'
 import InternalLink from './InternalLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +70,18 @@ function TabBar({type, mission, instruments, spacecraft}) {
 
     if(!mission) { return <Tabs />}
 
-    return <Tabs value={type}>
+    let tabValue
+    switch (type) {
+        case types.MISSION: tabValue = "mission"; break;
+        case types.SPACECRAFT: tabValue = "spacecraft"; break;
+        case types.INSTRUMENT: tabValue = "instrument"; break;
+        case types.TARGET: tabValue = "target"; break;
+        case types.BUNDLE:
+        case types.COLLECTION:
+        default: tabValue = "data"
+    }
+
+    return <Tabs value={tabValue}>
                 <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0].identifier : null}/>
                 <LinkTab label="Instruments" value="instrument" identifier={mission.identifier} additionalPath={'instruments'}/>
