@@ -1,9 +1,9 @@
-import { Typography, Breadcrumbs } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { filterInstrumentsForSpacecraft } from 'api/instrument';
 import { getFriendlyInstrumentsForSpacecraft, getFriendlySpacecraft } from 'api/spacecraft.js';
+import Breadcrumbs from 'components/Breadcrumbs';
 import { InstrumentBrowseTable } from 'components/BrowseTable';
-import { Menu } from 'components/ContextObjects';
-import InternalLink from 'components/InternalLink';
+import { Menu } from 'components/ContextHeaders';
 import Loading from 'components/Loading';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
@@ -33,10 +33,7 @@ export default function MissionInstruments(props) {
             <Menu/>
             <PrimaryLayout primary={
                 <>
-                    <Breadcrumbs>
-                        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
-                        <Typography color="textPrimary" nowrap>Instruments</Typography>
-                    </Breadcrumbs>
+                    <Breadcrumbs currentTitle="Instruments" home={mission}/>
                     
                     {!!spacecraft ? spacecraft.map(sp => 
                         <div key={sp.identifier}>

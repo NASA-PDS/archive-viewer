@@ -10,7 +10,7 @@ html, body, main {
     min-height: 100%;
     background-color: #12181D;
 }
-a:not(.MuiButtonBase-root), .link {
+a:not(.MuiButtonBase-root):not(.MuiLink-root), .link {
     cursor: pointer;
     color: $link;
     text-decoration: none;

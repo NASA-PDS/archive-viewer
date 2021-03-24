@@ -3,7 +3,7 @@ import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBun
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft'
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
 import CollectionList from 'components/CollectionList.js';
-import { Menu } from 'components/ContextObjects';
+import { Menu } from 'components/ContextHeaders';
 import HTMLBox from 'components/HTMLBox';
 import { DatasetListBox, InstrumentListBox } from 'components/ListBox';
 import { DeliveryInfo } from 'components/pages/Dataset.js';
@@ -20,6 +20,7 @@ import InternalLink from 'components/InternalLink';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { LabeledListItem } from 'components/SplitListItem';
 import { ExitToApp } from '@material-ui/icons';
+import {InstrumentBreadcrumbs} from 'components/Breadcrumbs'
 
 export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
@@ -54,7 +55,7 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
             <Menu/>
             <PrimaryLayout primary={
                 <>
-                <InstrumentBreadcrumbs mission={mission} primary={instrument}/>
+                <InstrumentBreadcrumbs current={instrument} home={mission}/>
                 <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
                 <InstrumentTagList tags={instrument.tags} />
                 <Metadata model={instrument} />
@@ -97,15 +98,4 @@ function BundleLink({identifier, label}) {
     return <InternalLink identifier={identifier} passHref>
             <Button color="primary" variant={"contained"} size={"large"} endIcon={<ExitToApp/>}>{label}</Button>
     </InternalLink>
-}
-
-function InstrumentBreadcrumbs({mission, primary}) {
-    if(!mission) {
-        return <Breadcrumbs><Skeleton variant="text"></Skeleton></Breadcrumbs>
-    }
-    return <Breadcrumbs>
-        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
-        <InternalLink identifier={mission.identifier} additionalPath="instruments">Instruments</InternalLink>
-        <Typography color="textPrimary" nowrap>{primary.display_name || primary.title}</Typography>
-    </Breadcrumbs>
 }

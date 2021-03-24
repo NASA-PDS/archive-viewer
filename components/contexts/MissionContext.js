@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { familyLookup } from 'api/common';
 import { getFriendlyMissions } from 'api/mission';
 import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
-import { MissionHeader } from 'components/ContextObjects';
+import { MissionHeader } from 'components/ContextHeaders';
 import ErrorMessage from 'components/Error.js';
 import Instrument from 'components/pages/Instrument';
 import Mission from 'components/pages/Mission';
@@ -11,7 +11,7 @@ import MissionInstruments from 'components/pages/MissionInstruments';
 import MissionTargets from 'components/pages/MissionTargets';
 import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
-import { types } from 'services/pages.js';
+import { types, pagePaths } from 'services/pages.js';
 
 const drawerWidth = 360;
 
@@ -62,20 +62,20 @@ export default function MissionContext(props) {
 
     const classes = useStyles()
 
-    let mainContent = null, tabType = null
+    let mainContent = null, pageType = null
     if(!!extraPath && extraPath.length > 0) {
-        if(!!extraPath.includes('targets')) {
+        if(!!extraPath.includes(pagePaths[types.MISSIONTARGETS])) {
             mainContent = <MissionTargets mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
-            tabType = types.TARGET
-        } else if(!!extraPath.includes('instruments')) {
+            pageType = types.MISSIONTARGETS
+        } else if(!!extraPath.includes(pagePaths[types.MISSIONINSTRUMENTS])) {
             mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
-            tabType = types.INSTRUMENT
-        } else if(!!extraPath.includes('data')) {
+            pageType = types.MISSIONINSTRUMENTS
+        } else if(!!extraPath.includes(pagePaths[types.MISSIONDATA])) {
             mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
-            tabType = 'data'
+            pageType = types.MISSIONDATA
         }
     } else {
-        tabType = type
+        pageType = type
         switch(type) {
             case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} {...otherProps}  />; break;
             case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} {...otherProps}  />; break;
@@ -87,7 +87,7 @@ export default function MissionContext(props) {
     }
     return (
         <div className={classes.root}>
-            <MissionHeader type={tabType} mission={mission} instruments={instruments} spacecraft={spacecraft} pdsOnly={props.pdsOnly}/>
+            <MissionHeader page={pageType} mission={mission} instruments={instruments} spacecraft={spacecraft} pdsOnly={props.pdsOnly}/>
             { mainContent }
         </div>
     )

@@ -1,15 +1,14 @@
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getTargetsForMission } from 'api/mission.js';
 import { targetSpacecraftRelationshipTypes } from 'api/relationships';
-import { getFriendlyTargetsForSpacecraft } from 'api/spacecraft';
+import { getRelatedTargetsForTarget } from 'api/target';
+import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import InternalLink from 'components/InternalLink';
 import { TargetListBox } from 'components/ListBox';
 import Loading from 'components/Loading';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from 'components/Breadcrumbs'
 
 const useStyles = makeStyles({
     targetButton: {
@@ -25,29 +24,29 @@ const useStyles = makeStyles({
     }
 });
 
-export default function MissionTargets(props) {
-    const { mission } = props
-    const [targets, setTargets] = useState(props.targets)
+export default function TargetRelated(props) {
+    const { target } = props
+    const [relatedTargets, setRelatedTargets] = useState(props.targets)
 
     useEffect(() => {
-        if(!!props.targets && !!props.spacecraft) getFriendlyTargetsForSpacecraft(props.targets, props.spacecraft).then(setTargets, console.error)
+        getRelatedTargetsForTarget(target).then(setRelatedTargets, er => console.error(er))
         return function cleanup() { 
-            setTargets(null)
+            setRelatedTargets(null)
         }
-    }, [props.targets, props.spacecraft])
+    }, [props.target])
 
     return (
         <>
             <Menu/>
-            <PrimaryLayout primary={!!targets ? 
+            <PrimaryLayout primary={!!relatedTargets ? 
                 <>
-                    <Breadcrumbs currentTitle="Targets" home={mission}/>
-                    <Typography variant="h1" gutterBottom>Targets of observation</Typography>
-                    { targets.length > 6 ? 
-                        <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
+                    <Breadcrumbs currentTitle="Related" home={target}/>                
+                    <Typography variant="h1" gutterBottom>Related Targets</Typography>
+                    { relatedTargets.length > 6 ? 
+                        <TargetListBox items={relatedTargets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
                     : 
                         <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
-                            { targets.map(target => (
+                            { relatedTargets.map(target => (
                                 <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
                             ))}
                         </Grid>

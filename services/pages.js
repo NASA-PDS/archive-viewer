@@ -7,7 +7,26 @@ export const types = {
     BUNDLE: 'bundle',
     COLLECTION: 'collection',
     PDS3: 'pds3',
+    MISSIONTARGETS: 'missionTargets',
+    MISSIONINSTRUMENTS: 'missionInstruments',
+    MISSIONTOOLS: 'missionTools',
+    MISSIONDATA: 'missionData',
+    TARGETRELATED: 'targetRelated',
+    TARGETDATA: 'targetData',
+    TARGETDATA: 'targetTools',
+    TARGETMISSIONS: 'targetMissions',
     UNKNOWN: 'unknown'
+}
+
+export const pagePaths = {
+    [types.MISSIONINSTRUMENTS]: 'instruments',
+    [types.MISSIONTARGETS]: 'targets',
+    [types.MISSIONTOOLS]: 'tools',
+    [types.MISSIONDATA]: 'data',
+    [types.TARGETRELATED]: 'related',
+    [types.TARGETDATA]: 'data',
+    [types.TARGETTOOLS]: 'tools',
+    [types.TARGETMISSIONS]: 'missions'
 }
 
 export const resolveType = function(fromSolr) {

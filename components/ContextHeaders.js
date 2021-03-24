@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { types } from 'services/pages.js'
+import { types, pagePaths } from 'services/pages.js'
 import InternalLink from './InternalLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -50,53 +50,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function MissionHeader(props) {
-    const {type, mission, pdsOnly, instruments, spacecraft} = props
+    const {page, mission, pdsOnly, instruments, spacecraft} = props
     const classes = useStyles();
     
     if(!mission) {
-        return <AppBar className={classes.header} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
+        return <AppBar className={classes.header} position="static" color="inherit"><Menu/><SkeletonBanner/><SkeletonTabBar tabCount={5}/></AppBar>
     }
 
     const {display_name, title, image_url} = mission
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
     return <AppBar className={classes.header} position="static" color="inherit">
+        <Menu/>
         <Banner name={headerName} image_url={image_url} />
-        <TabBar type={type} mission={mission} instruments={instruments} spacecraft={spacecraft}/>
+        <MissionTabBar page={page} mission={mission} instruments={instruments} spacecraft={spacecraft}/>
     </AppBar>
 }
 
-function TabBar({type, mission, instruments, spacecraft}) {
+function MissionTabBar({page, mission, spacecraft}) {
 
-    if(!mission) { return <Tabs />}
+    if(!mission) { return <SkeletonTabBar tabCount={5}/>}
 
     let tabValue
-    switch (type) {
-        case types.MISSION: tabValue = "mission"; break;
-        case types.SPACECRAFT: tabValue = "spacecraft"; break;
-        case types.INSTRUMENT: tabValue = "instrument"; break;
-        case types.TARGET: tabValue = "target"; break;
+    switch(page) {
         case types.BUNDLE:
-        case types.COLLECTION:
-        default: tabValue = "data"
+        case types.COLLECTION: tabValue = types.MISSIONDATA; break;
+        case types.INSTRUMENT: tabValue = types.MISSIONINSTRUMENTS; break;
+        default: tabValue = page
     }
 
     return <Tabs value={tabValue}>
-                <LinkTab label="Overview" value="mission" identifier={mission.identifier}/>
-                <LinkTab label="Spacecraft" value="spacecraft" identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0].identifier : null}/>
-                <LinkTab label="Instruments" value="instrument" identifier={mission.identifier} additionalPath={'instruments'}/>
-                <LinkTab label="Targets" value="target" identifier={mission.identifier} additionalPath={'targets'}/>
-                <LinkTab label="Data" value="data" identifier={mission.identifier} additionalPath={'data'}/>
+                <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
+                <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0].identifier : null}/>
+                <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
+                <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
+                <LinkTab label="Data" value={types.MISSIONDATA} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONDATA]}/>
             </Tabs>
 }
 
-function SkeletonTabBar() {
+function SkeletonTabBar({tabCount}) {
     return <Grid container direction="row" alignItems="center">
-        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
-        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
-        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
-        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
-        <Grid item style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />
+        {
+            Array(tabCount).fill().map((_, i) => <Grid item key={i} style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />)
+        }
     </Grid>
 }
 
@@ -106,19 +102,34 @@ function LinkTab(props) {
 }
 
 function TargetHeader(props) {
-    const {target, pdsOnly} = props
+    const {target, pdsOnly, page} = props
     const classes = useStyles();
 
     if(!target) {
-        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
+        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><Menu/><SkeletonBanner/><SkeletonTabBar/></AppBar>
     }
     
     const {display_name, title, image_url} = target
     const headerName = display_name && !pdsOnly ? display_name : title
 
     return  <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
+        <Menu/>
         <Banner name={headerName} image_url={image_url} />
+        <TargetTabBar page={page} target={target} />
     </AppBar>
+}
+
+function TargetTabBar({page, target}) {
+
+    if(!target) { return <SkeletonTabBar tabCount={4}/>}
+
+    return <Tabs value={page}>
+                <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
+                <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
+                <LinkTab label="Missions" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
+                {/* <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/> */}
+                <LinkTab label="Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
+            </Tabs>
 }
 
 function Banner({name, image_url}) {

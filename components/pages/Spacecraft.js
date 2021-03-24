@@ -1,6 +1,6 @@
-import { Typography, Breadcrumbs } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { getFriendlySpacecraft } from 'api/spacecraft.js';
-import { Menu } from 'components/ContextObjects';
+import { Menu } from 'components/ContextHeaders';
 import HTMLBox from 'components/HTMLBox';
 import { SpacecraftListBox } from 'components/ListBox';
 import { Metadata } from "components/Metadata";
@@ -9,8 +9,7 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
 import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
-import Skeleton from '@material-ui/lab/Skeleton';
-import InternalLink from 'components/InternalLink';
+import Breadcrumbs from 'components/Breadcrumbs'
 
 export default function Spacecraft(props) {
     const {spacecraft, siblings, mission} = props
@@ -30,7 +29,7 @@ export default function Spacecraft(props) {
             <Menu/>
             <PrimaryLayout primary={   
                 <>
-                <SpacecraftBreadcrumbs mission={mission} primary={spacecraft} />
+                <Breadcrumbs current={spacecraft} home={mission}/>
                 <Typography variant="h1" gutterBottom> { spacecraft.display_name ? spacecraft.display_name : spacecraft.title } </Typography>
                 <SpacecraftTagList tags={spacecraft.tags} />
                 <Metadata model={spacecraft} />
@@ -47,15 +46,4 @@ export default function Spacecraft(props) {
             }/>
         </>
     )
-}
-
-
-function SpacecraftBreadcrumbs({mission, primary}) {
-    if(!mission) {
-        return <Breadcrumbs><Skeleton variant="text"></Skeleton></Breadcrumbs>
-    }
-    return <Breadcrumbs>
-        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
-        <Typography color="textPrimary" nowrap>{primary.display_name || primary.title}</Typography>
-    </Breadcrumbs>
 }

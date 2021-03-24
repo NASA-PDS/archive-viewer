@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
-import {stitchDatasetWithMockData} from 'api/mock'
-import CollectionList from 'components/CollectionList.js'
-import RelatedTools from 'components/RelatedTools'
-import CitationBuilder from 'components/CitationBuilder'
-import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
-import {DatasetTagList} from 'components/TagList'
-import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip, Breadcrumbs } from '@material-ui/core'
-import InternalLink from 'components/InternalLink'
-import { UnarchiveOutlined, FolderOutlined } from '@material-ui/icons'
+import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import PrimaryContent from 'components/PrimaryContent';
-import ResponsiveLayout from 'components/ResponsiveLayout'
-import TangentAccordion from 'components/TangentAccordion';
-import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
-import { Helmet } from 'react-helmet'
+import { FolderOutlined, UnarchiveOutlined } from '@material-ui/icons';
+import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
+import CitationBuilder from 'components/CitationBuilder';
+import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
+import CollectionList from 'components/CollectionList.js';
+import InternalLink from 'components/InternalLink';
 import { Metadata, MetadataItem } from 'components/Metadata';
-import Skeleton from '@material-ui/lab/Skeleton';
+import PrimaryContent from 'components/PrimaryContent';
+import PrimaryLayout from 'components/PrimaryLayout';
+import RelatedTools from 'components/RelatedTools';
+import { DatasetTagList } from 'components/TagList';
+import TangentAccordion from 'components/TangentAccordion';
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles((theme) => ({
     mainTitle: {
@@ -85,23 +82,11 @@ const titles = {
 }
 
 function Dataset({dataset, lidvid, mockup, mission, pdsOnly, type}) {
-    const [instruments, setInstruments] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
-    const [missions, setMissions] = useState([mission])
-    const [targets, setTargets] = useState(null)
-
-    useEffect(() => {
-        if(mockup) { stitchDatasetWithMockData(dataset) }
-        getInstrumentsForDataset(dataset).then(setInstruments, console.error)
-        getSpacecraftForDataset(dataset).then(setSpacecraft, console.error)
-        getMissionsForDataset(dataset).then(setMissions, console.error)
-        getTargetsForDataset(dataset).then(setTargets, console.error)
-    }, [lidvid])
-
+    
     return (
-        <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
+        <PrimaryLayout itemScope itemType="https://schema.org/Dataset" primary={
             <>
-            <DatasetBreadcrumbs mission={mission} dataset={dataset}/>
+            <DatasetBreadcrumbs home={mission} current={dataset}/>
             <Title dataset={dataset} type={type} />
             <DatasetTagList tags={dataset.tags}/>
             <DeliveryInfo dataset={dataset} />
@@ -143,17 +128,6 @@ export function Collection({...props}) {
 }
 export function PDS3Dataset({...props}) {
     return <Dataset type={types.PDS3} {...props} />
-}
-
-function DatasetBreadcrumbs({mission, dataset}) {
-    if(!mission) {
-        return <Breadcrumbs><Skeleton variant="text"></Skeleton></Breadcrumbs>
-    }
-    return <Breadcrumbs>
-        <InternalLink identifier={mission.identifier}>{mission.display_name || mission.title}</InternalLink>
-        <InternalLink identifier={mission.identifier} additionalPath="data">Data</InternalLink>
-        <Typography color="textPrimary" nowrap>{dataset.display_name || dataset.title}</Typography>
-    </Breadcrumbs>
 }
 
 function Title({dataset, type}) {
