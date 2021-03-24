@@ -7,7 +7,7 @@ import { groupByAttributedRelationship, groupByFirstTag, downplayGroupsThreshold
 import SectionedTable from './SectionedTable';
 import TangentAccordion from './TangentAccordion';
 
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     sectionHeader: {
       marginTop: theme.spacing(3),
       marginBottom: theme.spacing(2),
