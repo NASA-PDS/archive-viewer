@@ -1,6 +1,6 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGetRelated, initialLookup, stitchWithWebFields, httpGet} from 'api/common.js'
+import {httpGetRelated, initialLookup, stitchWithWebFields, httpGet, stitchWithInternalReferences} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 
 export function getSpacecraftForMission(mission) {
@@ -37,7 +37,9 @@ export function getDatasetsForMission(mission, spacecraft, instruments) {
     let params = {
         q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].join(' OR ')}))`,
     }
-    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+    return httpGet(router.datasetCore, params)
+        .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
 
 export function getFriendlyMissions(missions) {

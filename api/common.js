@@ -303,6 +303,22 @@ function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }
 
+export function stitchWithInternalReferences(fieldName, route) {
+    return (previousResult) => {
+        if(!previousResult || previousResult.length === 0) return Promise.resolve([])
+
+        const lids = previousResult.map(result => result[fieldName] || []).flat().map(lidvid => new LID(lidvid).lid)
+
+        return new Promise((resolve, _ ) => {
+            httpGetIdentifiers(router.defaultCore, lids).then(stitchWithWebFields(['display_name'], route)).then(internalReferences => {
+                previousResult.forEach(result => {
+                    result[fieldName] = (result[fieldName] || []).map(referenceLid => internalReferences.find(ref => new LID(ref.identifier).lid === new LID(referenceLid).lid ) || referenceLid)
+                })
+                resolve(previousResult)
+            }, () => resolve(previousResult))
+        })
+    }
+}
 
 export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}

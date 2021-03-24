@@ -1,8 +1,8 @@
-import React, { useEffect, useState} from 'react';
-import {pds3Get} from 'api/common.js';
-import Loading from 'components/Loading'
-import { Link, Button, CardActions, List, ListItem, ListItemText } from '@material-ui/core'
-import TangentCard from 'components/TangentCard'
+import { Button, CardActions, Link, List, ListItem, ListItemText } from '@material-ui/core';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { pds3Get } from 'api/common.js';
+import Loading from 'components/Loading';
+import React, { useEffect, useState } from 'react';
 import TangentAccordion from './TangentAccordion';
 
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'
@@ -39,7 +39,7 @@ function ResultsList({datasets, count, resultsUrl}) {
                     </ListItem>
                     )}
             </List>
-            <CardActions><Button variant="contained" color="primary" href={resultsUrl}>View other results</Button></CardActions>
+            <CardActions><Button variant="contained" color="primary" href={resultsUrl} endIcon={<OpenInNewIcon/>}>View other results</Button></CardActions>
         </TangentAccordion>
     )
 }

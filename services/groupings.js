@@ -35,7 +35,7 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     return groups
 }
 
-const groupByRelatedItems = (items, relatedItems, field) => {
+const groupByRelatedItems = (items, field) => {
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
@@ -47,17 +47,18 @@ const groupByRelatedItems = (items, relatedItems, field) => {
             insert(item, 'Other', 999)
         }
         else {
-            const lids = item[field]
+            const references = item[field]
             // an item might appear in many groups simultaneously. add it to each group it references
-            lids.forEach(lidvid => {
-                let host_name
-                const lid = new LID(lidvid).lid
-                const groupInfoSource = relatedItems ? relatedItems.find(a => a.identifier === lid) : null
+            references.forEach(ref => {
+
+                if(typeof ref === 'string') {
+                    insert(item, new LID(ref).lid)
+                } else if(!!ref.identifier) {
+                    insert(item, ref.display_name || ref.title)
+                } else {
+                    insert(item, 'Other', 999)
+                }
                 
-                if (groupInfoSource) host_name = groupInfoSource.display_name ? groupInfoSource.display_name : groupInfoSource.title
-                else host_name = lid
-                
-                insert(item, host_name)
             })
         }
     }

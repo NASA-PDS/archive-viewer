@@ -1,7 +1,8 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
-import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers} from 'api/common.js'
+import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers, stitchWithInternalReferences} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
+import LogicalIdentifier from 'services/LogicalIdentifier.js'
 
 export function getSpacecraftForTarget(target) {
     let params = {
@@ -17,10 +18,11 @@ export function getDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
-        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT instrument_ref:*)`,
-        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
+        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT instrument_host_ref:*spacecraft*)`,
+        // fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_ref'
     }
     return httpGet(router.datasetCore, params)
+        .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
         .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
 }
 
@@ -52,7 +54,7 @@ export function getRelatedTargetsForTarget(target) {
                 associated: associated.map(a => a.associated_targets.find(ref => ref !== targetLid))
             }
             let allIdentifiers = [...lidMap.children, ...lidMap.parents, ...lidMap.associated]
-            httpGetIdentifiers(router.targetsCore, allIdentifiers).then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb), reject).then(allTargets => {
+            httpGetIdentifiers(router.targetsCore, allIdentifiers).then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb), reject).then(allTargets => {
                 let toReturn = [...lidMap.children.map(childLid => allTargets.find(target => target.identifier === childLid)),
                  ...lidMap.parents.map(parentLid => allTargets.find(target => target.identifier === parentLid)),
                  ...lidMap.associated.map(associatedLid => allTargets.find(target => target.identifier === associatedLid))
