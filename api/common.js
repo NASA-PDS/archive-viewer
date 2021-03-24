@@ -219,7 +219,7 @@ export function initialLookup(identifier, pdsOnly) {
 
             if(!!supplementalRoute) {
                 httpGet(supplementalRoute, {
-                    q: `logical_identifier:("${lid.escaped}" OR ${lid.escapedLid})`,
+                    q: `logical_identifier:("${lid.escaped}" OR "${lid.escapedLid}")`,
                     fl: `*,[child parentFilter=attrname:${attrname}]`,
                 }).then(result => {
                     if(result.length > 0) {
