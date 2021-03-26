@@ -12,6 +12,7 @@ import MissionTargets from 'components/pages/MissionTargets';
 import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
 import { types, pagePaths } from 'services/pages.js';
+import MissionTools from 'components/pages/MissionTools';
 
 const drawerWidth = 360;
 
@@ -73,6 +74,9 @@ export default function MissionContext(props) {
         } else if(!!extraPath.includes(pagePaths[types.MISSIONDATA])) {
             mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
             pageType = types.MISSIONDATA
+        } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
+            mainContent = <MissionTools mission={model} spacecraft={spacecraft} instruments={instruments} />
+            pageType = types.MISSIONTOOLS
         }
     } else {
         pageType = type
@@ -87,7 +91,7 @@ export default function MissionContext(props) {
     }
     return (
         <div className={classes.root}>
-            <MissionHeader page={pageType} mission={mission} instruments={instruments} spacecraft={spacecraft} pdsOnly={props.pdsOnly}/>
+            <MissionHeader page={pageType} mission={mission} instruments={instruments} spacecraft={spacecraft} instruments={instruments} targets={targets} pdsOnly={props.pdsOnly}/>
             { mainContent }
         </div>
     )

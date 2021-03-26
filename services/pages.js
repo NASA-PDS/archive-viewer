@@ -13,8 +13,8 @@ export const types = {
     MISSIONDATA: 'missionData',
     TARGETRELATED: 'targetRelated',
     TARGETDATA: 'targetData',
-    TARGETDATA: 'targetTools',
     TARGETMISSIONS: 'targetMissions',
+    TARGETTOOLS: 'targetTools',
     UNKNOWN: 'unknown'
 }
 

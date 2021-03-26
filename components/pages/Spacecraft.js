@@ -32,10 +32,8 @@ export default function Spacecraft(props) {
                 <Breadcrumbs current={spacecraft} home={mission}/>
                 <Typography variant="h1" gutterBottom> { spacecraft.display_name ? spacecraft.display_name : spacecraft.title } </Typography>
                 <SpacecraftTagList tags={spacecraft.tags} />
-                <Metadata model={spacecraft} />
-                
                 <HTMLBox markup={spacecraft.html1} />
-                <RelatedTools tools={spacecraft.tools}/>
+                <Metadata model={spacecraft} />
                 <HTMLBox markup={spacecraft.html2} />
                 </>
             } secondary = {

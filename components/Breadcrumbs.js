@@ -4,7 +4,7 @@ import InternalLink from 'components/InternalLink';
 
 export default function Breadcrumbs({home, current, currentTitle, subsectionLink}) {
     if(!home || !(current || currentTitle)) {
-        return <MaterialBreadcrumbs><Skeleton variant="text"></Skeleton></MaterialBreadcrumbs>
+        return <SkeletonBreadcrumbs/>
     }
     return <MaterialBreadcrumbs>
         <InternalLink identifier={home.identifier} passHref><Link color="inherit">{home.display_name || home.title}</Link></InternalLink>
@@ -20,9 +20,18 @@ function InstrumentBreadcrumbs(props) {
 }
 
 function DatasetBreadcrumbs(props) {
+    if(!props.home) {
+        return <SkeletonBreadcrumbs/>
+    }
     return <Breadcrumbs {...props} subsectionLink={
         <InternalLink identifier={props.home.identifier} additionalPath="data" passHref><Link color="inherit">Data</Link></InternalLink>
     }/>
 }
 
+function SkeletonBreadcrumbs() {
+    return <MaterialBreadcrumbs>
+        <Skeleton variant="text" width={80}></Skeleton>
+        <Skeleton variant="text" width={80}></Skeleton>
+    </MaterialBreadcrumbs>
+}
 export { InstrumentBreadcrumbs, DatasetBreadcrumbs }

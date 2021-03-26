@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Link, AppBar, Tabs, Tab } from '@material-ui/core'
+import { AppBar, Grid, Link, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { types, pagePaths } from 'services/pages.js'
+import React from 'react';
+import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,10 +26,11 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     bannerTitle: {
-        fontSize: '3.5rem'
+        fontSize: '3.5rem',
+        marginLeft: theme.spacing(2)
     },
     headerImage: {
-        padding: '8px',
+        padding: theme.spacing(1),
         [theme.breakpoints.down('sm')]: {
             height: theme.custom.headerBanner.height.sm
         },
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function MissionHeader(props) {
-    const {page, mission, pdsOnly, instruments, spacecraft} = props
+    const {page, mission, pdsOnly, ...otherProps} = props
     const classes = useStyles();
     
     if(!mission) {
@@ -63,11 +64,11 @@ function MissionHeader(props) {
     return <AppBar className={classes.header} position="static" color="inherit">
         <Menu/>
         <Banner name={headerName} image_url={image_url} />
-        <MissionTabBar page={page} mission={mission} instruments={instruments} spacecraft={spacecraft}/>
+        <MissionTabBar page={page} mission={mission} {...otherProps}/>
     </AppBar>
 }
 
-function MissionTabBar({page, mission, spacecraft}) {
+function MissionTabBar({page, mission, spacecraft, instruments, targets}) {
 
     if(!mission) { return <SkeletonTabBar tabCount={5}/>}
 
@@ -81,9 +82,10 @@ function MissionTabBar({page, mission, spacecraft}) {
 
     return <Tabs value={tabValue}>
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
-                <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 ? spacecraft[0].identifier : null}/>
-                <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
-                <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
+                { spacecraft && spacecraft.length > 0 && <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft[0].identifier}/> }
+                { instruments && instruments.length > 0 && <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/> }
+                { targets && targets.length > 0 && <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/> }
+                <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
                 <LinkTab label="Data" value={types.MISSIONDATA} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONDATA]}/>
             </Tabs>
 }
@@ -127,7 +129,7 @@ function TargetTabBar({page, target}) {
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Missions" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
-                {/* <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/> */}
+                <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
                 <LinkTab label="Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>
 }
@@ -152,4 +154,4 @@ function Menu() {
     const classes = useStyles()
     return <Link href="/" className={classes.menu}><img alt="Menu icon" src="/images/menu.svg"/></Link>
 }
-export {MissionHeader, TargetHeader, Menu }
+export { MissionHeader, TargetHeader, Menu };
