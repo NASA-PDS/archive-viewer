@@ -4,6 +4,7 @@ import { getDatasetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import DatasetTable from 'components/DatasetTable';
+import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
 import { groupByRelatedItems } from 'services/groupings';
@@ -29,7 +30,7 @@ export default function TargetData(props) {
                 <>
                     <Breadcrumbs currentTitle="Data" home={target}/>
 
-                    <Typography variant="h1" gutterBottom>Non-Mission Data</Typography>
+                    <Typography variant="h1" gutterBottom>Non-Mission {target.display_name || target.title} Data</Typography>
                     { datasets ? 
                         <DatasetTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
                         : <>
@@ -39,6 +40,8 @@ export default function TargetData(props) {
                         </>
                     }                  
                 </>
+            } secondary={
+                <PDS3Results name={target.display_name ? target.display_name : target.title}/>
             }/>
         </>
     )

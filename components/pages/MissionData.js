@@ -4,6 +4,7 @@ import { getDatasetsForMission } from 'api/mission.js';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import MissionDataTable from 'components/DatasetTable';
+import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
 import { groupByRelatedItems } from 'services/groupings';
@@ -38,7 +39,9 @@ export default function MissionData(props) {
                         </>
                     }
                 </>
-            }/>
+            } secondary = {
+                <PDS3Results name={mission.display_name ? mission.display_name : mission.title}/>
+            } />
         </>
     )
 }

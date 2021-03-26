@@ -36,8 +36,6 @@ export default function Spacecraft(props) {
                 <Metadata model={spacecraft} />
                 <HTMLBox markup={spacecraft.html2} />
                 </>
-            } secondary = {
-                <PDS3Results name={spacecraft.display_name ? spacecraft.display_name : spacecraft.title} hostId={spacecraft.pds3_instrument_host_id}/>
             } navigational = {
                 siblings && siblings.length > 1 &&
                     <SpacecraftListBox items={relatedSpacecraft} active={spacecraft.identifier} hideHeader/>
