@@ -1,8 +1,7 @@
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { getTargetsForMission } from 'api/mission.js';
-import { targetSpacecraftRelationshipTypes } from 'api/relationships';
-import { getFriendlyTargetsForSpacecraft } from 'api/spacecraft';
+import { getFriendlyTargetsForMission } from 'api/mission.js';
+import { targetMissionRelationshipTypes } from 'api/relationships';
 import { Menu } from 'components/ContextHeaders';
 import InternalLink from 'components/InternalLink';
 import { TargetListBox } from 'components/ListBox';
@@ -30,11 +29,11 @@ export default function MissionTargets(props) {
     const [targets, setTargets] = useState(props.targets)
 
     useEffect(() => {
-        if(!!props.targets && !!props.spacecraft) getFriendlyTargetsForSpacecraft(props.targets, props.spacecraft).then(setTargets, console.error)
+        if(!!props.targets) getFriendlyTargetsForMission(props.targets, mission.identifier).then(setTargets, console.error)
         return function cleanup() { 
             setTargets(null)
         }
-    }, [props.targets, props.spacecraft])
+    }, [props.targets])
 
     return (
         <>
@@ -44,7 +43,7 @@ export default function MissionTargets(props) {
                     <Breadcrumbs currentTitle="Targets" home={mission}/>
                     <Typography variant="h1" gutterBottom>Targets of observation</Typography>
                     { targets.length > 6 ? 
-                        <TargetListBox items={targets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
+                        <TargetListBox items={targets} groupInfo={targetMissionRelationshipTypes} hideHeader/>
                     : 
                         <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
                             { targets.map(target => (

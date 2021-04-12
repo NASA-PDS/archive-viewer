@@ -9,7 +9,7 @@ const investigationsCollection = 'web-investigations-alias'
 const targetrelationshipsCollection = 'web-targetrelationships-alias'
 const relationshipsCollection = 'web-objectrelationships-alias'
 const toolsCollection = 'web-tools-alias'
-const targetSpacecraftRelationshipTypesCollection = 'web-targetspacecraftrelationshiptypes-alias'
+const targetMissionRelationshipTypesCollection = 'web-targetmissionrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
 // const coreCollection = 'pds'
 
@@ -28,7 +28,7 @@ export default {
     missionsWeb: `${localSolr}/${investigationsCollection}/select`,
     missionsCore: `${remoteSolr}/search`,
     relationships: `${localSolr}/${relationshipsCollection}/select`,
-    targetSpacecraftRelationshipTypes: `${localSolr}/${targetSpacecraftRelationshipTypesCollection}/select`,
+    targetMissionRelationshipTypes: `${localSolr}/${targetMissionRelationshipTypesCollection}/select`,
     instrumentSpacecraftRelationshipTypes: `${localSolr}/${instrumentSpacecraftRelationshipTypesCollection}/select`,
     tools: `${localSolr}/${toolsCollection}/select`,
 }

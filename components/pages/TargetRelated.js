@@ -1,11 +1,10 @@
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { targetSpacecraftRelationshipTypes } from 'api/relationships';
 import { getRelatedTargetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import InternalLink from 'components/InternalLink';
-import { TargetListBox } from 'components/ListBox';
+import { RelatedTargetListBox } from 'components/ListBox';
 import Loading from 'components/Loading';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
@@ -43,7 +42,7 @@ export default function TargetRelated(props) {
                     <Breadcrumbs currentTitle="Related" home={target}/>                
                     <Typography variant="h1" gutterBottom>Related Targets</Typography>
                     { relatedTargets.length > 6 ? 
-                        <TargetListBox items={relatedTargets} groupInfo={targetSpacecraftRelationshipTypes} hideHeader/>
+                        <RelatedTargetListBox items={relatedTargets} hideHeader/>
                     : 
                         <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
                             { relatedTargets.map(target => (

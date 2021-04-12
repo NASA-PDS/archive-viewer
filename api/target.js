@@ -4,14 +4,14 @@ import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers, stitch
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 import LogicalIdentifier from 'services/LogicalIdentifier.js'
 
-export function getSpacecraftForTarget(target) {
+export function getMissionstForTarget(target) {
     let params = {
-        q: `target_ref:${new LID(target.identifier).escapedLid}\\:\\:* AND data_class:"Instrument_Host"`,
-        fl: 'identifier, title, instrument_ref, target_ref, investigation_ref'
+        q: `target_ref:${new LID(target.identifier).escapedLid}\\:\\:* AND data_class:"Investigation"`,
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
     }
-    return httpGetRelated(params, router.spacecraftCore, [])
-        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromTargetToSpacecraft, [target.identifier]))
+    return httpGetRelated(params, router.missionsCore, [])
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.missionsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromTargetToMission, [target.identifier]))
 }
 
 export function getDatasetsForTarget(target) {

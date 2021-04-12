@@ -22,7 +22,6 @@ export default function Targetontext({lidvid, model, extraPath, pdsOnly, mockup}
 
     let mainContent = null, pageType = types.TARGET
     if(!!extraPath && extraPath.length > 0) {
-        console.log(extraPath)
         if(!!extraPath.includes(pagePaths[types.TARGETRELATED])) {
             mainContent = <TargetRelated target={model} />
             pageType = types.TARGETRELATED

@@ -18,16 +18,10 @@ export function getPrimaryBundleForMission(mission) {
     return initialLookup(mission.mission_bundle)
 }
 
-export function getTargetsForMission(mission) {
-    let missionLid = new LID(mission.identifier)
-    let knownTargets = mission.target_ref
-    let params = {
-        q: `investigation_ref:${missionLid.escapedLid}\\:\\:* AND data_class:"Target"`,
-        fl: 'identifier, title'
-    }
-    return httpGetRelated(params, router.targetsCore, knownTargets)
+export function getFriendlyTargetsForMission(targets, missionLid) {
+    return Promise.resolve(targets)
         .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, new LID(mission.instrument_host_ref[0])))
+        .then(stitchWithRelationships(relationshipTypes.fromMissionToTarget, [missionLid]))
 }
 
 export function getDatasetsForMission(mission, spacecraft, instruments) {

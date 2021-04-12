@@ -2,7 +2,7 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet} from 'api/common.js'
 
-export let targetSpacecraftRelationshipTypes
+export let targetMissionRelationshipTypes
 export let instrumentSpacecraftRelationshipTypes
 const unknownRelationship = {
     order: 999,
@@ -12,18 +12,18 @@ const unknownRelationship = {
 
 async function bootstrap() {
     return new Promise((resolve, reject) => {
-        if(!!targetSpacecraftRelationshipTypes && !!instrumentSpacecraftRelationshipTypes) {
+        if(!!targetMissionRelationshipTypes && !!instrumentSpacecraftRelationshipTypes) {
             resolve()
         } else {
             const params = {
                 q: "*:*", fl: "name,order,relationshipId"
             }
             Promise.all([
-                httpGet(router.targetSpacecraftRelationshipTypes, params),
+                httpGet(router.targetMissionRelationshipTypes, params),
                 httpGet(router.instrumentSpacecraftRelationshipTypes, params)
             ])
             .then((response) => {
-                targetSpacecraftRelationshipTypes = response[0]
+                targetMissionRelationshipTypes = response[0]
                 instrumentSpacecraftRelationshipTypes = response[1]
                 resolve()
             }, reject)
@@ -32,8 +32,8 @@ async function bootstrap() {
 }
 
 export const types = {
-    fromSpacecraftToTarget: 'fromSpacecraftToTarget',
-    fromTargetToSpacecraft: 'fromTargetToSpacecraft',
+    fromMissionToTarget: 'fromMissionToTarget',
+    fromTargetToMission: 'fromTargetToMission',
     fromInstrumentToSpacecraft: 'fromInstrumentToSpacecraft',
     fromSpacecraftToInstrument: 'fromSpacecraftToInstrument',
     fromInstrumentToBundle: 'fromInstrumentToBundle'
@@ -41,15 +41,15 @@ export const types = {
 
 const configureForType = (type) => {
     switch (type) {
-        case types.fromSpacecraftToTarget: return {
-            relationshipTypes: targetSpacecraftRelationshipTypes,
-            sourceType: 'instrument_host',
+        case types.fromMissionToTarget: return {
+            relationshipTypes: targetMissionRelationshipTypes,
+            sourceType: 'investigation',
             relatedType: 'target'
         }
-        case types.fromTargetToSpacecraft: return {
-            relationshipTypes: targetSpacecraftRelationshipTypes,
+        case types.fromTargetToMission: return {
+            relationshipTypes: targetMissionRelationshipTypes,
             sourceType: 'target',
-            relatedType: 'instrument_host'
+            relatedType: 'investigation'
         }
         case types.fromInstrumentToSpacecraft: return {
             relationshipTypes: instrumentSpacecraftRelationshipTypes,

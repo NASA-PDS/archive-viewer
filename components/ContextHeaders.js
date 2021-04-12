@@ -83,8 +83,8 @@ function MissionTabBar({page, mission, spacecraft, instruments, targets}) {
     return <Tabs value={tabValue}>
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
                 { spacecraft && spacecraft.length > 0 && <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft[0].identifier}/> }
-                { instruments && instruments.length > 0 && <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/> }
-                { targets && targets.length > 0 && <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/> }
+                <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
+                <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
                 <LinkTab label="Data" value={types.MISSIONDATA} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONDATA]}/>
             </Tabs>

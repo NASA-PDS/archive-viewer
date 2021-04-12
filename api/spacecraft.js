@@ -43,18 +43,6 @@ export function getSiblingSpacecraft(siblings) {
         .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
 }
 
-export function getFriendlyTargetsForSpacecraft(targets, spacecraft) {
-    return Promise.resolve(targets)
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraft.map(sp => sp.identifier)))
-}
-
-export function getTargetsForSpacecraft(targets, spacecraft) {
-    return httpGetIdentifiers(router.targetsCore, targets)
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraft))
-}
-
 export function getDatasetsForSpacecraft(spacecraft) {
     let spacecraftLid = new LID(spacecraft.identifier)
 

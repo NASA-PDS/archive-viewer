@@ -1,22 +1,22 @@
 import { Typography } from '@material-ui/core';
-import { getSpacecraftForTarget } from 'api/target';
-import { SpacecraftBrowseTable } from 'components/BrowseTable';
+import { targetMissionRelationshipTypes } from 'api/relationships';
+import { getMissionstForTarget } from 'api/target';
+import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
-import InternalLink from 'components/InternalLink';
+import { MissionListBox } from 'components/ListBox';
 import Loading from 'components/Loading';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from 'components/Breadcrumbs'
 
 export default function TargetMissions(props) {
     const { target } = props
-    const [spacecraft, setSpacecraft] = useState(null)
+    const [missions, setMissions] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForTarget(target).then(setSpacecraft, er => console.error(er))
+        getMissionstForTarget(target).then(setMissions, er => console.error(er))
 
         return function cleanup() {
-            setSpacecraft(null)
+            setMissions(null)
         }
     }, [target])
 
@@ -24,11 +24,11 @@ export default function TargetMissions(props) {
     return (
         <>
             <Menu/>
-            <PrimaryLayout primary={!!spacecraft ? 
+            <PrimaryLayout primary={!!missions ? 
                 <>
                     <Breadcrumbs currentTitle="Missions" home={target}/>
-                    <Typography variant="h1" gutterBottom>Observational Spacecraft</Typography>
-                    <SpacecraftBrowseTable items={spacecraft} />
+                    <Typography variant="h1" gutterBottom>Observational Missions</Typography>
+                    <MissionListBox items={missions} groupInfo={targetMissionRelationshipTypes} hideHeader/>
                     
                 </>
                 : <Loading/>

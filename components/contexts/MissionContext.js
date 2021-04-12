@@ -66,7 +66,7 @@ export default function MissionContext(props) {
     let mainContent = null, pageType = null
     if(!!extraPath && extraPath.length > 0) {
         if(!!extraPath.includes(pagePaths[types.MISSIONTARGETS])) {
-            mainContent = <MissionTargets mission={model} targets={targets} spacecraft={spacecraft} {...otherProps} />
+            mainContent = <MissionTargets mission={model} targets={targets} {...otherProps} />
             pageType = types.MISSIONTARGETS
         } else if(!!extraPath.includes(pagePaths[types.MISSIONINSTRUMENTS])) {
             mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
@@ -75,7 +75,7 @@ export default function MissionContext(props) {
             mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
             pageType = types.MISSIONDATA
         } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
-            mainContent = <MissionTools mission={model} spacecraft={spacecraft} instruments={instruments} />
+            mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
         }
     } else {
