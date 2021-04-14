@@ -29,7 +29,7 @@ export function getDatasetsForMission(mission, spacecraft, instruments) {
     const spacecraftQuery = spacecraft.map(sp => `instrument_host_ref:${new LID(sp.identifier).escapedLid}\\:\\:*`).join(' OR ')
     const instrumentQuery = instruments.map(inst => `instrument_ref:${new LID(inst.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
-        q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].join(' OR ')}))`,
+        q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].filter(el => !!el).join(' OR ')}))`,
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))

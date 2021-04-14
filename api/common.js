@@ -92,9 +92,21 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
                         target_ref:${initialLid}\\:\\:*)`]
 
         // also look up anything that references its instruments/spacecraft/missions (but NOT targets)
-        initial.instrument_ref && initial.instrument_ref.forEach(lid => queries.push(`instrument_ref:${new LID(lid).escapedLid}\\:\\:*`))
-        initial.investigation_ref && initial.investigation_ref.forEach(lid => queries.push(`investigation_ref:${new LID(lid).escapedLid}\\:\\:*`))
-        initial.instrument_host_ref && initial.instrument_host_ref.forEach(lid => queries.push(`instrument_host_ref:${new LID(lid).escapedLid}\\:\\:*`))
+        initial.instrument_ref && initial.instrument_ref.forEach(lid => { 
+            let escaped = new LID(lid).escapedLid
+            queries.push(`identifier:"${escaped}"`)
+            queries.push(`instrument_ref:${escaped}\\:\\:*`)
+        })
+        initial.investigation_ref && initial.investigation_ref.forEach(lid => { 
+            let escaped = new LID(lid).escapedLid
+            queries.push(`identifier:"${escaped}"`)
+            queries.push(`investigation_ref:${escaped}\\:\\:*`)
+        })
+        initial.instrument_host_ref && initial.instrument_host_ref.forEach(lid => { 
+            let escaped = new LID(lid).escapedLid
+            queries.push(`identifier:"${escaped}"`)
+            queries.push(`instrument_host_ref:${escaped}\\:\\:*`)
+        })
         
         const params = {
             q: `data_class:* AND (${queries.join(' OR ')})`,
@@ -102,7 +114,7 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
         }
         httpGet(router.defaultCore, params).then(results => {
             if(!results || results.length === 0) {
-                reject(new Error(`None found`))
+                resolve(toReturn)
             }
 
             // figure out which lids we've found in the new results
@@ -196,7 +208,7 @@ export function initialLookup(identifier, pdsOnly) {
         }
         httpGet(router.defaultCore, params).then(result => {
             if(!result || result.length === 0) {
-                reject(new Error(`None found`))
+                reject(new Error(`Nothing found with identifier ${lid.lid}`))
             }
             let doc = Object.assign({}, result[0]);
 
