@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ContextList } from 'components/ContextLinks';
-import { Typography, TableContainer, Table, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableRow, TableCell, TableBody, Collapse } from '@material-ui/core';
 import { miscGroupName } from 'services/groupings';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -11,29 +11,63 @@ const useStyles = makeStyles((theme) => ({
     cell: {
         borderLeft: 0,
         borderRight: 0
+    },
+    groupHeader: {
+        verticalAlign: 'top',
+        paddingTop: theme.spacing(2)
+    },
+    sectionHeader: {
+        paddingTop: theme.spacing(4)
     }
 }));
 
-export default function SectionedTable({ groups }) {
+export function SectionedTable({groups}) {
+    return <SectionedTableContainer>
+        <SectionedTableRows groups={groups}/>
+    </SectionedTableContainer>
+}
+
+
+export function SectionedTableRows({ groups }) {
     const classes = useStyles();
     groups.sort((a, b) => a.order.localeCompare(b.order));
-    return (
-        <TableContainer>
-            <Table padding="none" className={classes.table}><TableBody>
-                {groups.map(group => {
-                    return (
-                        <TableRow key={group.name}>
-                            <TableCell className={classes.cell} align="center" component="th" scope="row">
-                                {(groups.length > 1 || group.name !== miscGroupName) &&
-                                    <Typography variant="h6"> {group.name}</Typography>}
-                            </TableCell>
-                            <TableCell className={classes.cell}>
-                                <ContextList items={group.items} />
-                            </TableCell>
-                        </TableRow>
-                    );
-                })}
+    return <>
+            {groups.map(group => {
+                return (
+                    <TableRow key={group.name}>
+                        <TableCell className={classes.cell} align="center" scope="row" className={classes.groupHeader}>
+                            {(groups.length > 1 || group.name !== miscGroupName) &&
+                                <Typography variant="h6"> {group.name}</Typography>}
+                        </TableCell>
+                        <TableCell className={classes.cell}>
+                            <ContextList items={group.items} />
+                        </TableCell>
+                    </TableRow>
+                );
+            })}
+    </>
+}
+
+export function SectionedTableContainer({children}) {
+    const classes = useStyles();
+    return <TableContainer>
+        <Table padding="none" className={classes.table}>
+            <TableBody>
+            { children }
             </TableBody></Table>
         </TableContainer>
-    );
+}
+
+export function SectionedTableHeader({title}) {
+    const classes = useStyles();
+    return <TableRow>
+        <TableCell colSpan={2}><Typography variant="h2">{title}</Typography></TableCell>
+    </TableRow>
+}
+
+export function SectionedTableMinorHeader({title}) {
+    const classes = useStyles();
+    return <TableRow>
+        <TableCell colSpan={2}><Typography variant="h3" color="textSecondary" className={classes.sectionHeader}>{title}</Typography></TableCell>
+    </TableRow>
 }

@@ -16,14 +16,6 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     }
     let groups = []
 
-    // first insert any mandatory groups
-    if(!!relationshipInfo) {
-        for(let relationship of relationshipInfo) {
-            if (relationship.order !== undefined && relationship.order < downplayGroupsThreshold) {
-                groups.push(new Group(relationship.name, [], relationship.order))
-            }
-        }
-    }
     for (let item of items) {
 
         // if possible, group by relationships already in data

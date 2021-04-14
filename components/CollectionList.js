@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
-import SectionedTable from 'components/SectionedTable.js'
+import {SectionedTable} from 'components/SectionedTable.js'
 import { Card, Typography, CardContent, Box } from '@material-ui/core';
 import { groupByLabelArray } from 'services/groupings';
 import Loading from 'components/Loading.js';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Loading from 'components/Loading.js'
 import TangentAccordion from 'components/TangentAccordion'
-import { List, ListItem, ListItemText, Collapse, Divider } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Divider, makeStyles, Box } from '@material-ui/core';
 import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
 import { ContextLink, ContextList } from 'components/ContextLinks'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
@@ -49,13 +49,18 @@ const listTypeValues = {
     }
 }
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        maxWidth: 400
+    }
+}));
 
 /* ------ Main Export Classes ------ */
 
 function AbstractUnmemoizedListBox(props) {
     const {groupBy, groupInfo, type, groupingFn, items, active, hideHeader} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
-
+    const classes = useStyles()
     
     if(!items) { 
         return <Loading/> 
@@ -69,14 +74,9 @@ function AbstractUnmemoizedListBox(props) {
             props.compact ? items.length <= maxExpandedListCompact
                           : items.length <= maxExpandedListDefault || groups.length > 1
 
-        const list = items.length === 1
-                    ? <ContextLink item={items[0]}/> 
-                    : <GroupedList groups={groups} type={type} active={active}/>
-
-        return <TangentAccordion title={header} defaultExpanded={defaultExpanded}>
-            {list}
-        </TangentAccordion>
-        
+        return <Box className={classes.root}>
+            <GroupedList groups={groups} type={type} active={active}/>
+        </Box>
     } 
 }
 
@@ -127,7 +127,7 @@ function GroupBox({group, isMinor, active}) {
     const { items, name } = group
 
     if(!items.length) {
-        return null
+        return <Typography variant="body" color="textSecondary">None found</Typography>
     }
     return showToggle 
         ?   <ToggleList header={name} headerVariant="h6" list={<ContextList items={items}/>}/>
