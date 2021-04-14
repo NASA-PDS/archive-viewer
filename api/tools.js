@@ -29,6 +29,7 @@ export function stitchWithTools(result) {
         let tools = result.tools
         if(!tools || tools.length === 0) {
             resolve(result)
+            return
         }
         if(tools[0].constructor !== Object) {
             tools = tools.map(toolId => { return { toolId }})
