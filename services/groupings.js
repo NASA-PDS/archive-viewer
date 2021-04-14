@@ -28,6 +28,7 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
 }
 
 const groupByRelatedItems = (items, field) => {
+    if(!items) return []
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}

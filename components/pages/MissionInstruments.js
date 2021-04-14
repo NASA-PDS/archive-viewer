@@ -5,6 +5,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import { InstrumentBrowseTable } from 'components/BrowseTable';
 import { Menu } from 'components/ContextHeaders';
 import Loading from 'components/Loading';
+import LoadingWrapper from 'components/LoadingWrapper';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
 
@@ -34,14 +35,16 @@ export default function MissionInstruments(props) {
             <PrimaryLayout primary={
                 <>
                     <Breadcrumbs currentTitle="Instruments" home={mission}/>
-                    
-                    {!!spacecraft ? spacecraft.map(sp => 
-                        <div key={sp.identifier}>
-                            <Typography variant="h1" gutterBottom>Instruments for {sp.display_name || sp.title}</Typography>
-                            <InstrumentBrowseTable items={filterInstrumentsForSpacecraft(instruments, sp)} />
-                        </div>
-                    ) : <Loading fullscreen/>
-                    }
+                    <LoadingWrapper model={spacecraft}>
+                        <>
+                        {spacecraft && spacecraft.map(sp => 
+                            <div key={sp.identifier}>
+                                <Typography variant="h1" gutterBottom>Instruments for {sp.display_name || sp.title}</Typography>
+                                <InstrumentBrowseTable items={filterInstrumentsForSpacecraft(instruments, sp)} />
+                            </div>
+                        )}
+                        </>
+                    </LoadingWrapper>
                 </>
             }/>
         </>

@@ -9,6 +9,7 @@ import Loading from 'components/Loading';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs'
+import LoadingWrapper from 'components/LoadingWrapper';
 
 const useStyles = makeStyles({
     targetButton: {
@@ -38,21 +39,21 @@ export default function MissionTargets(props) {
     return (
         <>
             <Menu/>
-            <PrimaryLayout primary={!!targets ? 
+            <PrimaryLayout primary={
                 <>
                     <Breadcrumbs currentTitle="Targets" home={mission}/>
                     <Typography variant="h1" gutterBottom>Targets of observation</Typography>
-                    { targets.length > 6 ? 
-                        <TargetListBox items={targets} groupInfo={targetMissionRelationshipTypes} hideHeader/>
-                    : 
-                        <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
-                            { targets.map(target => (
-                                <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
-                            ))}
-                        </Grid>
-                    } 
+                    <LoadingWrapper model={targets}>
+                        {targets && (targets.length > 6 ? 
+                            <TargetListBox items={targets} groupInfo={targetMissionRelationshipTypes} hideHeader/>
+                        : 
+                            <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
+                                { targets.map(target => (
+                                    <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
+                                ))}
+                            </Grid>)}
+                    </LoadingWrapper>
                 </>
-                : <Loading/>
             }/>
         </>
     )
