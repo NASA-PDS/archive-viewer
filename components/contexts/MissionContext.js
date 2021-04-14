@@ -29,6 +29,7 @@ export default function MissionContext(props) {
     const [spacecraft, setSpacecraft] = useState(null)
     const [targets, setTargets] = useState(null)
     const [error, setError] = useState(null)
+    const classes = useStyles()
 
     useEffect(() => {
         if(type === types.MISSION) {
@@ -61,7 +62,6 @@ export default function MissionContext(props) {
     }
 
 
-    const classes = useStyles()
 
     let mainContent = null, pageType = null
     if(!!extraPath && extraPath.length > 0) {
