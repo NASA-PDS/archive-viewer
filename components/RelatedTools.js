@@ -40,7 +40,8 @@ function ToolLink({tool, noImages}) {
                 {!noImages && <CardMedia component="img" className={classes.img} image={tool.image_url} alt={'Icon for ' + tool.display_name} title={tool.display_name}/>}
                 <CardContent className={classes.cardContent} p="1">
                     <Typography p="3" variant="h5" component="h2" color="primary">{tool.display_name}</Typography>
-                    <Typography variant="body2" color="textPrimary" component="p">{tool.name}</Typography>
+                    <Typography color="textPrimary" component="p" gutterBottom>{tool.name}</Typography>
+                    <Typography variant="body" color="textSecondary" component="p">{tool.description}</Typography>
                 </CardContent>
             </CardActionArea>
         </Card>

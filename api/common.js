@@ -3,6 +3,7 @@ import desolrize from 'services/desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
 import { types, resolveType } from 'services/pages.js'
+import { stitchWithTools } from './tools';
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -267,30 +268,6 @@ export function initialLookup(identifier, pdsOnly) {
             reject(error)
         })
     }).then(stitchWithTools)
-}
-
-function stitchWithTools(result) {
-    return new Promise((resolve, _) => {
-        let tools = result.tools
-        if(!tools || tools.length === 0) {
-            resolve(result)
-        }
-        if(tools[0].constructor !== Object) {
-            tools = tools.map(toolId => { return { toolId }})
-        }
-        let params = {
-            q: tools.reduce((query, tool) => query + 'toolId:"' + tool.toolId + '" ', '')
-        }
-        httpGet(router.tools, params).then(toolLookup => {
-            result.tools = tools.map(tool => Object.assign(tool, toolLookup.find(lookup => lookup.toolId === tool.toolId)))
-            resolve(result)
-        }, err => {
-            console.log(err)
-            // couldn't find tools, so just hide the field
-            result.tools = null
-            resolve(result)
-        })
-    })
 }
 
 export function httpGetRelated(initialQuery, route, knownLids) {
