@@ -88,7 +88,7 @@ function LabeledDatasetList({datasets}) {
     return <>
         {datasets.map(dataset => 
             <LabeledListItem key={dataset.identifier} label="Data" item={
-                <BundleLink identifier={dataset.identifier} label={dataset.relatedBy ? dataset.relatedBy.label : (dataset.display_name || dataset.title)}/>
+                <BundleLink identifier={dataset.identifier} label={(dataset.relatedBy && dataset.relatedBy.label) || dataset.display_name || dataset.title}/>
             }/>
         )}
     </>
