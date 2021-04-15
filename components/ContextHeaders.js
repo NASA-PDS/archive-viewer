@@ -38,13 +38,6 @@ const useStyles = makeStyles((theme) => ({
             height: theme.custom.headerBanner.height.md
         },
     },
-    menu: {
-        position: 'absolute',
-        top: 5,
-        right: 5,
-        height: 30,
-        zIndex: 99
-    },
     target: {
         backgroundColor: theme.palette.common.black
     }
@@ -55,14 +48,13 @@ function MissionHeader(props) {
     const classes = useStyles();
     
     if(!mission) {
-        return <AppBar className={classes.header} position="static" color="inherit"><Menu/><SkeletonBanner/><SkeletonTabBar tabCount={5}/></AppBar>
+        return <AppBar className={classes.header} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar tabCount={5}/></AppBar>
     }
 
     const {display_name, title, image_url} = mission
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
     return <AppBar className={classes.header} position="static" color="inherit">
-        <Menu/>
         <Banner name={headerName} image_url={image_url} />
         <MissionTabBar page={page} mission={mission} {...otherProps}/>
     </AppBar>
@@ -108,14 +100,13 @@ function TargetHeader(props) {
     const classes = useStyles();
 
     if(!target) {
-        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><Menu/><SkeletonBanner/><SkeletonTabBar/></AppBar>
+        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
     }
     
     const {display_name, title, image_url} = target
     const headerName = display_name && !pdsOnly ? display_name : title
 
     return  <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
-        <Menu/>
         <Banner name={headerName} image_url={image_url} />
         <TargetTabBar page={page} target={target} />
     </AppBar>
@@ -150,8 +141,4 @@ function SkeletonBanner() {
     </Grid>
 }
 
-function Menu() {
-    const classes = useStyles()
-    return <Link href="/" className={classes.menu}><img alt="Menu icon" src="/images/menu.svg"/></Link>
-}
-export { MissionHeader, TargetHeader, Menu };
+export { MissionHeader, TargetHeader };

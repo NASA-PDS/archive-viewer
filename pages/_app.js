@@ -7,6 +7,7 @@ import AppBar from 'components/Banner'
 import 'fontsource-roboto'
 import { LinearProgress } from '@material-ui/core'
 import Router from "next/router"
+import Menu  from 'components/Menu'
 
 export default function MyApp({ Component, pageProps }) {
     const [loading, setLoading] = useState(false)
@@ -40,6 +41,7 @@ export default function MyApp({ Component, pageProps }) {
     return (
     <ThemeProvider theme={Theme}>
         <AppBar/>
+        <Menu/>
         { loading && <LinearProgress color="secondary" style={{position: 'absolute', width: '100%'}}/>}
         <Component {...pageProps} />
     </ThemeProvider>

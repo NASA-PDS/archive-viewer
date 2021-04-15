@@ -7,16 +7,13 @@ import React from 'react';
 
 export default function Target({target, lidvid}) {
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                <TargetTagList tags={target.tags} />
-                <HTMLBox markup={target.html1} />
-                <Metadata model={target} />
-                <HTMLBox markup={target.html2} />
-                </>
-            } />
-        </>
+        <PrimaryLayout primary={
+            <>
+            <TargetTagList tags={target.tags} />
+            <HTMLBox markup={target.html1} />
+            <Metadata model={target} />
+            <HTMLBox markup={target.html2} />
+            </>
+        } />
     )
 }

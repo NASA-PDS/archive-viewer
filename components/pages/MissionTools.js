@@ -9,17 +9,14 @@ import React from 'react';
 export default function MissionTools({mission}) {
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Tools" home={mission}/>
-                    <Typography variant="h1" gutterBottom>Useful tools</Typography>
-                    <LoadingWrapper model={mission.tools}>
-                        <RelatedTools tools={mission.tools} noTitle/>
-                    </LoadingWrapper>
-                </>
-            }/>
-        </>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Tools" home={mission}/>
+                <Typography variant="h1" gutterBottom>Useful tools</Typography>
+                <LoadingWrapper model={mission.tools}>
+                    <RelatedTools tools={mission.tools} noTitle/>
+                </LoadingWrapper>
+            </>
+        }/>
     )
 }

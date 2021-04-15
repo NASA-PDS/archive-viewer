@@ -24,24 +24,21 @@ export default function MissionData(props) {
     }, [mission, spacecraft, instruments])
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Data" home={mission}/>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Data" home={mission}/>
 
-                    <Typography variant="h1" gutterBottom>All datasets</Typography>
-                    <LoadingWrapper model={datasets} skeleton={<>
-                                <Skeleton width="100%" height={40}/>
-                                <Skeleton width="100%" height={80}/>
-                                <Skeleton width="100%" height={80}/>
-                            </>}>
-                        <MissionDataTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
-                    </LoadingWrapper>
-                </>
-            } secondary = {
-                <PDS3Results name={mission.display_name ? mission.display_name : mission.title}/>
-            } />
-        </>
+                <Typography variant="h1" gutterBottom>All datasets</Typography>
+                <LoadingWrapper model={datasets} skeleton={<>
+                            <Skeleton width="100%" height={40}/>
+                            <Skeleton width="100%" height={80}/>
+                            <Skeleton width="100%" height={80}/>
+                        </>}>
+                    <MissionDataTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
+                </LoadingWrapper>
+            </>
+        } secondary = {
+            <PDS3Results name={mission.display_name ? mission.display_name : mission.title}/>
+        } />
     )
 }

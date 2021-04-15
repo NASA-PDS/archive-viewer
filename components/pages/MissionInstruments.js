@@ -30,23 +30,20 @@ export default function MissionInstruments(props) {
 
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Instruments" home={mission}/>
-                    <LoadingWrapper model={spacecraft}>
-                        <>
-                        {spacecraft && spacecraft.map(sp => 
-                            <div key={sp.identifier}>
-                                <Typography variant="h1" gutterBottom>Instruments for {sp.display_name || sp.title}</Typography>
-                                <InstrumentBrowseTable items={filterInstrumentsForSpacecraft(instruments, sp)} />
-                            </div>
-                        )}
-                        </>
-                    </LoadingWrapper>
-                </>
-            }/>
-        </>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Instruments" home={mission}/>
+                <LoadingWrapper model={spacecraft}>
+                    <>
+                    {spacecraft && spacecraft.map(sp => 
+                        <div key={sp.identifier}>
+                            <Typography variant="h1" gutterBottom>Instruments for {sp.display_name || sp.title}</Typography>
+                            <InstrumentBrowseTable items={filterInstrumentsForSpacecraft(instruments, sp)} />
+                        </div>
+                    )}
+                    </>
+                </LoadingWrapper>
+            </>
+        }/>
     )
 }

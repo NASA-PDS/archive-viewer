@@ -25,25 +25,22 @@ export default function TargetData(props) {
 
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Data" home={target}/>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Data" home={target}/>
 
-                    <Typography variant="h1" gutterBottom>Non-Mission {target.display_name || target.title} Data</Typography>
-                    <LoadingWrapper model={datasets} 
-                            skeleton={<>
-                                <Skeleton width="100%" height={40}/>
-                                <Skeleton width="100%" height={80}/>
-                                <Skeleton width="100%" height={80}/>
-                            </>}>
-                        <DatasetTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
-                    </LoadingWrapper>          
-                </>
-            } secondary={
-                <PDS3Results name={target.display_name ? target.display_name : target.title}/>
-            }/>
-        </>
+                <Typography variant="h1" gutterBottom>Non-Mission {target.display_name || target.title} Data</Typography>
+                <LoadingWrapper model={datasets} 
+                        skeleton={<>
+                            <Skeleton width="100%" height={40}/>
+                            <Skeleton width="100%" height={80}/>
+                            <Skeleton width="100%" height={80}/>
+                        </>}>
+                    <DatasetTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
+                </LoadingWrapper>          
+            </>
+        } secondary={
+            <PDS3Results name={target.display_name ? target.display_name : target.title}/>
+        }/>
     )
 }

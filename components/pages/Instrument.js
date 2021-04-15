@@ -51,9 +51,7 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
     
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
+        <PrimaryLayout primary={
                 <>
                 <InstrumentBreadcrumbs current={instrument} home={mission}/>
                 <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
@@ -76,8 +74,7 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
                     <InstrumentListBox items={filterInstrumentsForSpacecraft(instruments, sp)} groupInfo={instrumentSpacecraftRelationshipTypes} active={instrument.identifier} hideHeader/>
                 </Box>
             ) : <Loading/>
-            }/>
-        </>
+        }/>
     )
 }
 

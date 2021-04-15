@@ -9,17 +9,14 @@ import React from 'react';
 export default function TargetTools({target}) {
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Tools" home={target}/>
-                    <Typography variant="h1" gutterBottom>Useful tools</Typography>
-                    <LoadingWrapper model={target.tools}>
-                        <RelatedTools tools={target.tools} noTitle/>
-                    </LoadingWrapper>
-                </>
-            }/>
-        </>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Tools" home={target}/>
+                <Typography variant="h1" gutterBottom>Useful tools</Typography>
+                <LoadingWrapper model={target.tools}>
+                    <RelatedTools tools={target.tools} noTitle/>
+                </LoadingWrapper>
+            </>
+        }/>
     )
 }

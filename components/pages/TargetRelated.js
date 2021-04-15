@@ -36,25 +36,22 @@ export default function TargetRelated(props) {
     }, [props.target])
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Related" home={target}/>                
-                    <Typography variant="h1" gutterBottom>Related Targets</Typography>
-                    <LoadingWrapper model={relatedTargets}>
-                        {relatedTargets && (relatedTargets.length > 6 ? 
-                        <RelatedTargetListBox items={relatedTargets} hideHeader/>
-                        : 
-                        <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
-                            { relatedTargets.map(target => (
-                                <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
-                            ))}
-                        </Grid>)}
-                    </LoadingWrapper>
-                </>
-            }/>
-        </>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Related" home={target}/>                
+                <Typography variant="h1" gutterBottom>Related Targets</Typography>
+                <LoadingWrapper model={relatedTargets}>
+                    {relatedTargets && (relatedTargets.length > 6 ? 
+                    <RelatedTargetListBox items={relatedTargets} hideHeader/>
+                    : 
+                    <Grid container direction="row" alignItems="stretch" justify="center" spacing={2} style={{width: '100%'}}>
+                        { relatedTargets.map(target => (
+                            <Grid item key={target.identifier} ><ButtonForTarget target={target}/></Grid>
+                        ))}
+                    </Grid>)}
+                </LoadingWrapper>
+            </>
+        }/>
     )
 }
 

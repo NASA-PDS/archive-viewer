@@ -27,26 +27,23 @@ export default function Mission({mission, lidvid, pdsOnly}) {
     }, [lidvid])
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Typography variant="h1" gutterBottom> { mission.display_name ? mission.display_name : mission.title } </Typography>
-                    <MissionTagList tags={mission.tags} />
-                    <HTMLBox markup={mission.html1} />
-                    <Metadata model={mission} />
-                    <HTMLBox markup={mission.html2} />   
-                    
+        <PrimaryLayout primary={
+            <>
+                <Typography variant="h1" gutterBottom> { mission.display_name ? mission.display_name : mission.title } </Typography>
+                <MissionTagList tags={mission.tags} />
+                <HTMLBox markup={mission.html1} />
+                <Metadata model={mission} />
+                <HTMLBox markup={mission.html2} />   
+                
 
-                    { primaryBundle && 
-                        <LabeledListItem label="Bundle" item={
-                            <BundleLink identifier={primaryBundle.identifier} label="View Mission Bundle"/>
-                        }/>
-                    }
+                { primaryBundle && 
+                    <LabeledListItem label="Bundle" item={
+                        <BundleLink identifier={primaryBundle.identifier} label="View Mission Bundle"/>
+                    }/>
+                }
 
-                </>
-            } />
-        </>
+            </>
+        } />
     )
 }
 

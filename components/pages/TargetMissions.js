@@ -24,18 +24,15 @@ export default function TargetMissions(props) {
 
 
     return (
-        <>
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <Breadcrumbs currentTitle="Missions" home={target}/>
-                    <Typography variant="h1" gutterBottom>Observational Missions</Typography>
-                    <LoadingWrapper model={missions}>
-                        <MissionListBox items={missions} groupInfo={targetMissionRelationshipTypes} hideHeader/>
-                    </LoadingWrapper>
-                    
-                </>
-            }/>
-        </>
+        <PrimaryLayout primary={
+            <>
+                <Breadcrumbs currentTitle="Missions" home={target}/>
+                <Typography variant="h1" gutterBottom>Observational Missions</Typography>
+                <LoadingWrapper model={missions}>
+                    <MissionListBox items={missions} groupInfo={targetMissionRelationshipTypes} hideHeader/>
+                </LoadingWrapper>
+                
+            </>
+        }/>
     )
 }
