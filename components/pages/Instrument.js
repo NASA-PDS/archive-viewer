@@ -1,26 +1,20 @@
-import { Box, Breadcrumbs, Typography, Button } from '@material-ui/core';
-import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBundleForInstrument, getRelatedInstrumentsForInstrument, getSiblingInstruments, getSpacecraftForInstrument } from 'api/instrument.js';
-import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft'
+import { Box, Button, Typography } from '@material-ui/core';
+import { ExitToApp } from '@material-ui/icons';
+import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
 import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
-import CollectionList from 'components/CollectionList.js';
-import { Menu } from 'components/ContextHeaders';
+import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
+import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';
 import HTMLBox from 'components/HTMLBox';
-import { DatasetListBox, InstrumentListBox } from 'components/ListBox';
-import { DeliveryInfo } from 'components/pages/Dataset.js';
+import InternalLink from 'components/InternalLink';
+import { InstrumentListBox } from 'components/ListBox';
+import Loading from 'components/Loading';
 import { Metadata } from "components/Metadata";
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
-import { InstrumentTagList } from 'components/TagList';
-import TangentAccordion from 'components/TangentAccordion';
-import React, { useEffect, useState } from 'react';
-import Description from 'components/Description'
-import Loading from 'components/Loading';
-import InternalLink from 'components/InternalLink';
-import Skeleton from '@material-ui/lab/Skeleton';
 import { LabeledListItem } from 'components/SplitListItem';
-import { ExitToApp } from '@material-ui/icons';
-import {InstrumentBreadcrumbs} from 'components/Breadcrumbs'
+import { InstrumentTagList } from 'components/TagList';
+import React, { useEffect, useState } from 'react';
 
 export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
@@ -82,8 +76,8 @@ function LabeledDatasetList({datasets}) {
     if(!datasets) return null;
 
     return <>
-        {datasets.map(dataset => 
-            <LabeledListItem key={dataset.identifier} label="Data" item={
+        {datasets.map((dataset, index) => 
+            <LabeledListItem key={dataset.identifier} label={index === 0 && "Data"} item={
                 <BundleLink identifier={dataset.identifier} label={(dataset.relatedBy && dataset.relatedBy.label) || dataset.display_name || dataset.title}/>
             }/>
         )}
