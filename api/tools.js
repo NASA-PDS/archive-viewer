@@ -13,7 +13,6 @@ async function bootstrap() {
             }
             httpGet(router.tools, params)
             .then((response) => {
-                console.log(response)
                 prefetchedTools = response
                 resolve()
             }, reject)

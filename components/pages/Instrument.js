@@ -82,7 +82,6 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
 }
 
 function LabeledDatasetList({datasets}) {
-    console.log(datasets)
     if(!datasets) return null;
 
     return <>
