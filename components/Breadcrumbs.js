@@ -14,6 +14,9 @@ export default function Breadcrumbs({home, current, currentTitle, subsectionLink
 }
 
 function InstrumentBreadcrumbs(props) {
+    if(!props.home) {
+        return <SkeletonBreadcrumbs/>
+    }
     return <Breadcrumbs {...props} subsectionLink={
         <InternalLink identifier={props.home.identifier} additionalPath="instruments" passHref><Link color="inherit">Instruments</Link></InternalLink>
     }/>
