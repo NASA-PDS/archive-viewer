@@ -7,10 +7,10 @@ import LogicalIdentifier from 'services/LogicalIdentifier.js'
 export function getMissionstForTarget(target) {
     let params = {
         q: `target_ref:${new LID(target.identifier).escapedLid}\\:\\:* AND data_class:"Investigation"`,
-        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref'
+        fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_description'
     }
     return httpGetRelated(params, router.missionsCore, [])
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.missionsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'display_description'], router.missionsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromTargetToMission, [target.identifier]))
 }
 

@@ -1,15 +1,12 @@
 import { Typography } from '@material-ui/core';
 import { getFriendlySpacecraft } from 'api/spacecraft.js';
-import { Menu } from 'components/ContextHeaders';
+import Breadcrumbs from 'components/Breadcrumbs';
 import HTMLBox from 'components/HTMLBox';
 import { SpacecraftListBox } from 'components/ListBox';
 import { Metadata } from "components/Metadata";
-import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
-import RelatedTools from 'components/RelatedTools';
 import { SpacecraftTagList } from 'components/TagList';
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from 'components/Breadcrumbs'
 
 export default function Spacecraft(props) {
     const {spacecraft, siblings, mission} = props

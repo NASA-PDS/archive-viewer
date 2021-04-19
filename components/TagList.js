@@ -1,4 +1,4 @@
-import { Box, Chip, Dialog, DialogContent, DialogTitle, Link } from '@material-ui/core';
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TagSearch, { TagTypes } from 'components/TagSearch.js';
 import React from 'react';
@@ -28,9 +28,11 @@ function TagList({tags, type}) {
         <>
         <Box mb={1}>
             {tags.map(tag => 
-                <Link key={tag} onClick={() => openTag(tag)}>
-                    <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
-                </Link>
+                <Tooltip title="View Category Search" key={tag} >
+                    <Link onClick={() => openTag(tag)}>
+                        <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
+                    </Link>
+                </Tooltip>
             )}
         </Box>
         <Dialog

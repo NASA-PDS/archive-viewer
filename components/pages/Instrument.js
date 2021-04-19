@@ -1,13 +1,10 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
-import { filterInstrumentsForSpacecraft, getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
-import { instrumentSpacecraftRelationshipTypes } from 'api/relationships';
+import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
 import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
-import { InstrumentListBox } from 'components/ListBox';
-import Loading from 'components/Loading';
 import { Metadata } from "components/Metadata";
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
@@ -60,15 +57,7 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
                 <>
                     <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
-            } navigational = {!!spacecraft ? spacecraft.map(sp => 
-                <Box key={sp.identifier} py={2}>
-                    { spacecraft.length > 1 && <Box px={2} >
-                        <Typography variant="h3" gutterBottom>{sp.display_name || sp.title}</Typography>
-                    </Box> }
-                    <InstrumentListBox items={filterInstrumentsForSpacecraft(instruments, sp)} groupInfo={instrumentSpacecraftRelationshipTypes} active={instrument.identifier} hideHeader/>
-                </Box>
-            ) : <Loading/>
-        }/>
+            } />
     )
 }
 

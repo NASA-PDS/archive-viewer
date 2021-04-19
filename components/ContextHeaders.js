@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(2)
     },
     header: {
-        backgroundColor: "#085898",
+        backgroundColor: theme.custom.missionThemeColor,
         zIndex: theme.zIndex.drawer + 1,
         display: 'flex',
         flexFlow: 'column nowrap',
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     target: {
-        backgroundColor: theme.palette.common.black
+        backgroundColor: theme.custom.targetThemeColor
     }
 }));
 
@@ -55,7 +55,7 @@ function MissionHeader(props) {
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
     return <AppBar className={classes.header} position="static" color="inherit">
-        <Banner name={headerName} image_url={image_url} />
+        <Banner name={headerName + ' Data Archive'} image_url={image_url} />
         <MissionTabBar page={page} mission={mission} {...otherProps}/>
     </AppBar>
 }
@@ -107,7 +107,7 @@ function TargetHeader(props) {
     const headerName = display_name && !pdsOnly ? display_name : title
 
     return  <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
-        <Banner name={headerName} image_url={image_url} />
+        <Banner name={headerName + ' Information Page'} image_url={image_url} />
         <TargetTabBar page={page} target={target} />
     </AppBar>
 }
@@ -119,7 +119,7 @@ function TargetTabBar({page, target}) {
     return <Tabs value={page}>
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
-                <LinkTab label="Missions" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
+                <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
                 <LinkTab label="Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>
@@ -129,7 +129,7 @@ function Banner({name, image_url}) {
     const classes = useStyles();
     return <Grid container direction="row" alignItems="center" className={classes.banner}>
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-        <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } Data Archive </Grid>
+        <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
     </Grid>
 }
 

@@ -20,7 +20,7 @@ export function getPrimaryBundleForMission(mission) {
 
 export function getFriendlyTargetsForMission(targets, missionLid) {
     return Promise.resolve(targets)
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'display_description'], router.targetsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromMissionToTarget, [missionLid]))
 }
 

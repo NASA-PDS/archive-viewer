@@ -93,7 +93,9 @@ const Theme = createMuiTheme({
                 sm: '115px',
                 md: '200px'
             },
-        }
+        },
+        targetThemeColor: '#000000',
+        missionThemeColor: '#085898'
     }
 });
 

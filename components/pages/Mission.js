@@ -38,7 +38,7 @@ export default function Mission({mission, lidvid, pdsOnly}) {
 
                 { primaryBundle && 
                     <LabeledListItem label="Bundle" item={
-                        <BundleLink identifier={primaryBundle.identifier} label="View Mission Bundle"/>
+                        <BundleLink identifier={primaryBundle.identifier} label="View Mission Information Bundle"/>
                     }/>
                 }
 

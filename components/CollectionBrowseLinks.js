@@ -31,7 +31,7 @@ export default function CollectionBrowseLinks({dataset}) {
                 })}</>
             } />}
             <BrowseItem url={dataset.browse_url ? dataset.browse_url : dataset.resource_url} label="Browse" buttonTitle="Browse this Collection" isPrimary={true} />
-            <BrowseItem identifier={dataset.mission_bundle} label="Mission Bundle"/>
+            <BrowseItem identifier={dataset.mission_bundle} label="Mission Information Bundle"/>
             <BrowseItem url={dataset.other_instruments_url} label="Other Instruments"/>
             <BrowseItem url={dataset.checksums_url} label="Checksums"/>
             <BrowseItem url={dataset.download_url} label="Download" buttonTitle={`Download Collection${dataset.download_size ? ' (' + dataset.download_size + ')' : ''}`}/>

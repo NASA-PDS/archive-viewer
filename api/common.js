@@ -57,7 +57,7 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
     )
 }
 
-export function httpGetIdentifiers(route, identifiers) {
+export function httpGetIdentifiers(route, identifiers, extraFields) {
     if(!identifiers || identifiers.length === 0) return Promise.resolve([])
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
     
@@ -70,7 +70,7 @@ export function httpGetIdentifiers(route, identifiers) {
 
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', ''),
-        fl: 'identifier, title, data_class'
+        fl: 'identifier, title' + ( extraFields && ', ' + extraFields.join(', '))
     }
     requests.push(httpGet(route, params))
     return Promise.all(requests).then(results => results.flat())
@@ -111,7 +111,7 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
         
         const params = {
             q: `data_class:* AND (${queries.join(' OR ')})`,
-            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref'
+            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref, target_description'
         }
         httpGet(router.defaultCore, params).then(results => {
             if(!results || results.length === 0) {
@@ -143,7 +143,7 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
                 resolve(toReturn)
             } else {
                 // fetch details for each of the new lids
-                httpGetIdentifiers(router.defaultCore, newLids).then(newLookups => {
+                httpGetIdentifiers(router.defaultCore, newLids, ['data_class', 'target_description', 'investigation_description']).then(newLookups => {
                     // merge them in and keep track of lids that we're ignoring
                     newLookups.forEach(lookup => {
                         toReturn = mergeFamilyResults(toReturn, lookup)
