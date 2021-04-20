@@ -8,7 +8,7 @@ import LoadingWrapper from 'components/LoadingWrapper';
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
-import { groupByRelatedItems } from 'services/groupings';
+import { groupByField, groupByRelatedItems } from 'services/groupings';
 
 export default function TargetData(props) {
     const { target } = props
@@ -29,14 +29,14 @@ export default function TargetData(props) {
             <>
                 <Breadcrumbs currentTitle="Data" home={target}/>
 
-                <Typography variant="h1" gutterBottom>Non-Mission {target.display_name || target.title} Data</Typography>
+                <Typography variant="h1" gutterBottom>Derived {target.display_name || target.title} Data</Typography>
                 <LoadingWrapper model={datasets} 
                         skeleton={<>
                             <Skeleton width="100%" height={40}/>
                             <Skeleton width="100%" height={80}/>
                             <Skeleton width="100%" height={80}/>
                         </>}>
-                    <DatasetTable groups={groupByRelatedItems(datasets, 'instrument_ref')} />
+                    <DatasetTable groups={groupByField(datasets, 'primary_result_purpose')} />
                 </LoadingWrapper>          
             </>
         } secondary={

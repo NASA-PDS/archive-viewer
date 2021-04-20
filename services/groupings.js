@@ -58,6 +58,25 @@ const groupByRelatedItems = (items, field) => {
     return groups
 }
 
+const groupByField = (items, field) => {
+    if(!items) return []
+    let insert = (item, groupName, order) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], order))
+    }
+    let groups = []
+    for (let item of items) {
+        if(!field || !item[field] || !item[field].length) {
+            insert(item, 'Other', 999)
+        }
+        else {
+            insert(item, item[field])
+        }
+    }
+    return groups
+}
+
 const groupByFirstTag = (items) => {
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
@@ -94,4 +113,4 @@ const downplayGroupsThreshold = 100
 const hiddenGroupsThreshold = 1000
 const miscGroupName = 'Other'
 
-export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
+export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}

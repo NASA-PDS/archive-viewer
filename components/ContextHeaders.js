@@ -1,4 +1,4 @@
-import { AppBar, Grid, Link, Tab, Tabs, Typography } from '@material-ui/core';
+import { AppBar, Divider, Grid, Link, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React from 'react';
@@ -119,9 +119,10 @@ function TargetTabBar({page, target}) {
     return <Tabs value={page}>
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
-                <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
-                <LinkTab label="Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
+                <Divider orientation="vertical" flexItem />
+                <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
+                <LinkTab label="Derived Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>
 }
 
