@@ -70,7 +70,7 @@ export function httpGetIdentifiers(route, identifiers, extraFields) {
 
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', ''),
-        fl: 'identifier, title' + ( extraFields && ', ' + extraFields.join(', '))
+        fl: 'identifier, title' + ( extraFields ? ', ' + extraFields.join(', ') : '')
     }
     requests.push(httpGet(route, params))
     return Promise.all(requests).then(results => results.flat())
