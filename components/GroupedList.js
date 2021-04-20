@@ -1,10 +1,9 @@
+import { Collapse, Divider, List, ListItem, ListItemText } from '@material-ui/core';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { ContextList, MissionContextCardList, TargetContextCardList } from 'components/ContextLinks';
+import Loading from 'components/Loading.js';
 import React, { useState } from 'react';
-import Loading from 'components/Loading.js'
-import TangentAccordion from 'components/TangentAccordion'
-import { List, ListItem, ListItemText, Collapse, Divider, makeStyles, Box } from '@material-ui/core';
-import { groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, downplayGroupsThreshold, hiddenGroupsThreshold } from 'services/groupings'
-import { ContextLink, ContextList } from 'components/ContextLinks'
-import { ExpandLess, ExpandMore } from '@material-ui/icons'
+import { downplayGroupsThreshold, groupByAttributedRelationship, groupByFirstTag, hiddenGroupsThreshold } from 'services/groupings';
 
 /* ------ Constants ------ */
 const maxExpandedListDefault = 15
@@ -49,91 +48,76 @@ const listTypeValues = {
     }
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        maxWidth: 400
-    }
-}));
-
 /* ------ Main Export Classes ------ */
 
-function AbstractUnmemoizedListBox(props) {
-    const {groupBy, groupInfo, type, groupingFn, items, active, hideHeader} = props
+function AbstractUnmemoizedGroupedList(props) {
+    const {groupBy, groupInfo, type, groupingFn, items, ...otherProps} = props
     const groupByField = groupBy ? listTypeValues[groupBy].fieldName : null
-    const classes = useStyles()
     
     if(!items) { 
         return <Loading/> 
     } else if(items.length === 0) {
         return null
     } else {
-        const header = !hideHeader ? (items.length === 1 ? listTypeValues[type].titleSingular : listTypeValues[type].title) : null
         const groups = groupingFn(items, groupInfo, groupByField)
-        
-        const defaultExpanded = 
-            props.compact ? items.length <= maxExpandedListCompact
-                          : items.length <= maxExpandedListDefault || groups.length > 1
 
-        return <Box className={classes.root}>
-            <GroupedList groups={groups} type={type} active={active}/>
-        </Box>
+        return <GroupedList groups={groups} type={type} {...otherProps}/>
     } 
 }
 
 // prevents re-renders when underlying items aren't actually changing
-const AbstractListBox = React.memo(AbstractUnmemoizedListBox, (prevProps, newProps) => {
+const AbstractGroupedList = React.memo(AbstractUnmemoizedGroupedList, (prevProps, newProps) => {
     if(!prevProps.items) { return false }
     if(!newProps.items) { return true }
     return prevProps.active === newProps.active && prevProps.items === newProps.items 
 })
 
 
-function DatasetListBox(props) {
-    return <AbstractListBox type={listTypes.dataset} groupingFn={groupByRelatedItems} {...props}/>
+// function DatasetGroupedList(props) {
+//     return <AbstractGroupedList type={listTypes.dataset} groupingFn={groupByRelatedItems} {...props}/>
+// }
+function MissionGroupedList(props) {
+    return <AbstractGroupedList type={listTypes.mission} groupingFn={groupByAttributedRelationship} listComponent={MissionContextCardList} {...props}/>
 }
-function MissionListBox(props) {
-    return <AbstractListBox type={listTypes.mission} groupingFn={groupByAttributedRelationship} {...props}/>
+function TargetGroupedList(props) {
+    return <AbstractGroupedList type={listTypes.target} groupingFn={groupByAttributedRelationship} listComponent={TargetContextCardList} {...props}/>
 }
-function TargetListBox(props) {
-    return <AbstractListBox type={listTypes.target} groupingFn={groupByAttributedRelationship} {...props}/>
+function RelatedTargetGroupedList(props) {
+    return <AbstractGroupedList type={listTypes.relatedTarget} groupingFn={groupByFirstTag} listComponent={ContextList} {...props}/>
 }
-function RelatedTargetListBox(props) {
-    return <AbstractListBox type={listTypes.relatedTarget} groupingFn={groupByFirstTag} {...props}/>
-}
-function InstrumentListBox(props) {
-    return <AbstractListBox type={listTypes.instrument} groupingFn={groupByAttributedRelationship} {...props}/>
-}
-function SpacecraftListBox(props) {
-    return <AbstractListBox type={listTypes.spacecraft} groupingFn={groupByAttributedRelationship} {...props}/>
+// function InstrumentGroupedList(props) {
+//     return <AbstractGroupedList type={listTypes.instrument} groupingFn={groupByAttributedRelationship} {...props}/>
+// }
+function SpacecraftGroupedList(props) {
+    return <AbstractGroupedList type={listTypes.spacecraft} groupingFn={groupByAttributedRelationship} listComponent={ContextList} {...props}/>
 }
 
-export {listTypes as groupType, DatasetListBox, MissionListBox, TargetListBox, RelatedTargetListBox, InstrumentListBox, SpacecraftListBox}
+export { listTypes as groupType, MissionGroupedList, TargetGroupedList, RelatedTargetGroupedList, SpacecraftGroupedList };
 
 /* ------ Internal Components ------ */
 
-function GroupedList({groups, type, active}) {
+function GroupedList({groups, type, active, listComponent}) {
     if (groups.length === 1) {
-        return <ContextList items={groups[0].items} active={active}/>
+        return React.createElement(listComponent, { items: groups[0].items, active})
     }
     let sortedGroups = groups.sort((a, b) => a.order < b.order ? -1 : 1)
     return sortedGroups.filter(group => Number.isInteger(group.order) ? group.order < hiddenGroupsThreshold : true).map((group, index) => 
-        <GroupBox group={group} type={type} active={active} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
+        <GroupBox group={group} type={type} active={active} listComponent={listComponent} isMinor={Number.isInteger(group.order) ? group.order >= downplayGroupsThreshold : false} key={group.name} />
     )
 }
 
-function GroupBox({group, isMinor, active}) {
+function GroupBox({group, isMinor, active, listComponent}) {
     const showToggle = isMinor || group.items.length > maxExpandedListDefault
 
     const { items, name } = group
 
-    if(!items.length) {
-        return <Typography variant="body" color="textSecondary">None found</Typography>
-    }
+    const list = React.createElement(listComponent, {items, active})
+
     return showToggle 
-        ?   <ToggleList header={name} headerVariant="h6" list={<ContextList items={items}/>}/>
+        ?   <ToggleList header={name} headerVariant="h6" list={list}/>
         :   <List disablePadding>
                 <ListItem><ListItemText primary={name} primaryTypographyProps={{variant: 'h6'}}/></ListItem>
-                <ContextList items={items} active={active}/>
+                {list}
             </List>
     
 }

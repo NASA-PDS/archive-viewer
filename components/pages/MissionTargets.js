@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { getFriendlyTargetsForMission } from 'api/mission.js';
 import Breadcrumbs from 'components/Breadcrumbs';
-import { TargetContextButton } from 'components/ContextLinks';
+import { TargetGroupedList } from 'components/GroupedList';
 import LoadingWrapper from 'components/LoadingWrapper';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
@@ -24,9 +24,7 @@ export default function MissionTargets(props) {
                 <Breadcrumbs currentTitle="Targets" home={mission}/>
                 <Typography variant="h1" gutterBottom>Targets of observation</Typography>
                 <LoadingWrapper model={targets}>
-                    {targets && targets.map(target => 
-                        <TargetContextButton target={target} />
-                    )}
+                    <TargetGroupedList items={targets} />
                 </LoadingWrapper>
             </>
         }/>

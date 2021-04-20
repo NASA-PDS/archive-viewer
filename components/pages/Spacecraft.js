@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import { getFriendlySpacecraft } from 'api/spacecraft.js';
 import Breadcrumbs from 'components/Breadcrumbs';
 import HTMLBox from 'components/HTMLBox';
-import { SpacecraftListBox } from 'components/ListBox';
+import { SpacecraftGroupedList } from 'components/GroupedList';
 import { Metadata } from "components/Metadata";
 import PrimaryLayout from 'components/PrimaryLayout';
 import { SpacecraftTagList } from 'components/TagList';
@@ -33,7 +33,7 @@ export default function Spacecraft(props) {
             </>
         } navigational = {
             siblings && siblings.length > 1 &&
-                <SpacecraftListBox items={relatedSpacecraft} active={spacecraft.identifier} hideHeader/>
+                <SpacecraftGroupedList items={relatedSpacecraft} active={spacecraft.identifier}/>
         }/>
     )
 }

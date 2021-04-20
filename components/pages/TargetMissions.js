@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { getMissionstForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
-import { MissionContextButton } from 'components/ContextLinks';
+import { MissionGroupedList } from 'components/GroupedList';
 import LoadingWrapper from 'components/LoadingWrapper';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
@@ -25,9 +25,7 @@ export default function TargetMissions(props) {
                 <Breadcrumbs currentTitle="Missions" home={target}/>
                 <Typography variant="h1" gutterBottom>Missions/Investigations</Typography>
                 <LoadingWrapper model={missions}>
-                    { missions && missions.map(mission => 
-                        <MissionContextButton mission={mission} key={mission.identifier}/>    
-                    )}
+                    <MissionGroupedList items={missions}/>    
                 </LoadingWrapper>
                 
             </>
