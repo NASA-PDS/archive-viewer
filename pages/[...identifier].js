@@ -8,6 +8,7 @@ import { resolveType, types } from 'services/pages.js'
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import { Helmet } from 'react-helmet'
+import UnknownContext from 'components/contexts/UnknownContext';
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
@@ -19,11 +20,11 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
         switch(type) {
             case types.PDS3: return <PDS3Dataset dataset={model} {...otherProps}/>
             case types.TARGET: return <TargetContext model={model} {...otherProps}/>
-            case types.BUNDLE: 
-            case types.COLLECTION: 
             case types.INSTRUMENT: 
             case types.SPACECRAFT:
             case types.MISSION: return <MissionContext type={type} model={model} {...otherProps}/>
+            case types.BUNDLE: 
+            case types.COLLECTION: return <UnknownContext model={model} type={type} {...otherProps}/>
             default: return <FrontPage />
         }
     }

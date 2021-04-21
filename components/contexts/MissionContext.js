@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { familyLookup } from 'api/common';
-import { getFriendlyMissions } from 'api/mission';
+import { getFriendlyMissions, getPrimaryBundleForMission } from 'api/mission';
 import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
 import { MissionHeader } from 'components/ContextHeaders';
 import ErrorMessage from 'components/Error.js';
@@ -24,32 +24,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MissionContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
+    const [family, setFamily] = useState(null)
     const [mission, setMission] = useState(null)
-    const [instruments, setInstruments] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
-    const [targets, setTargets] = useState(null)
     const [error, setError] = useState(null)
     const classes = useStyles()
 
-    useEffect(() => {
-        if(type === types.MISSION) {
-            setMission(model)
-        } 
-        familyLookup(model).then(results => {
-            if(results.missions && results.missions.length > 0) { 
-                let newMissionLid = results.missions[0].identifier
-                if(!mission || newMissionLid !== mission.identifier) {
-                    setInstruments(results.instruments)
-                    setSpacecraft(results.spacecraft)
-                    setTargets(results.targets)
-                    getFriendlyMissions(results.missions).then(missions => {
-                        setMission(missions.find(mission => mission.identifier === newMissionLid))
-                    })
-                }
-            } else {
-                setError(new Error("Could not find mission context for LIDVID"))
+    const unpackFamily = results => {
+        if(results.missions && results.missions.length > 0) { 
+            let newMissionLid = results.missions[0].identifier
+
+            // only change any state if the family has a new mission
+            if(!mission || newMissionLid !== mission.identifier) {
+                setFamily(results)
+                setMission(null)
+                getFriendlyMissions(results.missions).then(missions => {
+                    setMission(missions.find(mission => mission.identifier === newMissionLid))
+                })
             }
-        }, setError)
+        } else {
+            setError(new Error("Could not find mission context for LIDVID"))
+        }
+    }
+
+    useEffect(() => {
+        // use the prefetched family if it's already there
+        if(!!props.family) {
+            unpackFamily(props.family)
+        } else {
+            familyLookup(model).then(unpackFamily, setError)
+        }
 
         return function cleanup() {
             // don't actually clear the mission here because it will break the illusion
@@ -61,7 +64,7 @@ export default function MissionContext(props) {
         return <ErrorMessage error={error} />
     }
 
-
+    const { instruments, spacecraft, targets } = (family || {})
 
     let mainContent = null, pageType = null
     if(!!extraPath && extraPath.length > 0) {
@@ -71,9 +74,6 @@ export default function MissionContext(props) {
         } else if(!!extraPath.includes(pagePaths[types.MISSIONINSTRUMENTS])) {
             mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
             pageType = types.MISSIONINSTRUMENTS
-        } else if(!!extraPath.includes(pagePaths[types.MISSIONDATA])) {
-            mainContent = <MissionData mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
-            pageType = types.MISSIONDATA
         } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
@@ -89,9 +89,11 @@ export default function MissionContext(props) {
             default: console.error('unable to determine main content')
         }
     }
+
+    const headerProps = {lidvid, mission, instruments, spacecraft, instruments, targets}
     return (
         <div className={classes.root}>
-            <MissionHeader page={pageType} mission={mission} instruments={instruments} spacecraft={spacecraft} instruments={instruments} targets={targets} pdsOnly={props.pdsOnly}/>
+            <MissionHeader page={pageType} pdsOnly={props.pdsOnly} {...headerProps}/>
             { mainContent }
         </div>
     )

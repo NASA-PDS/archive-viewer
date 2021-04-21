@@ -1,7 +1,8 @@
-import { AppBar, Divider, Grid, Link, Tab, Tabs, Typography } from '@material-ui/core';
+import { AppBar, Divider, Grid, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import React from 'react';
+import { getPrimaryBundleForMission } from 'api/mission';
+import React, { useEffect, useState } from 'react';
 import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
 
@@ -40,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     },
     target: {
         backgroundColor: theme.custom.targetThemeColor
+    },
+    divider: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2)
     }
 }));
 
@@ -60,25 +65,38 @@ function MissionHeader(props) {
     </AppBar>
 }
 
-function MissionTabBar({page, mission, spacecraft, instruments, targets}) {
+function MissionTabBar({lidvid, page, mission, spacecraft}) {
 
-    if(!mission) { return <SkeletonTabBar tabCount={5}/>}
+    if(!mission) { return <SkeletonTabBar tabCount={7}/>}
 
     let tabValue
     switch(page) {
         case types.BUNDLE:
-        case types.COLLECTION: tabValue = types.MISSIONDATA; break;
+        case types.COLLECTION: {
+            // for datasets, figure out if it's mission data or instrument data
+            if(lidvid.includes(mission.mission_bundle)) {
+                tabValue = types.MISSIONBUNDLE
+            } else {
+                tabValue = types.MISSIONINSTRUMENTS
+            }
+            break
+        }
         case types.INSTRUMENT: tabValue = types.MISSIONINSTRUMENTS; break;
         default: tabValue = page
     }
 
-    return <Tabs value={tabValue}>
+    return <Tabs value={tabValue} indicatorColor="secondary">
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
-                { spacecraft && spacecraft.length > 0 && <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft[0].identifier}/> }
-                <LinkTab label="Instruments" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
+                <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
                 <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
-                <LinkTab label="Data" value={types.MISSIONDATA} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONDATA]}/>
+                <Divider orientation="vertical" flexItem className={useStyles().divider} />
+                <LinkTab label="Instrument Data" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
+                { mission.mission_bundle ? 
+                    <LinkTab label="Mission Bundle" value={types.MISSIONBUNDLE} identifier={mission.mission_bundle}/>
+                    : <Tab label="Mission Bundle" disabled/>
+                }
+                <Tab label="Spice" disabled/>
             </Tabs>
 }
 
@@ -120,7 +138,7 @@ function TargetTabBar({page, target}) {
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
-                <Divider orientation="vertical" flexItem />
+                <Divider orientation="vertical" flexItem className={useStyles().divider} />
                 <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Derived Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>
