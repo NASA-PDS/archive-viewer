@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Targetontext({lidvid, model, extraPath, pdsOnly, mockup}) {
+export default function TargetContext({lidvid, model, extraPath, pdsOnly, mockup}) {
     
     const classes = useStyles()
 
