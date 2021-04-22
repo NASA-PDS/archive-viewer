@@ -24,11 +24,17 @@ export default function CollectionList({dataset}) {
         return <Loading />
     }
 
+    const collectionLids = dataset.collection_ref
+    const collectionTypes = collections.map(collection => {
+        const collectionIndex = collectionLids.findIndex(lid => lid.includes(collection.identifier))
+        return dataset.collection_type[collectionIndex]
+    })
+    
     return <Box my={2}>
         <Card variant="outlined" >
             <CardContent p={1}>
             <Typography variant="h5">Data in this bundle</Typography>
-            <SectionedTable groups={groupByLabelArray(collections, dataset.collection_type)}/>
+            <SectionedTable groups={groupByLabelArray(collections, collectionTypes)}/>
             </CardContent>
         </Card>
     </Box>

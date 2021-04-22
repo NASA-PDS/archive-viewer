@@ -12,7 +12,7 @@ function BrowseTables({items}) {
     let groups = groupByAttributedRelationship(items)
 
     if(groups.length === 1) {
-        return <SectionedTable groups={groups}/>
+        return <SectionedTable groups={groupByFirstTag(groups[0].items)}/>
     }
 
     groups.sort((a, b) => a.order < b.order ? -1 : 1)
