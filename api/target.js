@@ -10,7 +10,7 @@ export function getMissionstForTarget(target) {
         fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_description'
     }
     return httpGetRelated(params, router.missionsCore, [])
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'display_description'], router.missionsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'display_description', 'start_date', 'end_date'], router.missionsWeb))
         .then(stitchWithRelationships(relationshipTypes.fromTargetToMission, [target.identifier]))
 }
 

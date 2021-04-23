@@ -21,8 +21,8 @@ export function Metadata({ model }) {
 
 function TemporalMedatata({label, model}) {
     let times = []
-    if(!!model.observation_start_date_time) { times.push("Start Time: " + model.observation_start_date_time) }
-    if(!!model.observation_stop_date_time) { times.push("Stop Time: " + model.observation_stop_date_time) }
+    if(!!model.observation_start_date_time) { times.push("Start Time: " + new Date(model.observation_start_date_time).toLocaleString()) }
+    if(!!model.observation_stop_date_time) { times.push("Stop Time: " + new Date(model.observation_stop_date_time).toLocaleString()) }
     if(times.length === 0) { return null }
 
     return <MetadataItem label={label} item={times.join(' - ')} />

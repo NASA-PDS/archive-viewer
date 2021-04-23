@@ -28,8 +28,8 @@ export default function DatasetTable({ groups }) {
                     <TableCell className={classes.headerCell}>Title</TableCell>
                     <TableCell className={classes.headerCell}>Processing Level</TableCell>
                     <TableCell className={classes.headerCell}>Publish Date</TableCell>
-                    <TableCell className={classes.headerCell}>Start Time</TableCell>
-                    <TableCell className={classes.headerCell}>End Time</TableCell>
+                    <TableCell className={classes.headerCell}>Start Date</TableCell>
+                    <TableCell className={classes.headerCell}>End Date</TableCell>
                 </TableHead>
                 <TableBody>
                     {groups.map(group => 
@@ -68,10 +68,10 @@ function DatasetRow({dataset}) {
                 {dataset.citation_publication_year}
             </TableCell>
             <TableCell className={classes.cell}>
-                {dataset.observation_start_date_time}
+                {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
             <TableCell className={classes.cell}>
-                {dataset.observation_start_date_time}
+                {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
         </TableRow>
         <TableRow>

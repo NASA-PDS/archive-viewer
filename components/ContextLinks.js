@@ -21,11 +21,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const sortType = {
+    name: (a, b) => nameFinder(a).localeCompare(nameFinder(b)),
+    date: (a, b) => new Date(a.start_date || 0) - new Date(b.start_date || 0)
+}
+
+
 function ContextList({items, active}) {    
     if(!items || !items.length) { return null}
-    let sortedItems = items.sort((a, b) => {
-        return nameFinder(a).localeCompare(nameFinder(b))
-    })
+    let sortedItems = items.sort(sortType.name)
     return (
         <MaterialList>
             {sortedItems.map((item,idx) => 
@@ -50,11 +54,10 @@ function nameFinder(item) {
     return item.display_name ? item.display_name : item.title ? item.title : item.identifier
 }
 
-function ContextCardList({items, ...otherProps}) {    
+function ContextCardList({items, sorter, ...otherProps}) {    
     if(!items || !items.length) { return null}
-    let sortedItems = items.sort((a, b) => {
-        return nameFinder(a).localeCompare(nameFinder(b))
-    })
+    let sortedItems = items.sort(sorter)
+    console.log(sorter)
     return (
         <>
             {sortedItems.map((item,idx) => 
@@ -66,11 +69,13 @@ function ContextCardList({items, ...otherProps}) {
 
 function ContextCard({item, classType, path, title}) {
     const name = nameFinder(item)
+    const dateString = new Date(item.start_date).toLocaleDateString() + (item.end_date ? ('—' + new Date(item.end_date).toLocaleDateString()) : '')
     const classes = useStyles();
     return (
         <Card raised={true} className={`${classes.card} ${classType}`} p={1}>
             <CardContent className={classes.cardContent} p="1">
                 <Typography style={{marginTop: 0}} variant="h3" component="h2" gutterBottom>{name}</Typography>
+                {item.start_date && <Typography variant="body2" color="textSecondary"> { dateString } </Typography> }
                 <Description model={item}/>
             </CardContent>
             <CardActions>
@@ -84,12 +89,12 @@ function ContextCard({item, classType, path, title}) {
 
 function TargetContextCardList(props) {
     const classes = useStyles();
-    return <ContextCardList classType={classes.target} title="View Target" {...props}/>
+    return <ContextCardList classType={classes.target} title="View Target" sorter={sortType.name} {...props}/>
 }
 
 function MissionContextCardList(props) {
     const classes = useStyles();
-    return <ContextCardList classType={classes.mission} path="instruments" title="View Data" {...props}/>
+    return <ContextCardList classType={classes.mission} path="instruments" title="View Data" sorter={sortType.date} {...props}/>
 }
 
 
