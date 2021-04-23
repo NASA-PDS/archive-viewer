@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, List as MaterialList, ListItem, ListItemText, makeStyles, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, CardMedia, List as MaterialList, ListItem, ListItemText, makeStyles, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
 import InternalLink from 'components/InternalLink';
 import React from 'react';
@@ -8,7 +8,10 @@ import Description from './Description';
 const useStyles = makeStyles((theme) => ({
     card: {
         marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(1),
+        display: 'flex',
+        flexFlow: 'row nowrap',
+        alignItems: 'flex-start'
     },
     cardContent: {
         flex: 1
@@ -18,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
     },
     mission: {
         backgroundColor: theme.custom.missionThemeColor
+    },
+    img: {
+        width: 80,
+        margin: theme.spacing(1)
     }
 }));
 
@@ -57,7 +64,6 @@ function nameFinder(item) {
 function ContextCardList({items, sorter, ...otherProps}) {    
     if(!items || !items.length) { return null}
     let sortedItems = items.sort(sorter)
-    console.log(sorter)
     return (
         <>
             {sortedItems.map((item,idx) => 
@@ -71,11 +77,16 @@ function ContextCard({item, classType, path, title}) {
     const name = nameFinder(item)
     const dateString = new Date(item.start_date).toLocaleDateString() + (item.end_date ? ('—' + new Date(item.end_date).toLocaleDateString()) : '')
     const classes = useStyles();
+
+    let titleStyle = {marginTop: 0}
+    if(!!item.start_date) { titleStyle.marginBottom = 0 }
+
     return (
         <Card raised={true} className={`${classes.card} ${classType}`} p={1}>
+            { item.image_url ? <img className={classes.img} src={item.image_url} alt={'Banner for ' + name} title={name}/> : <div className={classes.img}/>} 
             <CardContent className={classes.cardContent} p="1">
-                <Typography style={{marginTop: 0}} variant="h3" component="h2" gutterBottom>{name}</Typography>
-                {item.start_date && <Typography variant="body2" color="textSecondary"> { dateString } </Typography> }
+                <Typography style={titleStyle} variant="h3" component="h2" gutterBottom>{name}</Typography>
+                {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
                 <Description model={item}/>
             </CardContent>
             <CardActions>
