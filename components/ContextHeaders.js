@@ -2,6 +2,7 @@ import { AppBar, Divider, Grid, Tab, Tabs, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { getPrimaryBundleForMission } from 'api/mission';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
@@ -85,7 +86,7 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
         default: tabValue = page
     }
 
-    return <Tabs value={tabValue} indicatorColor="secondary">
+    return <Tabs value={tabValue} indicatorColor="secondary" textColor="secondary">
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
                 <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
@@ -110,7 +111,7 @@ function SkeletonTabBar({tabCount}) {
 
 function LinkTab(props) {
     const {label, value, ...otherProps} = props
-    return props.identifier ? <InternalLink passHref {...otherProps}><Tab label={label} value={value} /></InternalLink> : <Tab {...props} />
+    return <Tab label={label} value={value} component={InternalLink} includeTag {...otherProps}/>
 }
 
 function TargetHeader(props) {
@@ -134,7 +135,7 @@ function TargetTabBar({page, target}) {
 
     if(!target) { return <SkeletonTabBar tabCount={4}/>}
 
-    return <Tabs value={page}>
+    return <Tabs value={page} textColor="secondary">
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
