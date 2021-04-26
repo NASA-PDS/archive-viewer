@@ -4,7 +4,7 @@ import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers, stitch
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 import LogicalIdentifier from 'services/LogicalIdentifier.js'
 
-export function getMissionstForTarget(target) {
+export function getMissionsForTarget(target) {
     let params = {
         q: `target_ref:${new LID(target.identifier).escapedLid}\\:\\:* AND data_class:"Investigation"`,
         fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_description'
@@ -18,7 +18,7 @@ export function getDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
-        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND primary_result_processing_level:Derived AND NOT investigation_ref:*)`,
+        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND primary_result_processing_level:Derived)`,
         // fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_ref'
     }
     return httpGet(router.datasetCore, params)
@@ -63,4 +63,9 @@ export function getRelatedTargetsForTarget(target) {
             }, reject)
         }, reject)
     })
+}
+
+export function getFriendlyTargets(targets) {
+    return Promise.resolve(targets)
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb))
 }

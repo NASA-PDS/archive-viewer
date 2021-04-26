@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import { getMissionstForTarget } from 'api/target';
+import { getMissionsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { MissionGroupedList } from 'components/GroupedList';
 import LoadingWrapper from 'components/LoadingWrapper';
@@ -11,7 +11,7 @@ export default function TargetMissions(props) {
     const [missions, setMissions] = useState(null)
 
     useEffect(() => {
-        getMissionstForTarget(target).then(setMissions, er => console.error(er))
+        getMissionsForTarget(target).then(setMissions, er => console.error(er))
 
         return function cleanup() {
             setMissions(null)

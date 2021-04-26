@@ -1,11 +1,10 @@
-import { Menu } from 'components/ContextHeaders';
 import HTMLBox from 'components/HTMLBox';
 import { Metadata } from 'components/Metadata';
 import PrimaryLayout from 'components/PrimaryLayout';
 import { TargetTagList } from 'components/TagList';
 import React from 'react';
 
-export default function Target({target, lidvid}) {
+export default function Target({target}) {
     return (
         <PrimaryLayout primary={
             <>

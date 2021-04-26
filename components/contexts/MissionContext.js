@@ -81,11 +81,11 @@ export default function MissionContext(props) {
     } else {
         pageType = type
         switch(type) {
-            case types.MISSION: mainContent = <Mission lidvid={lidvid} mission={model} {...otherProps}  />; break;
-            case types.INSTRUMENT: mainContent = <Instrument lidvid={lidvid} instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} {...otherProps}  />; break;
-            case types.SPACECRAFT: mainContent = <Spacecraft lidvid={lidvid} spacecraft={model} siblings={spacecraft} instruments={instruments} mission={mission} {...otherProps} />; break;
-            case types.BUNDLE: mainContent = <Bundle lidvid={lidvid} dataset={model} mission={mission} {...otherProps}/>; break;
-            case types.COLLECTION: mainContent = <Collection lidvid={lidvid} dataset={model} mission={mission} {...otherProps} />; break;
+            case types.MISSION: mainContent = <Mission mission={model} {...otherProps}  />; break;
+            case types.INSTRUMENT: mainContent = <Instrument instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} {...otherProps}  />; break;
+            case types.SPACECRAFT: mainContent = <Spacecraft spacecraft={model} siblings={spacecraft} instruments={instruments} mission={mission} {...otherProps} />; break;
+            case types.BUNDLE: mainContent = <Bundle dataset={model} context={mission} {...otherProps}/>; break;
+            case types.COLLECTION: mainContent = <Collection dataset={model} context={mission} {...otherProps} />; break;
             default: console.error('unable to determine main content')
         }
     }

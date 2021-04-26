@@ -18,15 +18,17 @@ const useStyles = makeStyles((theme) => ({
 export default function UnknownContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
     const [missionFamily, setMissionFamily] = useState(null)
-    const [target, setTarget] = useState(null)
     const [error, setError] = useState(null)
 
+    let target = null
+    if(missionFamily && missionFamily.targets && missionFamily.targets.length > 0) { 
+        target = missionFamily.targets[0]
+    } 
+    
     useEffect(() => {
         familyLookup(model).then(results => {
             if(results.missions && results.missions.length > 0) { 
                 setMissionFamily(results)
-            } else if(results.targets && results.targets.length > 0) { 
-                setTarget(results.targets[0])
             } 
         }, setError)
 
@@ -39,11 +41,14 @@ export default function UnknownContext(props) {
     if(!!error) {
         return <ErrorMessage error={error} />
     }
+
+    // Derived data goes to target context
+    if(model.primary_result_processing_level === "Derived" && !!target) {
+        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} {...otherProps} />
+    }
+    // Non-derived data goes to mission context
     if(!!missionFamily) {
         return <MissionContext family={missionFamily} {...props}/>
-    }
-    if(!!target) {
-        return <TargetContext {...props} />
     }
 
     // can't figure it out, just show stuff

@@ -81,12 +81,12 @@ const titles = {
     [types.PDS3]: "PDS3 Dataset"
 }
 
-function Dataset({dataset, lidvid, mockup, mission, pdsOnly, type}) {
+function Dataset({dataset, mockup, context, pdsOnly, type}) {
     
     return (
         <PrimaryLayout itemScope itemType="https://schema.org/Dataset" primary={
             <>
-            <DatasetBreadcrumbs home={mission} current={dataset}/>
+            <DatasetBreadcrumbs home={context} current={dataset}/>
             <Title dataset={dataset} type={type} />
             <DatasetTagList tags={dataset.tags}/>
             <DeliveryInfo dataset={dataset} />

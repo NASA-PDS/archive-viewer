@@ -19,7 +19,7 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
     } else {
         switch(type) {
             case types.PDS3: return <PDS3Dataset dataset={model} {...otherProps}/>
-            case types.TARGET: return <TargetContext model={model} {...otherProps}/>
+            case types.TARGET: return <TargetContext type={type} target={model} model={model} {...otherProps}/>
             case types.INSTRUMENT: 
             case types.SPACECRAFT:
             case types.MISSION: return <MissionContext type={type} model={model} {...otherProps}/>
