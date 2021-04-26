@@ -27,7 +27,7 @@ export default function TargetData(props) {
     return (
         <PrimaryLayout primary={
             <>
-                <Breadcrumbs currentTitle="Data" home={target}/>
+                <Breadcrumbs currentTitle="Derived Data" home={target}/>
 
                 <Typography variant="h1" gutterBottom>Derived {target.display_name || target.title} Data</Typography>
                 <LoadingWrapper model={datasets} 
