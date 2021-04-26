@@ -10,7 +10,7 @@ export default function EmptyMessage() {
                 <LinkOff color="disabled"/>
             </Grid>
             <Grid item>
-                <Typography variant="body" color="textSecondary">None found</Typography>
+                <Typography variant="body1" color="textSecondary">None found</Typography>
             </Grid>
         </Grid>
     </Box>
