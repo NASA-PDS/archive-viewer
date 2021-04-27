@@ -42,7 +42,7 @@ export default function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={Theme}>
         <AppBar/>
         <Menu/>
-        { loading && <LinearProgress color="secondary" style={{position: 'absolute', width: '100%'}}/>}
+        { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
         <Component {...pageProps} />
     </ThemeProvider>
     )
