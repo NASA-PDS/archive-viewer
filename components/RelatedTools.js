@@ -1,14 +1,17 @@
-import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { ExitToApp } from '@material-ui/icons';
 import React from 'react';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     img: {
         height: 150,
         width: 150,
     },
     cardContainer: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
         display: 'flex',
         flexFlow: 'row nowrap',
         alignItems: 'flex-start',
@@ -16,7 +19,7 @@ const useStyles = makeStyles({
     cardContent: {
         flex: 1
     }
-});
+}))
 
 export default function RelatedTools({tools, noImages, noTitle}){
     if(!tools) { return null }
@@ -34,16 +37,15 @@ export default function RelatedTools({tools, noImages, noTitle}){
 
 function ToolLink({tool, noImages}) {
     const classes = useStyles();
-    return (
-        <Card raised={true}  p={1}>
-            <CardActionArea className={classes.cardContainer} href={tool.directUrl ? tool.directUrl : tool.url} underline="none">
-                {!noImages && <CardMedia component="img" className={classes.img} image={tool.image_url} alt={'Icon for ' + tool.display_name} title={tool.display_name}/>}
-                <CardContent className={classes.cardContent} p="1">
-                    <Typography p="3" variant="h5" component="h2" color="primary">{tool.display_name}</Typography>
-                    <Typography color="textPrimary" component="p" gutterBottom>{tool.name}</Typography>
-                    <Typography color="textSecondary" component="p">{tool.description}</Typography>
-                </CardContent>
-            </CardActionArea>
+    return <Card raised={true} className={classes.cardContainer} p={1}>
+            {!noImages && <CardMedia component="img" className={classes.img} image={tool.image_url} alt={'Icon for ' + tool.display_name} title={tool.display_name}/>}
+            <CardContent className={classes.cardContent} p="1">
+                <Typography p="3" variant="h5" component="h2" color="primary">{tool.display_name}</Typography>
+                <Typography color="textPrimary" component="p" gutterBottom>{tool.name}</Typography>
+                <Typography color="textSecondary" component="p">{tool.description}</Typography>
+            </CardContent>
+            <CardActions>
+                <Button color="primary" variant="contained" endIcon={<ExitToApp/>} href={tool.directUrl ? tool.directUrl : tool.url} underline="none">Visit</Button>
+            </CardActions>
         </Card>
-    )
 }
