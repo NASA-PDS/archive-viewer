@@ -147,7 +147,7 @@ function TargetTabBar({page, target}) {
 
 function Banner({name, image_url}) {
     const classes = useStyles();
-    return <Grid container direction="row" alignItems="center" className={classes.banner}>
+    return <Grid container direction="row" alignItems="center" className={classes.banner} wrap="nowrap">
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
         <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
     </Grid>
