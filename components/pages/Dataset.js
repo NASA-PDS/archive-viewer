@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { FolderOutlined, UnarchiveOutlined } from '@material-ui/icons';
+import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CitationBuilder from 'components/CitationBuilder';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
@@ -12,7 +13,7 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
 import { DatasetTagList } from 'components/TagList';
 import TangentAccordion from 'components/TangentAccordion';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles((theme) => ({
@@ -83,10 +84,18 @@ const titles = {
 
 function Dataset({dataset, mockup, context, pdsOnly, type}) {
     
+    const [bundles, setBundles] = useState([])
+
+    useEffect(() => {
+        type === types.COLLECTION && getBundlesForCollection(dataset).then(result => {
+            setBundles(result)
+        }, console.error)
+    }, [dataset.identifier])
+
     return (
         <PrimaryLayout itemScope itemType="https://schema.org/Dataset" primary={
             <>
-            <DatasetBreadcrumbs home={context} current={dataset}/>
+            <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
             <DatasetTagList tags={dataset.tags}/>
             <DeliveryInfo dataset={dataset} />
@@ -94,7 +103,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
 
             <Metadata model={dataset}/>
             { type === types.COLLECTION && 
-                <CollectionBrowseLinks dataset={dataset}/>
+                <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
             }
 
             { type === types.BUNDLE && 

@@ -2,44 +2,55 @@ import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@material-
 import Skeleton from '@material-ui/lab/Skeleton';
 import InternalLink from 'components/InternalLink';
 
-export default function Breadcrumbs({home, current, currentTitle, subsectionLink}) {
+class Breadcrumb {
+    constructor(name, identifier, additionalPath) {
+        this.name = name
+        this.identifier = identifier
+        this.additionalPath = additionalPath
+    }
+}
+
+export default function Breadcrumbs({home, current, currentTitle, ancestors}) {
     if(!home || !(current || currentTitle)) {
         return <SkeletonBreadcrumbs/>
     }
     return <MaterialBreadcrumbs>
         <InternalLink identifier={home.identifier} passHref><Link color="inherit">{home.display_name || home.title}</Link></InternalLink>
-        {subsectionLink}
+        {ancestors && ancestors.map(breadcrumb => <InternalLink identifier={breadcrumb.identifier} additionalPath={breadcrumb.additionalPath} passHref><Link color="inherit">{breadcrumb.name}</Link></InternalLink>)}
         <Typography color="textPrimary" noWrap>{currentTitle || current.display_name || current.title}</Typography>
     </MaterialBreadcrumbs>
 }
 
 function InstrumentBreadcrumbs(props) {
-    if(!props.home) {
+    const { home } = props
+    if(!home) {
         return <SkeletonBreadcrumbs/>
     }
-    return <Breadcrumbs {...props} subsectionLink={
-        <InternalLink identifier={props.home.identifier} additionalPath="instruments" passHref><Link color="inherit">Instruments</Link></InternalLink>
-    }/>
+    return <Breadcrumbs {...props} ancestors={[new Breadcrumb("Instruments", home.identifier, "instruments")]} />
 }
+    
 
 function DatasetBreadcrumbs(props) {
-    const {home, current} = props
+    const {home, current, parent} = props
     if(!props.home) {
         return <SkeletonBreadcrumbs/>
     }
 
-    let subsection
-    if(home.mission_bundle === current.identifier) {
-        subsection = null
+    let ancestors = []
+    if(current.identifier.includes(home.mission_bundle)) {
+        // no intermediate breadcrumbs for mission bundles
     } else if(home.data_class === "Target") {
-        subsection = <InternalLink identifier={home.identifier} additionalPath="data" passHref><Link color="inherit">Derived Data</Link></InternalLink>
+        ancestors.push(new Breadcrumb("Derived Data", home.identifier, "data"))
     } else if(!!current.instrument_ref) {
-        subsection = current.instrument_ref.length === 1
-            ? <InternalLink identifier={current.instrument_ref[0]} passHref><Link color="inherit">Instrument</Link></InternalLink> 
-            : <InternalLink identifier={home.identifier} additionalPath="instruments" passHref><Link color="inherit">Instruments</Link></InternalLink>
+        ancestors.push(new Breadcrumb("Instruments", home.identifier, "instruments"))
+        current.instrument_ref.length === 1 &&
+            ancestors.push(new Breadcrumb("Instrument", current.instrument_ref[0]))
+    }
+    if(!!parent) {
+        ancestors.push(new Breadcrumb("Bundle", parent.identifier))
     }
 
-    return <Breadcrumbs {...props} subsectionLink={subsection}/>
+    return <Breadcrumbs {...props} ancestors={ancestors}/>
 }
 
 function SkeletonBreadcrumbs() {

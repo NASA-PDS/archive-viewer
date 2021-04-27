@@ -1,28 +1,12 @@
-import { Button, Grid, List, ListItem, Typography } from '@material-ui/core';
+import { Button, List, Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import { getBundlesForCollection } from 'api/dataset.js';
-import ErrorMessage from 'components/Error.js';
-import Loading from 'components/Loading.js';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import InternalLink from './InternalLink';
-import {SplitListItem} from './SplitListItem';
+import { SplitListItem } from './SplitListItem';
 
-export default function CollectionBrowseLinks({dataset}) {
-    const [bundles, setBundles] = useState([])
-    const [loaded, setLoaded] = useState(false) 
-    const [error, setError] = useState(null)
+export default function CollectionBrowseLinks({dataset, bundles}) {
 
-    useEffect(() => {
-        getBundlesForCollection(dataset).then(result => {
-            setBundles(result)
-            setLoaded(true)
-        }, setError)
-    }, [dataset.identifier])
-
-    if(!loaded) { return <Loading />}
-    if(error) {
-        return <ErrorMessage error={error}></ErrorMessage>
-    } else if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
+    if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
     return (
         <List>
             { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
