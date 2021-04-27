@@ -30,7 +30,7 @@ export function SectionedTable({groups}) {
 
 export function SectionedTableRows({ groups }) {
     const classes = useStyles();
-    groups.sort((a, b) => a.order.localeCompare(b.order));
+    groups.sort((a, b) => a.order > b.order ? 1 : -1);
     return <>
             {groups.map(group => {
                 return (

@@ -95,11 +95,11 @@ const groupByFirstTag = (items) => {
     return groups
 }
 
-const groupByLabelArray = (items, labels) => {
+const groupByLabelArray = (items, labels, order) => {
     let insert = (item, groupName) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], groupName))
+        else groups.push(new Group(groupName, [item], order.findIndex(o => o === groupName)))
     }
     let groups = []
     items.forEach((item, index) => {
