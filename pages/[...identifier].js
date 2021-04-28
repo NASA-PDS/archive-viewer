@@ -1,14 +1,15 @@
-import React from 'react';
-import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
-import Loading from 'components/Loading'
-import ErrorMessage from 'components/Error.js'
-import FrontPage from 'pages/index'
-import { initialLookup } from 'api/common'
-import { resolveType, types } from 'services/pages.js'
+import { initialLookup } from 'api/common';
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
-import { Helmet } from 'react-helmet'
 import UnknownContext from 'components/contexts/UnknownContext';
+import ErrorMessage from 'components/Error.js';
+import Loading from 'components/Loading';
+import { PDS3Dataset } from 'components/pages/Dataset.js';
+import NodeCache from 'node-cache';
+import FrontPage from 'pages/index';
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { resolveType, types } from 'services/pages.js';
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
@@ -55,6 +56,9 @@ function PageMetadata({pageTitle}) {
 
 export default ProductPage
 
+// 1-week cache for lidvids
+const cache = new NodeCache({stdTTL: 60 * 60 * 24 * 7})
+
 export async function getServerSideProps({params, query}) {
     const [lidvid, ...extraPath] = params.identifier
     let props = { lidvid, extraPath };
@@ -63,7 +67,15 @@ export async function getServerSideProps({params, query}) {
     if(query.mockup === 'true') { props.mockup = true }
 
     try {
-        const result = await initialLookup(lidvid, !!params.pdsOnly)
+        let result = cache.get(lidvid)
+        if(!result) { 
+            console.log('Cache miss for ' + lidvid)
+            result = await initialLookup(lidvid, !!params.pdsOnly)
+            if(!params.pdsOnly) {
+                cache.set(lidvid, result)
+            }
+        }
+        
         props.loaded = true
         const type = resolveType(result)
 
