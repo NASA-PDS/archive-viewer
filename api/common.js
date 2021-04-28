@@ -4,6 +4,7 @@ import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
 import { types, resolveType } from 'services/pages.js'
 import { stitchWithTools } from './tools';
+import NodeCache from 'node-cache';
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -76,7 +77,23 @@ export function httpGetIdentifiers(route, identifiers, extraFields) {
     return Promise.all(requests).then(results => results.flat())
 }
 
-export function familyLookup(initial, previousKnown, previousIgnored) {
+
+const familyCache = new NodeCache()
+export function familyLookup(initial) {
+    const initialLid = initial.identifier
+    
+    const cached = familyCache.get(initialLid)
+    if(!!cached) {
+        return Promise.resolve(cached)
+    } else {
+        return recursiveContextLookup(initial).then(results => {
+            familyCache.set(initialLid, results)
+            return Promise.resolve(results)
+        })
+    }
+}
+
+function recursiveContextLookup(initial, previousKnown, previousIgnored) {
     const initialLid = new LID(initial.identifier).escapedLid
 
     // figure out which lids we will have looked up
@@ -159,7 +176,7 @@ export function familyLookup(initial, previousKnown, previousIgnored) {
                             foundTargets.some(lid => (result.target_ref || []).some(lidvid => new LID(lidvid).lid === lid)) ||
                             foundInstruments.some(lid => (result.instrument_ref || []).some(lidvid => new LID(lidvid).lid === lid))
                     }).forEach(result => {
-                        newRequests.push(familyLookup(result, toReturn, ignoredLids))
+                        newRequests.push(recursiveContextLookup(result, toReturn, ignoredLids))
                     })
                     Promise.all(newRequests).then(ancestorResults => {
                         resolve({

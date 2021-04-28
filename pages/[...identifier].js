@@ -69,7 +69,6 @@ export async function getServerSideProps({params, query}) {
     try {
         let result = cache.get(lidvid)
         if(!result) { 
-            console.log('Cache miss for ' + lidvid)
             result = await initialLookup(lidvid, !!params.pdsOnly)
             if(!params.pdsOnly) {
                 cache.set(lidvid, result)
