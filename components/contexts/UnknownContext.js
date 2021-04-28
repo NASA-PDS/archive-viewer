@@ -7,13 +7,6 @@ import { types } from 'services/pages.js';
 import MissionContext from './MissionContext';
 import TargetContext from './TargetContext';
 
-const drawerWidth = 360;
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.default,
-    }
-}));
 
 export default function UnknownContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props

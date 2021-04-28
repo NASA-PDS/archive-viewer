@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function({children}) {
+export default function PrimaryContent({children}) {
     const classes = useStyles()
     return <Box className={classes.container}>{children}</Box>
 }
