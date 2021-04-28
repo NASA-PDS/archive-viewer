@@ -1,3 +1,4 @@
+import Router from "next/router"
 import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TagSearch, { TagTypes } from 'components/TagSearch.js';
@@ -23,6 +24,8 @@ function TagList({tags, type}) {
         setOpen(true)
     }
     if(!tags || tags.length === 0) return null
+
+    Router.events.on("routeChangeStart", () => setOpen(false))
 
     return (
         <>
