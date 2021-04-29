@@ -65,7 +65,7 @@ export default function Index() {
                                           <ul className="front-page-list"><li>e.g. 433 Eros</li></ul>
                                       </li>
                                       <li>
-                                          <Link href="/Targets/Main%20Belt%20Asteroid">Main Belt Asteroid</Link>
+                                          <Link href="/search/Targets/Main%20Belt%20Asteroid">Main Belt Asteroid</Link>
                                           <ul className="front-page-list"><li>e.g. 4 Vesta</li></ul>
                                       </li>
                                       <li>
