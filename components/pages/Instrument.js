@@ -10,7 +10,7 @@ import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
 import { LabeledListItem } from 'components/SplitListItem';
-import { InstrumentTagList } from 'components/TagList';
+import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
 
 export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
@@ -46,8 +46,7 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
                 <>
                 <InstrumentBreadcrumbs current={instrument} home={mission}/>
                 <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
-                <InstrumentTagList tags={instrument.tags} />
-                <Metadata model={instrument} />
+                <Metadata model={instrument} tagType={TagTypes.instrument}/>
                 <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/>
                 <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>

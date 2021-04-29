@@ -11,7 +11,7 @@ import { Metadata, MetadataItem } from 'components/Metadata';
 import PrimaryContent from 'components/PrimaryContent';
 import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
-import { DatasetTagList } from 'components/TagList';
+import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -97,11 +97,10 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <>
             <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
-            <DatasetTagList tags={dataset.tags}/>
             <DeliveryInfo dataset={dataset} />
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
-            <Metadata model={dataset}/>
+            <Metadata model={dataset} tagType={TagTypes.dataset}/>
             { type === types.COLLECTION && 
                 <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
             }

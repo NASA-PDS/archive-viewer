@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
   
-function TagList({tags, type}) {
+export function TagList({tags, type}) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [currentTag, setTag] = React.useState(null);

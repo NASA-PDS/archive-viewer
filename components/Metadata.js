@@ -2,12 +2,13 @@ import { List, Typography } from '@material-ui/core';
 import Description from 'components/Description';
 import React from 'react';
 import { LabeledListItem } from './SplitListItem';
+import { TagList } from './TagList';
 
 
-
-export function Metadata({ model }) {
+export function Metadata({ model, tagType }) {
     if(!model) return null
     return <List>
+        <MetadataItem label="Tags" itemComponent={<TagList tags={model.tags} type={tagType} />} />
         <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" itemScope itemType="http://schema.org/Text" />
         <MetadataItem label="Identifier (LID)" item={model.identifier} />
         <MetadataItem label="Version" item={model.version_id} />

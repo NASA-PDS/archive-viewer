@@ -4,6 +4,7 @@ import CollectionList from 'components/CollectionList.js';
 import { ContextLink } from 'components/ContextLinks';
 import { Metadata } from "components/Metadata";
 import React, { useState } from 'react';
+import { TagTypes } from 'components/TagSearch.js';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -86,7 +87,7 @@ function DatasetRow({dataset}) {
 
 function DatasetSynopsis({dataset}) {
     return <Box p={2}>
-        <Metadata model={dataset} />
+        <Metadata model={dataset} tagType={TagTypes.dataset}/>
         <CollectionList dataset={dataset} />
     </Box>
 }

@@ -1,11 +1,11 @@
 import { Typography } from '@material-ui/core';
 import { getFriendlySpacecraft } from 'api/spacecraft.js';
 import Breadcrumbs from 'components/Breadcrumbs';
-import HTMLBox from 'components/HTMLBox';
 import { SpacecraftGroupedList } from 'components/GroupedList';
+import HTMLBox from 'components/HTMLBox';
 import { Metadata } from "components/Metadata";
 import PrimaryLayout from 'components/PrimaryLayout';
-import { SpacecraftTagList } from 'components/TagList';
+import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
 
 export default function Spacecraft(props) {
@@ -26,9 +26,8 @@ export default function Spacecraft(props) {
             <>
             <Breadcrumbs current={spacecraft} home={mission}/>
             <Typography variant="h1" gutterBottom> { spacecraft.display_name ? spacecraft.display_name : spacecraft.title } </Typography>
-            <SpacecraftTagList tags={spacecraft.tags} />
             <HTMLBox markup={spacecraft.html1} />
-            <Metadata model={spacecraft} />
+            <Metadata model={spacecraft} tagType={TagTypes.spacecraft} />
             <HTMLBox markup={spacecraft.html2} />
             </>
         } navigational = {

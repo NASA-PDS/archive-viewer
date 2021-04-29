@@ -1,13 +1,12 @@
-import { Typography, Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
 import { getPrimaryBundleForMission } from 'api/mission.js';
-import { Menu } from 'components/ContextHeaders';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
 import { Metadata } from "components/Metadata";
 import PrimaryLayout from 'components/PrimaryLayout';
 import { LabeledListItem } from 'components/SplitListItem';
-import { MissionTagList } from 'components/TagList';
+import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
 
 
@@ -30,9 +29,8 @@ export default function Mission({mission, lidvid, pdsOnly}) {
         <PrimaryLayout primary={
             <>
                 <Typography variant="h1" gutterBottom> { mission.display_name ? mission.display_name : mission.title } </Typography>
-                <MissionTagList tags={mission.tags} />
                 <HTMLBox markup={mission.html1} />
-                <Metadata model={mission} />
+                <Metadata model={mission} tagType={TagTypes.mission}/>
                 <HTMLBox markup={mission.html2} />   
                 
 
