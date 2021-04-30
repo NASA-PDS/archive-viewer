@@ -66,14 +66,16 @@ export async function getServerSideProps({params, query}) {
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
 
+    if(!!query.flush) {
+        cache.flushAll()
+    }
+
     try {
         let result = cache.get(lidvid)
         if(!result) { 
             result = await initialLookup(lidvid, !!params.pdsOnly)
-            if(!params.pdsOnly) {
-                cache.set(lidvid, result)
-            }
-        }
+            cache.set(lidvid, result)
+        } 
         
         props.loaded = true
         const type = resolveType(result)
