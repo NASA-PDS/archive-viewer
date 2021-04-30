@@ -104,10 +104,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
     
     return new Promise((resolve, reject) => {
         // lookup anything that references the initial lid
-        let queries = [`(instrument_ref:${initialLid}\\:\\:* OR
-                        investigation_ref:${initialLid}\\:\\:* OR
-                        instrument_host_ref:${initialLid}\\:\\:* OR
-                        target_ref:${initialLid}\\:\\:*)`]
+        let queries = [`(instrument_ref:${initialLid}\\:\\:* OR investigation_ref:${initialLid}\\:\\:* OR instrument_host_ref:${initialLid}\\:\\:* OR target_ref:${initialLid}\\:\\:*)`]
 
         // also look up anything that references its instruments/spacecraft/missions (but NOT targets)
         initial.instrument_ref && initial.instrument_ref.forEach(lid => { 
