@@ -38,5 +38,5 @@ export function getDatasetsForMission(mission, spacecraft, instruments) {
 
 export function getFriendlyMissions(missions) {
     return Promise.resolve(missions)
-        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'mission_bundle'], router.missionsWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'image_url', 'mission_bundle', 'is_ready'], router.missionsWeb))
 }

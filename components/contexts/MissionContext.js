@@ -13,6 +13,9 @@ import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
 import { types, pagePaths } from 'services/pages.js';
 import MissionTools from 'components/pages/MissionTools';
+import { Button, IconButton, Snackbar } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import CloseIcon from '@material-ui/icons/Close';
 
 const drawerWidth = 360;
 
@@ -27,6 +30,7 @@ export default function MissionContext(props) {
     const [family, setFamily] = useState(null)
     const [mission, setMission] = useState(null)
     const [error, setError] = useState(null)
+    const [warningDismissed, setWarningDismissed] = useState(false)
     const classes = useStyles()
 
     const unpackFamily = results => {
@@ -37,6 +41,7 @@ export default function MissionContext(props) {
             if(!mission || newMissionLid !== mission.identifier) {
                 setFamily(results)
                 setMission(null)
+                setWarningDismissed(false)
                 getFriendlyMissions(results.missions).then(missions => {
                     setMission(missions.find(mission => mission.identifier === newMissionLid))
                 })
@@ -95,6 +100,25 @@ export default function MissionContext(props) {
         <div className={classes.root}>
             <MissionHeader page={pageType} pdsOnly={props.pdsOnly} {...headerProps}/>
             { mainContent }
+            <Snackbar open={mission && !mission.is_ready && !warningDismissed} >
+                <Alert severity="info" onClose={() => setWarningDismissed(true)} action={
+                    <>
+                        <Button color="primary" href={"mailto:sbn@psi.edu?subject=Archive%20Browser%20Feedback"} target="_blank">Contact</Button>
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setWarningDismissed(true);
+                            }}
+                            >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    </>
+                }>
+                    This mission is still being updated, so let us know if you can't find what you're looking for
+                </Alert>
+            </Snackbar>
         </div>
     )
 }
