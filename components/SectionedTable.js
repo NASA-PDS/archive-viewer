@@ -21,14 +21,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function SectionedTable({groups}) {
+export function SectionedTable({groups, ...otherProps}) {
     return <SectionedTableContainer>
-        <SectionedTableRows groups={groups}/>
+        <SectionedTableRows groups={groups} {...otherProps}/>
     </SectionedTableContainer>
 }
 
 
-export function SectionedTableRows({ groups }) {
+export function SectionedTableRows({ groups, ...otherProps }) {
     const classes = useStyles();
     groups.sort((a, b) => a.order > b.order ? 1 : -1);
     return <>
@@ -40,7 +40,7 @@ export function SectionedTableRows({ groups }) {
                                 <Typography variant="h6"> {group.name}</Typography>}
                         </TableCell>
                         <TableCell className={classes.cell}>
-                            <ContextList items={group.items} />
+                            <ContextList items={group.items} {...otherProps} />
                         </TableCell>
                     </TableRow>
                 );

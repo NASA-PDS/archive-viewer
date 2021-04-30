@@ -58,12 +58,12 @@ const groupByRelatedItems = (items, field) => {
     return groups
 }
 
-const groupByField = (items, field) => {
+const groupByField = (items, field, order) => {
     if(!items) return []
-    let insert = (item, groupName, order) => {
+    let insert = (item, groupName) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], order))
+        else groups.push(new Group(groupName, [item], order ? order.findIndex(o => o === groupName) : 999 ))
     }
     let groups = []
     for (let item of items) {

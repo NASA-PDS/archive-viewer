@@ -18,6 +18,16 @@ const typeOrder = [
     "Miscellaneous",
 ]
 
+const purposeOrder = [
+    "SCIENCE",
+    "SUPPORTING OBSERVATION",
+    "OBSERVATION GEOMETRY",
+    "CALIBRATION",
+    "NAVIGATION",
+    "ENGINEERING",
+    "CHECKOUT",
+]
+
 export default function CollectionList({dataset}) {
     const [collections, setCollections] = useState([])
     const [loaded, setLoaded] = useState(false) 
@@ -46,7 +56,7 @@ export default function CollectionList({dataset}) {
         <Card variant="outlined" >
             <CardContent p={1}>
             <Typography variant="h5">Data in this bundle</Typography>
-            <SectionedTable groups={groupByLabelArray(collections, collectionTypes, typeOrder)}/>
+            <SectionedTable groups={groupByLabelArray(collections, collectionTypes, typeOrder)} separateBy="primary_result_purpose" orderBy={purposeOrder}/>
             </CardContent>
         </Card>
     </Box>

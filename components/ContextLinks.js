@@ -1,7 +1,8 @@
-import { Button, Card, CardActions, CardContent, CardMedia, List as MaterialList, ListItem, ListItemText, makeStyles, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, CardMedia, Divider, List as MaterialList, ListItem, ListItemText, makeStyles, Typography } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
 import InternalLink from 'components/InternalLink';
 import React from 'react';
+import { groupByField } from 'services/groupings';
 import Description from './Description';
 
 
@@ -34,16 +35,33 @@ const sortType = {
 }
 
 
-function ContextList({items, active}) {    
+function ContextList({items, active, separateBy, orderBy}) {    
     if(!items || !items.length) { return null}
-    let sortedItems = items.sort(sortType.name)
-    return (
-        <MaterialList>
-            {sortedItems.map((item,idx) => 
-                <ContextLink key={item.identifier + '' +  idx} item={item} active={active}/>
-            )}
-        </MaterialList>
-    )
+
+    if(!!separateBy) {
+        const groups = groupByField(items, separateBy, orderBy).sort((a, b) => a.order - b.order)
+        return (
+            <>
+                {groups.map((group, index) => (
+                    <div key={index}>
+                        <ContextList items={group.items} />
+                        { (index + 1) < groups.length && <Divider/> }
+                    </div>
+                ))}
+            </>
+        )
+    }
+
+    else {
+        items.sort(sortType.name)
+        return (
+            <MaterialList>
+                {items.map((item,idx) => 
+                    <ContextLink key={item.identifier + '' +  idx} item={item} active={active}/>
+                )}
+            </MaterialList>
+        )
+    }
 }
 
 function ContextLink({item, displayTag, active}) {
