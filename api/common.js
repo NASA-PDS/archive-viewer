@@ -125,7 +125,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
         
         const params = {
             q: `data_class:* AND (${queries.join(' OR ')})`,
-            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref, target_description'
+            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref, target_description, alternate_title'
         }
         httpGet(router.defaultCore, params).then(results => {
             if(!results || results.length === 0) {
@@ -148,7 +148,8 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
             foundMissions = foundMissions.filter(lid => !toReturn.missions.some(obj => obj.identifier === lid))
             foundTargets = foundTargets.filter(lid => !toReturn.targets.some(obj => obj.identifier === lid))
             foundInstruments = foundInstruments.filter(lid => !toReturn.instruments.some(obj => obj.identifier === lid))
-
+            ignoredLids = [...new Set(ignoredLids.concat(toReturn.ignored))]
+            
             let newLids = [...new Set([...foundSpacecraft, ...foundMissions, ...foundTargets, ...foundInstruments])]
                 .filter(lid => !ignoredLids.includes(lid))
 
@@ -157,7 +158,9 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
                 resolve(toReturn)
             } else {
                 // fetch details for each of the new lids
-                httpGetIdentifiers(router.defaultCore, newLids, ['data_class', 'target_description', 'investigation_description']).then(newLookups => {
+                console.log('looking up new lids')
+                console.log(newLids)
+                httpGetIdentifiers(router.defaultCore, newLids, ['data_class', 'target_description', 'investigation_description', 'alternate_title']).then(newLookups => {
                     // merge them in and keep track of lids that we're ignoring
                     newLookups.forEach(lookup => {
                         toReturn = mergeFamilyResults(toReturn, lookup)
@@ -191,6 +194,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
 }
 
 function mergeFamilyResults(initial, incoming) {
+    debugger
     let { spacecraft, instruments, targets, missions } = initial
     let ignored = []
 
@@ -201,18 +205,42 @@ function mergeFamilyResults(initial, incoming) {
     const alreadyKnowAboutIt = (destination, addition) => {
         return destination.some(item => item.identifier === addition.identifier)
     }
+    const isSuperseded = (destination, addition) => {
+        return destination.some(item => item.alternate_title === addition.identifier)
+    }
 
+    const insertOrReplace = (destination, addition) => {
+        const deprecatedIndex = destination.findIndex(obj => obj.identifier === addition.alternate_title)
+        if(deprecatedIndex > -1) { // if supersedes existing
+            ignored.push(destination[deprecatedIndex].identifier)
+            destination.splice(deprecatedIndex, 1, addition)
+        } 
+        else if(isSuperseded(destination, addition)) { ignored.push(addition.identifier) }
+        else if(!alreadyKnowAboutIt(destination, addition)) { destination.push(addition) } 
+        // if(addition.identifier === 'urn:nasa:pds:context:instrument:ssp.hp') {
+        //     console.log('dep: ' + deprecatedIndex)
+        //     console.log('sup: ' + isSuperseded(destination, addition))
+        //     console.log('know: ' + alreadyKnowAboutIt(destination, addition))
+        //     console.log('dest: ' + destination.includes(addition))
+        //     console.log('ign: ' + ignored.includes(addition.identifier))
+        // }
+    }
     switch (incoming.data_class) {
-        case "Instrument_Host": if(!alreadyKnowAboutIt(spacecraft, incoming)) { spacecraft.push(incoming); } break;
-        case "Instrument": if(!alreadyKnowAboutIt(instruments, incoming)) { instruments.push(incoming); } break;
-        case "Target": if(!alreadyKnowAboutIt(targets, incoming)) { targets.push(incoming); } break;
-        case "Investigation": if(!alreadyKnowAboutIt(missions, incoming)) { missions.push(incoming); } break;
+        case "Instrument_Host": insertOrReplace(spacecraft, incoming); break;
+        case "Instrument": insertOrReplace(instruments, incoming); break;
+        case "Target": insertOrReplace(targets, incoming); break;
+        case "Investigation": insertOrReplace(missions, incoming); break;
         default: ignored.push(incoming.identifier)
     }
-
-    return {
+    const toReturn = {
         spacecraft, instruments, targets, missions, ignored
     }
+    if(!Object.values(toReturn).some(v => incoming.identifier === v.identifier || incoming.identifier === v)) {
+        console.log(incoming.identifier + ' not added wtf')
+        console.log(ignored)
+        console.log(ignored.includes(incoming.identifier))
+    }
+    return toReturn
 }
 
 export function initialLookup(identifier, pdsOnly) {
