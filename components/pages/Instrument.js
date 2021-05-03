@@ -46,9 +46,9 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
                 <>
                 <InstrumentBreadcrumbs current={instrument} home={mission}/>
                 <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
+                <HTMLBox markup={instrument.html1} />
                 <Metadata model={instrument} tagType={TagTypes.instrument}/>
                 <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/>
-                <HTMLBox markup={instrument.html1} />
                 <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
                 <HTMLBox markup={instrument.html2} />
                 </>
