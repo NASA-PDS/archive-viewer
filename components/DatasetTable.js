@@ -27,10 +27,10 @@ export default function DatasetTable({ groups }) {
                 <TableHead>
                     <TableCell/>
                     <TableCell className={classes.headerCell}>Title</TableCell>
-                    <TableCell className={classes.headerCell}>Processing Level</TableCell>
-                    <TableCell className={classes.headerCell}>Publish Date</TableCell>
-                    <TableCell className={classes.headerCell}>Start Date</TableCell>
-                    <TableCell className={classes.headerCell}>End Date</TableCell>
+                    {/* <TableCell className={classes.headerCell}>Processing Level</TableCell> */}
+                    <TableCell className={classes.headerCell} padding="default">Published</TableCell>
+                    <TableCell className={classes.headerCell} padding="default">Start Date</TableCell>
+                    <TableCell className={classes.headerCell} padding="default">End Date</TableCell>
                 </TableHead>
                 <TableBody>
                     {groups.map(group => 
@@ -62,16 +62,16 @@ function DatasetRow({dataset}) {
             <TableCell className={classes.cell}>
                 <ContextLink item={dataset}/>
             </TableCell>
-            <TableCell className={classes.cell}>
+            {/* <TableCell className={classes.cell}>
                 {dataset.primary_result_processing_level}
-            </TableCell>
-            <TableCell className={classes.cell}>
+            </TableCell> */}
+            <TableCell className={classes.cell} padding="default">
                 {dataset.citation_publication_year}
             </TableCell>
-            <TableCell className={classes.cell}>
+            <TableCell className={classes.cell} padding="default">
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
-            <TableCell className={classes.cell}>
+            <TableCell className={classes.cell} padding="default">
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
         </TableRow>

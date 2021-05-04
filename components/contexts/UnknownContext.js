@@ -36,7 +36,7 @@ export default function UnknownContext(props) {
     }
 
     // Derived data goes to target context
-    if(model.primary_result_processing_level === "Derived" && !!target) {
+    if(model.primary_result_processing_level &&  model.primary_result_processing_level.includes("Derived") && !!target) {
         return <TargetContext target={target} extraPath={extraPath} model={model} type={type} {...otherProps} />
     }
     // Non-derived data goes to mission context
