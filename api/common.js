@@ -65,7 +65,7 @@ export function httpGetIdentifiers(route, identifiers, extraFields) {
     // if we have lots of identifiers, break it into multiple requests (recusrively!!)
     let requests = []
     if (lids.length > defaultFetchSize) {
-        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize)))
+        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize), extraFields))
         lids = lids.slice(0, defaultFetchSize)
     }
 
@@ -135,7 +135,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
             // figure out which lids we've found in the new results
             let foundSpacecraft = [], foundMissions = [], foundTargets = [], foundInstruments = []
             results.forEach(result => {                
-                toReturn = mergeFamilyResults(toReturn, result)
+                mergeFamilyResults(toReturn, result)
                 
                 foundSpacecraft = foundSpacecraft.concat((result.instrument_host_ref || []).map(lidvid => new LID(lidvid).lid))
                 foundMissions = foundMissions.concat((result.investigation_ref || []).map(lidvid => new LID(lidvid).lid))
@@ -163,7 +163,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
                 httpGetIdentifiers(router.defaultCore, newLids, ['data_class', 'target_description', 'investigation_description', 'alternate_title']).then(newLookups => {
                     // merge them in and keep track of lids that we're ignoring
                     newLookups.forEach(lookup => {
-                        toReturn = mergeFamilyResults(toReturn, lookup)
+                        mergeFamilyResults(toReturn, lookup)
                     })
                     ignoredLids = ignoredLids.concat(newLids.filter(newLid => !newLookups.some(lookup => lookup.identifier === newLid)))
                         .concat(toReturn.ignored)
@@ -184,6 +184,7 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
                             instruments: [...new Set(ancestorResults.map(r => r.instruments).reduce((prev, current) => prev.concat(current)))],
                             missions: [...new Set(ancestorResults.map(r => r.missions).reduce((prev, current) => prev.concat(current)))],
                             spacecraft: [...new Set(ancestorResults.map(r => r.spacecraft).reduce((prev, current) => prev.concat(current)))],
+                            ignored: [...new Set(ancestorResults.map(r => r.ignored).reduce((prev, current) => prev.concat(current)))],
                         })
                     }, reject)
                 })
@@ -194,7 +195,6 @@ function recursiveContextLookup(initial, previousKnown, previousIgnored) {
 }
 
 function mergeFamilyResults(initial, incoming) {
-    debugger
     let { spacecraft, instruments, targets, missions } = initial
     let ignored = []
 
@@ -235,11 +235,16 @@ function mergeFamilyResults(initial, incoming) {
     const toReturn = {
         spacecraft, instruments, targets, missions, ignored
     }
-    if(!Object.values(toReturn).some(v => incoming.identifier === v.identifier || incoming.identifier === v)) {
-        console.log(incoming.identifier + ' not added wtf')
-        console.log(ignored)
-        console.log(ignored.includes(incoming.identifier))
-    }
+    initial.spacecraft = spacecraft
+    initial.instruments = instruments
+    initial.targets = targets
+    initial.missions = missions
+    initial.ignored = ignored
+    // if(!Object.values(toReturn).some(v => incoming.identifier === v.identifier || incoming.identifier === v)) {
+    //     console.log(incoming.identifier + ' not added wtf')
+    //     console.log(ignored)
+    //     console.log(ignored.includes(incoming.identifier))
+    // }
     return toReturn
 }
 
