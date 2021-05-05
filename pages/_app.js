@@ -40,10 +40,11 @@ export default function MyApp({ Component, pageProps }) {
 
     return (
     <ThemeProvider theme={Theme}>
-        <AppBar/>
+        {/* <AppBar/> */}
         <Menu/>
         { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
         <Component {...pageProps} />
+        <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
     </ThemeProvider>
     )
 }
