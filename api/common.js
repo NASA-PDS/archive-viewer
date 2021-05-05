@@ -4,7 +4,6 @@ import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
 import { types, resolveType } from 'services/pages.js'
 import { stitchWithTools } from './tools';
-import NodeCache from 'node-cache';
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -65,7 +64,7 @@ export function httpGetIdentifiers(route, identifiers, extraFields) {
     // if we have lots of identifiers, break it into multiple requests (recusrively!!)
     let requests = []
     if (lids.length > defaultFetchSize) {
-        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize)))
+        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize), extraFields))
         lids = lids.slice(0, defaultFetchSize)
     }
 
@@ -77,143 +76,6 @@ export function httpGetIdentifiers(route, identifiers, extraFields) {
     return Promise.all(requests).then(results => results.flat())
 }
 
-
-const familyCache = new NodeCache()
-export function familyLookup(initial) {
-    const initialLid = initial.identifier
-    
-    const cached = familyCache.get(initialLid)
-    if(!!cached) {
-        return Promise.resolve(cached)
-    } else {
-        return recursiveContextLookup(initial).then(results => {
-            familyCache.set(initialLid, results)
-            return Promise.resolve(results)
-        })
-    }
-}
-
-function recursiveContextLookup(initial, previousKnown, previousIgnored) {
-    const initialLid = new LID(initial.identifier).escapedLid
-
-    // figure out which lids we will have looked up
-    let toReturn = previousKnown || mergeFamilyResults({
-        instruments: [], targets: [], spacecraft: [], missions: []
-    }, initial)
-    let ignoredLids = previousIgnored || []
-    
-    return new Promise((resolve, reject) => {
-        // lookup anything that references the initial lid
-        let queries = [`(instrument_ref:${initialLid}\\:\\:* OR investigation_ref:${initialLid}\\:\\:* OR instrument_host_ref:${initialLid}\\:\\:* OR target_ref:${initialLid}\\:\\:*)`]
-
-        // also look up anything that references its instruments/spacecraft/missions (but NOT targets)
-        initial.instrument_ref && initial.instrument_ref.forEach(lid => { 
-            let escaped = new LID(lid).escapedLid
-            queries.push(`identifier:"${escaped}"`)
-            queries.push(`instrument_ref:${escaped}\\:\\:*`)
-        })
-        initial.investigation_ref && initial.investigation_ref.forEach(lid => { 
-            let escaped = new LID(lid).escapedLid
-            queries.push(`identifier:"${escaped}"`)
-            queries.push(`investigation_ref:${escaped}\\:\\:*`)
-        })
-        initial.instrument_host_ref && initial.instrument_host_ref.forEach(lid => { 
-            let escaped = new LID(lid).escapedLid
-            queries.push(`identifier:"${escaped}"`)
-            queries.push(`instrument_host_ref:${escaped}\\:\\:*`)
-        })
-        
-        const params = {
-            q: `data_class:* AND (${queries.join(' OR ')})`,
-            fl: 'identifier, title, data_class, instrument_ref, investigation_ref, instrument_host_ref, target_ref, target_description'
-        }
-        httpGet(router.defaultCore, params).then(results => {
-            if(!results || results.length === 0) {
-                resolve(toReturn)
-            }
-
-            // figure out which lids we've found in the new results
-            let foundSpacecraft = [], foundMissions = [], foundTargets = [], foundInstruments = []
-            results.forEach(result => {                
-                toReturn = mergeFamilyResults(toReturn, result)
-                
-                foundSpacecraft = foundSpacecraft.concat((result.instrument_host_ref || []).map(lidvid => new LID(lidvid).lid))
-                foundMissions = foundMissions.concat((result.investigation_ref || []).map(lidvid => new LID(lidvid).lid))
-                foundTargets = foundTargets.concat((result.target_ref || []).map(lidvid => new LID(lidvid).lid))
-                foundInstruments = foundInstruments.concat((result.instrument_ref || []).map(lidvid => new LID(lidvid).lid))
-            })
-
-            // remove all the lids we've already looked up
-            foundSpacecraft = foundSpacecraft.filter(lid => !toReturn.spacecraft.some(obj => obj.identifier === lid))
-            foundMissions = foundMissions.filter(lid => !toReturn.missions.some(obj => obj.identifier === lid))
-            foundTargets = foundTargets.filter(lid => !toReturn.targets.some(obj => obj.identifier === lid))
-            foundInstruments = foundInstruments.filter(lid => !toReturn.instruments.some(obj => obj.identifier === lid))
-
-            let newLids = [...new Set([...foundSpacecraft, ...foundMissions, ...foundTargets, ...foundInstruments])]
-                .filter(lid => !ignoredLids.includes(lid))
-
-            // if we have already looked up all of them, we're done
-            if(newLids.length === 0) {
-                resolve(toReturn)
-            } else {
-                // fetch details for each of the new lids
-                httpGetIdentifiers(router.defaultCore, newLids, ['data_class', 'target_description', 'investigation_description']).then(newLookups => {
-                    // merge them in and keep track of lids that we're ignoring
-                    newLookups.forEach(lookup => {
-                        toReturn = mergeFamilyResults(toReturn, lookup)
-                    })
-                    ignoredLids = ignoredLids.concat(newLids.filter(newLid => !newLookups.some(lookup => lookup.identifier === newLid)))
-                        .concat(toReturn.ignored)
-
-                    // otherwise, create new requests to follow up for any of the related objects
-                    let newRequests = []
-                    results.filter(result => {
-                        return foundSpacecraft.some(lid => (result.instrument_host_ref || []).some(lidvid => new LID(lidvid).lid === lid)) ||
-                            foundMissions.some(lid => (result.investigation_ref || []).some(lidvid => new LID(lidvid).lid === lid)) ||
-                            foundTargets.some(lid => (result.target_ref || []).some(lidvid => new LID(lidvid).lid === lid)) ||
-                            foundInstruments.some(lid => (result.instrument_ref || []).some(lidvid => new LID(lidvid).lid === lid))
-                    }).forEach(result => {
-                        newRequests.push(recursiveContextLookup(result, toReturn, ignoredLids))
-                    })
-                    Promise.all(newRequests).then(ancestorResults => {
-                        resolve({
-                            targets: [...new Set(ancestorResults.map(r => r.targets).reduce((prev, current) => prev.concat(current)))],
-                            instruments: [...new Set(ancestorResults.map(r => r.instruments).reduce((prev, current) => prev.concat(current)))],
-                            missions: [...new Set(ancestorResults.map(r => r.missions).reduce((prev, current) => prev.concat(current)))],
-                            spacecraft: [...new Set(ancestorResults.map(r => r.spacecraft).reduce((prev, current) => prev.concat(current)))],
-                        })
-                    }, reject)
-                })
-            }
-            
-        })
-    })
-}
-
-function mergeFamilyResults(initial, incoming) {
-    let { spacecraft, instruments, targets, missions } = initial
-    let ignored = []
-
-    if(!new LID(incoming.identifier).isContextObject) {
-        return { spacecraft, instruments, targets, missions, ignored: [incoming.identifier, ...(initial.ignored || [])]}
-    }
-
-    const alreadyKnowAboutIt = (destination, addition) => {
-        return destination.some(item => item.identifier === addition.identifier)
-    }
-
-    switch (incoming.data_class) {
-        case "Instrument_Host": if(!alreadyKnowAboutIt(spacecraft, incoming)) { spacecraft.push(incoming); } break;
-        case "Instrument": if(!alreadyKnowAboutIt(instruments, incoming)) { instruments.push(incoming); } break;
-        case "Target": if(!alreadyKnowAboutIt(targets, incoming)) { targets.push(incoming); } break;
-        case "Investigation": if(!alreadyKnowAboutIt(missions, incoming)) { missions.push(incoming); } break;
-        default: ignored.push(incoming.identifier)
-    }
-
-    return {
-        spacecraft, instruments, targets, missions, ignored
-    }
-}
 
 export function initialLookup(identifier, pdsOnly) {
     let lid = new LID(identifier)

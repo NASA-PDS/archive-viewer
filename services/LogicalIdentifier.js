@@ -27,12 +27,10 @@ export default class LogicalIdentifier {
 
     get isContextObject() {
         // split up lid
-        const [urn, nasa, pds, context, ...otherParts] = this.lid.split(":")
+        const [urn, org, group, context, ..._] = this.lid.split(":")
         
         // assert individual parts
         return (urn === "urn" &&
-            nasa === "nasa" &&
-            pds === "pds" &&
             context === "context") 
     }
     get finalFragment() {
