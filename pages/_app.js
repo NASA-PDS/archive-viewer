@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import 'css/FrontPage.scss'
 import 'css/main.scss'
 import { ThemeProvider } from '@material-ui/core/styles'
-import Theme from 'Theme'
+import DarkTheme from 'DarkTheme'
+import LightTheme from 'LightTheme'
 import AppBar from 'components/Banner'
 import 'fontsource-roboto'
 import { LinearProgress } from '@material-ui/core'
 import Router from "next/router"
 import Menu  from 'components/Menu'
+import * as cookie from 'cookie'
+import App from "next/app"
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps, theme }) {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -39,7 +42,7 @@ export default function MyApp({ Component, pageProps }) {
 
 
     return (
-    <ThemeProvider theme={Theme}>
+    <ThemeProvider theme={theme || DarkTheme}>
         {/* <AppBar/> */}
         <Menu/>
         { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
@@ -47,4 +50,14 @@ export default function MyApp({ Component, pageProps }) {
         <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
     </ThemeProvider>
     )
+}
+
+MyApp.getServerSideProps = async (context) => {
+    const cookies = cookie.parse(context.req.headers.cookie)
+    console.log(cookies)
+    const theme = cookies.SBNTHEME === 'light' ? LightTheme : DarkTheme
+
+    let props = App.getServerSideProps(context)
+    props.theme = theme
+    return props
 }
