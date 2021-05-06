@@ -5,9 +5,8 @@ const DarkTheme = createMuiTheme({
     palette: {
         type: 'light',
         primary: {
-            main: "#B5DCFB",
-            dark: "#57B4FF",
-            light: "#D5EBFD"
+            main: "#0A6BB9",
+            light: "#57B4FF"
         },
         secondary: {
             main: "#A5FBE2",
@@ -24,11 +23,6 @@ const DarkTheme = createMuiTheme({
             dark: "#0B7ED9",
             light: "#64B6F7"
         },
-        text: {
-            primary: "#12181D",
-            secondary: "rgba(253,253,253,0.54)",
-            disabled: "rgba(253,253,253,0.38)"
-        },
         grey: {
             0: "#FFFFFF",
             50: "#FDFDFD",
@@ -44,7 +38,7 @@ const DarkTheme = createMuiTheme({
         },
         background: {
             default: "#FFFFFF",
-            paper: "#FDFDFD"
+            paper: "#EEEEEF"
         }
     },
     typography: {
@@ -76,9 +70,14 @@ const DarkTheme = createMuiTheme({
         },
     },
     overrides: {
-        MuiAccordionSummary: {
-            root: { 
-                backgroundColor: "#192028"
+        MuiTypography: {
+            root: {
+                color: "#12181D",
+            }
+        },
+        MuiTab: {
+            root: {
+                color: '#FDFDFD'
             }
         }
     },

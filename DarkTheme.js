@@ -24,11 +24,6 @@ const DarkTheme = createMuiTheme({
             dark: "#0B7ED9",
             light: "#64B6F7"
         },
-        text: {
-            primary: "#FDFDFD",
-            secondary: "rgba(253,253,253,0.54)",
-            disabled: "rgba(253,253,253,0.38)"
-        },
         grey: {
             0: "#FFFFFF",
             50: "#FDFDFD",
@@ -79,6 +74,11 @@ const DarkTheme = createMuiTheme({
         MuiAccordionSummary: {
             root: { 
                 backgroundColor: "#192028"
+            }
+        },
+        MuiTypography: {
+            root: {
+                color: "#FDFDFD",
             }
         }
     },

@@ -1,9 +1,8 @@
 import { AppBar, Divider, Grid, Tab, Tabs, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { getPrimaryBundleForMission } from 'api/mission';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import DarkTheme from 'DarkTheme';
+import React from 'react';
 import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
 
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
     bannerTitle: {
         fontSize: '3.5rem',
-        marginLeft: theme.spacing(2)
+        marginLeft: theme.spacing(2),
     },
     headerImage: {
         padding: theme.spacing(1),
@@ -60,10 +59,13 @@ function MissionHeader(props) {
     const {display_name, title, image_url} = mission
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
-    return <AppBar className={classes.header} position="static" color="inherit">
-        <Banner name={headerName + ' Data Archive'} image_url={image_url} />
-        <MissionTabBar page={page} mission={mission} {...otherProps}/>
-    </AppBar>
+    // headers are always in dark mode
+    return <ThemeProvider theme={DarkTheme}>  
+        <AppBar className={classes.header} position="static" color="inherit">
+            <Banner name={headerName + ' Data Archive'} image_url={image_url} />
+            <MissionTabBar page={page} mission={mission} {...otherProps}/>
+        </AppBar>
+    </ThemeProvider>
 }
 
 function MissionTabBar({lidvid, page, mission, spacecraft}) {
@@ -125,10 +127,13 @@ function TargetHeader(props) {
     const {display_name, title, image_url} = target
     const headerName = display_name && !pdsOnly ? display_name : title
 
-    return  <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
-        <Banner name={headerName + ' Information Page'} image_url={image_url} />
-        <TargetTabBar page={page} target={target} />
-    </AppBar>
+    // headers are always in dark mode
+    return <ThemeProvider theme={DarkTheme}>
+        <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
+            <Banner name={headerName + ' Information Page'} image_url={image_url} />
+            <TargetTabBar page={page} target={target} />
+        </AppBar>
+    </ThemeProvider>
 }
 
 function TargetTabBar({page, target}) {
