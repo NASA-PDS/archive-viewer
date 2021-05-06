@@ -20,13 +20,6 @@ const useStyles = makeStyles((theme) => ({
     mainTitle: {
         marginTop: 0
     },
-    citation: {
-        padding: theme.spacing(2),
-        color: theme.palette.secondary.dark
-    },
-    citationEnd: {
-        alignSelf: 'flex-end'
-    },
     quickLink: {
         maxWidth: 200
     },
@@ -114,7 +107,10 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <MoreInformation dataset={dataset} />
             
             <TangentAccordion title="Citation">
-                <CitationBuilder dataset={dataset} />
+                { !!dataset.citation 
+                    ? <Citation citation={dataset.citation}/>
+                    : <CitationBuilder dataset={dataset} />
+                }
             </TangentAccordion>
             </>
         } secondary={
@@ -269,6 +265,16 @@ function CollectionDownloads({dataset}) {
             </section>
         )
     } else { return null }
+}
+
+function Citation({citation}) {
+    if(citation) {
+        return <Box p={3}>
+            <Typography variant="body2" color="textSecondary">Use the following citation to reference this data set:</Typography>
+            <Typography>{citation}</Typography>
+        </Box>
+           
+    } else return null
 }
 
 function RelatedPDS3(props) {
