@@ -1,13 +1,6 @@
 @import 'variables';
 
-a:not(.MuiButtonBase-root):not(.MuiLink-root), .link {
-    cursor: pointer;
-    // color: $link;
-    text-decoration: none;
-    &:hover {
-        text-decoration: underline;
-    }
-}
+
 
 .download-size {
     font-size: 0.7em;

@@ -9,20 +9,9 @@ import NodeCache from 'node-cache';
 import FrontPage from 'pages/index';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { resolveType, types } from 'services/pages.js';
-import * as cookie from 'cookie'
-import { ThemeProvider } from '@material-ui/styles';
-import DarkTheme from 'DarkTheme';
-import LightTheme from 'LightTheme';
-
-const themeNames = {
-    light: 'light',
-    dark: 'dark'
-}
-const themes = {
-    [themeNames.light]: LightTheme,
-    [themeNames.dark]: DarkTheme
-}
+import { resolveType, setTheme, types } from 'services/pages.js';
+import GlobalContext from 'components/contexts/GlobalContext';
+import Themed from 'components/Themed';
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
@@ -45,16 +34,20 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 }
 
 function ProductPage(props) {
-    const {themeName, error, model, pdsOnly} = props
+    const {error, model, pdsOnly} = props
     if(!error) {
 
         const {display_name, title} = model
         const pageTitle = (display_name && !pdsOnly ? display_name : title) + ' - NASA Planetary Data System'
 
-        return <ThemeProvider theme={themes[themeName]}>
-            <PageMetadata pageTitle={pageTitle}/>
-            <ProductPageContent {...props} />
-        </ThemeProvider>
+        return (
+        <Themed {...props}>
+            <GlobalContext>
+                <PageMetadata pageTitle={pageTitle}/>
+                <ProductPageContent {...props} />
+            </GlobalContext>
+        </Themed>
+        )
     } else {
         return <ErrorMessage error={error} />
     }
@@ -72,7 +65,8 @@ export default ProductPage
 // 1-week cache for lidvids
 const cache = new NodeCache({stdTTL: 60 * 60 * 24 * 7})
 
-export async function getServerSideProps({req, params, query}) {
+export async function getServerSideProps(context) {
+    const { params, query } = context
     const [lidvid, ...extraPath] = params.identifier
     let props = { lidvid, extraPath };
     
@@ -105,8 +99,7 @@ export async function getServerSideProps({req, params, query}) {
         props.error = err instanceof Error ? err.message : err
     }
 
-    const cookies = cookie.parse(req.headers.cookie)
-    props.themeName = cookies.SBNTHEME || themeNames.dark
+    setTheme(props, context)
 
     return { props }
 

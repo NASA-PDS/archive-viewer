@@ -1,11 +1,14 @@
 import { LensTwoTone } from '@material-ui/icons'
+import GlobalContext from 'components/contexts/GlobalContext'
 import InternalLink from 'components/InternalLink'
+import Themed from 'components/Themed'
 import Link from 'next/link'
+import { setTheme } from 'services/pages'
 
-export default function Index() {
+export default function Index(props) {
   return (
-      <div>
-
+      <Themed {...props}>
+          <GlobalContext>
           <div className="co-main">
               <header className="co-header banner-header">
                   <img className="banner" src="images/front/solar_system-e1429031444824.jpg" alt="imgHeader" />
@@ -165,12 +168,14 @@ export default function Index() {
                   </div>
               </div>
           </div>
-      </div>
+          </GlobalContext>
+      </Themed>
   )
 }
 
 // redirect previous URL formats (lid as query string parameter) to new address
-export async function getServerSideProps({query,res}) {
+export async function getServerSideProps(context) {
+    const {query,res} = context
     let {identifier, dataset, target, instrument, mission, spacecraft, ...otherQueries} = query
     
     identifier = identifier || dataset || target || instrument || mission || spacecraft
@@ -181,6 +186,8 @@ export async function getServerSideProps({query,res}) {
         res.statusCode = 301;
     }
 
-    return { props: {} }
+    let props = {}
+    setTheme(props, context)
+    return { props }
 
 }

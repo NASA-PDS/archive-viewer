@@ -1,14 +1,9 @@
-import { LinearProgress } from '@material-ui/core'
-import Menu from 'components/Menu'
-import GlobalContext from 'components/contexts/GlobalContext'
 import 'css/FrontPage.scss'
 import 'css/main.scss'
 import 'fontsource-roboto'
-import Router from "next/router"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }) {
-    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         // remove the server-side injected CSS
@@ -16,34 +11,14 @@ function MyApp({ Component, pageProps }) {
         if (!!jssStyles) {
           jssStyles.parentElement.removeChild(jssStyles)
         }
-
-        // app-wide loading
-        const start = () => {
-            setLoading(true)
-        }
-        const end = () => {
-            setLoading(false)
-        }
-        Router.events.on("routeChangeStart", start)
-        Router.events.on("routeChangeComplete", end)
-        Router.events.on("routeChangeError", end)
-
-        return function cleanup() {
-            Router.events.off("routeChangeStart", start)
-            Router.events.off("routeChangeComplete", end)
-            Router.events.off("routeChangeError", end)
-        }
     }, [])
 
 
     return (
-    <GlobalContext>
-        {/* <AppBar/> */}
-        <Menu/>
-        { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
+    <>
         <Component {...pageProps} />
         <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
-    </GlobalContext>
+    </>
     )
 }
 

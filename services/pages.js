@@ -1,3 +1,6 @@
+import DarkTheme from "DarkTheme"
+import LightTheme from "LightTheme"
+import * as cookie from 'cookie'
 
 export const types = {
     MISSION: 'mission',
@@ -46,4 +49,24 @@ export const resolveType = function(fromSolr) {
         }
     }
     return types.UNKNOWN;
+}
+
+
+const themeNames = {
+    light: 'light',
+    dark: 'dark'
+}
+const themes = {
+    [themeNames.light]: LightTheme,
+    [themeNames.dark]: DarkTheme
+}
+
+const defaultTheme = themeNames.dark
+
+export function setTheme(props, context) {
+    const cookies = cookie.parse(context.req.headers.cookie)
+    props.themeName = cookies.SBNTHEME || defaultTheme
+}
+export function getTheme (props) {
+    return themes[props.themeName]
 }

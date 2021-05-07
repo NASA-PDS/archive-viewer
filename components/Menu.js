@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
         top: 5,
         right: 5,
         height: 30,
-        zIndex: 99
+        zIndex: 99,
+        color: `${theme.palette.common.white} !important`
     }
 }))
 
