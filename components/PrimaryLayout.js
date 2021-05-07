@@ -7,7 +7,8 @@ const drawerWidth = 360;
 const useStyles = makeStyles((theme) => ({
     root: {
         width: "100%",
-        display: 'flex'
+        display: 'flex',
+        minHeight: '60vh'
     },
     outerPrimary: {
         padding: theme.spacing(2),

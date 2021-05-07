@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { LinearProgress } from '@material-ui/core'
 import Menu from 'components/Menu'
 import Router from "next/router"
+import Footer from 'components/Footer'
 
 function GlobalContext(props) {
     const [loading, setLoading] = useState(false)
@@ -34,6 +35,7 @@ function GlobalContext(props) {
             <Menu/>
             {props.children}
             { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
+            <Footer/>
             <style jsx global>{`
                 body {
                     margin: 0;
@@ -46,12 +48,7 @@ function GlobalContext(props) {
                     min-height: 100vh;
                 }
                 #__next {
-                    height: 100%;
-                }
-                a:not(.MuiButtonBase-root):not(.MuiLink-root), .link {
-                    cursor: pointer;
-                    color: ${theme.palette.primary.main};
-                    text-decoration: none;
+                    min-height: 80vh;
                 }
             `}</style>
         </>

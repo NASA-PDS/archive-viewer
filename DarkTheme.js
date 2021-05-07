@@ -95,7 +95,8 @@ const DarkTheme = createMuiTheme({
             },
         },
         targetThemeColor: '#000000',
-        missionThemeColor: '#085898'
+        missionThemeColor: '#085898',
+        paperTitle: "#474C53"
     }
 });
 

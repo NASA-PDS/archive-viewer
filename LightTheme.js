@@ -1,6 +1,6 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
-const DarkTheme = createMuiTheme({
+const LightTheme = createMuiTheme({
     spacing: 8,
     palette: {
         type: 'light',
@@ -94,8 +94,9 @@ const DarkTheme = createMuiTheme({
             },
         },
         targetThemeColor: '#000000',
-        missionThemeColor: '#085898'
+        missionThemeColor: '#085898',
+        paperTitle: '#FFFFFF'
     }
 });
 
-export default responsiveFontSizes(DarkTheme);
+export default responsiveFontSizes(LightTheme);
