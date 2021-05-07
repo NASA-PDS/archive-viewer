@@ -46,7 +46,6 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
 function ProductPage(props) {
     const {themeName, error, model, pdsOnly} = props
-    console.log(themeName)
     if(!error) {
 
         const {display_name, title} = model
@@ -107,7 +106,6 @@ export async function getServerSideProps({req, params, query}) {
     }
 
     const cookies = cookie.parse(req.headers.cookie)
-    console.log(`🍪🍪 ${req.headers.cookie}`)
     props.themeName = cookies.SBNTHEME || themeNames.dark
 
     return { props }

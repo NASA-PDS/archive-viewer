@@ -1,15 +1,5 @@
 @import 'variables';
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    // color: $fontColor;
-}
-html, body, main {
-    min-height: 100%;
-    // background-color: #12181D;
-}
 a:not(.MuiButtonBase-root):not(.MuiLink-root), .link {
     cursor: pointer;
     // color: $link;
