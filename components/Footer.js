@@ -55,7 +55,7 @@ export default function Footer() {
 
             <div className={classes.footerExtended}>
                 <aside className={classes.footerPsiContainer}>
-                    <img src="./images/PSI_Logo.png" alt="PSI Logo" title="PSI Logo" className={classes.logo}/>
+                    <img src="/images/PSI_Logo.png" alt="PSI Logo" title="PSI Logo" className={classes.logo}/>
                     <span>Hosted by the Planetary Science Institute</span>
                 </aside>
             </div>
