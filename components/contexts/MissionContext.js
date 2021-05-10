@@ -15,6 +15,7 @@ import MissionTools from 'components/pages/MissionTools';
 import { Button, IconButton, Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import CloseIcon from '@material-ui/icons/Close';
+import MissionData from 'components/pages/MissionData';
 
 const drawerWidth = 360;
 
@@ -81,6 +82,9 @@ export default function MissionContext(props) {
         } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
+        } else if(!!extraPath.includes(pagePaths[types.MISSIONOTHER])) {
+            mainContent = <MissionData mission={model} />
+            pageType = types.MISSIONOTHER
         }
     } else {
         pageType = type

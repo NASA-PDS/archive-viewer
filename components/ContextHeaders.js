@@ -99,7 +99,10 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
                     <LinkTab label="Mission Bundle" value={types.MISSIONBUNDLE} identifier={mission.mission_bundle}/>
                     : <Tab label="Mission Bundle" disabled/>
                 }
-                <Tab label="Spice" disabled/>
+                { mission.other_html ? 
+                    <LinkTab label="Other Data" value={types.MISSIONOTHER} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONOTHER]}/> 
+                    : <Tab label="Other Data" disabled/>
+                }
             </Tabs>
 }
 
