@@ -4,7 +4,7 @@ import React from 'react'
 const useStyles = makeStyles((theme) => ({
     footer: {
         width: '100%',
-        backgroundColor: theme.custom.paperTitle,
+        backgroundColor: theme.custom.raisedContent,
         height: '3em',
         display: 'flex',
         justifyContent: 'center',
