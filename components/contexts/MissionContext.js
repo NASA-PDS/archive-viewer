@@ -103,7 +103,7 @@ export default function MissionContext(props) {
         <div className={classes.root}>
             <MissionHeader page={pageType} pdsOnly={props.pdsOnly} {...headerProps}/>
             { mainContent }
-            <Snackbar open={mission && !mission.is_ready && !warningDismissed} >
+            {/* <Snackbar open={mission && !mission.is_ready && !warningDismissed} >
                 <Alert severity="info" onClose={() => setWarningDismissed(true)} action={
                     <>
                         <Button color="primary" href={"mailto:sbn@psi.edu?subject=Archive%20Browser%20Feedback"} target="_blank">Contact</Button>
@@ -121,7 +121,7 @@ export default function MissionContext(props) {
                 }>
                     This mission is still being updated, so let us know if you can't find what you're looking for
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
         </div>
     )
 }
