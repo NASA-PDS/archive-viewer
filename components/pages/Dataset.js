@@ -181,8 +181,8 @@ export function DeliveryInfo({dataset}) {
     if(publication && publication.delivery_info) {
         return (
             <Paper className={classes.deliveryInfo}>
-                <Typography>{publication.delivery_info}</Typography>
-                <Typography>Latest release date: {publication.publication_date}</Typography>
+                <Typography color="inherit">{publication.delivery_info}</Typography>
+                <Typography color="inherit">Latest release date: {publication.publication_date}</Typography>
             </Paper>
         )
     } else {
