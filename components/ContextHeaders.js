@@ -95,13 +95,13 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
                 <Divider orientation="vertical" flexItem className={useStyles().divider} />
                 <LinkTab label="Instrument Data" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
-                { mission.mission_bundle ? 
-                    <LinkTab label="Mission Bundle" value={types.MISSIONBUNDLE} identifier={mission.mission_bundle}/>
-                    : <Tab label="Mission Bundle" disabled/>
-                }
                 { mission.other_html ? 
                     <LinkTab label="Other Data" value={types.MISSIONOTHER} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONOTHER]}/> 
                     : <Tab label="Other Data" disabled/>
+                }
+                { mission.mission_bundle ? 
+                    <LinkTab label="Mission Bundle" value={types.MISSIONBUNDLE} identifier={mission.mission_bundle}/>
+                    : <Tab label="Mission Bundle" disabled/>
                 }
             </Tabs>
 }
