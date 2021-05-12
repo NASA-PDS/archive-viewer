@@ -44,7 +44,7 @@ function GlobalContext(props) {
                     background-color: ${theme.palette.background.default};
                     color: ${theme.palette.text.primary}
                 }
-                html, body, main {
+                html, body {
                     min-height: 100vh;
                 }
                 #__next {
