@@ -117,12 +117,12 @@ export default function Index(props) {
                 <div className={classes.pageContainer}>
                     <Grid container spacing={10} direction="row" alignItems="center" justifyContent="center" style={{ width: '100%', minHeight: '80vh' }}>
                         <Grid item xs={6} component="header">
-                            <Box mx={3}>
-                                <Grid container direction="row" alignItems="center">
-                                    <Grid item xs={6} component="img" src="/images/pds.png" alt="PDS Logo" className={classes.img} />
+                            <Box mx={6}>
+                                <Grid container direction="row" alignItems="center" spacing={3}>
+                                    <Grid item xs={6} component="img" src="/images/pds.svg" alt="PDS Logo" className={classes.img} />
                                     <Grid item xs={6} component="img" src="/images/sbn.png" alt="SBN Logo" className={classes.img} />
+                                    <Typography xs={12} variant="h1" className={classes.appTitle}>Archive Navigator</Typography>
                                 </Grid>
-                                <Typography variant="h1" className={classes.appTitle}>Archive Navigator</Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={6} component="main">
