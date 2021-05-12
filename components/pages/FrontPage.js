@@ -9,7 +9,7 @@ import SendIcon from '@material-ui/icons/Send'
 import TangentAccordion from 'components/TangentAccordion'
 import { useRouter } from 'next/router'
 import { SettingsOutlined, ViewStream } from '@material-ui/icons'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // DAWN, Hayabusa, Hayabusa 2, NEAR, OREX, New horizons, Rosetta, Deep Impact
 const missions = [
@@ -87,7 +87,7 @@ const targets = [
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
-        background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F)'
+        // background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F)'
     },
     lidField: {
         width: '100%',
@@ -97,6 +97,13 @@ const useStyles = makeStyles((theme) => ({
     },
     img: {
         maxWidth: '200px'
+    },
+    starfield: {
+        display: 'block',
+        position: 'fixed',
+        zIndex: -1,
+        width: '100%',
+        height: '100%'
     }
 }));
 
@@ -106,6 +113,7 @@ export default function Index(props) {
     return (
         <Themed {...props}>
             <GlobalContext>
+                <Starfield/>
                 <div className={classes.pageContainer}>
                     <Grid container spacing={10} direction="row" alignItems="center" justifyContent="center" style={{ width: '100%', minHeight: '80vh' }}>
                         <Grid item xs={6} component="header">
@@ -127,17 +135,57 @@ export default function Index(props) {
                             </Container>
                         </Grid>
                     </Grid>
-                    <style jsx global>{`
-                        #page-container {
-                            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F) ;
-                        }
-                        `}
-                    </style>
                 </div>
+                <style jsx global>{`
+                    html {
+                        background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+                    }
+                    body {
+                        background: none !important;
+                    }
+                `}</style>
                 <TemporaryLinks {...props}/>
             </GlobalContext>
         </Themed>
     )
+}
+
+function Starfield() {
+    const classes = useStyles()
+    const canvas = useRef(null)
+    if(!canvas && !canvas.current) return
+
+    useEffect(() => {
+        var context = canvas.current.getContext("2d"),
+            stars = 500;
+            
+        function resizeCanvas() {
+            canvas.current.width = window.innerWidth;
+            canvas.current.height = window.innerHeight;
+            // console.log(document.documentElement.scrollHeight);
+            draw();
+        }
+    
+        function draw() {
+            context.clearRect(0, 0, canvas.current.width, canvas.current.height);
+            for (var i = 0; i < stars; i++) {
+                var x = Math.random() * canvas.current.offsetWidth,
+                y = Math.random() * canvas.current.offsetHeight,
+                radius = Math.random() * 1.2;
+                context.beginPath();
+                context.arc(x, y, radius, 0, 360);
+                context.fillStyle = "hsla(200,100%,50%,0.8)";
+                context.fill();
+            }
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+    
+        resizeCanvas();
+    }, [])
+
+    return <canvas className={classes.starfield} width="1000" height="1000" id="starfield" ref={canvas}></canvas>
 }
 
 function TemporaryLinks(props) {
