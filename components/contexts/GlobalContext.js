@@ -4,6 +4,7 @@ import { LinearProgress } from '@material-ui/core'
 import Menu from 'components/Menu'
 import Router from "next/router"
 import Footer from 'components/Footer'
+import { Helmet } from 'react-helmet';
 
 function GlobalContext(props) {
     const [loading, setLoading] = useState(false)
@@ -30,7 +31,9 @@ function GlobalContext(props) {
 
     return (
         <>
-            
+            <Helmet>
+                <title>Archive Navigator | NASA PDS SBN</title>
+            </Helmet>
             {/* <AppBar/> */}
             <Menu/>
             {props.children}

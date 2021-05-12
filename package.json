@@ -1,6 +1,6 @@
 {
-  "name": "archive-viewer",
-  "homepage": "https://sbnarchivedemo.psi.edu/",
+  "name": "archive-navigator",
+  "homepage": "https://arcnav.psi.edu/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

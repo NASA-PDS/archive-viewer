@@ -4,11 +4,10 @@ import InternalLink from 'components/InternalLink'
 import Themed from 'components/Themed'
 import { ContextList } from 'components/ContextLinks'
 import Link from 'next/link'
-import { getTheme, setTheme } from 'services/pages'
+import { getTheme } from 'services/pages'
 import SendIcon from '@material-ui/icons/Send'
 import TangentAccordion from 'components/TangentAccordion'
 import { useRouter } from 'next/router'
-import { SettingsOutlined, ViewStream } from '@material-ui/icons'
 import { useEffect, useRef, useState } from 'react'
 
 // DAWN, Hayabusa, Hayabusa 2, NEAR, OREX, New horizons, Rosetta, Deep Impact

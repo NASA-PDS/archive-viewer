@@ -1,6 +1,6 @@
-# Archive Viewer
+# Archive Navigator
 
-The Archive Viewer (now better known as the "Context Browser" is a front-end web application for displaying certain context objects and datasets in the PDS Archive. It interfaces with multiple instances of the PDS Registry to pull in core and supplemental metadata for user-friendly display. The back-end content management system for the Context Browser can be found here: [https://github.com/sbn-psi/archive-loader](https://github.com/sbn-psi/archive-loader)
+The Archive Navigator (formerly known as Context Browser/Archive Viewer) is a front-end web application for displaying certain context objects and datasets in the PDS Archive. It interfaces with multiple instances of the PDS Registry to pull in core and supplemental metadata for user-friendly display. The back-end content management system for the Context Browser can be found here: [https://github.com/sbn-psi/archive-loader](https://github.com/sbn-psi/archive-loader)
 
 ## Environment setup
 

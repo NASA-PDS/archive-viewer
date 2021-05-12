@@ -1,6 +1,6 @@
 {
-  "short_name": "Archive Viewer",
-  "name": "PDS Archive Viewer",
+  "short_name": "Archive Navigator",
+  "name": "PDS Archive Navigator",
   "icons": [
     {
       "src": "favicon.ico",
