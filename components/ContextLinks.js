@@ -92,7 +92,7 @@ function ContextCardList({items, sorter, ...otherProps}) {
     )
 }
 
-function ContextCard({item, classType, path, title}) {
+function ContextCard({item, classType, path, title, isMinor}) {
     const name = nameFinder(item)
     const dateString = new Date(item.start_date).toLocaleDateString() + (item.end_date ? ('—' + new Date(item.end_date).toLocaleDateString()) : '')
     const classes = useStyles();
@@ -110,11 +110,11 @@ function ContextCard({item, classType, path, title}) {
                     {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
                     <Description model={item}/>
                 </CardContent>
-                <CardActions>
+                { !isMinor && <CardActions>
                     <InternalLink identifier={item.identifier} additionalPath={path} passHref>
                         <Button color="primary" variant="contained" endIcon={<ExitToApp/>}>{title}</Button>
                     </InternalLink>
-                </CardActions>
+                </CardActions> }
             </Card>
         </ThemeProvider>
     )

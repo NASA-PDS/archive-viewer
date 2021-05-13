@@ -111,7 +111,7 @@ function GroupBox({group, isMinor, active, listComponent}) {
 
     const { items, name } = group
 
-    const list = React.createElement(listComponent, {items, active})
+    const list = React.createElement(listComponent, {items, active, isMinor})
 
     return showToggle 
         ?   <ToggleList header={name} headerVariant="h6" list={list}/>
