@@ -182,6 +182,11 @@ function Starfield() {
         window.addEventListener('orientationchange', resizeCanvas, false);
     
         resizeCanvas();
+
+        return function cleanup() {
+            window.removeEventListener('resize', resizeCanvas)
+            window.removeEventListener('orientationchange', resizeCanvas, false)
+        }
     }, [])
 
     return <canvas className={classes.starfield} width="1000" height="1000" id="starfield" ref={canvas}></canvas>
