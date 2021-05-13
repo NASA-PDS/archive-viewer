@@ -67,7 +67,7 @@ function ContextList({items, active, separateBy, orderBy}) {
 
 function ContextLink({item, displayTag, active}) {
     return (
-        <InternalLink identifier={item.logical_identifier ? item.logical_identifier : item.identifier} passHref>
+        <InternalLink identifier={item.identifier} passHref>
         <ListItem button component="a" selected={active === item.identifier}>
             <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')} 
             primaryTypographyProps={{color: "primary"}}/>
