@@ -90,7 +90,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <>
             <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
-            <DeliveryInfo dataset={dataset} />
+            {/* <DeliveryInfo dataset={dataset} /> */}
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
             <Metadata model={dataset} tagType={TagTypes.dataset}/>
