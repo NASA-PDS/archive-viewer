@@ -24,10 +24,10 @@ const missions = [
         identifier: 'urn:nasa:pds:context:instrument_host:spacecraft.near',
         title: 'NEAR'
     },
-    {
-        identifier: 'urn:nasa:pds:context:investigation:mission.deep_impact',
-        title: 'Deep Impact'
-    },
+    // {
+    //     identifier: 'urn:nasa:pds:context:investigation:mission.deep_impact',
+    //     title: 'Deep Impact'
+    // },
     {
         identifier: 'urn:nasa:pds:context:investigation:mission.new_horizons',
         title: 'New Horizons'
