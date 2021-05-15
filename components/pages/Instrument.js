@@ -49,7 +49,6 @@ export default function Instrument({mission, instrument, siblings, spacecraft, l
                 <HTMLBox markup={instrument.html1} />
                 <Metadata model={instrument} tagType={TagTypes.instrument}/>
                 <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/>
-                <RelatedTools tools={primaryBundle && instrument.tools ? [...instrument.tools, ...primaryBundle.tools] : instrument.tools}/>
                 <HTMLBox markup={instrument.html2} />
                 </>
             } secondary = {
