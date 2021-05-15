@@ -101,8 +101,12 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             { type === types.BUNDLE && 
                 <CollectionList dataset={dataset} />
             }
-            <CollectionQuickLinks dataset={dataset} />
-            <CollectionDownloads dataset={dataset} />
+            { type === types.COLLECTION && 
+            <>
+                <CollectionQuickLinks dataset={dataset} type={type}/>
+                <CollectionDownloads dataset={dataset} />
+            </>
+            }
 
             <MoreInformation dataset={dataset} />
             
