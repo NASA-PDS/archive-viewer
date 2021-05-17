@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { FolderOutlined, UnarchiveOutlined } from '@material-ui/icons';
+import { FolderOutlined, GetApp, UnarchiveOutlined } from '@material-ui/icons';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CitationBuilder from 'components/CitationBuilder';
@@ -11,6 +11,7 @@ import { Metadata, MetadataItem } from 'components/Metadata';
 import PrimaryContent from 'components/PrimaryContent';
 import PrimaryLayout from 'components/PrimaryLayout';
 import RelatedTools from 'components/RelatedTools';
+import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
@@ -90,13 +91,14 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <>
             <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
-            {/* <DeliveryInfo dataset={dataset} /> */}
+            {/* <DeliveryInfo dataset={dataset} /> Disabled for now */}
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
             <Metadata model={dataset} tagType={TagTypes.dataset}/>
             { type === types.COLLECTION && 
                 <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
             }
+            <Downloads dataset={dataset}/>
 
             { type === types.BUNDLE && 
                 <CollectionList dataset={dataset} />
@@ -104,7 +106,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             { type === types.COLLECTION && 
             <>
                 <CollectionQuickLinks dataset={dataset} type={type}/>
-                <CollectionDownloads dataset={dataset} />
+                {/* <CollectionDownloads dataset={dataset} />  Disabled for now */}
             </>
             }
 
@@ -119,13 +121,13 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
                 }
             </TangentAccordion>
             </>
-        } secondary={
-            <Box p={1}>
-                <RelatedData dataset={dataset}/>
-                <Superseded dataset={dataset}/>
-                <RelatedPDS3 dataset={dataset}/>
-                <LegacyDOIs dataset={dataset}/>                        
-            </Box>
+        // } secondary={         Disabled for now 
+        //     <Box p={1}>      
+        //         <RelatedData dataset={dataset}/>
+        //         <Superseded dataset={dataset}/>
+        //         <RelatedPDS3 dataset={dataset}/>
+        //         <LegacyDOIs dataset={dataset}/>                        
+        //     </Box>
         }/>
     )
 }
@@ -238,39 +240,19 @@ function CollectionQuickLinks({dataset}) {
     )
 }
 
-function CollectionDownloads({dataset}) {
-    let downloads = dataset.download_packages
-    if(!!downloads) {
-        return (
-            <section className="dataset-downloads">
-                <h3>Download packages:</h3>
-                <ul>
-                    <li>
-                        <img alt="" src="./images/icn-package.png" />
-                        <a href={dataset.download_url}> 
-                            <span> Download All 
-                            { dataset.download_size &&
-                                <span class="download-size">({ dataset.download_size })</span> 
-                            }
-                            </span>
-                        </a>
-                    </li>
-                    { dataset.download_packages.map(pkg => (
-                        <li key={pkg.download_url}>
-                            <img alt="" src="./images/icn-package.png" />
-                            <a href={pkg.download_url}>
-                                <span> { pkg.name } 
-                                { pkg.download_size &&
-                                    <span class="download-size">({ pkg.download_size })</span> 
-                                }
-                                </span>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </section>
-        )
-    } else { return null }
+function Downloads({dataset}) {
+    const {download_url, download_size} = dataset
+    if(!download_url) return null
+
+    let buttonTitle
+    if(!!download_size) {
+        buttonTitle = `Download ${download_size}`
+    } else {
+        buttonTitle = "View Downloads"
+    }
+    return <LabeledListItem label="Download" item={
+        <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size && <GetApp/>}>{buttonTitle}</Button>   
+    }/>
 }
 
 function Citation({citation}) {
