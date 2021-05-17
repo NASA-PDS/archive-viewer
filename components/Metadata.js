@@ -23,7 +23,7 @@ export function Metadata({ model, tagType }) {
 function TemporalMedatata({label, model}) {
     let times = []
     if(!!model.observation_start_date_time) { times.push("Start Time: " + new Date(model.observation_start_date_time).toLocaleString()) }
-    if(!!model.observation_stop_date_time) { times.push("Stop Time: " + new Date(model.observation_stop_date_time).toLocaleString()) }
+    if(!!model.observation_stop_date_time && model.observation_stop_date_time !== '3000-01-01T00:00:00Z') { times.push("Stop Time: " + new Date(model.observation_stop_date_time).toLocaleString()) }
     if(times.length === 0) { return null }
 
     return <MetadataItem label={label} item={times.join(' - ')} />
