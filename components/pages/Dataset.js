@@ -108,6 +108,8 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             </>
             }
 
+            <ReleaseInfo/>
+
             <MoreInformation dataset={dataset} />
             
             <TangentAccordion title="Citation">
@@ -279,6 +281,12 @@ function Citation({citation}) {
         </Box>
            
     } else return null
+}
+
+function ReleaseInfo() {
+    return <Box my={2}>
+            <Typography variant="body2" align="center">For past and upcoming dataset release date information, visit <Link href="https://pds.nasa.gov/datasearch/subscription-service/SS-Release.shtml">the PDS Data Releases page</Link></Typography>
+        </Box>
 }
 
 function RelatedPDS3(props) {
