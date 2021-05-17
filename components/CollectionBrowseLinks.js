@@ -7,7 +7,7 @@ import { SplitListItem } from './SplitListItem';
 export default function CollectionBrowseLinks({dataset, bundles}) {
 
     if(bundles.length === 0 && !dataset.other_instruments_url && !dataset.mission_bundle) { return null }
-    const browseUrl = dataset.browse_url || Array.isArray(dataset.resource_url) ? dataset.resource_url[0] : dataset.resource_url
+    const browseUrl = dataset.browse_url ? dataset.browse_url : (Array.isArray(dataset.resource_url) ? dataset.resource_url[0] : dataset.resource_url)
     return (
         <List>
             { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
