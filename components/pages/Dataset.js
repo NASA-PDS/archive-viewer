@@ -6,6 +6,7 @@ import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CitationBuilder from 'components/CitationBuilder';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
 import CollectionList from 'components/CollectionList.js';
+import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
 import { Metadata, MetadataItem } from 'components/Metadata';
 import PrimaryContent from 'components/PrimaryContent';
@@ -91,6 +92,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <>
             <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
+            <HTMLBox markup={dataset.html1}/>
             {/* <DeliveryInfo dataset={dataset} /> Disabled for now */}
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
@@ -109,6 +111,8 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
                 {/* <CollectionDownloads dataset={dataset} />  Disabled for now */}
             </>
             }
+
+            <HTMLBox markup={dataset.html2}/>
 
             <ReleaseInfo/>
 
