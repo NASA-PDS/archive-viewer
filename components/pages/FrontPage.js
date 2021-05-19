@@ -143,7 +143,6 @@ export default function Index(props) {
                         background: none !important;
                     }
                 `}</style>
-                <TemporaryLinks {...props}/>
             </GlobalContext>
         </Themed>
     )
@@ -192,86 +191,6 @@ function Starfield() {
     return <canvas className={classes.starfield} width="1000" height="1000" id="starfield" ref={canvas}></canvas>
 }
 
-function TemporaryLinks(props) {
-    const theme = getTheme(props)
-    return <TangentAccordion title="These links are going away soon">
-        <ul className="front-page-list">
-            <li>
-                <h3>Planets</h3>
-                <ul className="front-page-list">
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.mercury"}>Mercury</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.venus"}>Venus</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.earth"}>Earth</InternalLink>
-                        <ul><li><InternalLink identifier={"urn:nasa:pds:context:target:satellite.earth.moon"}>Moon</InternalLink></li></ul>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.mars"}>Mars</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.jupiter"}>Jupiter</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.saturn"}>Saturn</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.uranus"}>Uranus</InternalLink>
-                    </li>
-                    <li>
-                        <InternalLink identifier={"urn:nasa:pds:context:target:planet.neptune"}>Neptune</InternalLink>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <h3>Asteroids</h3>
-                <ul className="front-page-list">
-                    <li>
-                        <Link href="/search/Targets/Near-Earth%20Asteroid">Near-Earth Asteroid</Link>
-                        <ul className="front-page-list"><li>e.g. 433 Eros</li></ul>
-                    </li>
-                    <li>
-                        <Link href="/search/Targets/Main%20Belt%20Asteroid">Main Belt Asteroid</Link>
-                        <ul className="front-page-list"><li>e.g. 4 Vesta</li></ul>
-                    </li>
-                    <li>
-                        <Link href="/search/Targets/Kuiper%20Belt%20Object">Kuiper Belt Object</Link>
-                        <ul className="front-page-list"><li>e.g. 486958 Arrokoth</li></ul>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <h3>Dwarf Planets</h3>
-                <ul className="front-page-list">
-                    <li><InternalLink identifier={"urn:nasa:pds:context:target:dwarf_planet.1_ceres"}>1 Ceres</InternalLink></li>
-                    <li><InternalLink identifier={"urn:nasa:pds:context:target:dwarf_planet.134340_pluto"}>134340 Pluto</InternalLink></li>
-                </ul>
-
-                <h3>Comets</h3>
-                <ul className="front-page-list">
-                    <li>
-                        <Link href="/search/Targets/Short-Period%20Comet">Short-Period Comets</Link>
-                        <ul className="front-page-list"><li>e.g. 9P Tempel 1</li></ul>
-                    </li>
-                    <li>
-                        <Link href="/search/Targets/Long-Period%20Comet">Long-Period Comets</Link>
-                        <ul className="front-page-list"><li>e.g. C/1996 B2 Hyakutake</li></ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <style jsx global>{`
-            a {
-                cursor: pointer;
-                color: ${theme.palette.primary.main};
-                text-decoration: none;
-            }
-        `}</style>
-    </TangentAccordion>
-}
 
 function LIDField() {
     const classes = useStyles()

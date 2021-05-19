@@ -1,7 +1,6 @@
 import { useTheme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { LinearProgress } from '@material-ui/core'
-import Menu from 'components/Menu'
 import Router from "next/router"
 import Footer from 'components/Footer'
 import { Helmet } from 'react-helmet';
@@ -35,7 +34,6 @@ function GlobalContext(props) {
                 <title>Archive Navigator | NASA PDS SBN</title>
             </Helmet>
             {/* <AppBar/> */}
-            <Menu/>
             {props.children}
             { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
             <Footer/>
