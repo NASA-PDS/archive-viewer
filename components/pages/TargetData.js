@@ -4,6 +4,7 @@ import { getDatasetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import DatasetTable from 'components/DatasetTable';
+import HTMLBox from 'components/HTMLBox';
 import LoadingWrapper from 'components/LoadingWrapper';
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
@@ -37,7 +38,8 @@ export default function TargetData(props) {
                             <Skeleton width="100%" height={80}/>
                         </>}>
                     <DatasetTable groups={groupByField(datasets, 'primary_result_purpose')} />
-                </LoadingWrapper>          
+                </LoadingWrapper>  
+                <HTMLBox markup={target.derived_html}/>        
             </>
         } secondary={
             <PDS3Results name={target.display_name ? target.display_name : target.title}/>
