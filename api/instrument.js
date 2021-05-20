@@ -46,7 +46,7 @@ export function getSpacecraftForInstrument(instrument) {
 export function getDatasetsForInstrument(instrument) {
 
     let params = {
-        q: `(instrument_ref:${new LID(instrument.identifier).escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND NOT primary_result_processing_level:Derived)`,
+        q: `(instrument_ref:${new LID(instrument.identifier).escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
         fl: 'identifier, title, description, instrument_ref, target_ref, instrument_host_ref, collection_ref, collection_type', 
     }
     return httpGet(router.datasetCore, params)

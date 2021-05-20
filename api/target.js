@@ -18,7 +18,7 @@ export function getDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
-        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND primary_result_processing_level:Derived)`,
+        q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND primary_result_processing_level:Derived AND -instrument_ref:[* TO *])`,
         // fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_ref'
     }
     return httpGet(router.datasetCore, params)
