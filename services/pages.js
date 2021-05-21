@@ -65,10 +65,14 @@ export const resolveContext = (dataset, parentBundles) => {
         case contexts.TARGET: return contexts.TARGET
         case contexts.MISSIONANDTARGET: return contexts.MISSIONANDTARGET
         case undefined: {
+            if(dataset.investigation_ref && dataset.investigation_ref.includes("urn:nasa:pds:context:investigation:individual.none::1.0")) {
+                return contexts.TARGET
+            }
             if(!!parentBundles) {
                 if(parentBundles.every(bundle => resolveContext(bundle) === contexts.MISSION)) return contexts.MISSION
                 if(parentBundles.every(bundle => resolveContext(bundle) === contexts.TARGET)) return contexts.TARGET
             }
+
             // default: MISIONANDTARGET
             return contexts.MISSIONANDTARGET
         }
