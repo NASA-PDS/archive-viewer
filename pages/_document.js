@@ -15,10 +15,21 @@ class MyDocument extends Document {
                 <script src="/feedback/js/modernizr-custom.js"></script>
                 <script src="/feedback/js/config.js"></script>
                 <script src="/feedback/js/feedback.js"></script>
+                
+                <script src="https://pds.nasa.gov/pds-app-bar/pds-app-bar.js"></script>
+                <link rel="stylesheet" href="https://pds.nasa.gov/pds-app-bar/pds-app-bar.css"  type="text/css" media="screen" />
+                
             </Head>
             <body>
                 <Main />
                 <NextScript />
+                <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
+                <style jsx global>{`
+                        #pds-app-bar {
+                            z-index: 100;
+                            border-bottom: none;
+                        }
+                    `}</style>
             </body>
             </Html>
         )

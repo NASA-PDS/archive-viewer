@@ -17,7 +17,6 @@ function MyApp({ Component, pageProps }) {
     return (
     <>
         <Component {...pageProps} />
-        <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
     </>
     )
 }
