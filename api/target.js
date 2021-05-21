@@ -2,7 +2,7 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers, stitchWithInternalReferences} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
-import LogicalIdentifier from 'services/LogicalIdentifier.js'
+import { contexts, resolveContext } from 'services/pages'
 
 export function getMissionsForTarget(target) {
     let params = {
@@ -19,11 +19,16 @@ export function getDatasetsForTarget(target) {
 
     let params = {
         q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle" AND primary_result_processing_level:Derived AND -instrument_ref:[* TO *])`,
-        // fl: 'identifier, title, instrument_ref, target_ref, instrument_host_ref, investigation_ref'
+        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_start_date_time, primary_result_purpose'
     }
     return httpGet(router.datasetCore, params)
-        .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
-        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
+        .then(datasets => {
+            return Promise.resolve(datasets.filter(bundle => {
+                const context = resolveContext(bundle)
+                return context === contexts.TARGET || context === contexts.MISSIONANDTARGET
+            }))
+        })
 }
 
 export function getRelatedTargetsForTarget(target) {

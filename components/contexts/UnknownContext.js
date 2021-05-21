@@ -1,15 +1,16 @@
 import { familyLookup } from 'api/context';
+import { getBundlesForCollection } from 'api/dataset';
 import ErrorMessage from 'components/Error.js';
 import { Bundle, Collection } from 'components/pages/Dataset';
 import React, { useEffect, useState } from 'react';
-import { types } from 'services/pages.js';
 import MissionContext from './MissionContext';
 import TargetContext from './TargetContext';
-
+import { types, contexts, resolveContext } from 'services/pages'
 
 export default function UnknownContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
     const [missionFamily, setMissionFamily] = useState(null)
+    const [bundles, setBundles] = useState(null)
     const [error, setError] = useState(null)
 
     let target = null
@@ -23,10 +24,8 @@ export default function UnknownContext(props) {
                 setMissionFamily(results)
             } 
         }, setError)
-
-        return function cleanup() {
-            // don't actually clear the mission here because it will break the illusion
-            // setMission(null)
+        if(type === types.COLLECTION) {
+            getBundlesForCollection(model).then(setBundles, setError)
         }
     }, [lidvid])
 
@@ -34,18 +33,20 @@ export default function UnknownContext(props) {
         return <ErrorMessage error={error} />
     }
 
-    // Derived data goes to target context
-    if(model.primary_result_processing_level && model.primary_result_processing_level.includes("Derived") 
-        && !!target
-        && !model.instrument_ref) {
-        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} {...otherProps} />
-    }
-    // Non-derived data goes to mission context
-    if(!!missionFamily) {
+    const resolvedContext = resolveContext(model, bundles)
+
+    // if dataset can go in either context, present the mission context
+    // make sure we're not in the middle of looking up bundles before presenting mission context though
+    if((resolvedContext === contexts.MISSION || resolvedContext === contexts.MISSIONANDTARGET)
+        && !(type === types.COLLECTION && !bundles)) {
         return <MissionContext family={missionFamily} {...props}/>
     }
 
-    // can't figure it out, just show stuff
+    if(resolvedContext === contexts.TARGET && !!target) {
+        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} {...otherProps} />
+    }
+
+    // Can't figure it out (yet?), just show stuff
     if(type === types.BUNDLE) return <Bundle dataset={model} {...props}/>
     if(type === types.COLLECTION) return <Collection dataset={model} {...props}/>
 

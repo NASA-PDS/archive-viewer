@@ -33,6 +33,12 @@ export const pagePaths = {
     [types.TARGETMISSIONS]: 'missions'
 }
 
+export const contexts = {
+    MISSION: 'mission',
+    TARGET: 'target',
+    MISSIONANDTARGET: 'both'
+}
+
 export const resolveType = function(fromSolr) {
     if(!!fromSolr.data_class) {
         switch (fromSolr.data_class) {
@@ -53,6 +59,21 @@ export const resolveType = function(fromSolr) {
     return types.UNKNOWN;
 }
 
+export const resolveContext = (dataset, parentBundles) => {
+    switch(dataset.primary_context) {
+        case contexts.MISSION: return contexts.MISSION
+        case contexts.TARGET: return contexts.TARGET
+        case contexts.MISSIONANDTARGET: return contexts.MISSIONANDTARGET
+        case undefined: {
+            if(!!parentBundles) {
+                if(parentBundles.every(bundle => resolveContext(bundle) === contexts.MISSION)) return contexts.MISSION
+                if(parentBundles.every(bundle => resolveContext(bundle) === contexts.TARGET)) return contexts.TARGET
+            }
+            // default: MISIONANDTARGET
+            return contexts.MISSIONANDTARGET
+        }
+    }
+}
 
 const themeNames = {
     light: 'light',

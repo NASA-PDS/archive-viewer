@@ -39,7 +39,7 @@ export function getBundlesForCollection(dataset) {
             fl: 'identifier, title'
         }
     
-    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name'], router.datasetWeb))
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'primary_context'], router.datasetWeb))
 }
 
 export function getTargetsForDataset(dataset) {
