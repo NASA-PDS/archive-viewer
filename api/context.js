@@ -93,6 +93,10 @@ function lookupReferences(entity) {
         let escaped = new LID(lid).escapedLid
         queries.push(`identifier:"${escaped}"`)
     })
+    // if there are no target refs, try a lookup by name
+    if(!entity.target_ref && !!entity.target_name && !Array.isArray(entity.target_name)) {
+        queries.push(`title:"${entity.target_name}" `)
+    }
 
     // split into chunks of 50
     const chunkSize = 50
