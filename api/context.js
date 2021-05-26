@@ -55,8 +55,8 @@ function _familyLookup(initial) {
             // run all queries and flatten the results
             Promise.all(requests).then((furtherResults) => {
                 furtherResults.flat().forEach((otherResult) => mergeFamilyResults(toReturn, otherResult))
+                resolve(toReturn)
             })
-            resolve(toReturn)
         }, reject)
     })
 }
