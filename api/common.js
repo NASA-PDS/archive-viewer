@@ -242,3 +242,16 @@ export function pds3Get(params) {
 
     return httpGet(router.datasetCore, defaultParams, true)
 }
+
+export function serviceAvailable() {
+    let params = {
+        q: '*:*',
+        rows: 1
+    }
+    return new Promise((resolve, reject) => {
+            httpGet(router.heartbeat, params).then(results => {
+            if(results.length > 0) resolve()
+            else reject()
+        }, reject)
+    })
+}

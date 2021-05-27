@@ -8,20 +8,29 @@ import TangentAccordion from './TangentAccordion';
 const searchPage = 'https://pds.nasa.gov/datasearch/keyword-search/search.jsp'
 
 export default function PDS3Results(props) {
-    const [docs, setDocs] = useState([])
-    const [count, setCount] = useState(null) 
-    const [loaded, setLoaded] = useState(false)
+    const [state, setState] = useState({
+        docs: [],
+        loaded: false
+    })
+    const {docs, count, loaded, error} = state
 
     useEffect(() => {
         pds3Get({q: buildQuery(props)}).then(response => {
-            setDocs(response.docs)
-            setCount(response.count)
-            setLoaded(true)
+            setState({
+                docs: response.docs,
+                count: response.count,
+                loaded: true
+            })
+        }, error => {
+            setState({
+                error,
+                loaded: true
+            })
         })
     }, [props.name])
 
     if(!loaded) { return <Loading/> }
-    if(!docs || count === 0) { return null }
+    if(!docs || count === 0 || !!error) { return null }
 
     let params = buildParams()
     params.q = buildQuery(props)

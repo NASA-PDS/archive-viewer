@@ -1,11 +1,12 @@
-import { useTheme } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
-import { LinearProgress } from '@material-ui/core'
-import Router from "next/router"
+import { LinearProgress, Snackbar, useTheme } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import Footer from 'components/Footer'
-import { Helmet } from 'react-helmet';
+import Router from "next/router"
+import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 
 function GlobalContext(props) {
+    const [warningDismissed, setWarningDismissed] = useState(false)
     const [loading, setLoading] = useState(false)
     const theme = useTheme()
 
@@ -37,6 +38,11 @@ function GlobalContext(props) {
             {props.children}
             { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}
             <Footer/>
+            <Snackbar open={props.backupMode && !warningDismissed} >
+                <Alert severity="warning" onClose={() => setWarningDismissed(true)}>
+                    This application is experiencing a service disruption. Functionality might be limited.
+                </Alert>
+            </Snackbar>
             <style jsx global>{`
                 body {
                     margin: 0;

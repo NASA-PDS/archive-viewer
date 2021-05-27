@@ -1,4 +1,4 @@
-import { initialLookup } from 'api/common';
+import { initialLookup, serviceAvailable } from 'api/common';
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import UnknownContext from 'components/contexts/UnknownContext';
@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import { resolveType, setTheme, types } from 'services/pages.js';
 import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
+import runtime from 'services/runtime';
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
@@ -34,7 +35,7 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 }
 
 function ProductPage(props) {
-    const {error, model, pdsOnly} = props
+    const {error, model, pdsOnly, backupMode} = props
     if(!error) {
 
         const {display_name, title} = model
@@ -42,7 +43,7 @@ function ProductPage(props) {
 
         return (
         <Themed {...props}>
-            <GlobalContext>
+            <GlobalContext backupMode={backupMode}>
                 <PageMetadata pageTitle={pageTitle}/>
                 <ProductPageContent {...props} />
             </GlobalContext>
@@ -72,6 +73,7 @@ export async function getServerSideProps(context) {
     
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
+    if(runtime.backupMode) { props.backupMode = true }
 
     if(!!query.flush) {
         cache.flushAll()
@@ -97,6 +99,11 @@ export async function getServerSideProps(context) {
         }
     } catch(err) {
         props.error = err instanceof Error ? err.message : err
+        serviceAvailable().then(yes => console.log('Service available'), no => {
+            console.log('Switching to backup mode')
+            // Engineering node registry not available. Switch to backup mode
+            runtime.setBackupMode(true)
+        })
     }
 
     setTheme(props, context)
