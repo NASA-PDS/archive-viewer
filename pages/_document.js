@@ -24,12 +24,6 @@ class MyDocument extends Document {
                 <Main />
                 <NextScript />
                 <script type="text/javascript" src="https://sbn.psi.edu/sbn-bar/sbn-bar.js"></script>
-                <style jsx global>{`
-                        #pds-app-bar {
-                            z-index: 100;
-                            border-bottom: none;
-                        }
-                    `}</style>
             </body>
             </Html>
         )

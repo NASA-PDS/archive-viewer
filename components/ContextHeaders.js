@@ -88,7 +88,7 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
         default: tabValue = page
     }
 
-    return <Tabs value={tabValue} indicatorColor="secondary" textColor="secondary">
+    return <Tabs value={tabValue} indicatorColor="secondary" textColor="secondary" variant="scrollable">
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
                 <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
@@ -143,7 +143,7 @@ function TargetTabBar({page, target}) {
 
     if(!target) { return <SkeletonTabBar tabCount={4}/>}
 
-    return <Tabs value={page} textColor="secondary">
+    return <Tabs value={page} textColor="secondary" variant="scrollable">
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>

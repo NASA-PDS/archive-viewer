@@ -57,6 +57,10 @@ function GlobalContext(props) {
                 #__next {
                     min-height: 80vh;
                 }
+                #pds-app-bar {
+                    z-index: 100;
+                    border-bottom: none;
+                }
             `}</style>
         </>
     )

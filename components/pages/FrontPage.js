@@ -1,12 +1,8 @@
-import { Box, Container, Grid, IconButton, InputAdornment, makeStyles, TextField, Typography } from '@material-ui/core'
-import GlobalContext from 'components/contexts/GlobalContext'
-import InternalLink from 'components/InternalLink'
-import Themed from 'components/Themed'
-import { ContextList } from 'components/ContextLinks'
-import Link from 'next/link'
-import { getTheme } from 'services/pages'
+import { Box, Container, Grid, IconButton, InputAdornment, makeStyles, TextField, ThemeProvider, Typography } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
-import TangentAccordion from 'components/TangentAccordion'
+import { ContextList } from 'components/ContextLinks'
+import GlobalContext from 'components/contexts/GlobalContext'
+import DarkTheme from 'DarkTheme'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 
@@ -110,12 +106,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Index(props) {
     const classes = useStyles()
     return (
-        <Themed {...props}>
+        <ThemeProvider theme={DarkTheme}>
             <GlobalContext>
                 <Starfield/>
                 <div className={classes.pageContainer}>
-                    <Grid container spacing={10} direction="row" alignItems="center" justifyContent="center" style={{ width: '100%', minHeight: '80vh' }}>
-                        <Grid item xs={6} component="header">
+                    <Grid container spacing={10} direction="row" alignItems="center" justifyContent="center" style={{ minHeight: '80vh' }}>
+                        <Grid item md={6} xs={12} component="header">
                             <Box mx={6}>
                                 <Grid container direction="row" alignItems="center" spacing={3}>
                                     <Grid item xs={6} component="img" src="/images/pds.svg" alt="PDS Logo" className={classes.img} />
@@ -124,7 +120,7 @@ export default function Index(props) {
                                 </Grid>
                             </Box>
                         </Grid>
-                        <Grid item xs={6} component="main">
+                        <Grid item md={6} xs={12}  component="main">
                             <Container>
                                 <LIDField />
                                 <Grid container direction="row" alignItems="flex-start">
@@ -144,7 +140,7 @@ export default function Index(props) {
                     }
                 `}</style>
             </GlobalContext>
-        </Themed>
+        </ThemeProvider>
     )
 }
 

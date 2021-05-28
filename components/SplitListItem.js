@@ -15,7 +15,7 @@ export function LabeledListItem({label, item}) {
 }
 
 export function SplitListItem({left, right}) {
-    return <ListItem component={Grid} container direction="row" alignItems="flex-start" spacing={1}>
+    return <ListItem disableGutters component={Grid} container direction="row" alignItems="flex-start" spacing={1}>
     <Grid item sm={3} xs={12}>
         {left}
     </Grid>
