@@ -7,7 +7,7 @@ import { TagList } from './TagList';
 
 export function Metadata({ model, tagType }) {
     if(!model) return null
-    return <List>
+    return <List style={{maxWidth:'100%;'}}>
         {/* Tags disabled for now <MetadataItem label="Tags" itemComponent={<TagList tags={model.tags} type={tagType} />} /> */}
         <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" itemScope itemType="http://schema.org/Text" />
         <MetadataItem label="Identifier (LID)" item={model.identifier} />

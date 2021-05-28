@@ -5,6 +5,9 @@ const useStyles = makeStyles((theme) => ({
     metadataLabel: {
         marginBottom: 'auto'
     },
+    metadataValue: {
+        wordWrap: 'break-word'
+    }
 }))
 
 export function LabeledListItem({label, item}) {
@@ -19,7 +22,7 @@ export function SplitListItem({left, right}) {
     <Grid item sm={3} xs={12}>
         {left}
     </Grid>
-    <Grid item sm={9} xs={12}>
+    <Grid item sm={9} xs={12} style={{maxWidth:'100%', wordWrap: 'break-word'}}>
         {right}
     </Grid>
 </ListItem>
