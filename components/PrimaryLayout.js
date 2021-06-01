@@ -11,7 +11,9 @@ const useStyles = makeStyles((theme) => ({
         minHeight: '60vh'
     },
     outerPrimary: {
-        padding: theme.spacing(2),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(2),
+        },
         flexGrow: 1,
     },
     innerContainer: {

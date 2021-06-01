@@ -27,7 +27,9 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     bannerTitle: {
-        fontSize: '3.5rem',
+        [theme.breakpoints.up('md')]: {
+            fontSize: '3.5rem',
+        },
         marginLeft: theme.spacing(2),
     },
     headerImage: {

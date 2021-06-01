@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 'auto'
     },
     metadataValue: {
+        maxWidth: `calc(100vw - ${theme.spacing(3)}px)`,
         wordWrap: 'break-word'
     }
 }))
@@ -18,11 +19,12 @@ export function LabeledListItem({label, item}) {
 }
 
 export function SplitListItem({left, right}) {
+    const classes = useStyles()
     return <ListItem disableGutters component={Grid} container direction="row" alignItems="flex-start" spacing={1}>
     <Grid item sm={3} xs={12}>
         {left}
     </Grid>
-    <Grid item sm={9} xs={12} style={{maxWidth:'100%', wordWrap: 'break-word'}}>
+    <Grid item sm={9} xs={12} className={classes.metadataValue}>
         {right}
     </Grid>
 </ListItem>

@@ -11,9 +11,11 @@ const useStyles = makeStyles((theme) => ({
     card: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
-        display: 'flex',
-        flexFlow: 'row nowrap',
-        alignItems: 'flex-start'
+        [theme.breakpoints.up('sm')]: {
+            display: 'flex',
+            alignItems: 'flex-start',
+            flexFlow: 'row nowrap',
+        },
     },
     cardContent: {
         flex: 1
