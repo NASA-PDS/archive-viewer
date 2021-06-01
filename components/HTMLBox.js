@@ -80,6 +80,18 @@ class HTMLBoxClass extends React.Component {
                         letter-spacing: 0.15px;
                         margin: 32px 0;
                     }
+                    .custom a[href^='http']:not([href*='psi.edu']):not([href*='localhost']):after {
+                        background-image: url('${theme.custom.externalLinkLocation}');
+                        background-size: 16px;
+                        background-repeat: no-repeat;
+                        background-position: 4px 4px;
+                        display: inline-block;
+                        padding-left: 1em;
+                        padding-top: 2px;
+                        width: 20px;
+                        height: 20px;
+                        content:"";
+                    }
                 `}</style>
             </>
         }

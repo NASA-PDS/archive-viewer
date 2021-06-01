@@ -97,7 +97,8 @@ const DarkTheme = createMuiTheme({
         targetThemeColor: '#000000',
         missionThemeColor: '#085898',
         raisedContent: "#474C53",
-        raisedContentHover: "#656A6F"
+        raisedContentHover: "#656A6F",
+        externalLinkLocation: '/images/external.svg'
     }
 });
 

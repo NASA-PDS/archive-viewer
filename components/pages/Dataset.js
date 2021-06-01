@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { FolderOutlined, GetApp, UnarchiveOutlined } from '@material-ui/icons';
+import { FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CitationBuilder from 'components/CitationBuilder';
@@ -255,7 +255,7 @@ function Downloads({dataset}) {
         buttonTitle = "View Downloads"
     }
     return <LabeledListItem label="Download" item={
-        <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size && <GetApp/>}>{buttonTitle}</Button>   
+        <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size ? <GetApp/> : <OpenInNew/>}>{buttonTitle}</Button>   
     }/>
 }
 

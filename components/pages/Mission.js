@@ -1,5 +1,4 @@
 import { Button, Typography } from '@material-ui/core';
-import { ExitToApp } from '@material-ui/icons';
 import { getPrimaryBundleForMission } from 'api/mission.js';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
@@ -45,6 +44,6 @@ export default function Mission({mission, lidvid, pdsOnly}) {
 
 function BundleLink({identifier, label}) {
     return <InternalLink identifier={identifier} passHref>
-            <Button color="primary" variant={"contained"} size={"large"} endIcon={<ExitToApp/>}>{label}</Button>
+            <Button color="primary" variant={"contained"} size={"large"}>{label}</Button>
     </InternalLink>
 }

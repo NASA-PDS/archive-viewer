@@ -95,7 +95,8 @@ const LightTheme = createMuiTheme({
         },
         targetThemeColor: '#000000',
         missionThemeColor: '#085898',
-        paperTitle: '#FFFFFF'
+        paperTitle: '#FFFFFF',
+        externalLinkLocation: '/images/external-black.svg'
     }
 });
 

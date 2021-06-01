@@ -1,5 +1,4 @@
 import { Button, Typography } from '@material-ui/core';
-import { ExitToApp } from '@material-ui/icons';
 import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
 import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';
@@ -8,7 +7,6 @@ import InternalLink from 'components/InternalLink';
 import { Metadata } from "components/Metadata";
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
-import RelatedTools from 'components/RelatedTools';
 import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
@@ -73,6 +71,6 @@ function LabeledDatasetList({datasets}) {
 
 function BundleLink({identifier, label}) {
     return <InternalLink identifier={identifier} passHref>
-            <Button color="primary" variant={"contained"} size={"large"} endIcon={<ExitToApp/>}>{label}</Button>
+            <Button color="primary" variant={"contained"} size={"large"}>{label}</Button>
     </InternalLink>
 }

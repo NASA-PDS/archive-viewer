@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { ExitToApp } from '@material-ui/icons';
+import { OpenInNew } from '@material-ui/icons';
 import React from 'react';
 
 
@@ -47,7 +47,7 @@ function ToolLink({tool, noImages}) {
                 <Typography color="textSecondary" component="p">{tool.description}</Typography>
             </CardContent>
             <CardActions>
-                <Button color="primary" variant="contained" endIcon={<ExitToApp/>} href={tool.directUrl ? tool.directUrl : tool.url} underline="none">Visit</Button>
+                <Button color="primary" variant="contained" endIcon={<OpenInNew/>} href={tool.directUrl ? tool.directUrl : tool.url} underline="none">Visit</Button>
             </CardActions>
         </Card>
 }
