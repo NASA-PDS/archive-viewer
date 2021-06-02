@@ -95,7 +95,7 @@ export default function MissionContext(props) {
         }
     }
 
-    const headerProps = {lidvid, mission, instruments, spacecraft, instruments, targets}
+    const headerProps = {lidvid, mission, instruments, spacecraft, instruments, targets, model}
     return (
         <div className={classes.root}>
             <MissionHeader page={pageType} pdsOnly={props.pdsOnly} {...headerProps}/>

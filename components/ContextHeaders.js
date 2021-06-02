@@ -76,7 +76,7 @@ function MissionHeader(props) {
     </ThemeProvider>
 }
 
-function MissionTabBar({lidvid, page, mission, spacecraft}) {
+function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
 
     if(!mission) { return <SkeletonTabBar tabCount={7}/>}
 
@@ -87,8 +87,10 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
             // for datasets, figure out if it's mission data or instrument data
             if(lidvid.includes(mission.mission_bundle)) {
                 tabValue = types.MISSIONBUNDLE
-            } else {
+            } else if(!!model.instrument_ref) {
                 tabValue = types.MISSIONINSTRUMENTS
+            } else {
+                tabValue = types.MISSIONOTHER
             }
             break
         }
