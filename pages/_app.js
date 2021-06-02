@@ -1,5 +1,3 @@
-import 'css/FrontPage.scss'
-import 'css/main.scss'
 import 'fontsource-roboto'
 import Head from 'next/head'
 import React, { useEffect } from 'react'
