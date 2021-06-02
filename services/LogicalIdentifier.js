@@ -1,7 +1,7 @@
 export default class LogicalIdentifier {
 
     constructor(original, vid) {
-        if(!original || typeof original !== 'string') { throw new Error('Invalid Logical Identifier ' + original) }
+        if(!original || typeof original !== 'string' || !original.startsWith('urn:')) { throw new Error('Invalid Logical Identifier ' + original) }
         let identifier = original.toLowerCase()
         if(!!vid) {
             this.lidvid = `${identifier}::${vid}`
@@ -32,6 +32,15 @@ export default class LogicalIdentifier {
         // assert individual parts
         return (urn === "urn" &&
             context === "context") 
+    }
+    get isBundle() {
+        return !this.isContextObject && this.lid.split(":").length === 4
+    }
+    get isCollection() {
+        return !this.isContextObject && this.lid.split(":").length === 5
+    }
+    get isDataProduct() {
+        return !this.isContextObject && this.lid.split(":").length === 6
     }
     get finalFragment() {
         let fragments =  this.lid.split(":")

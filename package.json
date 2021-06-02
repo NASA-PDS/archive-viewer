@@ -11,12 +11,13 @@
     "cookie": "^0.4.1",
     "fontsource-roboto": "^3.0.3",
     "http-proxy-middleware": "^1.0.6",
-    "next": "^10.2.0",
+    "next": "^10.2.3",
     "node-cache": "^5.1.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-helmet": "^6.1.0",
-    "sass": "^1.29.0"
+    "sass": "^1.29.0",
+    "serialize-error": "^8.1.0"
   },
   "scripts": {
     "dev": "next dev",

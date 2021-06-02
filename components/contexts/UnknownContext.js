@@ -30,7 +30,7 @@ export default function UnknownContext(props) {
     }, [lidvid])
 
     if(!!error) {
-        return <ErrorMessage error={error} />
+        return <ErrorContext error={error} lidvid={lidvid}/>
     }
 
     const resolvedContext = resolveContext(model, bundles)
@@ -50,5 +50,5 @@ export default function UnknownContext(props) {
     if(type === types.BUNDLE) return <Bundle dataset={model} {...props}/>
     if(type === types.COLLECTION) return <Collection dataset={model} {...props}/>
 
-    return <ErrorMessage error={new Error('Unknown')}/>
+    return <ErrorContext error={new Error('Unknown')} lidvid={lidvid}/>
 }

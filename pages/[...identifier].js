@@ -2,7 +2,7 @@ import { initialLookup, serviceAvailable } from 'api/common';
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import UnknownContext from 'components/contexts/UnknownContext';
-import ErrorMessage from 'components/Error.js';
+import ErrorContext from 'components/contexts/ErrorContext';
 import Loading from 'components/Loading';
 import { PDS3Dataset } from 'components/pages/Dataset.js';
 import NodeCache from 'node-cache';
@@ -13,11 +13,12 @@ import { resolveType, setTheme, types } from 'services/pages.js';
 import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
 import runtime from 'services/runtime';
+import { serializeError } from 'serialize-error';
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
     if(error) {
-        return <ErrorMessage error={error} />
+        return <ErrorContext error={error} livid={livid}/>
     } else if (!loaded) {
         return <Loading fullscreen={true} />
     } else {
@@ -35,7 +36,7 @@ function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 }
 
 function ProductPage(props) {
-    const {error, model, pdsOnly, backupMode} = props
+    const {error, model, pdsOnly, backupMode, lidvid} = props
     if(!error) {
 
         const {display_name, title} = model
@@ -50,7 +51,14 @@ function ProductPage(props) {
         </Themed>
         )
     } else {
-        return <ErrorMessage error={error} />
+        return (
+            <Themed {...props}>
+                <GlobalContext backupMode={backupMode}>
+                    <PageMetadata pageTitle={"Error"}/>
+                    <ErrorContext error={error} lidvid={lidvid}/>
+                </GlobalContext>
+            </Themed>
+        )
     }
 }
 
@@ -87,18 +95,10 @@ export async function getServerSideProps(context) {
         } 
         
         props.loaded = true
-        const type = resolveType(result)
-
-        if(result.length === 0) {
-            props.error = `No ${type} found for lidvid ${lidvid}`
-        } else if(result.length > 1) {
-            props.error = `More than one ${type} found for lidvid ${lidvid}`
-        } else {
-            props.type = type
-            props.model = result
-        }
+        props.type = resolveType(result)
+        props.model = result
     } catch(err) {
-        props.error = err instanceof Error ? err.message : err
+        props.error = err instanceof Error ? serializeError(err) : { message: err }
         serviceAvailable().then(yes => console.log('Service available'), no => {
             console.log('Switching to backup mode')
             // Engineering node registry not available. Switch to backup mode

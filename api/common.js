@@ -138,7 +138,9 @@ export function initialLookup(identifier, pdsOnly) {
                     reject(error)
                 })
             } else {
-                reject("Unknown document type")
+                let error = new Error("Unsupported product type")
+                error.product = doc
+                reject(error)
             }
         }, error => {
             reject(error)

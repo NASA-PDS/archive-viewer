@@ -1,5 +1,6 @@
 import { AppBar, Divider, Grid, Tab, Tabs, Typography } from '@material-ui/core';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { Error } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import DarkTheme from 'DarkTheme';
 import React from 'react';
@@ -35,14 +36,19 @@ const useStyles = makeStyles((theme) => ({
     headerImage: {
         padding: theme.spacing(1),
         [theme.breakpoints.down('sm')]: {
-            height: theme.custom.headerBanner.height.sm
+            height: theme.custom.headerBanner.height.sm,
+            fontSize: theme.custom.headerBanner.height.sm
         },
         [theme.breakpoints.up('md')]: {
-            height: theme.custom.headerBanner.height.md
+            height: theme.custom.headerBanner.height.md,
+            fontSize: theme.custom.headerBanner.height.md
         },
     },
     target: {
         backgroundColor: theme.custom.targetThemeColor
+    },
+    error: {
+        backgroundColor: theme.palette.error.main
     },
     divider: {
         marginLeft: theme.spacing(2),
@@ -155,10 +161,23 @@ function TargetTabBar({page, target}) {
             </Tabs>
 }
 
-function Banner({name, image_url}) {
+function ErrorHeader() {
+    const classes = useStyles();
+    
+    return (
+        <ThemeProvider theme={DarkTheme}>
+            <AppBar className={`${classes.header} ${classes.error}`} position="static" color="inherit">
+                <Banner name={"Error"} icon={Error}/>
+            </AppBar>
+        </ThemeProvider>
+    )
+}
+
+function Banner({name, image_url, icon}) {
     const classes = useStyles();
     return <Grid container direction="row" alignItems="center" className={classes.banner} wrap="nowrap">
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
+        { icon && React.createElement(icon, { className: classes.headerImage}) }
         <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
     </Grid>
 }
@@ -171,4 +190,4 @@ function SkeletonBanner() {
     </Grid>
 }
 
-export { MissionHeader, TargetHeader };
+export { MissionHeader, TargetHeader, ErrorHeader };

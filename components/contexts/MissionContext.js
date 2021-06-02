@@ -1,21 +1,18 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { familyLookup } from 'api/context';
-import { getFriendlyMissions, getPrimaryBundleForMission } from 'api/mission';
-import { Bundle, Collection, PDS3Dataset } from 'components/pages/Dataset.js'
+import { getFriendlyMissions } from 'api/mission';
 import { MissionHeader } from 'components/ContextHeaders';
-import ErrorMessage from 'components/Error.js';
+import { Bundle, Collection } from 'components/pages/Dataset.js';
 import Instrument from 'components/pages/Instrument';
 import Mission from 'components/pages/Mission';
+import MissionData from 'components/pages/MissionData';
 import MissionInstruments from 'components/pages/MissionInstruments';
 import MissionTargets from 'components/pages/MissionTargets';
+import MissionTools from 'components/pages/MissionTools';
 import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
-import { types, pagePaths } from 'services/pages.js';
-import MissionTools from 'components/pages/MissionTools';
-import { Button, IconButton, Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import CloseIcon from '@material-ui/icons/Close';
-import MissionData from 'components/pages/MissionData';
+import { pagePaths, types } from 'services/pages.js';
+import ErrorContext from './ErrorContext';
 
 const drawerWidth = 360;
 
@@ -66,7 +63,7 @@ export default function MissionContext(props) {
     }, [lidvid])
 
     if(!!error) {
-        return <ErrorMessage error={error} />
+        return <ErrorContext error={error} lidvid={lidvid}/>
     }
 
     const { instruments, spacecraft, targets } = (family || {})
