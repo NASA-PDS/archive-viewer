@@ -8,12 +8,12 @@ import { PDS3Dataset } from 'components/pages/Dataset.js';
 import NodeCache from 'node-cache';
 import FrontPage from 'pages/index';
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { resolveType, setTheme, types } from 'services/pages.js';
 import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
 import runtime from 'services/runtime';
 import { serializeError } from 'serialize-error';
+import Head from 'next/head'
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
@@ -63,10 +63,10 @@ function ProductPage(props) {
 }
 
 function PageMetadata({pageTitle}) {
-    return <Helmet>
+    return <Head>
         <title>{ pageTitle }</title>
         <meta charSet="utf-8" />
-    </Helmet>
+    </Head>
 }
 
 export default ProductPage

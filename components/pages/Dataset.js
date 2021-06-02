@@ -16,7 +16,6 @@ import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles((theme) => ({
     mainTitle: {
@@ -164,9 +163,6 @@ function Title({dataset, type}) {
                     } style={{marginLeft: '10px'}}/>
             </Typography>
         </Box>
-        <Helmet>
-            <title>{ title }</title>
-        </Helmet>
     </>
 }
 
