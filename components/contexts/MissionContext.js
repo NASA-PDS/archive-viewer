@@ -80,7 +80,7 @@ export default function MissionContext(props) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
         } else if(!!extraPath.includes(pagePaths[types.MISSIONOTHER])) {
-            mainContent = <MissionData mission={model} />
+            mainContent = <MissionData mission={model} spacecraft={spacecraft} />
             pageType = types.MISSIONOTHER
         }
     } else {

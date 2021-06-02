@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DatasetTable({ groups }) {
     const classes = useStyles();
-    // groups.sort((a, b) => a.order.localeCompare(b.order));
+    if(!groups || groups.length === 0) return null
     return (
         <TableContainer>
             <Table stickyHeader padding="none"  className={classes.table}>
