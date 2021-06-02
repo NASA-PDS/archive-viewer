@@ -3,7 +3,6 @@ import { Alert } from '@material-ui/lab'
 import Footer from 'components/Footer'
 import Router from "next/router"
 import React, { useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
 
 function GlobalContext(props) {
     const [warningDismissed, setWarningDismissed] = useState(false)
@@ -31,9 +30,6 @@ function GlobalContext(props) {
 
     return (
         <>
-            <Helmet>
-                <title>Archive Navigator | NASA PDS SBN</title>
-            </Helmet>
             {/* <AppBar/> */}
             {props.children}
             { loading && <LinearProgress color="secondary" style={{position: 'fixed', bottom: 0, width: '100%'}}/>}

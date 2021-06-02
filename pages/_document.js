@@ -22,7 +22,7 @@ class MyDocument extends Document {
                 
                 <script src="https://pds.nasa.gov/pds-app-bar/pds-app-bar.js"></script>
                 <link rel="stylesheet" href="https://pds.nasa.gov/pds-app-bar/pds-app-bar.css"  type="text/css" media="screen" />
-                
+                <title>Archive Navigator | NASA PDS SBN</title>
             </Head>
             <body>
                 <Main />
