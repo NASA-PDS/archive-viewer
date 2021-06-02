@@ -1,6 +1,7 @@
 import { Box, Link, List, ListItem, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ErrorHeader } from 'components/ContextHeaders';
+import InternalLink from 'components/InternalLink';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React from 'react';
 import LogicalIdentifier from 'services/LogicalIdentifier';
@@ -87,8 +88,10 @@ function InvalidContextProductError({model}) {
 }
 
 function InvalidDataProductError({lidvid}) {
+    let parentLid = lidvid.split(':').slice(0, 5).join(':')
     return <Box py={2}>
         <Typography variant="h4">{`'${lidvid}' appears to be a data product LID, which is not supported by Archive Navigator`}</Typography>
+        <p>You can visit the collection for this product at <InternalLink identifier={parentLid} passHref><Link>{parentLid}</Link></InternalLink>  </p>
         <p>Archive Navigator can display information about these product types:
             <List>
                 <ListItem><Link href="https://pds.nasa.gov/datastandards/documents/im/current/index_1F00.html#class_pds_investigation">Investigation (Mission)</Link></ListItem>

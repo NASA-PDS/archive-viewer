@@ -81,11 +81,6 @@ const DarkTheme = createMuiTheme({
                 color: "#FDFDFD",
             }
         },
-        MuiSvgIcon: {
-            root: {
-                color: "#FDFDFD"
-            }
-        }
     },
     props: {
         MuiLink: {

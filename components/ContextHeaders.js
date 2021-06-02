@@ -1,4 +1,4 @@
-import { AppBar, Divider, Grid, Tab, Tabs, Typography } from '@material-ui/core';
+import { AppBar, Divider, Grid, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { Error } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -174,10 +174,11 @@ function ErrorHeader() {
 }
 
 function Banner({name, image_url, icon}) {
-    const classes = useStyles();
+    const classes = useStyles()
+    const theme = useTheme()
     return <Grid container direction="row" alignItems="center" className={classes.banner} wrap="nowrap">
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-        { icon && React.createElement(icon, { className: classes.headerImage}) }
+        { icon && React.createElement(icon, { className: classes.headerImage, htmlColor: theme.palette.text.primary}) }
         <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
     </Grid>
 }
