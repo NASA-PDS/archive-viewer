@@ -168,17 +168,19 @@ function Title({dataset, type}) {
 
 export function MoreInformation({dataset}) {
     return <TangentAccordion title="More Information">
-        <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
-        <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
-        <MetadataItem label="Type" item={"Data"} />
-        <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
-        <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
-        <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
-        <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
-        <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
-        <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
-        <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
-        <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+        <Box px={2}>
+            <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+            <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
+            <MetadataItem label="Type" item={"Data"} />
+            <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
+            <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
+            <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
+            <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
+            <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
+            <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
+            <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
+            <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+        </Box>
     </TangentAccordion>
 }
 
@@ -215,7 +217,7 @@ function CollectionQuickLinks({dataset}) {
                         </Link>
                     </Grid>
                 }
-                { dataset.example &&
+                { dataset.example && dataset.example.url &&
                     <Grid item xs={6} md={2} >
                         <Link href={dataset.example.url} >
                             <Card raised={true} className={classes.quickLink} p={1}>
