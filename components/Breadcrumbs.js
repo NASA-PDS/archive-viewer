@@ -1,6 +1,7 @@
 import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import InternalLink from 'components/InternalLink';
+import LogicalIdentifier from 'services/LogicalIdentifier';
 
 class Breadcrumb {
     constructor(name, identifier, additionalPath) {
@@ -32,12 +33,14 @@ function InstrumentBreadcrumbs(props) {
 
 function DatasetBreadcrumbs(props) {
     const {home, current, parent} = props
+    const LID = new LogicalIdentifier(current.identifier)
     if(!props.home) {
         return <SkeletonBreadcrumbs/>
     }
 
     let ancestors = []
-    if(current.identifier.includes(home.mission_bundle)) {
+    if(LID.isBundle && LID.lid === home.mission_bundle
+        || LID.isCollection && LID.parentBundle === home.mission_bundle) {
         // no intermediate breadcrumbs for mission bundles
     } else if(home.data_class === "Target") {
         ancestors.push(new Breadcrumb("Derived Data", home.identifier, "data"))

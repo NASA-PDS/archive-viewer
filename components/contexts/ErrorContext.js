@@ -88,7 +88,7 @@ function InvalidContextProductError({model}) {
 }
 
 function InvalidDataProductError({lidvid}) {
-    let parentLid = lidvid.split(':').slice(0, 5).join(':')
+    let parentLid = new LogicalIdentifier(lidvid).parentCollection
     return <Box py={2}>
         <Typography variant="h4">{`'${lidvid}' appears to be a data product LID, which is not supported by Archive Navigator`}</Typography>
         <p>You can visit the collection for this product at <InternalLink identifier={parentLid} passHref><Link>{parentLid}</Link></InternalLink>  </p>

@@ -4,6 +4,7 @@ import { Error } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import DarkTheme from 'DarkTheme';
 import React from 'react';
+import LogicalIdentifier from 'services/LogicalIdentifier';
 import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
 
@@ -80,12 +81,15 @@ function MissionTabBar({lidvid, page, mission, spacecraft}) {
 
     if(!mission) { return <SkeletonTabBar tabCount={7}/>}
 
+    let LID = new LogicalIdentifier(lidvid)
+
     let tabValue
     switch(page) {
         case types.BUNDLE:
         case types.COLLECTION: {
             // for datasets, figure out if it's mission data or instrument data
-            if(lidvid.includes(mission.mission_bundle)) {
+            if(LID.isBundle && LID.lid === mission.mission_bundle
+                || LID.isCollection && LID.parentBundle === mission.mission_bundle) {
                 tabValue = types.MISSIONBUNDLE
             } else {
                 tabValue = types.MISSIONINSTRUMENTS

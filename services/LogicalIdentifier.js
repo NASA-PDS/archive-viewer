@@ -42,6 +42,12 @@ export default class LogicalIdentifier {
     get isDataProduct() {
         return !this.isContextObject && this.lid.split(":").length === 6
     }
+    get parentBundle() {
+        return (this.isCollection || this.isDataProduct) ? this.lid.split(":").slice(0, 4).join(':') : null
+    }
+    get parentCollection() {
+        return this.isDataProduct ? this.lid.split(":").slice(0, 5).join(':') : null
+    }
     get finalFragment() {
         let fragments =  this.lid.split(":")
         return fragments[fragments.length-1]
