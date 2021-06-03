@@ -37,7 +37,7 @@ export default function UnknownContext(props) {
 
     // if dataset can go in either context, present the mission context
     // make sure we're not in the middle of looking up bundles before presenting mission context though
-    if((resolvedContext === contexts.MISSION || resolvedContext === contexts.MISSIONANDTARGET)
+    if([contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(resolvedContext)
         && !(type === types.COLLECTION && !bundles)) {
         return <MissionContext family={missionFamily} {...props}/>
     }
