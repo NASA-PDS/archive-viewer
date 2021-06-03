@@ -3,6 +3,7 @@ import LID from 'services/LogicalIdentifier.js'
 import {httpGet, httpGetRelated, httpGetIdentifiers, stitchWithWebFields, initialLookup} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 import { getMissionsForSpacecraft } from './spacecraft'
+import { contexts, resolveContext } from 'services/pages'
 
 
 export function getMissionsForInstrument(instrument) {
@@ -50,8 +51,15 @@ export function getDatasetsForInstrument(instrument) {
         fl: 'identifier, title, description, instrument_ref, target_ref, instrument_host_ref, collection_ref, collection_type', 
     }
     return httpGet(router.datasetCore, params)
-        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToBundle, [instrument.identifier]))
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromInstrumentToBundle, [instrument.identifier]))        
+        .then(datasets => {
+            return Promise.resolve(datasets.filter(bundle => {
+                const context = resolveContext(bundle)
+                return context === contexts.MISSION || context === contexts.MISSIONANDTARGET
+            }))
+        })
+
 }
 
 export function getSiblingInstruments(siblings, spacecraft) {

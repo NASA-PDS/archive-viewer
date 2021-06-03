@@ -2,6 +2,7 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGetRelated, initialLookup, stitchWithWebFields, httpGet, stitchWithInternalReferences} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
+import { contexts, resolveContext } from 'services/pages'
 
 export function getSpacecraftForMission(mission) {
     let missionLid = new LID(mission.identifier)
@@ -24,16 +25,21 @@ export function getFriendlyTargetsForMission(targets, missionLid) {
         .then(stitchWithRelationships(relationshipTypes.fromMissionToTarget, [missionLid]))
 }
 
-export function getDatasetsForMission(mission, spacecraft, instruments) {
+export function getDatasetsForMission(mission, spacecraft) {
     const missionQuery = `investigation_ref:${new LID(mission.identifier).escapedLid}\\:\\:*`
     const spacecraftQuery = spacecraft.map(sp => `instrument_host_ref:${new LID(sp.identifier).escapedLid}\\:\\:*`).join(' OR ')
-    const instrumentQuery = instruments.map(inst => `instrument_ref:${new LID(inst.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
-        q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery, instrumentQuery].filter(el => !!el).join(' OR ')}))`,
+        q: `(product_class:"Product_Bundle" AND -instrument_ref:[* TO *] AND (${[missionQuery, spacecraftQuery].filter(el => !!el).join(' OR ')}))`,
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
-        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
+        .then(datasets => {
+            return Promise.resolve(datasets.filter(bundle => {
+                const context = resolveContext(bundle)
+                return context === contexts.MISSION || context === contexts.MISSIONANDTARGET
+            }))
+        })
 }
 
 export function getFriendlyMissions(missions) {

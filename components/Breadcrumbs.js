@@ -48,6 +48,8 @@ function DatasetBreadcrumbs(props) {
         ancestors.push(new Breadcrumb("Instruments", home.identifier, "instruments"))
         current.instrument_ref.length === 1 &&
             ancestors.push(new Breadcrumb("Instrument", current.instrument_ref[0]))
+    } else {
+        ancestors.push(new Breadcrumb("Other Data", home.identifier, "other"))
     }
     if(!!parent) {
         ancestors.push(new Breadcrumb("Bundle", parent.identifier))
