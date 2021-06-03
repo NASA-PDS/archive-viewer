@@ -36,7 +36,8 @@ export const pagePaths = {
 export const contexts = {
     MISSION: 'mission',
     TARGET: 'target',
-    MISSIONANDTARGET: 'both'
+    MISSIONANDTARGET: 'both',
+    UNKNOWN: 'unknown'
 }
 
 export const resolveType = function(fromSolr) {
@@ -69,8 +70,7 @@ export const resolveContext = (dataset, parentBundles) => {
                 if(parentBundles.every(bundle => resolveContext(bundle) === contexts.MISSION)) return contexts.MISSION
                 if(parentBundles.every(bundle => resolveContext(bundle) === contexts.TARGET)) return contexts.TARGET
             }
-            // default: MISIONANDTARGET
-            return contexts.MISSIONANDTARGET
+            return contexts.UNKNOWN
         }
     }
 }
