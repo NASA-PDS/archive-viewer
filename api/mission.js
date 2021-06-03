@@ -33,7 +33,7 @@ export function getDatasetsForMission(mission, spacecraft) {
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
-        .then(stitchWithWebFields(['display_name', 'tags'], router.datasetWeb))
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
