@@ -40,7 +40,7 @@ function unpackChildDocuments(document, children) {
     }
 }
 
-const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref', 'collection_ref', 'download_packages', 'superseded_data', 'related_tools', 'related_data']
+const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref', 'collection_ref', 'download_packages', 'superseded_data', 'related_tools', 'related_data', 'collection_type']
 const keysThatAreActuallyObjectArrays = ['related_tools', 'related_data', 'superseded_data', 'download_packages']
 const keysThatAreAlwaysSingularChildDocuments = ['example', 'publication']
 const keysThatAreNeverArrays = ['is_major', 'is_prime', 'order', 'toolId']
