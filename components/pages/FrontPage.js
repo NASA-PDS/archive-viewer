@@ -42,13 +42,6 @@ const missions = [
     },
 ]
 
-// Bennu
-// Ceres
-// Vesta
-// Itokawa
-// Ryugu
-// 67P
-// Eros
 const targets = [
     {
         identifier: 'urn:nasa:pds:context:target:asteroid.101955_bennu',
@@ -77,6 +70,10 @@ const targets = [
     {
         identifier: 'urn:nasa:pds:context:target:comet.67p_churyumov-gerasimenko',
         title: '67P'
+    },
+    {
+        identifier: 'urn:nasa:pds:context:target:dwarf_planet.134340_pluto',
+        title: 'Pluto'
     },
 ]
 
