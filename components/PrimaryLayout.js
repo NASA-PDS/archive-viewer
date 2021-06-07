@@ -33,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function PrimaryLayout({primary, secondary, navigational}) {
+export default function PrimaryLayout({primary, secondary, navigational, ...otherProps}) {
     const classes = useStyles()
     return (
-        <div className={classes.root}>
+        <div className={classes.root} {...otherProps}>
             { navigational && 
                 <Drawer variant="persistent" open={true} className={classes.drawer} classes={{ paper: classes.drawerPaper }}>
                     <Box className={classes.drawerContainer}>

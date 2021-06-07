@@ -9,11 +9,12 @@ export function Metadata({ model, tagType }) {
     if(!model) return null
     return <List style={{maxWidth:'100%;'}}>
         {/* Tags disabled for now <MetadataItem label="Tags" itemComponent={<TagList tags={model.tags} type={tagType} />} /> */}
-        <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" itemScope itemType="http://schema.org/Text" />
+        <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" />
         <MetadataItem label="Identifier (LID)" item={model.identifier} />
         <MetadataItem label="Version" item={model.version_id} />
         <MetadataItem label="DOI" item={model.doi} />
-        <MetadataItem label="Authors" item={model.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author" />
+        {/* <MetadataItem label="Authors" item={model.citation_author_list} itemProp="author" /> */}
+        <AuthorList label="Authors" model={model.citation_author_list} />
         <TemporalMedatata label="Time Range" model={model} />
         <MetadataItem label="Status" item={model.publication ? model.publication.publish_status : null} />
     </List>;
@@ -35,4 +36,13 @@ export function MetadataItem({ item, itemComponent, label, ...otherProps }) {
     return <LabeledListItem label={label} item = {
             itemComponent || <Typography {...otherProps}>{item}</Typography> 
         }/>
+}
+
+function AuthorList({model}) {
+    let authors = model && model.split(';')
+    return authors ? <>
+        <MetadataItem label="Authors" itemComponent={<>
+            { authors.map((author, index) => <><span itemProp="author">{author}</span>{index < authors.length -1 ? ';' : ''}</>)}
+        </>}/>  
+    </> : null
 }

@@ -157,7 +157,7 @@ function Title({dataset, type}) {
                 }
             </Box>
             <Typography variant="h1" className={classes.mainTitle}>
-                { title }
+                <span itemProp="name">{title}</span>
                 <Chip color="primary" variant="outlined" label={
                     <Typography variant="body2">{titles[type]}</Typography>
                     } style={{marginLeft: '10px'}}/>
