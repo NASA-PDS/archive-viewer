@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
-import CitationBuilder from 'components/CitationBuilder';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
 import CollectionList from 'components/CollectionList.js';
 import HTMLBox from 'components/HTMLBox';
@@ -118,10 +117,10 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <MoreInformation dataset={dataset} />
             
             <TangentAccordion title="Citation">
-                { !!dataset.citation 
-                    ? <Citation citation={dataset.citation}/>
-                    : <CitationBuilder dataset={dataset} />
-                }
+                {/* { !!dataset.citation ? */}
+                    <Citation citation={dataset.citation}/>
+                    {/* : <CitationBuilder dataset={dataset} />    // Don't actually use the citation builder until we actually build it right
+                } */}
             </TangentAccordion>
             </>
         // } secondary={         Disabled for now 
