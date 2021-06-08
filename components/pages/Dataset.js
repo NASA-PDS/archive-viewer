@@ -246,7 +246,7 @@ function DatasetInfo({dataset, bundles}) {
     if(!dataset_info_url) { 
 
         // try and pull it from bundle
-        dataset_info_url = bundles && bundles.length > 0 ? bundles.reduce((prev, current) => current.dataset_info_url) : null
+        dataset_info_url = bundles && bundles.length > 0 ? bundles.reduce((prev, current) => current.dataset_info_url, null) : null
 
         // if still no dataset info, return
         if(!dataset_info_url) return null
