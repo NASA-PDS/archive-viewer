@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
+import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
@@ -98,6 +98,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             { type === types.COLLECTION && 
                 <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
             }
+            <DatasetInfo dataset={dataset} bundles={bundles}/>
             <Downloads dataset={dataset}/>
 
             { type === types.BUNDLE && 
@@ -105,7 +106,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             }
             { type === types.COLLECTION && 
             <>
-                <CollectionQuickLinks dataset={dataset} type={type}/>
+                <CollectionExample dataset={dataset} type={type}/>
                 {/* <CollectionDownloads dataset={dataset} />  Disabled for now */}
             </>
             }
@@ -199,44 +200,28 @@ export function DeliveryInfo({dataset}) {
     }
 }
 
-function CollectionQuickLinks({dataset}) {
+function CollectionExample({dataset}) {
     const classes = useStyles()
     return (
         <PrimaryContent>
-            <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
-                { dataset.local_documents_url &&
-                    <Grid item xs={6} md={2} >
-                        <Link href={dataset.local_documents_url} >
-                            <Card raised={true} className={classes.quickLink} p={1}>
-                                <CardMedia component="img" image="./images/icn-documents.png" alt={'Icon for documents'} title={'View Local Documents'}/>
-                                <CardContent p="1">
-                                    <Typography p="3" variant="h5" component="h2">View Local Documents</Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                }
-                { dataset.example && dataset.example.url &&
-                    <Grid item xs={6} md={2} >
-                        <Link href={dataset.example.url} >
-                            <Card raised={true} className={classes.quickLink} p={1}>
-                                <CardMedia component="img" image={
-                                    dataset.example.thumbnail_url ?
-                                        dataset.example.thumbnail_url :
-                                        './images/icn-file.png'
-                                } alt={'Icon for documents'} title={'Example file'}/>
-                                <CardContent p="1">
-                                    <Typography p="3" variant="h5" component="h2">{ dataset.collection_type === "Document"?     
-                                        'Key Document' :
-                                        'Example File'
-                                    }</Typography>
-                                    <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                }
-            </Grid>
+            { dataset.example && dataset.example.url &&
+                <Link href={dataset.example.url} >
+                    <Card raised={true} className={classes.quickLink} p={1}>
+                        <CardMedia component="img" image={
+                            dataset.example.thumbnail_url ?
+                                dataset.example.thumbnail_url :
+                                './images/icn-file.png'
+                        } alt={'Icon for documents'} title={'Example file'}/>
+                        <CardContent p="1">
+                            <Typography p="3" variant="h5" component="h2">{ dataset.collection_type === "Document"?     
+                                'Key Document' :
+                                'Example File'
+                            }</Typography>
+                            <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
+                        </CardContent>
+                    </Card>
+                </Link>
+            }
         </PrimaryContent>
     )
 }
@@ -253,6 +238,22 @@ function Downloads({dataset}) {
     }
     return <LabeledListItem label="Download" item={
         <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size ? <GetApp/> : <OpenInNew/>}>{buttonTitle}</Button>   
+    }/>
+}
+
+function DatasetInfo({dataset, bundles}) {
+    let {dataset_info_url} = dataset
+    if(!dataset_info_url) { 
+
+        // try and pull it from bundle
+        dataset_info_url = bundles && bundles.length > 0 ? bundles.reduce((prev, current) => current.dataset_info_url) : null
+
+        // if still no dataset info, return
+        if(!dataset_info_url) return null
+    }
+
+    return <LabeledListItem label="Dataset Info" item={
+        <Button color="primary" variant="contained" href={dataset_info_url} size={"medium"} endIcon={<Description/>}>View Dataset Info</Button>   
     }/>
 }
 
