@@ -16,14 +16,6 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     }
     let groups = []
 
-    // first insert any mandatory groups
-    if(!!relationshipInfo) {
-        for(let relationship of relationshipInfo) {
-            if (relationship.order !== undefined && relationship.order < downplayGroupsThreshold) {
-                groups.push(new Group(relationship.name, [], relationship.order))
-            }
-        }
-    }
     for (let item of items) {
 
         // if possible, group by relationships already in data
@@ -35,10 +27,11 @@ const groupByAttributedRelationship = (items, relationshipInfo) => {
     return groups
 }
 
-const groupByRelatedItems = (items, relatedItems, field) => {
+const groupByRelatedItems = (items, field) => {
+    if(!items) return []
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
-        if (!!existingGroup) {existingGroup.items.push(item)}
+        if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
         else groups.push(new Group(groupName, [item], order))
     }
     let groups = []
@@ -47,18 +40,38 @@ const groupByRelatedItems = (items, relatedItems, field) => {
             insert(item, 'Other', 999)
         }
         else {
-            const lids = item[field]
+            const references = item[field]
             // an item might appear in many groups simultaneously. add it to each group it references
-            lids.forEach(lidvid => {
-                let host_name
-                const lid = new LID(lidvid).lid
-                const groupInfoSource = relatedItems ? relatedItems.find(a => a.identifier === lid) : null
+            references.forEach(ref => {
+
+                if(typeof ref === 'string') {
+                    insert(item, new LID(ref).lid)
+                } else if(!!ref.identifier) {
+                    insert(item, ref.display_name || ref.title)
+                } else {
+                    insert(item, 'Other', 999)
+                }
                 
-                if (groupInfoSource) host_name = groupInfoSource.display_name ? groupInfoSource.display_name : groupInfoSource.title
-                else host_name = lid
-                
-                insert(item, host_name)
             })
+        }
+    }
+    return groups
+}
+
+const groupByField = (items, field, order) => {
+    if(!items) return []
+    let insert = (item, groupName) => {
+        let existingGroup = groups.find(group => group.name === groupName)
+        if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
+        else groups.push(new Group(groupName, [item], order ? order.findIndex(o => o === groupName) : 999 ))
+    }
+    let groups = []
+    for (let item of items) {
+        if(!field || !item[field] || !item[field].length) {
+            insert(item, 'Other', 999)
+        }
+        else {
+            insert(item, item[field])
         }
     }
     return groups
@@ -82,11 +95,11 @@ const groupByFirstTag = (items) => {
     return groups
 }
 
-const groupByLabelArray = (items, labels) => {
+const groupByLabelArray = (items, labels, order) => {
     let insert = (item, groupName) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], groupName))
+        else groups.push(new Group(groupName, [item], order.findIndex(o => o === groupName)))
     }
     let groups = []
     items.forEach((item, index) => {
@@ -100,4 +113,4 @@ const downplayGroupsThreshold = 100
 const hiddenGroupsThreshold = 1000
 const miscGroupName = 'Other'
 
-export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
+export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}

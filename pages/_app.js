@@ -1,17 +1,27 @@
-import React from 'react';
-import 'css/FrontPage.scss'
-import 'css/ContextObjects.scss'
-import 'css/main.scss';
-import { ThemeProvider } from '@material-ui/core/styles';
-import Theme from 'Theme';
-import AppBar from 'components/Banner'
 import 'fontsource-roboto'
+import Head from 'next/head'
+import React, { useEffect } from 'react'
 
-export default function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
+
+    useEffect(() => {
+        // remove the server-side injected CSS
+        const jssStyles = document.querySelector('#jss-server-side')
+        if (!!jssStyles) {
+          jssStyles.parentElement.removeChild(jssStyles)
+        }
+    }, [])
+
+
     return (
-    <ThemeProvider theme={Theme}>
-        <AppBar/>
+    <>
+        <Head>
+            <title>Archive Navigator | NASA PDS SBN</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        </Head>
         <Component {...pageProps} />
-    </ThemeProvider>
+    </>
     )
 }
+
+export default MyApp

@@ -1,54 +1,76 @@
+import { Button, Typography } from '@material-ui/core';
+import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
+import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
+import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';
+import HTMLBox from 'components/HTMLBox';
+import InternalLink from 'components/InternalLink';
+import { Metadata } from "components/Metadata";
+import PDS3Results from 'components/PDS3Results';
+import PrimaryLayout from 'components/PrimaryLayout';
+import { LabeledListItem } from 'components/SplitListItem';
+import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
-import {getSpacecraftForInstrument, getDatasetsForInstrument, getRelatedInstrumentsForInstrument} from 'api/instrument.js'
-import {InstrumentHeader, InstrumentDescription, Menu} from 'components/ContextObjects'
-import {DatasetListBox, InstrumentListBox, SpacecraftListBox} from 'components/ListBox'
-import {InstrumentTagList} from 'components/TagList'
-import HTMLBox from 'components/HTMLBox'
-import RelatedTools from 'components/RelatedTools'
-import PDS3Results from 'components/PDS3Results'
-import {instrumentSpacecraftRelationshipTypes} from 'api/relationships'
-import PrimaryLayout from 'components/PrimaryLayout'
 
-
-export default function Instrument({instrument, lidvid}) {
+export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
     const [datasets, setDatasets] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
-    const [instruments, setInstruments] = useState(null)
+    const [instruments, setInstruments] = useState(siblings)
+    const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForInstrument(instrument).then(spacecraft => {
-            setSpacecraft(spacecraft)
-            getRelatedInstrumentsForInstrument(instrument, spacecraft).then(setInstruments, er => console.error(er))
-        }, er => console.error(er))
-        getDatasetsForInstrument(instrument).then(setDatasets, er => console.error(er))
+        getDatasetsForInstrument(instrument).then(setDatasets, console.error)
+        getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, console.error)
 
         return function cleanup() {
-            setInstruments(null)
             setDatasets(null)
-            setSpacecraft(null)
+            setPrimaryBundle(null)
         }
     }, [lidvid])
 
+    useEffect(() => {
+        if(!!siblings && !!spacecraft) getFriendlyInstrumentsForSpacecraft(siblings, spacecraft).then(setInstruments, console.error)
+
+        return function cleanup() {
+            setInstruments(null)
+        }
+    }, [siblings, spacecraft])
+
+    const showPrimaryBundle = primaryBundle && !pdsOnly
+    const showLabeledDatasets = datasets && datasets.some(dataset => !!dataset.relatedBy.label)
+    const showDatasetList = !showPrimaryBundle && !showLabeledDatasets
+    
+
     return (
-        <div className="co-main">
-            <InstrumentHeader model={instrument} />
-            <Menu/>
-            <PrimaryLayout primary={
+        <PrimaryLayout primary={
                 <>
-                <InstrumentTagList tags={instrument.tags} />
-                <InstrumentDescription model={instrument} />
+                <InstrumentBreadcrumbs current={instrument} home={mission}/>
+                <Typography variant="h1" gutterBottom> { instrument.display_name || instrument.title } </Typography>
                 <HTMLBox markup={instrument.html1} />
-                <RelatedTools tools={instrument.tools}/>
-                <DatasetListBox items={datasets} />
-                <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
+                <Metadata model={instrument} tagType={TagTypes.instrument}/>
+                <LabeledDatasetList datasets={showPrimaryBundle ? [primaryBundle] : datasets}/>
                 <HTMLBox markup={instrument.html2} />
                 </>
             } secondary = {
                 <>
-                <SpacecraftListBox items={spacecraft} groupInfo={instrumentSpacecraftRelationshipTypes}/>
-                <InstrumentListBox items={instruments} groupInfo={instrumentSpacecraftRelationshipTypes} />
+                    <PDS3Results name={instrument.display_name ? instrument.display_name : instrument.title} instrumentId={instrument.pds3_instrument_id} hostId={instrument.pds3_instrument_host_id}/>
                 </>
-            }/>
-        </div>
+            } />
     )
+}
+
+function LabeledDatasetList({datasets}) {
+    if(!datasets) return null;
+
+    return <>
+        {datasets.map((dataset, index) => 
+            <LabeledListItem key={dataset.identifier} label={index === 0 && "Data"} item={
+                <BundleLink identifier={dataset.identifier} label={(dataset.relatedBy && dataset.relatedBy.label) || dataset.display_name || dataset.title}/>
+            }/>
+        )}
+    </>
+}
+
+function BundleLink({identifier, label}) {
+    return <InternalLink identifier={identifier} passHref>
+            <Button color="primary" variant={"contained"} size={"large"}>{label}</Button>
+    </InternalLink>
 }

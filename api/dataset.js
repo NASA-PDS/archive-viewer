@@ -12,9 +12,9 @@ export function getCollectionsForDataset(dataset) {
             q: lids.reduce((query, lid) => query + `logical_identifier:"${new LID(lid).lidvid}" `, '')
         }
     return new Promise((resolve, reject) => {
-        Promise.all([httpGetIdentifiers(router.datasetCore, lids), httpGet(router.datasetWeb, params)]).then(results => {
+        Promise.all([httpGetIdentifiers(router.datasetCore, lids, ['primary_result_purpose']), httpGet(router.datasetWeb, params)]).then(results => {
             let [coreDocs, webDocs] = results 
-            if(coreDocs.length <=  webDocs.length) {
+            if(webDocs.length > 0) {
                 let toReturn = []
                 // combine documents by lid
                 for (let coreDoc of coreDocs ) {
@@ -39,7 +39,7 @@ export function getBundlesForCollection(dataset) {
             fl: 'identifier, title'
         }
     
-    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name'], router.datasetWeb))
+    return httpGet(router.datasetCore, params).then(stitchWithWebFields(['display_name', 'primary_context', 'dataset_info_url'], router.datasetWeb))
 }
 
 export function getTargetsForDataset(dataset) {

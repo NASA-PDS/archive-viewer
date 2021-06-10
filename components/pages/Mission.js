@@ -1,50 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import {getSpacecraftForMission} from 'api/mission.js'
-import {MissionHeader, MissionDescription, Menu} from 'components/ContextObjects'
-import Loading from 'components/Loading'
-import Spacecraft from 'components/pages/Spacecraft'
+import { Button, Typography } from '@material-ui/core';
+import { getPrimaryBundleForMission } from 'api/mission.js';
+import HTMLBox from 'components/HTMLBox';
+import InternalLink from 'components/InternalLink';
+import { Metadata } from "components/Metadata";
 import PrimaryLayout from 'components/PrimaryLayout';
-import InternalLink from 'components/InternalLink'
+import { LabeledListItem } from 'components/SplitListItem';
+import { TagTypes } from 'components/TagSearch.js';
+import React, { useEffect, useState } from 'react';
 
-export default function Mission({mission, lidvid}) {
-    const [spacecraft, setSpacecraft] = useState(null)
+
+export default function Mission({mission, lidvid, pdsOnly}) {
+    const [primaryBundle, setPrimaryBundle] = useState(null)
 
     useEffect(() => {
-        getSpacecraftForMission(mission).then(setSpacecraft, er => console.error(er))
+        if(!pdsOnly) { 
+            getPrimaryBundleForMission(mission).then((bundle) => {
+                setPrimaryBundle(bundle)
+            }, er => console.error(er))
+        }
 
-        return function cleanup() { setSpacecraft(null) }
+        return function cleanup() { 
+            setPrimaryBundle(null)
+        }
     }, [lidvid])
 
-    // if this mission only has one spacecraft, we should just show that spacecraft's page
-    if(spacecraft && spacecraft.length === 1) return <Spacecraft spacecraft={spacecraft[0]}></Spacecraft>
-
     return (
-        <div className="co-main">
-            <MissionHeader model={mission} />
-            <Menu/>
-            <PrimaryLayout primary={
-                <>
-                    <MissionDescription model={mission} />
-                    {!!spacecraft ? 
-                        (<div className="mission-spacecraft-list">
-                            <h2>View the mission's data for:</h2>
-                            { spacecraft.map(ButtonForSpacecraft)}
-                        </div>)
-                        : <Loading/>
-                    }
-                </>
-            }/>
-        </div>
+        <PrimaryLayout primary={
+            <>
+                <Typography variant="h1" gutterBottom> { mission.display_name ? mission.display_name : mission.title } </Typography>
+                <HTMLBox markup={mission.html1} />
+                <Metadata model={mission} tagType={TagTypes.mission}/>
+                { primaryBundle && 
+                    <LabeledListItem label="Bundle" item={
+                        <BundleLink identifier={primaryBundle.identifier} label="View Mission Information Bundle"/>
+                    }/>
+                }
+                <HTMLBox markup={mission.html2} />   
+
+            </>
+        } />
     )
 }
 
-function ButtonForSpacecraft(spacecraft) {
-    return (
-        <InternalLink key={spacecraft.identifier} identifier={spacecraft.identifier}>
-        <a className="mission-spacecraft-button" >
-            {spacecraft.image_url && <img alt={"Image of " + spacecraft.title} src={spacecraft.image_url}/> }
-            <span className="spacecraft-title">{spacecraft.display_name ? spacecraft.display_name : spacecraft.title}</span>
-        </a>
-        </InternalLink>
-    )
+function BundleLink({identifier, label}) {
+    return <InternalLink identifier={identifier} passHref>
+            <Button color="primary" variant={"contained"} size={"large"}>{label}</Button>
+    </InternalLink>
 }

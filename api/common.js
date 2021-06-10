@@ -3,6 +3,7 @@ import desolrize from 'services/desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
 import { types, resolveType } from 'services/pages.js'
+import { stitchWithTools } from './tools';
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -56,24 +57,25 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
     )
 }
 
-export function httpGetIdentifiers(route, identifiers) {
+export function httpGetIdentifiers(route, identifiers, extraFields) {
     if(!identifiers || identifiers.length === 0) return Promise.resolve([])
     let lids = identifiers.constructor === String ? [identifiers] : identifiers
     
     // if we have lots of identifiers, break it into multiple requests (recusrively!!)
     let requests = []
     if (lids.length > defaultFetchSize) {
-        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize)))
+        requests.push(httpGetIdentifiers(route, lids.slice(defaultFetchSize), extraFields))
         lids = lids.slice(0, defaultFetchSize)
     }
 
     let params = {
         q: lids.reduce((query, lid) => query + 'identifier:"' + new LID(lid).lid + '" ', ''),
-        fl: 'identifier, title'
+        fl: 'identifier, title' + ( extraFields ? ', ' + extraFields.join(', ') : '')
     }
     requests.push(httpGet(route, params))
     return Promise.all(requests).then(results => results.flat())
 }
+
 
 export function initialLookup(identifier, pdsOnly) {
     let lid = new LID(identifier)
@@ -83,7 +85,7 @@ export function initialLookup(identifier, pdsOnly) {
         }
         httpGet(router.defaultCore, params).then(result => {
             if(!result || result.length === 0) {
-                reject(new Error(`None found`))
+                reject(new Error(`Nothing found with identifier ${lid.lid}`))
             }
             let doc = Object.assign({}, result[0]);
 
@@ -106,7 +108,7 @@ export function initialLookup(identifier, pdsOnly) {
 
             if(!!supplementalRoute) {
                 httpGet(supplementalRoute, {
-                    q: `logical_identifier:("${lid.escaped}" OR ${lid.escapedLid})`,
+                    q: `logical_identifier:("${lid.escaped}" OR "${lid.escapedLid}")`,
                     fl: `*,[child parentFilter=attrname:${attrname}]`,
                 }).then(result => {
                     if(result.length > 0) {
@@ -136,36 +138,14 @@ export function initialLookup(identifier, pdsOnly) {
                     reject(error)
                 })
             } else {
-                reject("Unknown document type")
+                let error = new Error("Unsupported product type")
+                error.product = doc
+                reject(error)
             }
         }, error => {
             reject(error)
         })
     }).then(stitchWithTools)
-}
-
-function stitchWithTools(result) {
-    return new Promise((resolve, _) => {
-        let tools = result.tools
-        if(!tools || tools.length === 0) {
-            resolve(result)
-        }
-        if(tools[0].constructor !== Object) {
-            tools = tools.map(toolId => { return { toolId }})
-        }
-        let params = {
-            q: tools.reduce((query, tool) => query + 'toolId:"' + tool.toolId + '" ', '')
-        }
-        httpGet(router.tools, params).then(toolLookup => {
-            result.tools = tools.map(tool => Object.assign(tool, toolLookup.find(lookup => lookup.toolId === tool.toolId)))
-            resolve(result)
-        }, err => {
-            console.log(err)
-            // couldn't find tools, so just hide the field
-            result.tools = null
-            resolve(result)
-        })
-    })
 }
 
 export function httpGetRelated(initialQuery, route, knownLids) {
@@ -190,6 +170,22 @@ function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }
 
+export function stitchWithInternalReferences(fieldName, route) {
+    return (previousResult) => {
+        if(!previousResult || previousResult.length === 0) return Promise.resolve([])
+
+        const lids = previousResult.map(result => result[fieldName] || []).flat().map(lidvid => new LID(lidvid).lid)
+
+        return new Promise((resolve, _ ) => {
+            httpGetIdentifiers(router.defaultCore, lids).then(stitchWithWebFields(['display_name'], route)).then(internalReferences => {
+                previousResult.forEach(result => {
+                    result[fieldName] = (result[fieldName] || []).map(referenceLid => internalReferences.find(ref => new LID(ref.identifier).lid === new LID(referenceLid).lid ) || referenceLid)
+                })
+                resolve(previousResult)
+            }, () => resolve(previousResult))
+        })
+    }
+}
 
 export function stitchWithWebFields(fields, route) {
     if(!fields.includes('logical_identifier')) { fields.push('logical_identifier')}
@@ -247,4 +243,17 @@ export function pds3Get(params) {
     Object.assign(defaultParams, params)
 
     return httpGet(router.datasetCore, defaultParams, true)
+}
+
+export function serviceAvailable() {
+    let params = {
+        q: '*:*',
+        rows: 1
+    }
+    return new Promise((resolve, reject) => {
+            httpGet(router.heartbeat, params).then(results => {
+            if(results.length > 0) resolve()
+            else reject()
+        }, reject)
+    })
 }

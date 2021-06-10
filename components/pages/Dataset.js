@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import {getInstrumentsForDataset, getSpacecraftForDataset, getTargetsForDataset, getMissionsForDataset} from 'api/dataset.js'
-import {stitchDatasetWithMockData} from 'api/mock'
-import CollectionList from 'components/CollectionList.js'
-import RelatedTools from 'components/RelatedTools'
-import CitationBuilder from 'components/CitationBuilder'
-import {InstrumentListBox, SpacecraftListBox, TargetListBox, MissionListBox} from 'components/ListBox'
-import {DatasetDescription} from 'components/ContextObjects'
-import {DatasetTagList} from 'components/TagList'
-import { Link, Grid, Card, CardMedia, CardContent, List, ListItem, ListItemText, Typography, Paper, Box, Chip } from '@material-ui/core'
-import InternalLink from 'components/InternalLink'
-import { UnarchiveOutlined, FolderOutlined } from '@material-ui/icons'
+import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
+import { getBundlesForCollection } from 'api/dataset';
+import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
+import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
+import CollectionList from 'components/CollectionList.js';
+import HTMLBox from 'components/HTMLBox';
+import InternalLink from 'components/InternalLink';
+import { Metadata, MetadataItem } from 'components/Metadata';
 import PrimaryContent from 'components/PrimaryContent';
-import ResponsiveLayout from 'components/ResponsiveLayout'
+import PrimaryLayout from 'components/PrimaryLayout';
+import RelatedTools from 'components/RelatedTools';
+import { LabeledListItem } from 'components/SplitListItem';
+import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
-import CollectionBrowseLinks from 'components/CollectionBrowseLinks'
-import { Helmet } from 'react-helmet'
+import React, { useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
-    citation: {
-        padding: theme.spacing(2),
-        color: theme.palette.secondary.dark
-    },
-    citationEnd: {
-        alignSelf: 'flex-end'
+    mainTitle: {
+        marginTop: 0
     },
     quickLink: {
         maxWidth: 200
@@ -80,57 +75,62 @@ const titles = {
     [types.PDS3]: "PDS3 Dataset"
 }
 
-function Dataset({dataset, lidvid, mockup, pdsOnly, type}) {
-    const [instruments, setInstruments] = useState(null)
-    const [spacecraft, setSpacecraft] = useState(null)
-    const [missions, setMissions] = useState(null)
-    const [targets, setTargets] = useState(null)
+function Dataset({dataset, mockup, context, pdsOnly, type}) {
+    
+    const [bundles, setBundles] = useState([])
 
     useEffect(() => {
-        if(mockup) { stitchDatasetWithMockData(dataset) }
-        getInstrumentsForDataset(dataset).then(setInstruments, console.error)
-        getSpacecraftForDataset(dataset).then(setSpacecraft, console.error)
-        getMissionsForDataset(dataset).then(setMissions, console.error)
-        getTargetsForDataset(dataset).then(setTargets, console.error)
-    }, [lidvid])
+        type === types.COLLECTION && getBundlesForCollection(dataset).then(result => {
+            setBundles(result)
+        }, console.error)
+    }, [dataset.identifier])
 
     return (
-        <ResponsiveLayout itemScope itemType="https://schema.org/Dataset" primary={
+        <PrimaryLayout itemScope itemType="https://schema.org/Dataset" primary={
             <>
-            <DatasetTagList tags={dataset.tags}/>
+            <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
-            <DeliveryInfo dataset={dataset} />
+            <HTMLBox markup={dataset.html1}/>
+            {/* <DeliveryInfo dataset={dataset} /> Disabled for now */}
             <RelatedTools tools={dataset.tools} noImages={!!mockup}/>
 
-            <Metadata dataset={dataset}/>
+            <Metadata model={dataset} tagType={TagTypes.dataset}/>
             { type === types.COLLECTION && 
-                <CollectionBrowseLinks dataset={dataset}/>
+                <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
             }
+            <DatasetInfo dataset={dataset} bundles={bundles}/>
+            <Downloads dataset={dataset}/>
 
             { type === types.BUNDLE && 
                 <CollectionList dataset={dataset} />
             }
-            <CollectionQuickLinks dataset={dataset} />
-            <CollectionDownloads dataset={dataset} />
+            { type === types.COLLECTION && 
+            <>
+                <CollectionExample dataset={dataset} type={type}/>
+                {/* <CollectionDownloads dataset={dataset} />  Disabled for now */}
+            </>
+            }
+
+            <HTMLBox markup={dataset.html2}/>
+
+            <ReleaseInfo/>
 
             <MoreInformation dataset={dataset} />
             
             <TangentAccordion title="Citation">
-                <CitationBuilder dataset={dataset} />
+                {/* { !!dataset.citation ? */}
+                    <Citation citation={dataset.citation}/>
+                    {/* : <CitationBuilder dataset={dataset} />    // Don't actually use the citation builder until we actually build it right
+                } */}
             </TangentAccordion>
             </>
-        } secondary={
-            <Box p={1}>
-                { targets && targets.length > 0 && <TargetListBox items={targets} compact={true}/> }
-                { missions && missions.length > 0 && <MissionListBox items={missions} compact={true}/> }
-                { spacecraft && spacecraft.length > 0 && <SpacecraftListBox items={spacecraft} compact={true}/> }
-                { instruments && instruments.length > 0 && <InstrumentListBox items={instruments} compact={true}/> }
-                
-                <RelatedData dataset={dataset}/>
-                <Superseded dataset={dataset}/>
-                <RelatedPDS3 dataset={dataset}/>
-                <LegacyDOIs dataset={dataset}/>                        
-            </Box>
+        // } secondary={         Disabled for now 
+        //     <Box p={1}>      
+        //         <RelatedData dataset={dataset}/>
+        //         <Superseded dataset={dataset}/>
+        //         <RelatedPDS3 dataset={dataset}/>
+        //         <LegacyDOIs dataset={dataset}/>                        
+        //     </Box>
         }/>
     )
 }
@@ -156,77 +156,43 @@ function Title({dataset, type}) {
                     <UnarchiveOutlined className={classes.datasetIcon}/>
                 }
             </Box>
-            <Typography variant="h1">
-                { title }
+            <Typography variant="h1" className={classes.mainTitle}>
+                <span itemProp="name">{title}</span>
                 <Chip color="primary" variant="outlined" label={
                     <Typography variant="body2">{titles[type]}</Typography>
                     } style={{marginLeft: '10px'}}/>
             </Typography>
         </Box>
-        <Helmet>
-            <title>{ title }</title>
-        </Helmet>
     </>
 }
 
-function Metadata({dataset}) {
-    return <List>
-            <MetadataItem label="Description" itemComponent={<DatasetDescription model={dataset}/>} itemProp="abstract" itemScope itemType="http://schema.org/Text"/>
-            <MetadataItem label="Identifier (LID)" item={dataset.identifier} />
-            <MetadataItem label="Version" item={dataset.version_id} />   
-            <MetadataItem label="DOI" item={dataset.doi} />            
-            <MetadataItem label="Authors" item={dataset.citation_author_list} itemProp="author" itemScope itemType="http://schema.org/Author"/>
-            <TemporalMedatata label="Time Range" dataset={dataset} />
-            <MetadataItem label="Status" item={dataset.publication ? dataset.publication.publish_status : null} />   
-    </List>
-}
-
-function MoreInformation({dataset}) {
+export function MoreInformation({dataset}) {
     return <TangentAccordion title="More Information">
-        <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
-        <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
-        <MetadataItem label="Type" item={"Data"} />
-        <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
-        <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
-        <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
-        <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
-        <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
-        <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
-        <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
-        <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+        <Box px={2}>
+            <MetadataItem label="Date Published" item={(dataset.publication && dataset.publication.publication_date) ? dataset.publication.publication_date : dataset.citation_publication_year} itemProp="datePublished" itemScope itemType="http://schema.org/Date"/>
+            <MetadataItem label="Editors" item={dataset.citation_editor_list} itemProp="editor" itemScope itemType="http://schema.org/Person"/>
+            <MetadataItem label="Type" item={"Data"} />
+            <MetadataItem label="Local Mean Solar" item={dataset.localMeanSolar} />
+            <MetadataItem label="Local True Solar" item={dataset.localTrueSolar} />
+            <MetadataItem label="Solar Longitude" item={dataset.solarLongitude} />
+            <MetadataItem label="Primary Result" item={dataset.primary_result_purpose} />
+            <MetadataItem label="Primary Result Processing Level" item={dataset.primary_result_processing_level} />
+            <MetadataItem label="Primary Result Wavelength Range" item={dataset.primary_result_wavelength_range} />
+            <MetadataItem label="Primary Result Domain" item={dataset.primary_result_domain} />
+            <MetadataItem label="Primary Result Discipline Name" item={dataset.primary_result_discipline_name} />
+        </Box>
     </TangentAccordion>
 }
 
-function TemporalMedatata({label, dataset}) {
-    let times = []
-    if(!!dataset.observation_start_date_time) { times.push("Start Time: " + dataset.observation_start_date_time) }
-    if(!!dataset.observation_stop_date_time) { times.push("Stop Time: " + dataset.observation_stop_date_time) }
-    if(times.length === 0) { return null }
 
-    return <MetadataItem label={label} item={times.join(' - ')} />
-}
-
-function MetadataItem({ item, itemComponent, label, ...otherProps }) {
-    if(!item && !itemComponent) return null
-    return <ListItem component={Grid} container direction="row" justify="flex-start" spacing={1}>
-        <Grid item sm={3} xs={12}>
-            <Typography variant="h6"> { label }</Typography>
-        </Grid>
-        <Grid item sm={9} xs={12}>
-            {itemComponent || <Typography {...otherProps}>{item}</Typography> }
-        </Grid>
-    </ListItem>
-}
-
-
-function DeliveryInfo({dataset}) {
+export function DeliveryInfo({dataset}) {
     const classes = useStyles()
     const publication = dataset.publication
     if(publication && publication.delivery_info) {
         return (
             <Paper className={classes.deliveryInfo}>
-                <Typography>{publication.delivery_info}</Typography>
-                <Typography>Latest release date: {publication.publication_date}</Typography>
+                <Typography color="inherit">{publication.delivery_info}</Typography>
+                <Typography color="inherit">Latest release date: {publication.publication_date}</Typography>
             </Paper>
         )
     } else {
@@ -234,81 +200,77 @@ function DeliveryInfo({dataset}) {
     }
 }
 
-function CollectionQuickLinks({dataset}) {
+function CollectionExample({dataset}) {
     const classes = useStyles()
     return (
         <PrimaryContent>
-            <Grid container spacing={2} direction="row" justify="flex-start" alignItems="stretch">
-                { dataset.local_documents_url &&
-                    <Grid item xs={6} md={2} >
-                        <Link href={dataset.local_documents_url} >
-                            <Card raised={true} className={classes.quickLink} p={1}>
-                                <CardMedia component="img" image="./images/icn-documents.png" alt={'Icon for documents'} title={'View Local Documents'}/>
-                                <CardContent p="1">
-                                    <Typography p="3" variant="h5" component="h2">View Local Documents</Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                }
-                { dataset.example &&
-                    <Grid item xs={6} md={2} >
-                        <Link href={dataset.example.url} >
-                            <Card raised={true} className={classes.quickLink} p={1}>
-                                <CardMedia component="img" image={
-                                    dataset.example.thumbnail_url ?
-                                        dataset.example.thumbnail_url :
-                                        './images/icn-file.png'
-                                } alt={'Icon for documents'} title={'Example file'}/>
-                                <CardContent p="1">
-                                    <Typography p="3" variant="h5" component="h2">{ dataset.collection_type === "Document"?     
-                                        'Key Document' :
-                                        'Example File'
-                                    }</Typography>
-                                    <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                }
-            </Grid>
+            { dataset.example && dataset.example.url &&
+                <Link href={dataset.example.url} >
+                    <Card raised={true} className={classes.quickLink} p={1}>
+                        <CardMedia component="img" image={
+                            dataset.example.thumbnail_url ?
+                                dataset.example.thumbnail_url :
+                                './images/icn-file.png'
+                        } alt={'Icon for documents'} title={'Example file'}/>
+                        <CardContent p="1">
+                            <Typography p="3" variant="h5" component="h2">{ dataset.collection_type === "Document"?     
+                                'Key Document' :
+                                'Example File'
+                            }</Typography>
+                            <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
+                        </CardContent>
+                    </Card>
+                </Link>
+            }
         </PrimaryContent>
     )
 }
 
-function CollectionDownloads({dataset}) {
-    let downloads = dataset.download_packages
-    if(!!downloads) {
-        return (
-            <section className="dataset-downloads">
-                <h3>Download packages:</h3>
-                <ul>
-                    <li>
-                        <img alt="" src="./images/icn-package.png" />
-                        <a href={dataset.download_url}> 
-                            <span> Download All 
-                            { dataset.download_size &&
-                                <span class="download-size">({ dataset.download_size })</span> 
-                            }
-                            </span>
-                        </a>
-                    </li>
-                    { dataset.download_packages.map(pkg => (
-                        <li key={pkg.download_url}>
-                            <img alt="" src="./images/icn-package.png" />
-                            <a href={pkg.download_url}>
-                                <span> { pkg.name } 
-                                { pkg.download_size &&
-                                    <span class="download-size">({ pkg.download_size })</span> 
-                                }
-                                </span>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </section>
-        )
-    } else { return null }
+function Downloads({dataset}) {
+    const {download_url, download_size} = dataset
+    if(!download_url) return null
+
+    let buttonTitle
+    if(!!download_size) {
+        buttonTitle = `Download ${download_size}`
+    } else {
+        buttonTitle = "View Downloads"
+    }
+    return <LabeledListItem label="Download" item={
+        <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size ? <GetApp/> : <OpenInNew/>}>{buttonTitle}</Button>   
+    }/>
+}
+
+function DatasetInfo({dataset, bundles}) {
+    let {dataset_info_url} = dataset
+    if(!dataset_info_url) { 
+
+        // try and pull it from bundle
+        dataset_info_url = bundles && bundles.length > 0 ? bundles.reduce((prev, current) => current.dataset_info_url, null) : null
+
+        // if still no dataset info, return
+        if(!dataset_info_url) return null
+    }
+
+    return <LabeledListItem label="Dataset Info" item={
+        <Button color="primary" variant="contained" href={dataset_info_url} size={"medium"} endIcon={<Description/>}>View Dataset Info</Button>   
+    }/>
+}
+
+function Citation({citation}) {
+    if(citation) {
+        return <Box p={3}>
+            <Typography variant="body2" color="textSecondary">Use the following citation to reference this data set:</Typography>
+            <Typography>{citation}</Typography>
+        </Box>
+           
+    } else return null
+}
+
+function ReleaseInfo() {
+    return <Box my={2}>
+            <Typography variant="body2" align="center">For past and upcoming dataset release date information, visit <Link href="https://pds.nasa.gov/datasearch/subscription-service/SS-Release.shtml">the PDS Data Releases page</Link></Typography>
+        </Box>
 }
 
 function RelatedPDS3(props) {

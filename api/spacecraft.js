@@ -9,40 +9,38 @@ export function getMissionsForSpacecraft(spacecraft) {
 
     if(!!spacecraft.mission_override) {
         return httpGetIdentifiers(router.missionsCore, [spacecraft.mission_override])
-            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description', 'mission_bundle'], router.missionsWeb))
     } else {
         let knownMissions = spacecraft.investigation_ref
         let params = {
             q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Investigation"`,
-            fl: 'identifier, title, investigation_description, instrument_host_ref'
+            fl: 'identifier, title, investigation_description, instrument_host_ref, instrument_ref'
         }
         return httpGetRelated(params, router.missionsCore, knownMissions)
-            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description'], router.missionsWeb))
+            .then(stitchWithWebFields(['display_name', 'image_url', 'display_description', 'mission_bundle'], router.missionsWeb))
     }
 }
 
-export function getInstrumentsForSpacecraft(spacecraft) {
-    let spacecraftLid = new LID(spacecraft.identifier)
-    let knownInstruments = spacecraft.instrument_ref
-    let params = {
-        q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Instrument"`,
-        fl: 'identifier, title, instrument_host_ref'
-    }
-    return httpGetRelated(params, router.instrumentsCore, knownInstruments)
+export function getFriendlyInstrumentsForSpacecraft(instruments, spacecraft) {
+    return Promise.resolve(instruments)
         .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraftLid))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, spacecraft.map(sp => sp.identifier)))
 }
 
-export function getTargetsForSpacecraft(spacecraft) {
-    let spacecraftLid = new LID(spacecraft.identifier)
-    let knownTargets = spacecraft.target_ref
-    let params = {
-        q: `instrument_host_ref:${spacecraftLid.escapedLid}\\:\\:* AND data_class:"Target"`,
-        fl: 'identifier, title'
-    }
-    return httpGetRelated(params, router.targetsCore, knownTargets)
-        .then(stitchWithWebFields(['display_name', 'tags'], router.targetsWeb))
-        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToTarget, spacecraftLid))
+export function getInstrumentsForSpacecraft(spacecraft, instruments) {
+    return httpGetIdentifiers(router.instrumentsCore, instruments)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.instrumentsWeb))
+        .then(stitchWithRelationships(relationshipTypes.fromSpacecraftToInstrument, [spacecraft.identifier]))
+}
+
+export function getFriendlySpacecraft(siblings) {
+    return Promise.resolve(siblings)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
+}
+
+export function getSiblingSpacecraft(siblings) {
+    return httpGetIdentifiers(router.spacecraftCore, siblings)
+        .then(stitchWithWebFields(['display_name', 'tags'], router.spacecraftWeb))
 }
 
 export function getDatasetsForSpacecraft(spacecraft) {

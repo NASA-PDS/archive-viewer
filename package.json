@@ -1,19 +1,22 @@
 {
-  "name": "archive-viewer",
-  "homepage": "https://sbnarchivedemo.psi.edu/",
+  "name": "archive-navigator",
+  "homepage": "https://arcnav.psi.edu/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^0.21.1",
+    "cookie": "^0.4.1",
     "fontsource-roboto": "^3.0.3",
     "http-proxy-middleware": "^1.0.6",
-    "next": "^10.0.0",
+    "next": "^10.2.3",
+    "node-cache": "^5.1.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-helmet": "^6.1.0",
-    "sass": "^1.29.0"
+    "sass": "^1.29.0",
+    "serialize-error": "^8.1.0"
   },
   "scripts": {
     "dev": "next dev",

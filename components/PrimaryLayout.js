@@ -1,36 +1,56 @@
 import React from 'react';
-import { Container, Grid, Paper} from '@material-ui/core'
+import { Container, Drawer, Box, Paper} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+
+const drawerWidth = 360;
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundColor: theme.palette.background.default,
         width: "100%",
-        height: "100%"
+        display: 'flex',
+        minHeight: '60vh'
     },
     outerPrimary: {
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(2),
+        },
+        flexGrow: 1,
+    },
+    innerContainer: {
         padding: theme.spacing(2)
     },
-    innerPrimary: {
-        backgroundColor: theme.palette.grey[800],
-        padding: theme.spacing(2)
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerContainer: {
+        overflowY: 'scroll',
+        maxHeight: '100%'
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        position: 'static',
     }
 }));
 
-export default function({primary, secondary}) {
+export default function PrimaryLayout({primary, secondary, navigational, ...otherProps}) {
     const classes = useStyles()
     return (
-        <div>
-            <Grid container direction="row" className={classes.root}>
-                <Grid item xs={12} sm={5} md={3} className={classes.outerPrimary}>
-                    {secondary}
-                </Grid>
-                <Grid item xs className={classes.outerPrimary}>
-                    <Container maxWidth="lg" component={Paper} square elevation={2} className={classes.innerPrimary} >
-                        {primary}
-                    </Container>
-                </Grid>
-            </Grid>
+        <div className={classes.root} {...otherProps}>
+            { navigational && 
+                <Drawer variant="persistent" open={true} className={classes.drawer} classes={{ paper: classes.drawerPaper }}>
+                    <Box className={classes.drawerContainer}>
+                        {navigational}
+                    </Box>
+                </Drawer>
+            }
+            <Box className={classes.outerPrimary}>
+                <Container maxWidth="lg" className={classes.innerContainer}>
+                    { primary }
+                    <Box my={3}/>
+                    { secondary }
+                </Container>
+            </Box>
         </div>
     )
 }

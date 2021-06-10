@@ -1,4 +1,5 @@
-import { Box, Chip, Dialog, DialogContent, DialogTitle, Link } from '@material-ui/core';
+import Router from "next/router"
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TagSearch, { TagTypes } from 'components/TagSearch.js';
 import React from 'react';
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
   
-function TagList({tags, type}) {
+export function TagList({tags, type}) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [currentTag, setTag] = React.useState(null);
@@ -24,13 +25,17 @@ function TagList({tags, type}) {
     }
     if(!tags || tags.length === 0) return null
 
+    Router.events.on("routeChangeStart", () => setOpen(false))
+
     return (
         <>
         <Box mb={1}>
             {tags.map(tag => 
-                <Link key={tag} onClick={() => openTag(tag)}>
-                    <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
-                </Link>
+                <Tooltip title="View Category Search" key={tag} >
+                    <Link onClick={() => openTag(tag)}>
+                        <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
+                    </Link>
+                </Tooltip>
             )}
         </Box>
         <Dialog

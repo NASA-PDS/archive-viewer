@@ -2,7 +2,7 @@ import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet} from 'api/common.js'
 
-export let targetSpacecraftRelationshipTypes
+export let targetMissionRelationshipTypes
 export let instrumentSpacecraftRelationshipTypes
 const unknownRelationship = {
     order: 999,
@@ -12,18 +12,18 @@ const unknownRelationship = {
 
 async function bootstrap() {
     return new Promise((resolve, reject) => {
-        if(!!targetSpacecraftRelationshipTypes && !!instrumentSpacecraftRelationshipTypes) {
+        if(!!targetMissionRelationshipTypes && !!instrumentSpacecraftRelationshipTypes) {
             resolve()
         } else {
             const params = {
                 q: "*:*", fl: "name,order,relationshipId"
             }
             Promise.all([
-                httpGet(router.targetSpacecraftRelationshipTypes, params),
+                httpGet(router.targetMissionRelationshipTypes, params),
                 httpGet(router.instrumentSpacecraftRelationshipTypes, params)
             ])
             .then((response) => {
-                targetSpacecraftRelationshipTypes = response[0]
+                targetMissionRelationshipTypes = response[0]
                 instrumentSpacecraftRelationshipTypes = response[1]
                 resolve()
             }, reject)
@@ -32,23 +32,24 @@ async function bootstrap() {
 }
 
 export const types = {
-    fromSpacecraftToTarget: 'fromSpacecraftToTarget',
-    fromTargetToSpacecraft: 'fromTargetToSpacecraft',
+    fromMissionToTarget: 'fromMissionToTarget',
+    fromTargetToMission: 'fromTargetToMission',
     fromInstrumentToSpacecraft: 'fromInstrumentToSpacecraft',
     fromSpacecraftToInstrument: 'fromSpacecraftToInstrument',
+    fromInstrumentToBundle: 'fromInstrumentToBundle'
 }
 
 const configureForType = (type) => {
     switch (type) {
-        case types.fromSpacecraftToTarget: return {
-            relationshipTypes: targetSpacecraftRelationshipTypes,
-            sourceType: 'instrument_host',
+        case types.fromMissionToTarget: return {
+            relationshipTypes: targetMissionRelationshipTypes,
+            sourceType: 'investigation',
             relatedType: 'target'
         }
-        case types.fromTargetToSpacecraft: return {
-            relationshipTypes: targetSpacecraftRelationshipTypes,
+        case types.fromTargetToMission: return {
+            relationshipTypes: targetMissionRelationshipTypes,
             sourceType: 'target',
-            relatedType: 'instrument_host'
+            relatedType: 'investigation'
         }
         case types.fromInstrumentToSpacecraft: return {
             relationshipTypes: instrumentSpacecraftRelationshipTypes,
@@ -60,11 +61,16 @@ const configureForType = (type) => {
             sourceType: 'instrument_host',
             relatedType: 'instrument'
         }
+        case types.fromInstrumentToBundle: return {
+            relationshipTypes: [],
+            sourceType: 'instrument',
+            relatedType: 'bundle'
+        }
         default: console.error("Invalid relationship type")
     }
 }
 
-export function stitchWithRelationships(type, sourceLID) {
+export function stitchWithRelationships(type, sourceLids) {
     return (results) => {
         if(!results || results.length === 0) return Promise.resolve([])
         // for client side requests that are in pds-only mode, skip this step entirely
@@ -78,8 +84,8 @@ export function stitchWithRelationships(type, sourceLID) {
 
             let identifiers = results.map(doc => doc.identifier)
             let params = {
-                q: `${sourceType}:${sourceLID.escapedLid} AND (` + identifiers.reduce((query, lid) => `${query}${relatedType}:"${lid}" `, '') + ')',
-                fl: `relationshipId,${sourceType},${relatedType}`
+                q: `(${sourceLids.map(lid => sourceType + ':' + new LID(lid).escapedLid).join(' OR ')}) AND (` + identifiers.reduce((query, lid) => `${query.length > 0 ? query + " OR ": query}${relatedType}:"${lid}" `, '') + ')',
+                fl: `relationshipId,${sourceType},${relatedType},label`
             }
             // get attributed relationships
             httpGet(router.relationships, params).then(webDocs => {
@@ -98,7 +104,10 @@ export function stitchWithRelationships(type, sourceLID) {
                 resolve(results)
             }, err => {
                 console.log(err)
-                //ignore error, just pass original
+                //ignore error, throw in unknown relationships and return
+                for (let doc of results ) {
+                    doc.relatedBy = unknownRelationship
+                }
                 resolve(results)
             })
         })
