@@ -128,6 +128,8 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
                 <HiddenMicrodataValue itemProp="name" value="NASA Planetary Data System"/>
                 <HiddenMicrodataValue itemProp="url" value="https://pds.nasa.gov/"/>
             </HiddenMicrodataObject>
+            <HiddenMicrodataValue itemProp="isAccessibleForFree" value="true"/>
+            <HiddenMicrodataValue itemProp="license" value="https://creativecommons.org/publicdomain/zero/1.0/"/>
             </>
         // } secondary={         Disabled for now 
         //     <Box p={1}>      
