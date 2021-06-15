@@ -2,6 +2,7 @@ import { Button, List, Typography } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
 import InternalLink from './InternalLink';
+import { HiddenMicrodataObject, HiddenMicrodataValue } from './pages/Dataset';
 import { SplitListItem } from './SplitListItem';
 
 export default function CollectionBrowseLinks({dataset, bundles}) {
@@ -12,7 +13,15 @@ export default function CollectionBrowseLinks({dataset, bundles}) {
         <List>
             { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
                 <>{bundles.map(bundle => {
-                    return <BrowseButton key={bundle.identifier} identifier={bundle.identifier} title={bundle.display_name ? bundle.display_name : bundle.title} />
+                    return <>
+                        <BrowseButton key={bundle.identifier} identifier={bundle.identifier} title={bundle.display_name ? bundle.display_name : bundle.title} />
+                        <HiddenMicrodataObject itemProp="includedInDataCatalog" type="https://schema.org/DataCatalog">
+                            <HiddenMicrodataValue itemProp="name" value={bundle.title}/>
+                            <HiddenMicrodataValue itemProp="identifier" value={bundle.identifier}/>
+                            <HiddenMicrodataValue itemProp="url" value={"https://arcnav.psi.edu/" + bundle.identifier}/>
+                            <HiddenMicrodataValue itemProp="description" value={bundle.description || bundle.title}/>
+                        </HiddenMicrodataObject>
+                    </>
                 })}</>
             } />}
             <BrowseItem url={browseUrl} label="Browse" buttonTitle="Browse this Collection" isPrimary={true} />
