@@ -86,7 +86,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
     }, [dataset.identifier])
 
     return (
-        <PrimaryLayout itemScope itemType="https://schema.org/Dataset" primary={
+        <PrimaryLayout itemScope itemType={type === types.BUNDLE ? "https://schema.org/DataCatalog" : "https://schema.org/Dataset" } primary={
             <>
             <DatasetBreadcrumbs home={context} current={dataset} parent={bundles.length === 1 ? bundles[0] : null}/>
             <Title dataset={dataset} type={type} />
@@ -123,6 +123,13 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
                     {/* : <CitationBuilder dataset={dataset} />    // Don't actually use the citation builder until we actually build it right
                 } */}
             </TangentAccordion>
+
+            <HiddenMicrodataObject type="https://schema.org/Organization" itemProp="publisher">
+                <HiddenMicrodataValue itemProp="name" value="NASA Planetary Data System"/>
+                <HiddenMicrodataValue itemProp="url" value="https://pds.nasa.gov/"/>
+            </HiddenMicrodataObject>
+            <HiddenMicrodataValue itemProp="isAccessibleForFree" value="true"/>
+            <HiddenMicrodataValue itemProp="license" value="https://creativecommons.org/publicdomain/zero/1.0/"/>
             </>
         // } secondary={         Disabled for now 
         //     <Box p={1}>      
@@ -157,11 +164,13 @@ function Title({dataset, type}) {
                 }
             </Box>
             <Typography variant="h1" className={classes.mainTitle}>
-                <span itemProp="name">{title}</span>
+                {title}
                 <Chip color="primary" variant="outlined" label={
                     <Typography variant="body2">{titles[type]}</Typography>
                     } style={{marginLeft: '10px'}}/>
             </Typography>
+            <HiddenMicrodataValue value={dataset.title} itemProp="name"/>
+            { dataset.display_name && <HiddenMicrodataValue value={dataset.display_name} itemProp="alternateName"/> }
         </Box>
     </>
 }
@@ -339,4 +348,12 @@ function LegacyDOIs(props) {
             </TangentAccordion>
         )
     } else return null
+}
+
+export function HiddenMicrodataValue({value, itemProp}) {
+    return <span hidden style={{display: 'none'}} itemProp={itemProp}>{value}</span>
+}
+
+export function HiddenMicrodataObject({children, itemProp, type}) {
+    return <span hidden style={{display: 'none'}} itemProp={itemProp} itemScope itemType={type}>{children}</span>
 }

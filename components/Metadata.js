@@ -10,8 +10,8 @@ export function Metadata({ model, tagType }) {
     return <List style={{maxWidth:'100%;'}}>
         {/* Tags disabled for now <MetadataItem label="Tags" itemComponent={<TagList tags={model.tags} type={tagType} />} /> */}
         <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" />
-        <MetadataItem label="Identifier (LID)" item={model.identifier} />
-        <MetadataItem label="Version" item={model.version_id} />
+        <MetadataItem label="Identifier (LID)" item={model.identifier} itemProp="identifier"/>
+        <MetadataItem label="Version" item={model.version_id} itemProp="version"/>
         <MetadataItem label="DOI" item={model.doi} />
         {/* <MetadataItem label="Authors" item={model.citation_author_list} itemProp="author" /> */}
         <AuthorList label="Authors" model={model.citation_author_list} />
