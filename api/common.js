@@ -253,7 +253,7 @@ export function serviceAvailable() {
     return new Promise((resolve, reject) => {
             httpGet(router.heartbeat, params).then(results => {
             if(results.length > 0) resolve()
-            else reject()
+            else reject('Empty results')
         }, reject)
     })
 }

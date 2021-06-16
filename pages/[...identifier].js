@@ -100,6 +100,7 @@ export async function getServerSideProps(context) {
     } catch(err) {
         props.error = err instanceof Error ? serializeError(err) : { message: err }
         serviceAvailable().then(yes => console.log('Service available'), no => {
+            console.error(no)
             console.log('Switching to backup mode')
             // Engineering node registry not available. Switch to backup mode
             runtime.setBackupMode(true)
