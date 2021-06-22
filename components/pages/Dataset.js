@@ -117,12 +117,12 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
 
             <MoreInformation dataset={dataset} />
             
-            <TangentAccordion title="Citation">
+            { dataset.citation && <TangentAccordion title="Citation">
                 {/* { !!dataset.citation ? */}
                     <Citation citation={dataset.citation}/>
                     {/* : <CitationBuilder dataset={dataset} />    // Don't actually use the citation builder until we actually build it right
                 } */}
-            </TangentAccordion>
+            </TangentAccordion> }
 
             <HiddenMicrodataObject type="https://schema.org/Organization" itemProp="publisher">
                 <HiddenMicrodataValue itemProp="name" value="NASA Planetary Data System"/>
