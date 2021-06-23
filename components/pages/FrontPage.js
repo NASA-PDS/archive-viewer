@@ -37,7 +37,7 @@ const missions = [
         title: 'Hayabusa 2'
     },
     {
-        identifier: 'urn:nasa:pds:context:investigation:mission.international_rosetta_mission',
+        identifier: 'urn:esa:psa:context:investigation:mission.international_rosetta_mission',
         title: 'Rosetta'
     },
 ]
