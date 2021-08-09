@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
-import CollectionBrowseLinks from 'components/CollectionBrowseLinks';
+import CollectionNavLinks from 'components/CollectionNavLinks';
 import CollectionList from 'components/CollectionList.js';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
@@ -14,6 +14,7 @@ import RelatedTools from 'components/RelatedTools';
 import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
+import ActionButton from 'components/ActionButton';
 import React, { useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
@@ -96,10 +97,12 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
 
             <Metadata model={dataset} tagType={TagTypes.dataset}/>
             { type === types.COLLECTION && 
-                <CollectionBrowseLinks dataset={dataset} bundles={bundles}/>
+                <CollectionNavLinks dataset={dataset} bundles={bundles}/>
             }
+            
             <DatasetInfo dataset={dataset} bundles={bundles}/>
             <Downloads dataset={dataset}/>
+            <BrowseLink dataset={dataset} type={type}/>
 
             { type === types.BUNDLE && 
                 <CollectionList dataset={dataset} />
@@ -246,7 +249,7 @@ function Downloads({dataset}) {
         buttonTitle = "View Downloads"
     }
     return <LabeledListItem label="Download" item={
-        <Button color="primary" variant="contained" href={download_url} size={"medium"} endIcon={download_size ? <GetApp/> : <OpenInNew/>}>{buttonTitle}</Button>   
+        <ActionButton url={download_url} icon={download_size ? <GetApp/> : <OpenInNew/>} title={buttonTitle} />
     }/>
 }
 
@@ -262,7 +265,18 @@ function DatasetInfo({dataset, bundles}) {
     }
 
     return <LabeledListItem label="Dataset Info" item={
-        <Button color="primary" variant="contained" href={dataset_info_url} size={"medium"} endIcon={<Description/>}>View Dataset Info</Button>   
+        <ActionButton url={dataset_info_url} icon={<Description/>} title="View Dataset Info"/>
+    }/>
+}
+
+function BrowseLink({dataset, type}) {
+    const browseUrl = dataset.browse_url ? dataset.browse_url : (Array.isArray(dataset.resource_url) ? dataset.resource_url[0] : dataset.resource_url)
+    if(!browseUrl || ![types.BUNDLE, types.COLLECTION].includes(type)) return null
+
+    let buttonTitle = `Browse this ${type == types.BUNDLE ? 'Bundle' : 'Collection'}`
+    
+    return <LabeledListItem label="Browse" item={
+        <ActionButton url={browseUrl} icon={<OpenInNew/>} prominent={true} title={buttonTitle}/>
     }/>
 }
 
