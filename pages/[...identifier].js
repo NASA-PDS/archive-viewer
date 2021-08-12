@@ -81,7 +81,20 @@ export async function getServerSideProps(context) {
     
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
-    if(runtime.backupMode) { props.backupMode = true }
+    if(runtime.backupMode) { 
+        props.backupMode = true
+
+        // if we're in backup mode, spin off a request to see if service is restored
+        serviceAvailable().then(
+            yes => {
+                console.log('Registry service now available, disabling backup mode 🎉')
+                runtime.setBackupMode(false)
+            },
+            no => {
+                console.log('Registry service still unavailable')
+            }
+        )
+    }
 
     if(!!query.flush) {
         cache.flushAll()
@@ -99,12 +112,17 @@ export async function getServerSideProps(context) {
         props.model = result
     } catch(err) {
         props.error = err instanceof Error ? serializeError(err) : { message: err }
-        serviceAvailable().then(yes => console.log('Service available'), no => {
-            console.error(no)
-            console.log('Switching to backup mode')
-            // Engineering node registry not available. Switch to backup mode
-            runtime.setBackupMode(true)
-        })
+        serviceAvailable().then(
+            yes => {
+                console.log('Registry service available. Error was ' + props.error.message)
+            },
+            no => {
+                console.error(no)
+                console.log('Registry service unavailable, switching to backup mode 🚨🚨🚨')
+                // Engineering node registry not available. Switch to backup mode
+                runtime.setBackupMode(true)
+            }
+        )
     }
 
     setTheme(props, context)
