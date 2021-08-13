@@ -245,15 +245,23 @@ export function pds3Get(params) {
     return httpGet(router.datasetCore, defaultParams, true)
 }
 
+//wrap the network call so that this function only ever has one instance running
+let serviceCheckPromise
 export function serviceAvailable() {
-    let params = {
+
+    const params = {
         q: '*:*',
         rows: 1
     }
-    return new Promise((resolve, reject) => {
+    if(!serviceCheckPromise) {
+        serviceCheckPromise = new Promise((resolve, reject) => {
             httpGet(router.heartbeat, params).then(results => {
-            if(results.length > 0) resolve()
-            else reject('Empty results')
-        }, reject)
-    })
+                if(results.length > 0) resolve()
+                else reject('Empty results')
+            }, reject).finally(() => {
+                serviceCheckPromise = undefined
+            })
+        })
+    }
+    return serviceCheckPromise
 }
