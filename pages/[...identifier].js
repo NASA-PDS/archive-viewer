@@ -75,7 +75,7 @@ export default ProductPage
 const cache = new NodeCache({stdTTL: 60 * 60 * 24 * 7})
 
 export async function getServerSideProps(context) {
-    const { params, query } = context
+    const { params, query, res } = context
     const [lidvid, ...extraPath] = params.identifier
     let props = { lidvid, extraPath };
     
@@ -112,6 +112,7 @@ export async function getServerSideProps(context) {
         props.model = result
     } catch(err) {
         props.error = err instanceof Error ? serializeError(err) : { message: err }
+        res.statusCode = 404
         serviceAvailable().then(
             yes => {
                 console.log('Registry service available. Error was ' + props.error.message)
