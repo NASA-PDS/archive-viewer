@@ -17,7 +17,7 @@ export default function Breadcrumbs({home, current, currentTitle, ancestors}) {
     }
     return <MaterialBreadcrumbs>
         <InternalLink identifier={home.identifier} passHref><Link color="inherit">{home.display_name || home.title}</Link></InternalLink>
-        {ancestors && ancestors.map(breadcrumb => <InternalLink identifier={breadcrumb.identifier} additionalPath={breadcrumb.additionalPath} passHref><Link color="inherit">{breadcrumb.name}</Link></InternalLink>)}
+        {ancestors && ancestors.map(breadcrumb => <InternalLink key={breadcrumb.identifier + breadcrumb.additionalPath} identifier={breadcrumb.identifier} additionalPath={breadcrumb.additionalPath} passHref><Link color="inherit">{breadcrumb.name}</Link></InternalLink>)}
         <Typography color="textPrimary" noWrap>{currentTitle || current.display_name || current.title}</Typography>
     </MaterialBreadcrumbs>
 }

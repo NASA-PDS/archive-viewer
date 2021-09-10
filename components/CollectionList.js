@@ -61,7 +61,7 @@ export default function CollectionList({dataset}) {
             </CardContent>
         </Card>
         {collections.map(collection =>
-            <HiddenMicrodataObject itemProp="dataset" type="https://schema.org/Dataset">
+            <HiddenMicrodataObject itemProp="dataset" type="https://schema.org/Dataset" key={collection.identifier}>
                 <HiddenMicrodataValue itemProp="name" value={collection.title}/>
                 <HiddenMicrodataValue itemProp="identifier" value={collection.identifier}/>
                 <HiddenMicrodataValue itemProp="url" value={"https://arcnav.psi.edu/" + collection.identifier}/>

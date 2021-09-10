@@ -29,14 +29,14 @@ function BrowseTables({items}) {
 
     return <>
         <SectionedTableContainer>
-            {majorGroups.map(group => <>
+            {majorGroups.map(group => <React.Fragment key={group.name}>
                     <SectionedTableHeader title={group.name} />
                     <SectionedTableRows groups={groupByFirstTag(group.items)} />
-                </>)}
-            { minorGroups.length > 0 && minorGroups.map(group => <>
+                </React.Fragment>)}
+            { minorGroups.length > 0 && minorGroups.map(group => <React.Fragment key={group.name}>
                         <SectionedTableMinorHeader title={group.name} />
                         <SectionedTableRows groups={groupByFirstTag(group.items)} />
-                    </>)
+                    </React.Fragment>)
             }
         </SectionedTableContainer>
         </>

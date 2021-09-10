@@ -202,7 +202,6 @@ function LIDField() {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        // app-wide loading
         const start = (url, other) => {
             const destination = url ? url.split('/')[1] : ''
             setLid(destination)

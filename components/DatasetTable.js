@@ -34,13 +34,13 @@ export default function DatasetTable({ groups }) {
                 </TableHead>
                 <TableBody>
                     {groups.map(group => 
-                        <>
+                        <React.Fragment key={group.name}>
                             {groups.length > 1 && <TableRow>
                                 <TableCell/>
                                 <TableCell colSpan={5}><Typography variant="h4">{group.name}</Typography></TableCell>
                             </TableRow>}
                             {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier}/>)}
-                        </>
+                        </React.Fragment>
                     )}
                 </TableBody>
             </Table>

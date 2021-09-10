@@ -107,7 +107,7 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
                 <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
                 <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
-                <Divider orientation="vertical" flexItem className={useStyles().divider} />
+                <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
                 <LinkTab label="Instrument Data" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
                 { mission.other_html ? 
                     <LinkTab label="Other Data" value={types.MISSIONOTHER} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONOTHER]}/> 
@@ -118,6 +118,10 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
                     : <Tab label="Mission Bundle" disabled/>
                 }
             </Tabs>
+}
+
+function DividerWithoutInheritedProps({orientation, flexItem, className, ...otherProps}) {
+    return <Divider orientation={orientation} flexItem={flexItem} className={className} />
 }
 
 function SkeletonTabBar({tabCount}) {
@@ -161,7 +165,7 @@ function TargetTabBar({page, target}) {
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
-                <Divider orientation="vertical" flexItem className={useStyles().divider} />
+                <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
                 <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Derived Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>

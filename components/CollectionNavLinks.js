@@ -13,7 +13,7 @@ export default function CollectionNavLinks({dataset, bundles}) {
         <List>
             { bundles.length > 0 && <SplitListItem left={<Typography variant="h6"> Parent Bundle{bundles.length > 1 ? 's':''}</Typography>} right={
                 <>{bundles.map(bundle => {
-                    return <>
+                    return <React.Fragment key={bundle.identifier}>
                         <NavButton key={bundle.identifier} identifier={bundle.identifier} title={bundle.display_name ? bundle.display_name : bundle.title} />
                         <HiddenMicrodataObject itemProp="includedInDataCatalog" type="https://schema.org/DataCatalog">
                             <HiddenMicrodataValue itemProp="name" value={bundle.title}/>
@@ -21,7 +21,7 @@ export default function CollectionNavLinks({dataset, bundles}) {
                             <HiddenMicrodataValue itemProp="url" value={"https://arcnav.psi.edu/" + bundle.identifier}/>
                             <HiddenMicrodataValue itemProp="description" value={bundle.description || bundle.title}/>
                         </HiddenMicrodataObject>
-                    </>
+                    </React.Fragment>
                 })}</>
             } />}
             <NavItem identifier={dataset.mission_bundle} label="Mission Information Bundle"/>

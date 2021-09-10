@@ -7,7 +7,7 @@ import { TagList } from './TagList';
 
 export function Metadata({ model, tagType }) {
     if(!model) return null
-    return <List style={{maxWidth:'100%;'}}>
+    return <List style={{maxWidth:'100%'}}>
         {/* Tags disabled for now <MetadataItem label="Tags" itemComponent={<TagList tags={model.tags} type={tagType} />} /> */}
         <MetadataItem label="Description" itemComponent={<Description model={model} />} itemProp="abstract" />
         <MetadataItem label="Identifier (LID)" item={model.identifier} itemProp="identifier"/>
@@ -42,7 +42,7 @@ function AuthorList({model}) {
     let authors = model && model.split(';')
     return authors ? <>
         <MetadataItem label="Authors" itemComponent={<>
-            { authors.map((author, index) => <><span itemProp="author">{author}</span>{index < authors.length -1 ? ';' : ''}</>)}
+            { authors.map((author, index) => <React.Fragment key={author}><span itemProp="author">{author}</span>{index < authors.length -1 ? ';' : ''}</React.Fragment>)}
         </>}/>  
     </> : null
 }
