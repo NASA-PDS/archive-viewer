@@ -83,7 +83,7 @@ function TargetGroupedList(props) {
     return <AbstractGroupedList type={listTypes.target} groupingFn={groupByAttributedRelationship} listComponent={TargetContextCardList} {...props}/>
 }
 function RelatedTargetGroupedList(props) {
-    return <AbstractGroupedList type={listTypes.relatedTarget} groupingFn={groupByFirstTag} listComponent={ContextList} {...props}/>
+    return <AbstractGroupedList type={listTypes.relatedTarget} groupingFn={groupByFirstTag} listComponent={TargetContextCardList} {...props}/>
 }
 // function InstrumentGroupedList(props) {
 //     return <AbstractGroupedList type={listTypes.instrument} groupingFn={groupByAttributedRelationship} {...props}/>
