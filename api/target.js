@@ -3,6 +3,7 @@ import LID from 'services/LogicalIdentifier.js'
 import {httpGet, httpGetRelated, stitchWithWebFields, httpGetIdentifiers, stitchWithInternalReferences} from 'api/common.js'
 import {stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
 import { contexts, resolveContext } from 'services/pages'
+import { stitchWithTagGroups } from './tags'
 
 export function getMissionsForTarget(target) {
     let params = {
@@ -59,13 +60,16 @@ export function getRelatedTargetsForTarget(target) {
                 associated: associated.map(a => a.associated_targets.find(ref => ref !== targetLid))
             }
             let allIdentifiers = [...lidMap.children, ...lidMap.parents, ...lidMap.associated]
-            httpGetIdentifiers(router.targetsCore, allIdentifiers).then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb), reject).then(allTargets => {
-                let toReturn = [...lidMap.children.map(childLid => allTargets.find(target => target.identifier === childLid)),
-                 ...lidMap.parents.map(parentLid => allTargets.find(target => target.identifier === parentLid)),
-                 ...lidMap.associated.map(associatedLid => allTargets.find(target => target.identifier === associatedLid))
-                ]
-                resolve(toReturn)
-            }, reject)
+            httpGetIdentifiers(router.targetsCore, allIdentifiers)
+                .then(stitchWithWebFields(['display_name', 'tags', 'image_url'], router.targetsWeb), reject)
+                .then(stitchWithTagGroups('targets'))
+                .then(allTargets => {
+                    let toReturn = [...lidMap.children.map(childLid => allTargets.find(target => target.identifier === childLid)),
+                    ...lidMap.parents.map(parentLid => allTargets.find(target => target.identifier === parentLid)),
+                    ...lidMap.associated.map(associatedLid => allTargets.find(target => target.identifier === associatedLid))
+                    ]
+                    resolve(toReturn)
+                }, reject)
         }, reject)
     })
 }

@@ -11,16 +11,18 @@ import { groupByField } from 'services/groupings';
 const useStyles = makeStyles((theme) => ({
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120,
+        minWidth: 250,
         maxWidth: 400,
     },
     chips: {
         display: 'flex',
         flexWrap: 'nowrap',
+        marginTop:  -7.5,
+        marginBottom:  -7.5,
     },
     chip: {
         marginLeft: 4,
-        marginRight: 4
+        marginRight: 4,
     }
 }));
 
@@ -28,8 +30,8 @@ export default function TargetRelated(props) {
     const { target } = props
     const [relatedTargets, setRelatedTargets] = useState(null)
     
-    const tags = relatedTargets?.flatMap(target => target.tags || [])
-    const groups = groupByField(tags || [], 'group')
+    const tags = relatedTargets?.flatMap(target => target.tags || []).sort((a, b) => a.name.localeCompare(b.name))
+    const groups = groupByField(tags || [], 'group').sort((a, b) => a.order < b.order ? -1 : 1)
     const [filterTags, setFilterTags] = React.useState(groups.map(g => []));
 
     useEffect(() => {
@@ -47,7 +49,7 @@ export default function TargetRelated(props) {
     }
 
     const filterTagsFlat = filterTags.flat()
-    const filteredTargets = filterTagsFlat.length > 0 ? relatedTargets?.filter(target => target.tags?.some(tag => filterTagsFlat.includes(tag))) : relatedTargets
+    const filteredTargets = filterTagsFlat.length > 0 ? relatedTargets?.filter(target => target.tags?.some(tag => filterTagsFlat.includes(tag.name))) : relatedTargets
 
     return (
         <PrimaryLayout primary={
@@ -56,8 +58,8 @@ export default function TargetRelated(props) {
                 <Typography variant="h1" gutterBottom>Related Targets</Typography>
 
                 <Paper component={Box} px={2} py={1}>
-                <Grid container direction="row" my={2}>
-                    <Typography variant="h3">Filter:</Typography>
+                <Grid container direction="row" my={2} alignItems="center">
+                    <Typography variant="h4">Filter:</Typography>
                     {groups.map((group, index) => <TagSelector key={group.name} label={group.name} tags={group.items} filter={updateFilter(index)}/>)}
                 </Grid>
                 </Paper>
@@ -107,7 +109,7 @@ function TagSelector({label, tags, filter}) {
                     onChange={handleChange}
                     label={label}
                     renderValue={(selected) => (
-                        <Box className={classes.chips}>
+                        <Box className={classes.chips} >
                           {selected.map((value, index) => (
                             index < 2 && <Chip color="secondary" key={value} label={value} className={classes.chip}/>
                           ))}
@@ -117,9 +119,9 @@ function TagSelector({label, tags, filter}) {
                     MenuProps={MenuProps}
                 >
                     {tags.map((tag) => (
-                        <MenuItem key={tag} value={tag}>
-                            <Checkbox checked={selected.includes(tag)} />
-                            <ListItemText primary={tag} />
+                        <MenuItem key={tag.name} value={tag.name}>
+                            <Checkbox checked={selected.includes(tag.name)} />
+                            <ListItemText primary={tag.name} />
                         </MenuItem>
                     ))}
                 </Select>

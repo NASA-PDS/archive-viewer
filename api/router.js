@@ -12,6 +12,7 @@ const relationshipsCollection = 'web-objectrelationships-alias'
 const toolsCollection = 'web-tools-alias'
 const targetMissionRelationshipTypesCollection = 'web-targetmissionrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
+const tagsCollection = 'web-tags-alias'
 
 export default {
     heartbeat: `${heartbeatProxy}`,
@@ -31,4 +32,5 @@ export default {
     targetMissionRelationshipTypes: `${webProxy}/${targetMissionRelationshipTypesCollection}`,
     instrumentSpacecraftRelationshipTypes: `${webProxy}/${instrumentSpacecraftRelationshipTypesCollection}`,
     tools: `${webProxy}/${toolsCollection}`,
+    tags: `${webProxy}/${tagsCollection}`,
 }
