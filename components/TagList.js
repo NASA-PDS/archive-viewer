@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
   
-export function TagList({tags, type}) {
+export function TagList({tags, type, disabled}) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [currentTag, setTag] = React.useState(null);
@@ -31,11 +31,13 @@ export function TagList({tags, type}) {
         <>
         <Box mb={1}>
             {tags.map(tag => 
-                <Tooltip title="View Category Search" key={tag} >
-                    <Link onClick={() => openTag(tag)}>
-                        <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
-                    </Link>
-                </Tooltip>
+                disabled 
+                    ? <Chip key={tag} className={classes.chip} clickable={false} color="secondary" label={tag}/>
+                    : <Tooltip title="View Category Search" key={tag} >
+                        <Link onClick={() => openTag(tag)}>
+                            <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
+                        </Link>
+                    </Tooltip>
             )}
         </Box>
         <Dialog

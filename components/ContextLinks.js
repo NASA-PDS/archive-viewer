@@ -5,6 +5,8 @@ import DarkTheme from 'DarkTheme';
 import React from 'react';
 import { groupByField } from 'services/groupings';
 import Description from './Description';
+import { TagList } from './TagList';
+import { TagTypes } from './TagSearch';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -95,7 +97,7 @@ function ContextCardList({items, sorter, ...otherProps}) {
     )
 }
 
-function ContextCard({item, classType, path, title, isMinor, defaultIcon}) {
+function ContextCard({item, classType, path, title, isMinor, defaultIcon, tagType}) {
     const name = nameFinder(item)
     const dateString = new Date(item.start_date).toLocaleDateString() + (item.end_date ? ('—' + new Date(item.end_date).toLocaleDateString()) : '')
     const classes = useStyles();
@@ -114,6 +116,9 @@ function ContextCard({item, classType, path, title, isMinor, defaultIcon}) {
                     <Typography style={titleStyle} variant="h3" component="h2" gutterBottom>{name}</Typography>
                     {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
                     <Description model={item}/>
+                    { item.tags && 
+                        <TagList tags={item.tags.map(tag => tag.name)} type={tagType} disabled/>
+                    }
                 </CardContent>
                 { !isMinor && <CardActions>
                     <InternalLink identifier={item.identifier} additionalPath={path} passHref>
@@ -127,7 +132,7 @@ function ContextCard({item, classType, path, title, isMinor, defaultIcon}) {
 
 function TargetContextCardList(props) {
     const classes = useStyles();
-    return <ContextCardList classType={classes.target} title="View Target" sorter={sortType.name} defaultIcon={<TargetDefaultIcon/>} {...props}/>
+    return <ContextCardList classType={classes.target} title="View Target" sorter={sortType.name} defaultIcon={<TargetDefaultIcon/>} tagType={TagTypes.target} {...props}/>
 }
 
 function TargetDefaultIcon() {
@@ -139,7 +144,7 @@ function TargetDefaultIcon() {
 
 function MissionContextCardList(props) {
     const classes = useStyles();
-    return <ContextCardList classType={classes.mission} path="instruments" title="View Data" sorter={sortType.date} defaultIcon={<MissionDefaultIcon/>} {...props}/>
+    return <ContextCardList classType={classes.mission} path="instruments" title="View Data" sorter={sortType.date} defaultIcon={<MissionDefaultIcon/>} tagType={TagTypes.mission} {...props}/>
 }
 
 function MissionDefaultIcon() {
