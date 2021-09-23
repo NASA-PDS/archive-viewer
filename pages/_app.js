@@ -3,12 +3,14 @@ import Head from 'next/head'
 import React, { useEffect } from 'react'
 
 // Set up logging
-
 import betterLogging, {Theme} from 'better-logging'
-betterLogging(console, {
-    color: Theme.dark,
-    format: ctx => `${ctx.date} ${ctx.time12} ${ctx.type} ${ctx.msg}`
-})
+
+if(process.env.NEXT_PUBLIC_BETTER_LOGGING?.toLocaleLowerCase() !== 'off') {
+    betterLogging(console, {
+        color: Theme.dark,
+        format: ctx => `${ctx.date} ${ctx.time12} ${ctx.type} ${ctx.msg}`
+    })
+}
 
 function MyApp({ Component, pageProps }) {
 
