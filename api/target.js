@@ -64,11 +64,12 @@ export function getRelatedTargetsForTarget(target) {
                 .then(stitchWithWebFields(['display_name', 'display_description','tags', 'image_url'], router.targetsWeb), reject)
                 .then(stitchWithTagGroups('targets'))
                 .then(allTargets => {
-                    let toReturn = [...lidMap.children.map(childLid => allTargets.find(target => target.identifier === childLid)),
-                    ...lidMap.parents.map(parentLid => allTargets.find(target => target.identifier === parentLid)),
-                    ...lidMap.associated.map(associatedLid => allTargets.find(target => target.identifier === associatedLid))
-                    ]
-                    resolve(toReturn)
+                    allTargets.forEach(relatedTarget => {
+                        if(lidMap.parents.includes(relatedTarget.identifier)) { relatedTarget.relatedBy = { name: 'Parent', order: 0}}
+                        if(lidMap.children.includes(relatedTarget.identifier)) { relatedTarget.relatedBy = { name: 'Children', order: 1}}
+                        if(lidMap.associated.includes(relatedTarget.identifier)) { relatedTarget.relatedBy = { name: 'Associated', order: 2}}
+                    })
+                    resolve(allTargets)
                 }, reject)
         }, reject)
     })
