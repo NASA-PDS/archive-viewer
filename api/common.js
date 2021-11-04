@@ -87,8 +87,14 @@ export function initialLookup(identifier, pdsOnly) {
             if(!result || result.length === 0) {
                 reject(new Error(`Nothing found with identifier ${lid.lid}`))
             }
-            let doc = Object.assign({}, result[0]);
 
+            let doc = Object.assign({}, result[0]);
+            if(!!lid.vid && lid.vid !== doc.version_id) {
+                let error = new Error("Superseded version")
+                error.superseded = doc
+                reject(error)
+            }
+            
             // skip supplemental metadata if pdsOnly flag set
             if(pdsOnly) { resolve(doc); return}
 
