@@ -26,7 +26,10 @@ export default function ErrorContext({error, lidvid, model, type, ...otherProps}
     }
 
     if(!errorContent) {
-        if(!!error.product && resolveType(error.product) === types.UNKNOWN) {
+        if(!!error.superseded) {
+            errorContent = <SupersededProductError model={error.superseded} lidvid={lidvid}/>
+        }
+        else if(!!error.product && resolveType(error.product) === types.UNKNOWN) {
             errorContent = LID.isContextObject 
                 ? <InvalidContextProductError model={error.product}/>
                 : <InvalidProductError model={error.product}/>
@@ -102,6 +105,16 @@ function InvalidDataProductError({lidvid}) {
                 <ListItem><Link href="https://pds.nasa.gov/datastandards/documents/im/current/index_1F00.html#class_pds_product_collection">Collection</Link></ListItem>
             </List>
         </p>
+    </Box>
+}
+
+function SupersededProductError({model, lidvid}) {
+    let baseLid = model.identifier
+    let version = new LogicalIdentifier(lidvid).vid
+    return <Box py={2}>
+        <Typography variant="h4">{`You've requested version '${version}', which is no longer available online.`}</Typography>
+        <p>You can visit the latest version ({model.version_id}) for this product at <InternalLink identifier={baseLid} passHref><Link>{baseLid}</Link></InternalLink>  </p>
+        <p>If you need access to the older version of this data for replication or other purposes, <Link href={`mailto:sbn.psi.edu?subject=Dataset request: ${lidvid}`}>send us an email.</Link></p>
     </Box>
 }
 
