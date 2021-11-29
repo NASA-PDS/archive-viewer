@@ -58,12 +58,12 @@ const groupByRelatedItems = (items, field) => {
     return groups
 }
 
-const groupByField = (items, field, order) => {
+const groupByField = (items, field, orders) => {
     if(!items) return []
-    let insert = (item, groupName) => {
+    let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
-        else groups.push(new Group(groupName, [item], order ? order.findIndex(o => o === groupName) : 999 ))
+        else groups.push(new Group(groupName, [item], order || (orders ? orders.findIndex(o => o === groupName) : 998 )))
     }
     let groups = []
     for (let item of items) {
@@ -89,7 +89,8 @@ const groupByFirstTag = (items) => {
             insert(item, miscGroupName, 'zzzzz')
         }
         else {
-            insert(item, item.tags[0])
+            let tagName = item.tags[0] instanceof String ? item.tags[0] : item.tags[0].name
+            insert(item, tagName)
         }
     }
     return groups
