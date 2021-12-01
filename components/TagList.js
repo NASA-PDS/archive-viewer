@@ -32,7 +32,7 @@ export function TagList({tags, type, disabled}) {
         <Box mb={1}>
             {tags.map(tag => 
                 disabled 
-                    ? <Chip key={tag} className={classes.chip} clickable={false} color="secondary" label={tag}/>
+                    ? <Chip key={tag} className={classes.chip} clickable={false} color="secondary" variant="outlined" size="small" label={tag}/>
                     : <Tooltip title="View Category Search" key={tag} >
                         <Link onClick={() => openTag(tag)}>
                             <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
