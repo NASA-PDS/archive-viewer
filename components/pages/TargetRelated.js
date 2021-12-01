@@ -87,10 +87,14 @@ export default function TargetRelated(props) {
                 <Typography variant="h1" gutterBottom>Related Targets</Typography>
 
                 <Paper component={Box} px={2} py={1}>
-                    <Grid container direction="row" my={2} alignItems="center" wrap="nowrap">
-                        <Typography variant="h4">Filter:</Typography>
-                        {groups.map((group, index) => <TagSelector key={group.name} label={group.name} tags={group.items} filter={updateFilter(index)} disabled={!multipleGroupMode && filterState.activeGroup !== index}/>)}
-                        <Box marginLeft="auto">
+                    <Grid container direction="row" my={2} alignItems="center" wrap="norap">
+                        <Grid item xs={12} md={1}><Typography variant="h4">Filter:</Typography></Grid>
+                        <Grid item xs={12} md={9}>
+                            <Grid container direction="row" justifyContent="flex-start" wrap="wrap">
+                            {groups.map((group, index) => <Grid item component={TagSelector} key={group.name} label={group.name} tags={group.items} filter={updateFilter(index)} disabled={!multipleGroupMode && filterState.activeGroup !== index}/>)}
+                            </Grid>
+                        </Grid>
+                        <Grid item component={Box} marginLeft="auto" xs={6} md={1}>
                             <Tooltip placement="top" title="Off: filter by the most recently used. On: use all filters simultaneously.">
                             <FormControlLabel
                                 value="bottom"
@@ -99,8 +103,8 @@ export default function TargetRelated(props) {
                                 labelPlacement="bottom"
                             />
                             </Tooltip>
-                        </Box>
-                        <Box>
+                        </Grid>
+                        <Grid item component={Box} xs={6} md={1}>
                             <Tooltip placement="top" title="Off: results must have at least one tag of each group. On: results can have any of the tags.">
                             <FormControlLabel
                                 value="bottom"
@@ -109,7 +113,7 @@ export default function TargetRelated(props) {
                                 labelPlacement="bottom"
                             />
                             </Tooltip>
-                        </Box>
+                        </Grid>
                     </Grid>
                 </Paper>
 

@@ -79,6 +79,11 @@ const LightTheme = createMuiTheme({
             root: {
                 color: '#FDFDFD'
             }
+        },
+        MuiFormControlLabel: {
+            label: {
+                fontSize: 12
+            }
         }
     },
     props: {

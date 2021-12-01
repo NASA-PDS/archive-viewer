@@ -81,6 +81,11 @@ const DarkTheme = createMuiTheme({
                 color: "#FDFDFD",
             }
         },
+        MuiFormControlLabel: {
+            label: {
+                fontSize: 12
+            }
+        }
     },
     props: {
         MuiLink: {
