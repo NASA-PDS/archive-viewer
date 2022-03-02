@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		return el;
 	},
 	sendButton,
-	captchaUrl = "/feedback/recaptcha-v3-verify.php",
+	captchaUrl = "https://voight.psi.edu/recaptcha-v3-verify.php",
 	feedbackUrl = "/email-service/SubmitFeedback",
 	modal = document.createElement("div"),
 	modalBody = document.createElement("div"),
