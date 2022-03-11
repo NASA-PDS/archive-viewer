@@ -39,6 +39,7 @@ const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: t
 async function handler(req, res) {
     const site = req.query.site[0]
     switch(site) {
+        // case 'web': res.status(503).send("Service unavailable")
         case 'web': return runMiddleware(req, res, webMiddleware)
         case 'heartbeat': return runMiddleware(req, res, coreMiddleware)
         case 'core': {

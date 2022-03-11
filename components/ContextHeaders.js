@@ -38,10 +38,17 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
         [theme.breakpoints.down('sm')]: {
             height: theme.custom.headerBanner.height.sm,
-            fontSize: theme.custom.headerBanner.height.sm
         },
         [theme.breakpoints.up('md')]: {
             height: theme.custom.headerBanner.height.md,
+        },
+    },
+    headerIcon: {
+        padding: theme.spacing(1),
+        [theme.breakpoints.down('sm')]: {
+            fontSize: theme.custom.headerBanner.height.sm
+        },
+        [theme.breakpoints.up('md')]: {
             fontSize: theme.custom.headerBanner.height.md
         },
     },
@@ -188,7 +195,7 @@ function Banner({name, image_url, icon}) {
     const theme = useTheme()
     return <Grid container direction="row" alignItems="center" className={classes.banner} wrap="nowrap">
         { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-        { icon && React.createElement(icon, { className: classes.headerImage, htmlColor: theme.palette.text.primary}) }
+        { icon && React.createElement(icon, { className: classes.headerIcon, htmlColor: theme.palette.text.primary}) }
         <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
     </Grid>
 }

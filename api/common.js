@@ -140,8 +140,10 @@ export function initialLookup(identifier, pdsOnly) {
                         Object.assign(doc, matchingDoc)
                     }
                     resolve(doc)
-                }, error => {
-                    reject(error)
+                }).catch(error => {
+                    console.log('Error getting supplemental data: ' + error)
+                    // ignore the error, just pass on the doc from the core registry
+                    resolve(doc)
                 })
             } else {
                 let error = new Error("Unsupported product type")
