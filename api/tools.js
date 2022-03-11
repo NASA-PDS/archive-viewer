@@ -4,7 +4,7 @@ import router from 'api/router.js'
 let prefetchedTools
 
 async function bootstrap() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
         if(!!prefetchedTools) {
             resolve()
         } else {
@@ -15,12 +15,12 @@ async function bootstrap() {
             .then((response) => {
                 prefetchedTools = response
                 resolve()
-            }, reject)
+            }, resolve)
         }
     })
 }
 
-
+// never reject a promise; if we can't get tool data, just return the input
 export function stitchWithTools(result) {
     return new Promise(async (resolve, _) => {
         await bootstrap()
