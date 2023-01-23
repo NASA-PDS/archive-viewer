@@ -6,6 +6,7 @@ import { types, resolveType } from 'services/pages.js'
 import { stitchWithTools } from './tools';
 
 const defaultFetchSize = 50
+const defaultTimeout = 10000
 const defaultParameters = () => { return {
     wt: 'json',
     rows: defaultFetchSize,
@@ -23,7 +24,7 @@ export function httpGet(endpoint, params, withCount, continuingFrom) {
     }
 
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied }).then(response => {
+        web.get(endpoint, { params: paramsWithDefaultsApplied, timeout: defaultTimeout }).then(response => {
             let fromSolr = response.data
             
             if(!fromSolr || !fromSolr.response) {
