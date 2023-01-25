@@ -117,7 +117,13 @@ export async function getServerSideProps(context) {
         props.type = resolveType(result)
         props.model = result
     } catch(err) {
-        props.error = err instanceof Error ? serializeError(err) : { message: err }
+        console.log(err)
+        
+        props.error = err instanceof Error 
+            ? { message: err.message, stack: err.stack }
+            : err instanceof String 
+                ? { message: err }
+                : "Error"
         res.statusCode = 404
         serviceAvailable().then(
             yes => {
