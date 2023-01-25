@@ -81,6 +81,12 @@ export async function getServerSideProps(context) {
     
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
+
+    if(!!query.internal_enable_backup_mode) {
+        console.log('Forcing backup mode 🚨🚨🚨')
+        runtime.setForcedBackupMode(true)
+    }
+
     if(runtime.backupMode) { 
         props.backupMode = true
 
