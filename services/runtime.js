@@ -1,16 +1,26 @@
 let _backupMode = false
-let _forcedBackupMode = false
+let _forced = false
 
-const setBackupMode = (value) => {
+let instance = Math.random().toString(36).substring(7)
+
+const setBackupMode = (value, forced) => {
+    console.log(`[${instance}] Setting backup mode to ${value}`)
+    if(_forced && !forced) { 
+        console.log('Forced backup mode is active, ignoring request to set backup mode to ' + value) 
+        return
+    }
     _backupMode = !!value
-    if(_forcedBackupMode) { console.log('Forced backup mode is active, ignoring request to set backup mode to ' + value) }
+    _forced = forced == true
 }
 
-const setForcedBackupMode = (value) => {
-    _forcedBackupMode = !!value
-}
-
+// export an object with a dynamic getter, and a setter
 export default { 
-    get backupMode() { return _backupMode || _forcedBackupMode },
-    setBackupMode,
-    setForcedBackupMode }
+    get backupMode() { 
+        console.log(`[${instance}] Getting backup mode: ${_backupMode}`)
+        return _backupMode
+    },
+    setBackupMode }
+
+export const config = {
+    runtime: 'nodejs',
+}

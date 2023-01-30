@@ -19,15 +19,18 @@ function runMiddleware(req, res, fn) {
 }
 
 const rewriteWeb = (path) => {
+    // console.log('Rewriting web request to ' + path)
     let cleanPath = path.replace('/api/proxy/web', '')
     let [collection, parameters] = cleanPath.split('?')
     return `${collection}/select?${parameters}`
 }
 const rewriteBackupCore = (path) => {
+    // console.log('Rewriting backup core request to ' + path)
     let parameters = path.replace('/api/proxy/core', '')
     return `/pds-alias/select${parameters}`
 }
 const rewriteCore = (path) => {
+    // console.log('Rewriting core request to ' + path)
     let parameters = path.replace('/api/proxy/core', '').replace('/api/proxy/heartbeat', '')
     return `/search${parameters}`
 }
@@ -37,6 +40,7 @@ const backupCoreMiddleware = createProxyMiddleware({ target: localSolr, changeOr
 const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, pathRewrite: rewriteWeb })
 
 async function handler(req, res) {
+    console.log('Backup mode: ' + runtime.backupMode)
     const site = req.query.site[0]
     switch(site) {
         // case 'web': res.status(503).send("Service unavailable")
@@ -53,3 +57,7 @@ async function handler(req, res) {
 }
 
 export default handler
+
+export const config = {
+    runtime: 'nodejs',
+}

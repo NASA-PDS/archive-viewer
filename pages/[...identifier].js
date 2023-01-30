@@ -84,7 +84,7 @@ export async function getServerSideProps(context) {
 
     if(!!query.internal_enable_backup_mode) {
         console.log('Forcing backup mode 🚨🚨🚨')
-        runtime.setForcedBackupMode(true)
+        runtime.setBackupMode(true, true)
     }
 
     if(runtime.backupMode) { 
