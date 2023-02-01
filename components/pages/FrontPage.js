@@ -111,44 +111,49 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Index(props) {
-    const classes = useStyles()
     return (
         <ThemeProvider theme={DarkTheme}>
-            <GlobalContext>
-                <Starfield/>
-                <div className={classes.pageContainer}>
-                    <Grid container direction="row" alignItems="center" justify="center" style={{ minHeight: '80vh' }}>
-                        <Grid item md={6} xs={12} component="header">
-                            <Box m={6}>
-                                <Grid container direction="row" alignItems="center" justify="center" spacing={3}>
-                                    <Grid item xs={6} component="img" src="/images/pds.svg" alt="PDS Logo" className={classes.img} />
-                                    <Grid item xs={6} component="img" src="/images/sbn.png" alt="SBN Logo" className={classes.img} />
-                                    <Typography xs={12} variant="h1" className={classes.appTitle}>Archive Navigator</Typography>
-                                </Grid>
-                            </Box>
-                        </Grid>
-                        <Grid item md={6} xs={12}  component="main">
-                            <Container>
-                                <LIDField />
-                                <Grid container direction="row" alignItems="flex-start">
-                                    <Grid item xs={6} component={ContextList} items={missions}/>
-                                    <Grid item xs={6} component={ContextList} items={targets}/>
-                                </Grid>
-                            </Container>
-                        </Grid>
-                    </Grid>
-                </div>
-                <style jsx global>{`
-                    html {
-                        background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-                    }
-                    body {
-                        background: none !important;
-                    }
-                `}</style>
-            </GlobalContext>
+            <ThemedIndex {...props} />
         </ThemeProvider>
     )
+}
+
+function ThemedIndex(props) {
+    
+    const classes = useStyles()
+    return <GlobalContext>
+        <Starfield/>
+        <div className={classes.pageContainer}>
+            <Grid container direction="row" alignItems="center" justify="center" style={{ minHeight: '80vh' }}>
+                <Grid item md={6} xs={12} component="header">
+                    <Box m={6}>
+                        <Grid container direction="row" alignItems="center" justify="center" spacing={3}>
+                            <Grid item xs={6} component="img" src="/images/pds.svg" alt="PDS Logo" className={classes.img} />
+                            <Grid item xs={6} component="img" src="/images/sbn.png" alt="SBN Logo" className={classes.img} />
+                            <Typography xs={12} variant="h1" className={classes.appTitle}>Archive Navigator</Typography>
+                        </Grid>
+                    </Box>
+                </Grid>
+                <Grid item md={6} xs={12}  component="main">
+                    <Container>
+                        <LIDField />
+                        <Grid container direction="row" alignItems="flex-start">
+                            <Grid item xs={6} component={ContextList} items={missions}/>
+                            <Grid item xs={6} component={ContextList} items={targets}/>
+                        </Grid>
+                    </Container>
+                </Grid>
+            </Grid>
+        </div>
+        <style jsx global>{`
+            html {
+                background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            }
+            body {
+                background: none !important;
+            }
+        `}</style>
+    </GlobalContext>
 }
 
 function Starfield() {
