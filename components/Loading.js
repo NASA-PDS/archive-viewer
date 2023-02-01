@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress, Backdrop } from '@material-ui/core'
+import { CircularProgress, Backdrop } from '@mui/material'
 
 export default function Loading({fullscreen}) {
     if(fullscreen) {

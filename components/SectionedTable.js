@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ContextList } from 'components/ContextLinks';
-import { Typography, TableContainer, Table, TableRow, TableCell, TableBody, Collapse } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableRow, TableCell, TableBody, Collapse } from '@mui/material';
 import { miscGroupName } from 'services/groupings';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
     table: {

@@ -1,6 +1,6 @@
-import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@mui/icons-material';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CollectionNavLinks from 'components/CollectionNavLinks';

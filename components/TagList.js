@@ -1,6 +1,6 @@
 import Router from "next/router"
-import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import TagSearch, { TagTypes } from 'components/TagSearch.js';
 import React from 'react';
 

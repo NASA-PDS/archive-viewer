@@ -1,5 +1,5 @@
-import { LinearProgress, Snackbar, useTheme } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import { LinearProgress, Snackbar, useTheme } from '@mui/material'
+import { Alert } from '@mui/material';
 import Footer from 'components/Footer'
 import Router from "next/router"
 import React, { useEffect, useState } from 'react'
@@ -61,5 +61,5 @@ function GlobalContext(props) {
         </>
     )
 }
-  
+
 export default GlobalContext

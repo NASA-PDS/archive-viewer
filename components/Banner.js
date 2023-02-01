@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Popover from '@material-ui/core/Popover';
-import Box from '@material-ui/core/Box';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import { withStyles } from '@material-ui/core/styles';
-import SvgIcon from '@material-ui/core/SvgIcon';
+import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import Popover from '@mui/material/Popover';
+import Box from '@mui/material/Box';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import withStyles from '@mui/styles/withStyles';
+import SvgIcon from '@mui/material/SvgIcon';
 import Image from 'next/image'
 
 const logo = '/images/pdsLogo.png'
@@ -230,11 +230,7 @@ class Banner extends Component {
                         href='https://pds.nasa.gov' 
                         rel='noopener'
                     >
-                        <IconButton 
-                            className={classes.pdsIcon}
-                            edge='start' 
-                            aria-label='PDS'
-                        >
+                        <IconButton className={classes.pdsIcon} edge='start' aria-label='PDS' size="large">
                             <Image
                                 src={logo}
                                 className={classes.headerLogo}
@@ -250,15 +246,15 @@ class Banner extends Component {
                     
                     <IconButton
                         className={classes.infoButton}
-                        edge='start' 
+                        edge='start'
                         aria-label='info'
                         aria-controls='info-menu'
                         variant='contained'
                         color='primary'
-                        onMouseEnter={this.handleInfoMouseEnter} 
+                        onMouseEnter={this.handleInfoMouseEnter}
                         onMouseLeave={this.handleInfoMouseLeave}
                         onKeyDown={this.handleInfoEnterOpen}
-                    >
+                        size="large">
                         <SvgIcon className={classes.infoIcon}>
                             <path 
                                 fill="white" 

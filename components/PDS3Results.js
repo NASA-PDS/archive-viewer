@@ -1,5 +1,5 @@
-import { Button, CardActions, Link, List, ListItem, ListItemText } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Button, CardActions, Link, List, ListItem, ListItemText } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { pds3Get } from 'api/common.js';
 import Loading from 'components/Loading';
 import React, { useEffect, useState } from 'react';

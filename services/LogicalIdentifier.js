@@ -55,5 +55,5 @@ export default class LogicalIdentifier {
 
 }
 function escape(str) {
-    return str.replace(/:/g, '\\:')
+    return str.replace(/:/g, '\\:');
 }

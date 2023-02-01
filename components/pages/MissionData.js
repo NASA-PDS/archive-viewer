@@ -1,4 +1,4 @@
-import { Link, Typography } from '@material-ui/core';
+import { Link, Typography } from '@mui/material';
 import Breadcrumbs from 'components/Breadcrumbs';
 import DatasetTable from 'components/DatasetTable';
 import { getDatasetsForMission } from 'api/mission';

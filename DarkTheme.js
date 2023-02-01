@@ -1,9 +1,9 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-const DarkTheme = createMuiTheme({
+const DarkTheme = createTheme({
     spacing: 8,
     palette: {
-        type: 'dark',
+        mode: 'dark',
         primary: {
             main: "#B5DCFB",
             dark: "#57B4FF",
@@ -70,21 +70,25 @@ const DarkTheme = createMuiTheme({
             fontSize: '1.3rem',
         },
     },
-    overrides: {
+    components: {
         MuiAccordionSummary: {
-            root: { 
-                backgroundColor: "#192028"
+            styleOverrides: {
+                root: { 
+                    backgroundColor: "#192028"
+                }
             }
         },
         MuiTypography: {
-            root: {
-                color: "#FDFDFD",
+            styleOverrides: {
+                root: {
+                    color: "#FDFDFD",
+                }
             }
         },
-    },
-    props: {
         MuiLink: {
-            underline: 'none'
+            defaultProps: {
+                underline: 'none'
+            }
         }
     },
     custom: {

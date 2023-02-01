@@ -3,7 +3,7 @@ import ErrorMessage from 'components/Error.js'
 import Loading from 'components/Loading.js'
 import {lookupTags} from 'api/tags.js'
 import { ContextList } from 'components/ContextLinks'
-import { Typography, Container,  } from '@material-ui/core';
+import { Typography, Container,  } from '@mui/material';
 
 export const TagTypes = {
     target: 'Targets',

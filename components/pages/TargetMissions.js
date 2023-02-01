@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { getMissionsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { MissionGroupedList } from 'components/GroupedList';

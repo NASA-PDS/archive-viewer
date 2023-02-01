@@ -1,5 +1,17 @@
-import { Box, Collapse, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import {
+    Box,
+    Collapse,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CollectionList from 'components/CollectionList.js';
 import { ContextLink } from 'components/ContextLinks';
 import { Metadata } from "components/Metadata";
@@ -28,9 +40,9 @@ export default function DatasetTable({ groups }) {
                     <TableCell/>
                     <TableCell className={classes.headerCell}>Title</TableCell>
                     {/* <TableCell className={classes.headerCell}>Processing Level</TableCell> */}
-                    <TableCell className={classes.headerCell} padding="default">Published</TableCell>
-                    <TableCell className={classes.headerCell} padding="default">Start Date</TableCell>
-                    <TableCell className={classes.headerCell} padding="default">End Date</TableCell>
+                    <TableCell className={classes.headerCell} padding="normal">Published</TableCell>
+                    <TableCell className={classes.headerCell} padding="normal">Start Date</TableCell>
+                    <TableCell className={classes.headerCell} padding="normal">End Date</TableCell>
                 </TableHead>
                 <TableBody>
                     {groups.map(group => 
@@ -65,13 +77,13 @@ function DatasetRow({dataset}) {
             {/* <TableCell className={classes.cell}>
                 {dataset.primary_result_processing_level}
             </TableCell> */}
-            <TableCell className={classes.cell} padding="default">
+            <TableCell className={classes.cell} padding="normal">
                 {dataset.citation_publication_year}
             </TableCell>
-            <TableCell className={classes.cell} padding="default">
+            <TableCell className={classes.cell} padding="normal">
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
-            <TableCell className={classes.cell} padding="default">
+            <TableCell className={classes.cell} padding="normal">
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
             </TableCell>
         </TableRow>
@@ -82,7 +94,7 @@ function DatasetRow({dataset}) {
             </Collapse>
             </TableCell>
         </TableRow>
-        </>
+        </>;
 }
 
 function DatasetSynopsis({dataset}) {

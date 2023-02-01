@@ -1,5 +1,18 @@
-import { Button, Card, CardActions, CardContent, CardMedia, Divider, List as MaterialList, ListItem, ListItemText, makeStyles, ThemeProvider, Typography } from '@material-ui/core';
-import { ExitToApp } from '@material-ui/icons';
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Divider,
+    List as MaterialList,
+    ListItem,
+    ListItemText,
+    Typography,
+} from '@mui/material';
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import { ExitToApp } from '@mui/icons-material';
 import InternalLink from 'components/InternalLink';
 import DarkTheme from 'DarkTheme';
 import React from 'react';
@@ -104,22 +117,24 @@ function ContextCard({item, classType, path, title, isMinor}) {
 
     // context cards are always in dark mode to match headers
     return (
-        <ThemeProvider theme={DarkTheme}>
-            <Card raised={true} className={`${classes.card} ${classType}`} p={1}>
-                { item.image_url ? <img className={classes.img} src={item.image_url} alt={'Banner for ' + name} title={name}/> : <div className={classes.img}/>} 
-                <CardContent className={classes.cardContent} p="1">
-                    <Typography style={titleStyle} variant="h3" component="h2" gutterBottom>{name}</Typography>
-                    {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
-                    <Description model={item}/>
-                </CardContent>
-                { !isMinor && <CardActions>
-                    <InternalLink identifier={item.identifier} additionalPath={path} passHref>
-                        <Button color="primary" variant="contained" endIcon={<ExitToApp/>}>{title}</Button>
-                    </InternalLink>
-                </CardActions> }
-            </Card>
-        </ThemeProvider>
-    )
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={DarkTheme}>
+                <Card raised={true} className={`${classes.card} ${classType}`} p={1}>
+                    { item.image_url ? <img className={classes.img} src={item.image_url} alt={'Banner for ' + name} title={name}/> : <div className={classes.img}/>} 
+                    <CardContent className={classes.cardContent} p="1">
+                        <Typography style={titleStyle} variant="h3" component="h2" gutterBottom>{name}</Typography>
+                        {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
+                        <Description model={item}/>
+                    </CardContent>
+                    { !isMinor && <CardActions>
+                        <InternalLink identifier={item.identifier} additionalPath={path} passHref>
+                            <Button color="primary" variant="contained" endIcon={<ExitToApp/>}>{title}</Button>
+                        </InternalLink>
+                    </CardActions> }
+                </Card>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
 }
 
 function TargetContextCardList(props) {

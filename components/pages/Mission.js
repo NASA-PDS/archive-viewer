@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import { getPrimaryBundleForMission } from 'api/mission.js';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';

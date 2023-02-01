@@ -1,9 +1,9 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-const LightTheme = createMuiTheme({
+const LightTheme = createTheme({
     spacing: 8,
     palette: {
-        type: 'light',
+        mode: 'light',
         primary: {
             main: "#0A6BB9",
             light: "#57B4FF"
@@ -69,21 +69,25 @@ const LightTheme = createMuiTheme({
             fontSize: '1.3rem',
         },
     },
-    overrides: {
+    components: {
         MuiTypography: {
-            root: {
-                color: "#12181D",
+            styleOverrides: {
+                root: {
+                    color: "#12181D",
+                }
             }
         },
         MuiTab: {
-            root: {
-                color: '#FDFDFD'
+            styleOverrides: {
+                root: {
+                    color: '#FDFDFD'
+                }
             }
-        }
-    },
-    props: {
+        },
         MuiLink: {
-            underline: 'none'
+            defaultProps: {
+                underline: 'none'
+            }
         }
     },
     custom: {

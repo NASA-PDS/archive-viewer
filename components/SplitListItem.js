@@ -1,4 +1,5 @@
-import { Grid, ListItem, Typography, makeStyles } from '@material-ui/core';
+import { Grid, ListItem, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
@@ -6,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 'auto'
     },
     metadataValue: {
-        maxWidth: `calc(100vw - ${theme.spacing(3)}px)`,
+        maxWidth: `calc(100vw - ${theme.spacing(3)})`,
         wordWrap: 'break-word'
     }
 }))

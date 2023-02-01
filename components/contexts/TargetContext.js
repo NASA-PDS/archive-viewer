@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { TargetHeader } from 'components/ContextHeaders'
 import Target from 'components/pages/Target';
 import { types, pagePaths } from 'services/pages.js';

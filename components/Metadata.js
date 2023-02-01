@@ -1,4 +1,4 @@
-import { List, Typography } from '@material-ui/core';
+import { List, Typography } from '@mui/material';
 import Description from 'components/Description';
 import React from 'react';
 import { LabeledListItem } from './SplitListItem';

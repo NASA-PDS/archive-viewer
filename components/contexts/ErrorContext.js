@@ -1,5 +1,5 @@
-import { Box, Link, List, ListItem, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Link, List, ListItem, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { ErrorHeader } from 'components/ContextHeaders';
 import InternalLink from 'components/InternalLink';
 import PrimaryLayout from 'components/PrimaryLayout';

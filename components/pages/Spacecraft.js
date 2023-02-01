@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { getFriendlySpacecraft } from 'api/spacecraft.js';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { SpacecraftGroupedList } from 'components/GroupedList';

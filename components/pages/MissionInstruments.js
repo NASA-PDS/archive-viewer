@@ -1,4 +1,4 @@
-import { List, Typography, ListItem, ListItemText } from '@material-ui/core';
+import { List, Typography, ListItem, ListItemText } from '@mui/material';
 import { filterInstrumentsForSpacecraft } from 'api/instrument';
 import { getFriendlyInstrumentsForSpacecraft, getFriendlySpacecraft } from 'api/spacecraft.js';
 import Breadcrumbs from 'components/Breadcrumbs';

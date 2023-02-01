@@ -1,6 +1,6 @@
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { OpenInNew } from '@material-ui/icons';
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { OpenInNew } from '@mui/icons-material';
 import React from 'react';
 
 
@@ -28,13 +28,13 @@ export default function RelatedTools({tools, noImages, noTitle}){
     return (
         <Box my={2}>
             {!noTitle && <Typography gutterBottom variant="h3">Continue your search with {tools.length > 1 ? 'these tools' : 'this tool'}</Typography> }
-            <Grid container spacing={2} direction="column" justify="flex-start" alignItems="stretch">
+            <Grid container spacing={2} direction="column" justifyContent="flex-start" alignItems="stretch">
                 {tools.map(tool => (
                     <Grid item key={tool.toolId} ><ToolLink tool={tool} noImages={noImages}/></Grid>
                 ))}
             </Grid>
         </Box>
-    )
+    );
 }
 
 function ToolLink({tool, noImages}) {

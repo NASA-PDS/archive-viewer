@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core'
-import { LinkOff } from '@material-ui/icons';
+import { Box, Grid, Typography } from '@mui/material'
+import { LinkOff } from '@mui/icons-material';
 
 export default function EmptyMessage() {
     

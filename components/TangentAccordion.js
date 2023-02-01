@@ -1,5 +1,5 @@
-import { Accordion, AccordionSummary, Box, Divider, Typography } from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
+import { Accordion, AccordionSummary, Box, Divider, Typography } from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import React from 'react';
 
 export default function TangentAccordion(props) {

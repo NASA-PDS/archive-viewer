@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
 import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
 import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';

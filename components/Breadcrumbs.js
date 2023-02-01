@@ -1,5 +1,5 @@
-import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@material-ui/core';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import InternalLink from 'components/InternalLink';
 import LogicalIdentifier from 'services/LogicalIdentifier';
 

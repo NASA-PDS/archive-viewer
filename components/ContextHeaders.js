@@ -1,7 +1,8 @@
-import { AppBar, Divider, Grid, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { Error } from '@material-ui/icons';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { AppBar, Divider, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import { Error } from '@mui/icons-material';
+import Skeleton from '@mui/material/Skeleton';
 import DarkTheme from 'DarkTheme';
 import React from 'react';
 import LogicalIdentifier from 'services/LogicalIdentifier';
@@ -76,12 +77,16 @@ function MissionHeader(props) {
     const headerName = (display_name && !pdsOnly ? display_name : title)
 
     // headers are always in dark mode
-    return <ThemeProvider theme={DarkTheme}>  
-        <AppBar className={classes.header} position="static" color="inherit">
-            <Banner name={headerName + ' Data Archive'} image_url={image_url} />
-            <MissionTabBar page={page} mission={mission} {...otherProps}/>
-        </AppBar>
-    </ThemeProvider>
+    return (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={DarkTheme}>  
+                <AppBar className={classes.header} position="static" color="inherit">
+                    <Banner name={headerName + ' Data Archive'} image_url={image_url} />
+                    <MissionTabBar page={page} mission={mission} {...otherProps}/>
+                </AppBar>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
 }
 
 function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
@@ -156,12 +161,16 @@ function TargetHeader(props) {
     const headerName = display_name && !pdsOnly ? display_name : title
 
     // headers are always in dark mode
-    return <ThemeProvider theme={DarkTheme}>
-        <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
-            <Banner name={headerName + ' Information Page'} image_url={image_url} />
-            <TargetTabBar page={page} target={target} />
-        </AppBar>
-    </ThemeProvider>
+    return (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={DarkTheme}>
+                <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
+                    <Banner name={headerName + ' Information Page'} image_url={image_url} />
+                    <TargetTabBar page={page} target={target} />
+                </AppBar>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
 }
 
 function TargetTabBar({page, target}) {
@@ -182,12 +191,14 @@ function ErrorHeader() {
     const classes = useStyles();
     
     return (
-        <ThemeProvider theme={DarkTheme}>
-            <AppBar className={`${classes.header} ${classes.error}`} position="static" color="inherit">
-                <Banner name={"Error"} icon={Error}/>
-            </AppBar>
-        </ThemeProvider>
-    )
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={DarkTheme}>
+                <AppBar className={`${classes.header} ${classes.error}`} position="static" color="inherit">
+                    <Banner name={"Error"} icon={Error}/>
+                </AppBar>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
 }
 
 function Banner({name, image_url, icon}) {

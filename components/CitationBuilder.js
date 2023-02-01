@@ -1,6 +1,6 @@
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Help } from '@material-ui/icons';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Help } from '@mui/icons-material';
 import React, { useState } from 'react';
 
 const FORMAT = {
