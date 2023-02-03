@@ -1,4 +1,4 @@
-import { initialLookup, serviceAvailable } from 'api/common';
+import { initialLookup, internalMessage, serviceAvailable } from 'api/common';
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import UnknownContext from 'components/contexts/UnknownContext';
@@ -82,9 +82,12 @@ export async function getServerSideProps(context) {
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
 
+    // handle forced queries for internal backup mode state
     if(!!query.internal_enable_backup_mode) {
-        console.log('Forcing backup mode 🚨🚨🚨')
-        runtime.setBackupMode(true, true)
+        internalMessage(runtime.ENABLE_BACKUP_MODE_MESSAGE)
+    }
+    if(!!query.internal_disable_backup_mode) {
+        internalMessage(runtime.DISABLE_BACKUP_MODE_MESSAGE)
     }
 
     if(runtime.backupMode) { 
@@ -93,7 +96,7 @@ export async function getServerSideProps(context) {
         // if we're in backup mode, spin off a request to see if service is restored
         serviceAvailable().then(
             yes => {
-                console.log('Registry service now available, disabling backup mode 🎉')
+                console.log('SERVER: Registry service now available, disabling backup mode 🎉')
                 runtime.setBackupMode(false)
             },
             no => {
@@ -131,7 +134,7 @@ export async function getServerSideProps(context) {
             },
             no => {
                 console.error(no)
-                console.log('Registry service unavailable, switching to backup mode 🚨🚨🚨')
+                console.log('SERVER: Registry service unavailable, switching to backup mode 🚨🚨🚨')
                 // Engineering node registry not available. Switch to backup mode
                 runtime.setBackupMode(true)
             }
