@@ -93,7 +93,3 @@ function handleMessage(message) {
 }
 
 export default handler
-
-export const config = {
-    runtime: 'nodejs',
-}

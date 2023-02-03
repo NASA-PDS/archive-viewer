@@ -24,7 +24,3 @@ export default {
         return _backupMode
     },
     setBackupMode }
-
-export const config = {
-    runtime: 'nodejs',
-}
