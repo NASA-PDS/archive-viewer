@@ -1,6 +1,7 @@
 const webProxy = (typeof window !== "undefined" ? window.location.origin : 'http://localhost:3000') + '/api/proxy/web'
 const coreProxy = (typeof window !== "undefined" ? window.location.origin : 'http://localhost:3000') + '/api/proxy/core'
 const heartbeatProxy = (typeof window !== "undefined" ? window.location.origin : 'http://localhost:3000') + '/api/proxy/heartbeat'
+const internalStateProxy = (typeof window !== "undefined" ? window.location.origin : 'http://localhost:3000') + '/api/proxy/internal'
 
 const datasetsCollection = 'web-datasets-alias'
 const targetsCollection = 'web-targets-alias'
@@ -15,6 +16,7 @@ const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraf
 
 export default {
     heartbeat: `${heartbeatProxy}`,
+    internal: `${internalStateProxy}`,
     defaultCore: `${coreProxy}`,
     datasetWeb: `${webProxy}/${datasetsCollection}`,
     datasetCore: `${coreProxy}`,

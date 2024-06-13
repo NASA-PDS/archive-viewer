@@ -274,3 +274,16 @@ export function serviceAvailable() {
     }
     return serviceCheckPromise
 }
+
+let internalMessagePromise
+export function internalMessage(message) {
+    if(!internalMessagePromise) {
+        internalMessagePromise = new Promise((resolve, reject) => {
+            web.get(router.internal, { params: {message}}).then(resolve, reject)
+            .finally(() => {
+                internalMessagePromise = undefined
+            })
+        })
+    }
+    return internalMessagePromise
+}
