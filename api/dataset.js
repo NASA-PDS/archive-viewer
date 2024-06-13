@@ -7,7 +7,7 @@ export function getCollectionsForDataset(dataset) {
     let lids = dataset.collection_ref.map(str => new LID(str).lid)
 
     let params = {
-            fl: 'display_name,logical_identifier,document_flag,[child parentFilter=attrname:dataset]',
+            fl: 'display_name,logical_identifier,document_flag',
             wt: 'ujson',
             q: lids.reduce((query, lid) => query + `logical_identifier:"${new LID(lid).lidvid}" `, '')
         }
