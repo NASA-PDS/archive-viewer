@@ -1,7 +1,7 @@
 function desolrize(dataset) {
     for(let [key, value] of Object.entries(dataset)) {
-        if(key === '_childDocuments_') {
-            unpackChildDocuments(dataset, value)
+        if(key.includes(".")) {
+            unpackFlattened(dataset, key, value)
             delete dataset[key]
             continue
         }
@@ -26,18 +26,26 @@ function shouldComeOutOfArray(key, value) {
             (keysThatAreNeverArrays.includes(key) || value[0].constructor === String || value[0].constructor === Object)
 }
 
-function unpackChildDocuments(document, children) {
-    for(let child of children) {
-        child = desolrize(child) 
-        let key = child.attrname
-        if(keysThatAreAlwaysSingularChildDocuments.includes(key)) { 
-            document[key] = child
-        } else if(!document[key]) {
-            document[key] = [child]
-        } else {
-            document[key].push(child)
-        }
+function unpackFlattened(document, key, value) {
+    console.log('unpacking child documents for', value)
+    // Extract the category and the field name from the key
+    const [category, field] = key.split('.');
+
+    // Initialize the category array if it does not exist
+    if (!document[category]) {
+        document[category] = [];
     }
+
+    // Iterate over the values and append/update the dictionary
+    value.forEach((value, index) => {
+        if (document[category][index]) {
+            // If the object at this index exists, just add or update the field
+            document[category][index][field] = desolrize(value);
+        } else {
+            // If the object at this index does not exist, create it
+            document[category][index] = { [field]: desolrize(value) };
+        }
+    });
 }
 
 const keysThatAreActuallyStringArrays = ['tags', 'target_ref', 'instrument_ref', 'instrument_host_ref', 'investigation_ref', 'collection_ref', 'download_packages', 'superseded_data', 'related_tools', 'related_data', 'collection_type']
