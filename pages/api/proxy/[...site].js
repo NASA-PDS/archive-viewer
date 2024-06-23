@@ -64,8 +64,8 @@ const rewriteCore = (path) => {
 }
 
 const coreMiddleware = createProxyMiddleware({ target: remoteSolr, changeOrigin: true, pathRewrite: rewriteCore })
-const backupCoreMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, pathRewrite: rewriteBackupCore })
-const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, pathRewrite: rewriteWeb })
+const backupCoreMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, on: { proxyReq: addAuthorization }, pathRewrite: rewriteBackupCore })
+const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, on: { proxyReq: addAuthorization }, pathRewrite: rewriteWeb })
 
 async function handler(req, res) {
     // console.log('Backup mode: ' + runtime.backupMode)
@@ -82,6 +82,12 @@ async function handler(req, res) {
         default: res.status(400).send("Invalid proxy request to site " + site)
     }
 
+}
+
+function addAuthorization(proxyReq, req, res) {
+    // add basic authorization header to request
+    let auth = 'Basic ' + Buffer.from(process.env.NEXT_PUBLIC_SOLR_USER + ':' + process.env.NEXT_PUBLIC_SOLR_PASS).toString('base64')
+    proxyReq.setHeader('Authorization', auth)
 }
 
 function handleMessage(message) {
