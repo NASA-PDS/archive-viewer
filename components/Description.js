@@ -14,7 +14,8 @@ export const previewLength = 750
 export default function Description(props) {
     const { model } = props;
     const { display_description } = model;
-    const description = (display_description || model.description || model.instrument_description || model.instrument_host_description || model.investigation_description || model.target_description).trim()
+    let description = (display_description || model.description || model.instrument_description || model.instrument_host_description || model.investigation_description || model.target_description)
+    description = description ? description.trim() : ''
     const alwaysShow = description.length < ridiculousLength;
     const [expanded, setExpanded] = useState(alwaysShow);
     const classes = useStyles();
