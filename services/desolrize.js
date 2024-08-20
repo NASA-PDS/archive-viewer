@@ -1,5 +1,8 @@
 function desolrize(dataset) {
     for(let [key, value] of Object.entries(dataset)) {
+        if(key == "identifier" && value instanceof Array) {
+            dataset[key] = value[0]
+        }
         if(key.includes(".")) {
             unpackFlattened(dataset, key, value)
             delete dataset[key]
