@@ -11,8 +11,6 @@ import React from 'react';
 import { resolveType, setTheme, types } from 'services/pages.js';
 import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
-import runtime from 'services/runtime';
-import { serializeError } from 'serialize-error';
 import Head from 'next/head'
 
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
@@ -82,29 +80,7 @@ export async function getServerSideProps(context) {
     if(query.pdsOnly === 'true') { props.pdsOnly = true }
     if(query.mockup === 'true') { props.mockup = true }
 
-    // handle forced queries for internal backup mode state
-    if(!!query.internal_enable_backup_mode) {
-        internalMessage(runtime.ENABLE_BACKUP_MODE_MESSAGE)
-    }
-    if(!!query.internal_disable_backup_mode) {
-        internalMessage(runtime.DISABLE_BACKUP_MODE_MESSAGE)
-    }
-
-    if(runtime.backupMode) { 
-        props.backupMode = true
-
-        // if we're in backup mode, spin off a request to see if service is restored
-        serviceAvailable().then(
-            yes => {
-                console.log('SERVER: Registry service now available, disabling backup mode 🎉')
-                runtime.setBackupMode(false)
-            },
-            no => {
-                console.log('Registry service still unavailable')
-            }
-        )
-    }
-
+    // forced cache clear option
     if(!!query.flush) {
         cache.flushAll()
     }
@@ -128,17 +104,6 @@ export async function getServerSideProps(context) {
                 ? { message: err }
                 : "Error"
         res.statusCode = 404
-        serviceAvailable().then(
-            yes => {
-                console.log('Registry service available. Error was ' + props.error.message)
-            },
-            no => {
-                console.error(no)
-                console.log('SERVER: Registry service unavailable, switching to backup mode 🚨🚨🚨')
-                // Engineering node registry not available. Switch to backup mode
-                runtime.setBackupMode(true)
-            }
-        )
     }
 
     setTheme(props, context)
