@@ -50,7 +50,9 @@ export default function CollectionList({dataset}) {
     const collectionLids = dataset.collection_ref
     const collectionTypes = collections.map(collection => {
         const collectionIndex = collectionLids.findIndex(lid => lid.includes(collection.identifier))
-        return dataset.collection_type[collectionIndex]
+        if(!!dataset.collection_type)
+            return dataset.collection_type[collectionIndex]
+        return collection.collection_type
     })
     
     return <Box my={2}>

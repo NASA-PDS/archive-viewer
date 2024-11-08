@@ -12,7 +12,7 @@ export function getCollectionsForDataset(dataset) {
             q: lids.reduce((query, lid) => query + `logical_identifier:"${new LID(lid).lidvid}" `, '')
         }
     return new Promise((resolve, reject) => {
-        Promise.all([httpGetIdentifiers(router.datasetCore, lids, ['primary_result_purpose']), httpGet(router.datasetWeb, params)]).then(results => {
+        Promise.all([httpGetIdentifiers(router.datasetCore, lids, ['primary_result_purpose','collection_type']), httpGet(router.datasetWeb, params)]).then(results => {
             let [coreDocs, webDocs] = results 
             if(webDocs.length > 0) {
                 let toReturn = []
