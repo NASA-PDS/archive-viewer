@@ -14,7 +14,7 @@ export function getMissionsForTarget(target) {
         .then(stitchWithRelationships(relationshipTypes.fromTargetToMission, [target.identifier]))
 }
 
-export function getDatasetsForTarget(target) {
+export function getDerivedDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
@@ -26,7 +26,7 @@ export function getDatasetsForTarget(target) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.TARGET, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                return [contexts.TARGET].includes(context)
             }))
         })
 }

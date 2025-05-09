@@ -2,7 +2,7 @@ import web from 'axios';
 import desolrize from 'services/desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
-import { types, resolveType } from 'services/pages.js'
+import { types, resolveType, resolveContext, contexts } from 'services/pages.js'
 import { stitchWithTools } from './tools';
 
 const defaultFetchSize = 50
@@ -175,6 +175,24 @@ export function httpGetRelated(initialQuery, route, knownLids) {
         }, reject)
     })
 }
+
+export function getMoreDatasetsForContext(missions, targets) {
+    const missionQuery = missions.map(mi => `investigation_ref:${new LID(mi.identifier).escapedLid}\\:\\:*`).join(' OR ')
+    const targetQuery = targets.map(ta => `target_ref:${new LID(ta.identifier).escapedLid}\\:\\:*`).join(' OR ')
+    let params = {
+        q: `(product_class:"Product_Bundle" AND (${[missionQuery, targetQuery].filter(el => !!el).join(' OR ')}))`,
+        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_start_date_time, primary_result_purpose'
+    }
+    return httpGet(router.datasetCore, params)
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
+        .then(datasets => datasets.filter(bundle => {
+                const context = resolveContext(bundle)
+                return [contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+            })
+        )
+        
+}
+
 function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }

@@ -68,6 +68,13 @@ const LightTheme = createMuiTheme({
         h6: {
             fontSize: '1.3rem',
         },
+        subtitle1: {
+            fontSize: '1.3rem',
+            marginTop: -16,
+            marginBottom: 24,
+            fontWeight: 500,
+            color: '#474C53'
+        },
     },
     overrides: {
         MuiTypography: {
@@ -96,7 +103,9 @@ const LightTheme = createMuiTheme({
         targetThemeColor: '#000000',
         missionThemeColor: '#085898',
         paperTitle: '#FFFFFF',
-        externalLinkLocation: '/images/external-black.svg'
+        externalLinkLocation: '/images/external-black.svg',
+        insetShadowTop: 'inset 0 1px 3px rgba(0, 0, 0, 0.12)',
+        insetShadowBottom: 'inset 0 -1px 2px rgba(0, 0, 0, 0.06)',
     }
 });
 

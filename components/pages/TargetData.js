@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { getDatasetsForTarget } from 'api/target';
+import { getDerivedDatasetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';
 import DatasetTable from 'components/DatasetTable';
@@ -17,7 +17,7 @@ export default function TargetData(props) {
     const [datasets, setDatasets] = useState(null)
 
     useEffect(() => {
-        getDatasetsForTarget(target).then(setDatasets, console.error)
+        getDerivedDatasetsForTarget(target).then(setDatasets, console.error)
 
         return function cleanup() {
             setDatasets(null)
@@ -31,7 +31,8 @@ export default function TargetData(props) {
                 <Breadcrumbs currentTitle="Derived Data" home={target}/>
 
                 <Typography variant="h1" gutterBottom>Derived {target.display_name || target.title} Data</Typography>
-                <LoadingWrapper model={datasets} 
+                <Typography variant="subtitle1" >Higher-order data products related to a target of observation</Typography>
+                <LoadingWrapper model={datasets} showEmpty={!target.derived_html || target.derived_html.length === 0}
                         skeleton={<>
                             <Skeleton width="100%" height={40}/>
                             <Skeleton width="100%" height={80}/>

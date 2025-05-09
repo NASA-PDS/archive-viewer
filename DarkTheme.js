@@ -69,6 +69,13 @@ const DarkTheme = createMuiTheme({
         h6: {
             fontSize: '1.3rem',
         },
+        subtitle1: {
+            fontSize: '1.3rem',
+            marginTop: -16,
+            marginBottom: 24,
+            fontWeight: 500,
+            color: '#C0C2C4'
+        },
     },
     overrides: {
         MuiAccordionSummary: {
@@ -98,7 +105,9 @@ const DarkTheme = createMuiTheme({
         missionThemeColor: '#085898',
         raisedContent: "#474C53",
         raisedContentHover: "#656A6F",
-        externalLinkLocation: '/images/external.svg'
+        externalLinkLocation: '/images/external.svg',
+        insetShadowTop: 'inset 0 1px 3px rgba(255, 255, 255, 0.08)',
+        insetShadowBottom: 'inset 0 -1px 2px rgba(255, 255, 255, 0.04)',
     }
 });
 

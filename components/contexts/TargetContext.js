@@ -8,7 +8,8 @@ import TargetMissions from 'components/pages/TargetMissions';
 import TargetData from 'components/pages/TargetData';
 import TargetTools from 'components/pages/TargetTools';
 import { Bundle, Collection } from 'components/pages/Dataset';
-import { getFriendlyTargets } from 'api/target';
+import { getFriendlyTargets, getMissionsForTarget } from 'api/target';
+import MoreData from 'components/pages/MoreData';
 
 const drawerWidth = 360;
 
@@ -20,14 +21,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TargetContext({target, model, type, extraPath, ...otherProps}) {
     const [friendlyTarget, setFriendlyTarget] = useState(null)
+    const [missions, setMissions] = useState(null)
     const classes = useStyles()
+
+    const targetUpdated = (target) => {
+        setFriendlyTarget(target)
+        // now that we have a target, get the missions
+        getMissionsForTarget(target).then(setMissions, er => console.error(er))
+    }
 
     useEffect(() => {
         // check if this target has already pulled in friendly metadata
         if(!target.logical_identifier) {
-            getFriendlyTargets([target]).then(targets => setFriendlyTarget(targets[0]), console.error)
+            getFriendlyTargets([target]).then(targets => targetUpdated(targets[0]), console.error)
         } else {
-            setFriendlyTarget(target)
+            targetUpdated(target)
         }
 
     }, [target])
@@ -50,6 +58,9 @@ export default function TargetContext({target, model, type, extraPath, ...otherP
                 } else if(!!extraPath.includes(pagePaths[types.TARGETTOOLS])) {
                     mainContent = <TargetTools target={target}/>
                     pageType = types.TARGETTOOLS
+                } else if(!!extraPath.includes(pagePaths[types.MOREDATA])) {
+                    mainContent = <MoreData missions={missions} targets={[target]} />
+                    pageType = types.MOREDATA
                 }
             } else {
                 mainContent = <Target target={target}  {...otherProps} />

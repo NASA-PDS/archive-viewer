@@ -92,6 +92,22 @@ class HTMLBoxClass extends React.Component {
                         height: 20px;
                         content:"";
                     }
+                    .custom td > div { /* citation boxes */
+                        margin: 0;
+                        padding: 5px !important;
+                        height: 100% !important;
+                        border-radius: 4px;
+                        box-shadow:
+                            ${theme.custom.insetShadowTop},
+                            ${theme.custom.insetShadowBottom}; 
+                        user-select: text;  
+                    }
+                    @media (max-width: 600px) {
+                        .custom td > div {
+                            display: none;
+                        }
+                    }
+                                
                 `}</style>
             </>
         }

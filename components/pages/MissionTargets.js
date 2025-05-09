@@ -21,8 +21,9 @@ export default function MissionTargets(props) {
     return (
         <PrimaryLayout primary={
             <>
-                <Breadcrumbs currentTitle="Targets" home={mission}/>
-                <Typography variant="h1" gutterBottom>Targets of observation</Typography>
+                <Breadcrumbs currentTitle="Target Derived Data" home={mission}/>
+                <Typography variant="h1" >Target Derived Data</Typography>
+                <Typography variant="subtitle1" >Higher-order data products related to the target of observation</Typography>
                 <LoadingWrapper model={targets}>
                     <TargetGroupedList items={targets} />
                 </LoadingWrapper>

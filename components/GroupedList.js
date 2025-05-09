@@ -1,6 +1,6 @@
 import { Collapse, Divider, List, ListItem, ListItemText } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import { ContextList, MissionContextCardList, TargetContextCardList } from 'components/ContextLinks';
+import { ContextList, MissionContextCardList, TargetContextCardList, TargetDataCardList } from 'components/ContextLinks';
 import Loading from 'components/Loading.js';
 import React, { useState } from 'react';
 import { downplayGroupsThreshold, groupByAttributedRelationship, groupByFirstTag, hiddenGroupsThreshold } from 'services/groupings';
@@ -82,6 +82,9 @@ function MissionGroupedList(props) {
 function TargetGroupedList(props) {
     return <AbstractGroupedList type={listTypes.target} groupingFn={groupByAttributedRelationship} listComponent={TargetContextCardList} {...props}/>
 }
+function DerivedDataGroupedList(props) {
+    return <AbstractGroupedList type={listTypes.target} groupingFn={groupByAttributedRelationship} listComponent={TargetDataCardList} {...props}/>
+}
 function RelatedTargetGroupedList(props) {
     return <AbstractGroupedList type={listTypes.relatedTarget} groupingFn={groupByFirstTag} listComponent={ContextList} {...props}/>
 }
@@ -92,7 +95,7 @@ function SpacecraftGroupedList(props) {
     return <AbstractGroupedList type={listTypes.spacecraft} groupingFn={groupByAttributedRelationship} listComponent={ContextList} {...props}/>
 }
 
-export { listTypes as groupType, MissionGroupedList, TargetGroupedList, RelatedTargetGroupedList, SpacecraftGroupedList };
+export { listTypes as groupType, MissionGroupedList, TargetGroupedList, DerivedDataGroupedList, RelatedTargetGroupedList, SpacecraftGroupedList };
 
 /* ------ Internal Components ------ */
 

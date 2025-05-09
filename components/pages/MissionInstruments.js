@@ -34,11 +34,12 @@ export default function MissionInstruments(props) {
     return (
         <PrimaryLayout primary={
             <>
-                <Breadcrumbs currentTitle="Instruments" home={mission}/>
+                <Breadcrumbs currentTitle="Instrument Data" home={mission}/>
                 <LoadingWrapper model={activeSpacecraft}>
                     {activeSpacecraft && 
                     <>
-                        <Typography variant="h1" gutterBottom>Instruments for {activeSpacecraft.display_name || activeSpacecraft.title}</Typography>
+                        <Typography variant="h1">Instrument Data for {activeSpacecraft.display_name || activeSpacecraft.title}</Typography>
+                        <Typography variant="subtitle1" >Observational data from the mission instruments</Typography>
                         <InstrumentBrowseTable items={filterInstrumentsForSpacecraft(instruments, activeSpacecraft)} />
                     </>
                     }

@@ -61,6 +61,9 @@ const groupByRelatedItems = (items, field) => {
 const groupByField = (items, field, order) => {
     if(!items) return []
     let insert = (item, groupName) => {
+        if(Array.isArray(groupName)) {
+            groupName = groupName[0]
+        }
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
         else groups.push(new Group(groupName, [item], order ? order.findIndex(o => o === groupName) : 999 ))
@@ -78,6 +81,7 @@ const groupByField = (items, field, order) => {
 }
 
 const groupByFirstTag = (items) => {
+    if(!items) return []
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
@@ -97,6 +101,9 @@ const groupByFirstTag = (items) => {
 
 const groupByLabelArray = (items, labels, order) => {
     let insert = (item, groupName) => {
+        if(Array.isArray(groupName)) {
+            groupName = groupName[0]
+        }
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
         else groups.push(new Group(groupName, [item], order.findIndex(o => o === groupName)))

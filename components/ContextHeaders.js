@@ -1,4 +1,4 @@
-import { AppBar, Divider, Grid, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
+import { AppBar, Divider, Grid, Link, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { Error } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -101,7 +101,7 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
             } else if(!!model.instrument_ref) {
                 tabValue = types.MISSIONINSTRUMENTS
             } else {
-                tabValue = types.MISSIONOTHER
+                tabValue = types.MOREDATA
             }
             break
         }
@@ -112,13 +112,13 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
     return <Tabs value={tabValue} indicatorColor="secondary" textColor="secondary" variant="scrollable">
                 <LinkTab label="Overview" value={types.MISSION} identifier={mission.identifier}/>
                 <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
-                <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
                 <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
                 <LinkTab label="Instrument Data" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
+                <LinkTab label="Target & Derived Data" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 { mission.other_html ? 
-                    <LinkTab label="Other Data" value={types.MISSIONOTHER} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONOTHER]}/> 
-                    : <Tab label="Other Data" disabled/>
+                    <LinkTab label="More Data" value={types.MOREDATA} identifier={mission.identifier} additionalPath={pagePaths[types.MOREDATA]}/> 
+                    : <Tab label="More Data" disabled/>
                 }
                 { mission.mission_bundle ? 
                     <LinkTab label="Mission Bundle" value={types.MISSIONBUNDLE} identifier={mission.mission_bundle}/>
@@ -173,8 +173,9 @@ function TargetTabBar({page, target}) {
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
                 <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
-                <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Derived Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
+                <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
+                <LinkTab label="More Data" value={types.MOREDATA} identifier={target.identifier} additionalPath={pagePaths[types.MOREDATA]}/>
             </Tabs>
 }
 

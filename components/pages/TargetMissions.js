@@ -23,7 +23,8 @@ export default function TargetMissions(props) {
         <PrimaryLayout primary={
             <>
                 <Breadcrumbs currentTitle="Missions" home={target}/>
-                <Typography variant="h1" gutterBottom>Missions/Investigations</Typography>
+                <Typography variant="h1" gutterBottom>Mission Data</Typography>
+                <Typography variant="subtitle1" >Observational data produced from a Mission or Investigation</Typography>
                 <LoadingWrapper model={missions}>
                     <MissionGroupedList items={missions}/>    
                 </LoadingWrapper>

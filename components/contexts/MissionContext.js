@@ -5,7 +5,7 @@ import { MissionHeader } from 'components/ContextHeaders';
 import { Bundle, Collection } from 'components/pages/Dataset.js';
 import Instrument from 'components/pages/Instrument';
 import Mission from 'components/pages/Mission';
-import MissionData from 'components/pages/MissionData';
+import MoreData from 'components/pages/MoreData';
 import MissionInstruments from 'components/pages/MissionInstruments';
 import MissionTargets from 'components/pages/MissionTargets';
 import MissionTools from 'components/pages/MissionTools';
@@ -79,9 +79,9 @@ export default function MissionContext(props) {
         } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
-        } else if(!!extraPath.includes(pagePaths[types.MISSIONOTHER])) {
-            mainContent = <MissionData mission={model} spacecraft={spacecraft} />
-            pageType = types.MISSIONOTHER
+        } else if(!!extraPath.includes(pagePaths[types.MOREDATA])) {
+            mainContent = <MoreData missions={[model]} targets={targets} />
+            pageType = types.MOREDATA
         }
     } else {
         pageType = type
