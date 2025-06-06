@@ -9,7 +9,7 @@ import LoadingWrapper from 'components/LoadingWrapper';
 import PDS3Results from 'components/PDS3Results';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
-import { groupByField, groupByRelatedItems } from 'services/groupings';
+import { groupByNothing } from 'services/groupings';
 
 export default function TargetData(props) {
     const { target } = props
@@ -38,7 +38,7 @@ export default function TargetData(props) {
                             <Skeleton width="100%" height={80}/>
                             <Skeleton width="100%" height={80}/>
                         </>}>
-                    <DatasetTable groups={groupByField(datasets, 'primary_result_purpose')} />
+                    <DatasetTable groups={groupByNothing(datasets)} />
                 </LoadingWrapper>  
                 <HTMLBox markup={target.derived_html}/>        
             </>

@@ -2,6 +2,7 @@ import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@material-
 import Skeleton from '@material-ui/lab/Skeleton';
 import InternalLink from 'components/InternalLink';
 import LogicalIdentifier from 'services/LogicalIdentifier';
+import { pagePaths, types } from 'services/pages.js';
 
 class Breadcrumb {
     constructor(name, identifier, additionalPath) {
@@ -43,13 +44,13 @@ function DatasetBreadcrumbs(props) {
         || LID.isCollection && LID.parentBundle === home.mission_bundle) {
         // no intermediate breadcrumbs for mission bundles
     } else if(home.data_class === "Target") {
-        ancestors.push(new Breadcrumb("Derived Data", home.identifier, "data"))
+        ancestors.push(new Breadcrumb("Derived Data", home.identifier, pagePaths[types.TARGETDATA]))
     } else if(!!current.instrument_ref) {
-        ancestors.push(new Breadcrumb("Instruments", home.identifier, "instruments"))
+        ancestors.push(new Breadcrumb("Instruments", home.identifier, pagePaths[types.MISSIONINSTRUMENTS]))
         current.instrument_ref.length === 1 &&
             ancestors.push(new Breadcrumb("Instrument", new LogicalIdentifier(current.instrument_ref[0]).lid))
     } else {
-        ancestors.push(new Breadcrumb("Other Data", home.identifier, "other"))
+        ancestors.push(new Breadcrumb("More Data", home.identifier, pagePaths[types.MOREDATA]))
     }
     if(!!parent) {
         ancestors.push(new Breadcrumb("Bundle", parent.identifier))

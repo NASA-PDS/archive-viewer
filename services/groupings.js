@@ -116,8 +116,20 @@ const groupByLabelArray = (items, labels, order) => {
 
 }
 
+const groupByNothing = (items) => {
+    if(!items) return []
+    let group = new Group(miscGroupName, items, 999)
+    items.sort((a, b) => a.title.localeCompare(b.title))
+    items.forEach(item => {
+        if(!group.items.includes(item)) {
+            group.items.push(item)
+        }
+    })
+    return [group]
+}
+
 const downplayGroupsThreshold = 100
 const hiddenGroupsThreshold = 1000
 const miscGroupName = 'Other'
 
-export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
+export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, groupByNothing, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
