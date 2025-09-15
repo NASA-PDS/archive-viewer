@@ -30,7 +30,6 @@ function shouldComeOutOfArray(key, value) {
 }
 
 function unpackFlattened(document, key, value) {
-    console.log('unpacking child documents for', value)
     // Extract the category and the field name from the key
     const [category, field] = key.split('.');
 
