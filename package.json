@@ -9,7 +9,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "axios": "^1.12.2",
     "better-logging": "^4.5.0",
-    "cookie": "^0.4.1",
+    "cookie": "^0.7.0",
     "events": "^3.3.0",
     "fontsource-roboto": "^3.0.3",
     "http-proxy-middleware": "^3.0.0",
