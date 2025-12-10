@@ -56,7 +56,7 @@ export function getDatasetsForInstrument(instrument) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                return [contexts.MISSION, contexts.MISSIONANDTARGET, contexts.MISSION_INSTRUMENT_DATA, contexts.UNKNOWN].includes(context)
             }))
         })
 

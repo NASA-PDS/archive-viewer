@@ -26,7 +26,7 @@ export function getDatasetsForTarget(target) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.TARGET, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                return [contexts.TARGET, contexts.MISSIONANDTARGET, contexts.TARGET_DERIVED_DATA, contexts.TARGET_MORE_DATA, contexts.UNKNOWN].includes(context)
             }))
         })
 }

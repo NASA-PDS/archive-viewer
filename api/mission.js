@@ -37,7 +37,7 @@ export function getDatasetsForMission(mission, spacecraft) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                return [contexts.MISSION, contexts.MISSIONANDTARGET, contexts.MISSION_MORE_DATA, contexts.MORE_DATA, contexts.UNKNOWN].includes(context)
             }))
         })
 }
