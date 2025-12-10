@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { ContextList } from 'components/ContextLinks';
-import { Typography, TableContainer, Table, TableRow, TableCell, TableBody, Collapse } from '@material-ui/core';
+import { Typography, TableContainer, Table, TableRow, TableCell, TableBody, Collapse } from '@mui/material';
 import { miscGroupName } from 'services/groupings';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 
-const useStyles = makeStyles((theme) => ({
-    table: {
-        border: 0
-    },
-    cell: {
-        borderLeft: 0,
-        borderRight: 0
-    },
-    groupHeader: {
-        verticalAlign: 'top',
-        paddingTop: theme.spacing(2)
-    },
-    sectionHeader: {
-        paddingTop: theme.spacing(4)
-    }
+const StyledTable = styled(Table)({
+    border: 0
+});
+
+const StyledCell = styled(TableCell)({
+    borderLeft: 0,
+    borderRight: 0
+});
+
+const GroupHeaderCell = styled(TableCell)(({ theme }) => ({
+    borderLeft: 0,
+    borderRight: 0,
+    verticalAlign: 'top',
+    paddingTop: theme.spacing(2)
+}));
+
+const SectionHeaderTypography = styled(Typography)(({ theme }) => ({
+    paddingTop: theme.spacing(4)
 }));
 
 export function SectionedTable({groups, ...otherProps}) {
@@ -29,19 +32,18 @@ export function SectionedTable({groups, ...otherProps}) {
 
 
 export function SectionedTableRows({ groups, ...otherProps }) {
-    const classes = useStyles();
     groups.sort((a, b) => a.order > b.order ? 1 : -1);
     return <>
             {groups.map(group => {
                 return (
                     <TableRow key={group.name}>
-                        <TableCell className={classes.cell} align="center" scope="row" className={classes.groupHeader}>
+                        <GroupHeaderCell align="center" scope="row">
                             {(groups.length > 1 || group.name !== miscGroupName) &&
                                 <Typography variant="h6"> {group.name}</Typography>}
-                        </TableCell>
-                        <TableCell className={classes.cell}>
+                        </GroupHeaderCell>
+                        <StyledCell>
                             <ContextList items={group.items} {...otherProps} />
-                        </TableCell>
+                        </StyledCell>
                     </TableRow>
                 );
             })}
@@ -49,25 +51,22 @@ export function SectionedTableRows({ groups, ...otherProps }) {
 }
 
 export function SectionedTableContainer({children}) {
-    const classes = useStyles();
     return <TableContainer>
-        <Table padding="none" className={classes.table}>
+        <StyledTable padding="none">
             <TableBody>
             { children }
-            </TableBody></Table>
+            </TableBody></StyledTable>
         </TableContainer>
 }
 
 export function SectionedTableHeader({title}) {
-    const classes = useStyles();
     return <TableRow>
         <TableCell colSpan={2}><Typography variant="h2">{title}</Typography></TableCell>
     </TableRow>
 }
 
 export function SectionedTableMinorHeader({title}) {
-    const classes = useStyles();
     return <TableRow>
-        <TableCell colSpan={2}><Typography variant="h3" color="textSecondary" className={classes.sectionHeader}>{title}</Typography></TableCell>
+        <TableCell colSpan={2}><SectionHeaderTypography variant="h3" color="textSecondary">{title}</SectionHeaderTypography></TableCell>
     </TableRow>
 }

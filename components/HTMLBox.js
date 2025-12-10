@@ -1,4 +1,4 @@
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 import React from 'react';
 
 class HTMLBoxClass extends React.Component {

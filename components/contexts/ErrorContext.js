@@ -1,5 +1,5 @@
-import { Box, Link, List, ListItem, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Link, List, ListItem, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { ErrorHeader } from 'components/ContextHeaders';
 import InternalLink from 'components/InternalLink';
 import PrimaryLayout from 'components/PrimaryLayout';
@@ -8,14 +8,11 @@ import LogicalIdentifier from 'services/LogicalIdentifier';
 import { resolveType, types } from 'services/pages';
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.default,
-    }
+const Root = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
 }));
 
 export default function ErrorContext({error, lidvid, model, type, ...otherProps}) {
-    const classes = useStyles()
     const errorMessage = error.message || error
 
     let LID, errorContent
@@ -42,13 +39,13 @@ export default function ErrorContext({error, lidvid, model, type, ...otherProps}
     }
 
     return (
-        <div className={classes.root}>
+        <Root>
             <ErrorHeader/>
             <PrimaryLayout primary={<>
                 <Typography variant="h2" color="error" gutterBottom>{errorMessage}</Typography>
                 { errorContent }
             </>}/>
-        </div>
+        </Root>
     )
 }
 

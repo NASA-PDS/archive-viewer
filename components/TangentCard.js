@@ -1,26 +1,21 @@
 import React from 'react';
-import { Card, CardHeader, Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Card, CardHeader, Divider } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        backgroundColor: theme.palette.background.paper,
-        margin: theme.spacing(1),
-        padding: theme.spacing(1)
-    },
+const StyledCard = styled(Card)(({ theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
-        container: {
-            margin: theme.spacing(2),
-            padding: theme.spacing(2)
-        }
+        margin: theme.spacing(2),
+        padding: theme.spacing(2)
     },
 }));
 
-export default function({title, children}) {
-    const classes = useStyles()
-    return <Card raised={true} className={classes.container}>
+export default function TangentCard({title, children}) {
+    return <StyledCard raised={true}>
         { title && <CardHeader title={title}/> }
         { title && <Divider/> }
         {children}
-    </Card>
+    </StyledCard>
 }

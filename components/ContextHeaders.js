@@ -1,75 +1,83 @@
-import { AppBar, Divider, Grid, Tab, Tabs, Typography, useTheme } from '@material-ui/core';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { Error } from '@material-ui/icons';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { AppBar, Divider, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { styled, ThemeProvider } from '@mui/material/styles';
+import Skeleton from '@mui/material/Skeleton';
+import ErrorIcon from '@mui/icons-material/Error';
 import DarkTheme from 'DarkTheme';
 import React from 'react';
 import LogicalIdentifier from 'services/LogicalIdentifier';
 import { pagePaths, types } from 'services/pages.js';
 import InternalLink from './InternalLink';
 
-const useStyles = makeStyles((theme) => ({
-    description: {
-        whiteSpace: 'pre-line',
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2)
+const Description = styled(Typography)(({ theme }) => ({
+    whiteSpace: 'pre-line',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+}));
+
+const Header = styled(AppBar)(({ theme }) => ({
+    backgroundColor: theme.custom.missionThemeColor,
+    zIndex: theme.zIndex.drawer + 1,
+    display: 'flex',
+    flexFlow: 'column nowrap',
+}));
+
+const TargetHeader = styled(Header)(({ theme }) => ({
+    backgroundColor: theme.custom.targetThemeColor
+}));
+
+const ErrorHeader = styled(Header)(({ theme }) => ({
+    backgroundColor: theme.palette.error.main
+}));
+
+const BannerContainer = styled(Grid)(({ theme }) => ({
+    [theme.breakpoints.down('sm')]: {
+        height: theme.custom.headerBanner.height.sm
     },
-    header: {
-        backgroundColor: theme.custom.missionThemeColor,
-        zIndex: theme.zIndex.drawer + 1,
-        display: 'flex',
-        flexFlow: 'column nowrap',
+    [theme.breakpoints.up('md')]: {
+        height: theme.custom.headerBanner.height.md
     },
-    banner: {
-        [theme.breakpoints.down('sm')]: {
-            height: theme.custom.headerBanner.height.sm
-        },
-        [theme.breakpoints.up('md')]: {
-            height: theme.custom.headerBanner.height.md
-        },
+}));
+
+const BannerTitle = styled(Typography)(({ theme }) => ({
+    [theme.breakpoints.up('md')]: {
+        fontSize: '3.5rem',
     },
-    bannerTitle: {
-        [theme.breakpoints.up('md')]: {
-            fontSize: '3.5rem',
-        },
-        marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+}));
+
+const HeaderImage = styled('img')(({ theme }) => ({
+    padding: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+        height: theme.custom.headerBanner.height.sm,
     },
-    headerImage: {
-        padding: theme.spacing(1),
-        [theme.breakpoints.down('sm')]: {
-            height: theme.custom.headerBanner.height.sm,
-        },
-        [theme.breakpoints.up('md')]: {
-            height: theme.custom.headerBanner.height.md,
-        },
+    [theme.breakpoints.up('md')]: {
+        height: theme.custom.headerBanner.height.md,
     },
-    headerIcon: {
-        padding: theme.spacing(1),
+}));
+
+const HeaderIcon = styled('span')(({ theme }) => ({
+    padding: theme.spacing(1),
+    '& svg': {
         [theme.breakpoints.down('sm')]: {
             fontSize: theme.custom.headerBanner.height.sm
         },
         [theme.breakpoints.up('md')]: {
             fontSize: theme.custom.headerBanner.height.md
         },
-    },
-    target: {
-        backgroundColor: theme.custom.targetThemeColor
-    },
-    error: {
-        backgroundColor: theme.palette.error.main
-    },
-    divider: {
-        marginLeft: theme.spacing(2),
-        marginRight: theme.spacing(2)
     }
 }));
 
-function MissionHeader(props) {
+const StyledDivider = styled(Divider)(({ theme }) => ({
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2)
+}));
+
+function MissionHeaderComponent(props) {
     const {page, mission, pdsOnly, ...otherProps} = props
-    const classes = useStyles();
     
     if(!mission) {
-        return <AppBar className={classes.header} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar tabCount={5}/></AppBar>
+        return <Header position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar tabCount={5}/></Header>
     }
 
     const {display_name, title, image_url} = mission
@@ -77,17 +85,17 @@ function MissionHeader(props) {
 
     // headers are always in dark mode
     return <ThemeProvider theme={DarkTheme}>  
-        <AppBar className={classes.header} position="static" color="inherit">
+        <Header position="static" color="inherit">
             <Banner name={headerName + ' Data Archive'} image_url={image_url} />
             <MissionTabBar page={page} mission={mission} {...otherProps}/>
-        </AppBar>
+        </Header>
     </ThemeProvider>
 }
 
 function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
 
     if(!mission) { return <SkeletonTabBar tabCount={7}/>}
-
+    console.log('MissionTabBar', {lidvid, page, mission, spacecraft, model})
     let LID = new LogicalIdentifier(lidvid)
 
     let tabValue
@@ -114,7 +122,7 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
                 <LinkTab label="Spacecraft" value={types.SPACECRAFT} identifier={spacecraft && spacecraft.length > 0 && spacecraft[0].identifier}/>
                 <LinkTab label="Targets" value={types.MISSIONTARGETS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]}/>
                 <LinkTab label="Tools" value={types.MISSIONTOOLS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTOOLS]}/>
-                <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
+                <DividerWithoutInheritedProps orientation="vertical" flexItem />
                 <LinkTab label="Instrument Data" value={types.MISSIONINSTRUMENTS} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONINSTRUMENTS]}/>
                 { mission.other_html ? 
                     <LinkTab label="Other Data" value={types.MISSIONOTHER} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONOTHER]}/> 
@@ -127,29 +135,28 @@ function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
             </Tabs>
 }
 
-function DividerWithoutInheritedProps({orientation, flexItem, className, ...otherProps}) {
-    return <Divider orientation={orientation} flexItem={flexItem} className={className} />
+function DividerWithoutInheritedProps({orientation, flexItem, ...otherProps}) {
+    return <StyledDivider orientation={orientation} flexItem={flexItem} />
 }
 
 function SkeletonTabBar({tabCount}) {
-    return <Grid container direction="row" alignItems="center">
+    return <Grid container direction="row" sx={{ alignItems: 'center' }}>
         {
-            Array(tabCount).fill().map((_, i) => <Grid item key={i} style={{marginLeft: 10, marginRight: 10}} component={Skeleton} width={140} height={48} />)
+            Array(tabCount).fill().map((_, i) => <Skeleton key={i} style={{marginLeft: 10, marginRight: 10}} width={140} height={48} />)
         }
     </Grid>
 }
 
 function LinkTab(props) {
     const {label, value, ...otherProps} = props
-    return <Tab label={label} value={value} component={InternalLink} includeTag {...otherProps}/>
+    return <Tab label={label} value={value} component={InternalLink} {...otherProps}/>
 }
 
-function TargetHeader(props) {
+function TargetHeaderComponent(props) {
     const {target, pdsOnly, page} = props
-    const classes = useStyles();
 
     if(!target) {
-        return <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></AppBar>
+        return <TargetHeader position="static" color="inherit"><SkeletonBanner/><SkeletonTabBar/></TargetHeader>
     }
     
     const {display_name, title, image_url} = target
@@ -157,10 +164,10 @@ function TargetHeader(props) {
 
     // headers are always in dark mode
     return <ThemeProvider theme={DarkTheme}>
-        <AppBar className={`${classes.header} ${classes.target}`} position="static" color="inherit">
+        <TargetHeader position="static" color="inherit">
             <Banner name={headerName + ' Information Page'} image_url={image_url} />
             <TargetTabBar page={page} target={target} />
-        </AppBar>
+        </TargetHeader>
     </ThemeProvider>
 }
 
@@ -172,40 +179,44 @@ function TargetTabBar({page, target}) {
                 <LinkTab label="Overview" value={types.TARGET} identifier={target.identifier}/>
                 <LinkTab label="Related" value={types.TARGETRELATED} identifier={target.identifier} additionalPath={pagePaths[types.TARGETRELATED]}/>
                 <LinkTab label="Tools" value={types.TARGETTOOLS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETTOOLS]}/>
-                <DividerWithoutInheritedProps orientation="vertical" flexItem className={useStyles().divider} />
+                <DividerWithoutInheritedProps orientation="vertical" flexItem />
                 <LinkTab label="Mission Data" value={types.TARGETMISSIONS} identifier={target.identifier} additionalPath={pagePaths[types.TARGETMISSIONS]}/>
                 <LinkTab label="Derived Data" value={types.TARGETDATA} identifier={target.identifier} additionalPath={pagePaths[types.TARGETDATA]}/>
             </Tabs>
 }
 
-function ErrorHeader() {
-    const classes = useStyles();
-    
+function ErrorHeaderComponent() {
     return (
         <ThemeProvider theme={DarkTheme}>
-            <AppBar className={`${classes.header} ${classes.error}`} position="static" color="inherit">
-                <Banner name={"Error"} icon={Error}/>
-            </AppBar>
+            <ErrorHeader position="static" color="inherit">
+                <Banner name={"Error"} icon={ErrorIcon}/>
+            </ErrorHeader>
         </ThemeProvider>
     )
 }
 
 function Banner({name, image_url, icon}) {
-    const classes = useStyles()
     const theme = useTheme()
-    return <Grid container direction="row" alignItems="center" className={classes.banner} wrap="nowrap">
-        { image_url && <Grid item className={classes.headerImage} component="img" alt={"Image of " + name} src={image_url} /> }
-        { icon && React.createElement(icon, { className: classes.headerIcon, htmlColor: theme.palette.text.primary}) }
-        <Grid item component={Typography} variant="h1" className={classes.bannerTitle}> { name } </Grid>
-    </Grid>
+    return <BannerContainer container direction="row" wrap="nowrap" sx={{ alignItems: 'center' }}>
+        { image_url && <HeaderImage alt={"Image of " + name} src={image_url} /> }
+        { icon && React.createElement(icon, { sx: { 
+            padding: theme.spacing(1),
+            [theme.breakpoints.down('sm')]: {
+                fontSize: theme.custom.headerBanner.height.sm
+            },
+            [theme.breakpoints.up('md')]: {
+                fontSize: theme.custom.headerBanner.height.md
+            },
+        }, htmlColor: theme.palette.text.primary}) }
+        <BannerTitle variant="h1"> { name } </BannerTitle>
+    </BannerContainer>
 }
 
 function SkeletonBanner() {
-    const classes = useStyles();
-    return <Grid container direction="row" alignItems="center" className={classes.banner}>
-        <Grid item style={{margin: 10}} component={Skeleton} variant="circle" width={140} height={140} />
-        <Grid item component={Typography} variant="h1"> <Skeleton variant="text" width={400}/> </Grid>
-    </Grid>
+    return <BannerContainer container direction="row" sx={{ alignItems: 'center' }}>
+        <Skeleton style={{margin: 10}} variant="circular" width={140} height={140} />
+        <Typography variant="h1"><Skeleton variant="text" width={400}/></Typography>
+    </BannerContainer>
 }
 
-export { MissionHeader, TargetHeader, ErrorHeader };
+export { MissionHeaderComponent as MissionHeader, TargetHeaderComponent as TargetHeader, ErrorHeaderComponent as ErrorHeader };

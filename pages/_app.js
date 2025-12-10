@@ -1,34 +1,24 @@
-import 'fontsource-roboto'
-import Head from 'next/head'
-import React, { useEffect } from 'react'
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import Head from 'next/head';
+import React from 'react';
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from 'services/createEmotionCache';
 
-// Set up logging
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
-import betterLogging, {Theme} from 'better-logging'
-betterLogging(console, {
-    color: Theme.dark,
-    format: ctx => `${ctx.date} ${ctx.time12} ${ctx.type} ${ctx.msg}`
-})
-
-function MyApp({ Component, pageProps }) {
-
-    useEffect(() => {
-        // remove the server-side injected CSS
-        const jssStyles = document.querySelector('#jss-server-side')
-        if (!!jssStyles) {
-          jssStyles.parentElement.removeChild(jssStyles)
-        }
-    }, [])
-
-
+function MyApp({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
     return (
-    <>
+    <CacheProvider value={emotionCache}>
         <Head>
             <title>Archive Navigator | NASA PDS SBN</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </Head>
         <Component {...pageProps} />
-    </>
+    </CacheProvider>
     )
 }
 

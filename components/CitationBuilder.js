@@ -1,6 +1,7 @@
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Help } from '@material-ui/icons';
+import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { styled } from '@mui/material/styles';
+import { Help } from '@mui/icons-material';
 import React, { useState } from 'react';
 
 const FORMAT = {
@@ -20,37 +21,35 @@ const buildCitation = (format, dataset) => {
     }
 }
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        width: '100%'
-    },
-    citation: {
-        width: '100%'
-    },
-}))
+const ContainerGrid = styled(Grid)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    width: '100%'
+}));
+
+const CitationField = styled(TextField)({
+    width: '100%'
+});
 
 export default function CitationBuilder({dataset}) {
     const [format, setFormat] = useState(FORMAT.one)
-    const classes = useStyles()
 
     return <Box m={1}>
-        <Grid container direction="column" spacing={1} className={classes.container}>
-            <Grid item container spacing={1} direction="row" alignItems="center">
-                <Grid item>
+        <ContainerGrid container direction="column" spacing={1}>
+            <Grid container spacing={1} direction="row" sx={{ alignItems: 'center' }}>
+                <Grid>
                     <CitationSelector current={format} setter={setFormat}/>
                 </Grid>
-                <Grid item>
+                <Grid>
                     <Tooltip placement="right" title="Select a format, then copy the citation out below">
                         <Help/>
                     </Tooltip>
                 </Grid>
             </Grid>
-            <Grid item>
-                <TextField multiline rows={4} value={buildCitation(format, dataset)} variant="outlined" className={classes.citation}/>
+            <Grid>
+                <CitationField multiline rows={4} value={buildCitation(format, dataset)} variant="outlined"/>
             </Grid>
-        </Grid>
+        </ContainerGrid>
         </Box>
 }
 

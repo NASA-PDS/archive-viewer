@@ -1,4 +1,4 @@
-import { Link, Typography } from '@material-ui/core';
+import { Link, Typography } from '@mui/material';
 import Breadcrumbs from 'components/Breadcrumbs';
 import DatasetTable from 'components/DatasetTable';
 import { getDatasetsForMission } from 'api/mission';
@@ -31,7 +31,7 @@ export default function MissionData({mission, spacecraft}) {
 
                 <HTMLBox markup={mission.other_html}/>
 
-                <Typography align="center" color="textSecondary">Additional derived data may be available on the this mission's <InternalLink identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]} passHref><Link>target information pages</Link></InternalLink></Typography>
+                <Typography align="center" color="textSecondary">Additional derived data may be available on the this mission's <Link component={InternalLink} identifier={mission.identifier} additionalPath={pagePaths[types.MISSIONTARGETS]} passHref>target information pages</Link></Typography>
             </>
         } />
     )
