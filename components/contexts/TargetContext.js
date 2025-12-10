@@ -10,6 +10,7 @@ import TargetTools from 'components/pages/TargetTools';
 import { Bundle, Collection } from 'components/pages/Dataset';
 import { getFriendlyTargets, getMissionsForTarget } from 'api/target';
 import MoreData from 'components/pages/MoreData';
+import { contexts } from 'services/pages';
 
 const drawerWidth = 360;
 
@@ -56,7 +57,7 @@ export default function TargetContext({target, model, type, extraPath, ...otherP
                     mainContent = <TargetTools target={target}/>
                     pageType = types.TARGETTOOLS
                 } else if(!!extraPath.includes(pagePaths[types.MOREDATA])) {
-                    mainContent = <MoreData missions={missions} targets={[target]} />
+                    mainContent = <MoreData missions={missions} targets={[target]} context={contexts.TARGET_MORE_DATA} />
                     pageType = types.MOREDATA
                 }
             } else {

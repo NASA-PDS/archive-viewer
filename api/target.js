@@ -26,7 +26,7 @@ export function getDerivedDatasetsForTarget(target) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.TARGET].includes(context)
+                return [contexts.TARGET, contexts.TARGET_DERIVED_DATA].includes(context)
             }))
         })
 }

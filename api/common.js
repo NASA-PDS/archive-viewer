@@ -176,7 +176,7 @@ export function httpGetRelated(initialQuery, route, knownLids) {
     })
 }
 
-export function getMoreDatasetsForContext(missions, targets) {
+export function getMoreDatasetsForContext(missions, targets, parentContext) {
     const missionQuery = missions.map(mi => `investigation_ref:${new LID(mi.identifier).escapedLid}\\:\\:*`).join(' OR ')
     const targetQuery = targets.map(ta => `target_ref:${new LID(ta.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
@@ -186,8 +186,8 @@ export function getMoreDatasetsForContext(missions, targets) {
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
         .then(datasets => datasets.filter(bundle => {
-                const context = resolveContext(bundle)
-                return [contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                const bundleContext = resolveContext(bundle)
+                return [contexts.MISSIONANDTARGET, parentContext, contexts.MORE_DATA, contexts.UNKNOWN].includes(bundleContext)
             })
         )
         

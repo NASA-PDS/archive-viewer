@@ -14,13 +14,13 @@ import { getMoreDatasetsForContext } from 'api/common';
 
 
 
-export default function MoreData({missions, targets}) {
+export default function MoreData({missions, targets, context}) {
     const [datasets, setDatasets] = useState(null)
 
     useEffect(() => {        
         // if we have missions, get the datasets for each mission
         if(!!missions && !!targets) {
-            let datasetts = getMoreDatasetsForContext(missions, targets)
+            let datasetts = getMoreDatasetsForContext(missions, targets, context)
             datasetts.then(datasets => {
                 setDatasets(datasets)
             }, console.error)

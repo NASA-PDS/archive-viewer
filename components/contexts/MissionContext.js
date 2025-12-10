@@ -13,6 +13,7 @@ import Spacecraft from 'components/pages/Spacecraft';
 import React, { useEffect, useState } from 'react';
 import { pagePaths, types } from 'services/pages.js';
 import ErrorContext from './ErrorContext';
+import { contexts } from 'services/pages';
 
 const drawerWidth = 360;
 
@@ -77,7 +78,7 @@ export default function MissionContext(props) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
         } else if(!!extraPath.includes(pagePaths[types.MOREDATA])) {
-            mainContent = <MoreData missions={[model]} targets={targets} />
+            mainContent = <MoreData missions={[model]} targets={targets} context={contexts.MISSION_MORE_DATA} />
             pageType = types.MOREDATA
         }
     } else {

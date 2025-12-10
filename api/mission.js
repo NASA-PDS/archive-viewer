@@ -25,6 +25,7 @@ export function getFriendlyTargetsForMission(targets, missionLid) {
         .then(stitchWithRelationships(relationshipTypes.fromMissionToTarget, [missionLid]))
 }
 
+// deprecated?
 export function getDatasetsForMission(mission, spacecraft) {
     const missionQuery = `investigation_ref:${new LID(mission.identifier).escapedLid}\\:\\:*`
     const spacecraftQuery = spacecraft.map(sp => `instrument_host_ref:${new LID(sp.identifier).escapedLid}\\:\\:*`).join(' OR ')
@@ -38,7 +39,7 @@ export function getDatasetsForMission(mission, spacecraft) {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
                 console.log('context', context)
-                return [contexts.MISSION].includes(context)
+                return [contexts.MISSION, contexts.MISSION_MORE_DATA].includes(context)
             }))
         })
 }
