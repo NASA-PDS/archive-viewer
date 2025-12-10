@@ -1,5 +1,5 @@
-import { Collapse, Divider, List, ListItem, ListItemText } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { Collapse, Divider, List, ListItem, ListItemText, ListItemButton } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { ContextList, MissionContextCardList, TargetContextCardList, TargetDataCardList } from 'components/ContextLinks';
 import Loading from 'components/Loading.js';
 import React, { useState } from 'react';
@@ -131,10 +131,10 @@ function ToggleList({header, headerVariant, list, divider}) {
 
     return (
         <List disablePadding>
-            <ListItem button onClick={toggle}>
+            <ListItemButton onClick={toggle}>
                 <ListItemText primary={header} primaryTypographyProps={{variant: headerVariant}}/>
                 { expanded ? <ExpandLess /> : <ExpandMore/>}
-            </ListItem>
+            </ListItemButton>
             {divider && <Divider/>}
             <Collapse in={expanded} unmountOnExit>
             {list}

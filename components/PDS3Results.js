@@ -1,5 +1,5 @@
-import { Button, CardActions, Link, List, ListItem, ListItemText } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Button, CardActions, Link, List, ListItemButton, ListItemText } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { pds3Get } from 'api/common.js';
 import Loading from 'components/Loading';
 import React, { useEffect, useState } from 'react';
@@ -43,9 +43,9 @@ function ResultsList({datasets, count, resultsUrl}) {
         <TangentAccordion title={`${count} (legacy) PDS3 dataset${count > 1 ? 's' : ''}`}>
             <List>
                 {datasets.map(dataset => 
-                    <ListItem button component={Link} key={dataset.identifier} href={dataset.resLocation.startsWith('/') ? 'https://pds.nasa.gov' + dataset.resLocation : dataset.resLocation}>
+                    <ListItemButton component={Link} key={dataset.identifier} href={dataset.resLocation.startsWith('/') ? 'https://pds.nasa.gov' + dataset.resLocation : dataset.resLocation}>
                         <ListItemText primary={dataset.title} primaryTypographyProps={{color: "primary"}}/>
-                    </ListItem>
+                    </ListItemButton>
                     )}
             </List>
             <CardActions><Button variant="contained" color="primary" href={resultsUrl} endIcon={<OpenInNewIcon/>}>View other results</Button></CardActions>

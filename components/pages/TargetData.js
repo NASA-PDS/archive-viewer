@@ -1,5 +1,4 @@
-import { Typography } from '@material-ui/core';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { Typography, Skeleton } from '@mui/material';
 import { getDerivedDatasetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { Menu } from 'components/ContextHeaders';

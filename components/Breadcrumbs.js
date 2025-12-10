@@ -1,5 +1,4 @@
-import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography } from '@material-ui/core';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { Breadcrumbs as MaterialBreadcrumbs, Link, Typography, Skeleton } from '@mui/material';
 import InternalLink from 'components/InternalLink';
 import LogicalIdentifier from 'services/LogicalIdentifier';
 import { pagePaths, types } from 'services/pages.js';
@@ -17,8 +16,8 @@ export default function Breadcrumbs({home, current, currentTitle, ancestors}) {
         return <SkeletonBreadcrumbs/>
     }
     return <MaterialBreadcrumbs>
-        <InternalLink identifier={home.identifier} passHref><Link color="inherit">{home.display_name || home.title}</Link></InternalLink>
-        {ancestors && ancestors.map(breadcrumb => <InternalLink key={breadcrumb.identifier + breadcrumb.additionalPath} identifier={breadcrumb.identifier} additionalPath={breadcrumb.additionalPath} passHref><Link color="inherit">{breadcrumb.name}</Link></InternalLink>)}
+        <Link component={InternalLink} identifier={home.identifier} color="inherit">{home.display_name || home.title}</Link>
+        {ancestors && ancestors.map(breadcrumb => <Link key={breadcrumb.identifier + breadcrumb.additionalPath} component={InternalLink} identifier={breadcrumb.identifier} additionalPath={breadcrumb.additionalPath} color="inherit">{breadcrumb.name}</Link>)}
         <Typography color="textPrimary" noWrap>{currentTitle || current.display_name || current.title}</Typography>
     </MaterialBreadcrumbs>
 }

@@ -12,7 +12,15 @@ import { resolveType, setTheme, types } from 'services/pages.js';
 import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
 import Head from 'next/head'
-
+// Set up logging - only on server side
+// if (typeof window === 'undefined') {
+//     const betterLogging = require('better-logging').default;
+//     const { Theme } = require('better-logging');
+//     betterLogging(console, {
+//         color: Theme.dark,
+//         format: ctx => `${ctx.date} ${ctx.time12} ${ctx.type} ${ctx.msg}`
+//     })
+// }
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
     if(error) {

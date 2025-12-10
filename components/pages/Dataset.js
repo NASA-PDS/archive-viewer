@@ -1,6 +1,11 @@
-import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemText, Paper, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Description, FolderOutlined, GetApp, OpenInNew, UnarchiveOutlined } from '@material-ui/icons';
+import { Box, Button, Card, CardContent, CardMedia, Chip, Link, List, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { styled } from '@mui/material/styles';
+import DescriptionIcon from '@mui/icons-material/Description';
+import FolderOutlined from '@mui/icons-material/FolderOutlined';
+import GetApp from '@mui/icons-material/GetApp';
+import OpenInNew from '@mui/icons-material/OpenInNew';
+import UnarchiveOutlined from '@mui/icons-material/UnarchiveOutlined';
 import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CollectionNavLinks from 'components/CollectionNavLinks';
@@ -17,52 +22,62 @@ import TangentAccordion from 'components/TangentAccordion';
 import ActionButton from 'components/ActionButton';
 import React, { useEffect, useState } from 'react';
 
-const useStyles = makeStyles((theme) => ({
-    mainTitle: {
-        marginTop: 0
-    },
-    quickLink: {
-        maxWidth: 200
-    },
-    primaryButton: {
-        width: '100%'
-    },
+const MainTitle = styled(Typography)({
+    marginTop: 0
+});
+
+const QuickLink = styled(Card)({
+    maxWidth: 200
+});
+
+const PrimaryButton = styled(Button)({
+    width: '100%'
+});
+
+const DatasetIcon = styled('span')(({ theme }) => ({
     [theme.breakpoints.up('xs')]: {
-        datasetIcon: {
-            display: 'none'
-        },
-        datasetButton: {
-            height: '80px', 
-        }
+        display: 'none'
     },
     [theme.breakpoints.up('sm')]: {
-        datasetIcon: {
-            display: 'block',
+        display: 'block',
+        height: '50px',
+        width: '50px',
+        marginRight: theme.spacing(2),
+        '& svg': {
             height: '50px',
-            width: '50px',
-            marginRight: theme.spacing(2)
-        },
-        datasetButton: {
-            height: '100px', 
+            width: '50px'
         }
-    },
-    textListItem: {
-        paddingTop: 0,
-        paddingBottom: 0
-    },
-    deliveryInfo: {
-        backgroundColor: theme.palette.secondary.main,
-        padding: '15px',
-        color: theme.palette.getContrastText(theme.palette.secondary.main),
-        textAlign: 'center'
-    },
-    buttonIcon: {
-        maxHeight: '25px'
-    },
-    metadataLabel: {
-        width: '200px'
     }
 }));
+
+const DatasetButton = styled(Button)(({ theme }) => ({
+    [theme.breakpoints.up('xs')]: {
+        height: '80px'
+    },
+    [theme.breakpoints.up('sm')]: {
+        height: '100px'
+    }
+}));
+
+const TextListItem = styled('div')({
+    paddingTop: 0,
+    paddingBottom: 0
+});
+
+const DeliveryInfoPaper = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.secondary.main,
+    padding: '15px',
+    color: theme.palette.getContrastText(theme.palette.secondary.main),
+    textAlign: 'center'
+}));
+
+const ButtonIcon = styled('img')({
+    maxHeight: '25px'
+});
+
+const MetadataLabel = styled('span')({
+    width: '200px'
+});
 
 const types = {
     BUNDLE: 1,
@@ -156,22 +171,21 @@ export function PDS3Dataset({...props}) {
 }
 
 function Title({dataset, type}) {
-    const classes = useStyles()
     const title = dataset.display_name ? dataset.display_name : dataset.title
     return <>
         <Box display="flex" alignItems="top" my={3}>
-            <Box >
+            <DatasetIcon>
                 { type === types.COLLECTION ? 
-                    <FolderOutlined className={classes.datasetIcon}/> : 
-                    <UnarchiveOutlined className={classes.datasetIcon}/>
+                    <FolderOutlined /> : 
+                    <UnarchiveOutlined />
                 }
-            </Box>
-            <Typography variant="h1" className={classes.mainTitle}>
+            </DatasetIcon>
+            <MainTitle variant="h1">
                 {title}
                 <Chip color="primary" variant="outlined" label={
                     <Typography variant="body2">{titles[type]}</Typography>
                     } style={{marginLeft: '10px'}}/>
-            </Typography>
+            </MainTitle>
             <HiddenMicrodataValue value={dataset.title} itemProp="name"/>
             { dataset.display_name && <HiddenMicrodataValue value={dataset.display_name} itemProp="alternateName"/> }
         </Box>
@@ -198,14 +212,13 @@ export function MoreInformation({dataset}) {
 
 
 export function DeliveryInfo({dataset}) {
-    const classes = useStyles()
     const publication = dataset.publication
     if(publication && publication.delivery_info) {
         return (
-            <Paper className={classes.deliveryInfo}>
+            <DeliveryInfoPaper>
                 <Typography color="inherit">{publication.delivery_info}</Typography>
                 <Typography color="inherit">Latest release date: {publication.publication_date}</Typography>
-            </Paper>
+            </DeliveryInfoPaper>
         )
     } else {
         return null
@@ -213,12 +226,11 @@ export function DeliveryInfo({dataset}) {
 }
 
 function CollectionExample({dataset}) {
-    const classes = useStyles()
     return (
         <PrimaryContent>
             { dataset.example && dataset.example.url &&
                 <Link href={dataset.example.url} >
-                    <Card raised={true} className={classes.quickLink} p={1}>
+                    <QuickLink raised={true} p={1}>
                         <CardMedia component="img" image={
                             dataset.example.thumbnail_url ?
                                 dataset.example.thumbnail_url :
@@ -231,7 +243,7 @@ function CollectionExample({dataset}) {
                             }</Typography>
                             <Typography variant="body2" color="textSecondary" component="p">{dataset.example.title}</Typography>
                         </CardContent>
-                    </Card>
+                    </QuickLink>
                 </Link>
             }
         </PrimaryContent>
@@ -265,7 +277,7 @@ function DatasetInfo({dataset, bundles}) {
     }
 
     return <LabeledListItem label="Dataset Info" item={
-        <ActionButton url={dataset_info_url} icon={<Description/>} title="View Dataset Info"/>
+        <ActionButton url={dataset_info_url} icon={<DescriptionIcon/>} title="View Dataset Info"/>
     }/>
 }
 
@@ -302,9 +314,9 @@ function RelatedPDS3(props) {
         return (
             <TangentAccordion title="PDS3 version">
                 <List>
-                    <ListItem button component={Link} href={pds3}>
+                    <ListItemButton component={Link} href={pds3}>
                         <ListItemText primary="Click here to browse" primaryTypographyProps={{color: "primary"}}/>
-                    </ListItem>
+                    </ListItemButton>
                 </List>
             </TangentAccordion>
         )
@@ -318,9 +330,9 @@ function Superseded(props) {
             <TangentAccordion title="Other versions">
                 <List>
                     {superseded.map(ref => 
-                        <ListItem button component={Link} key={ref.browse_url + ref.name} href={ref.browse_url}>
+                        <ListItemButton component={Link} key={ref.browse_url + ref.name} href={ref.browse_url}>
                             <ListItemText primary={ref.name} primaryTypographyProps={{color: "primary"}}/>
-                        </ListItem>
+                        </ListItemButton>
                         )}
                 </List>
             </TangentAccordion>
@@ -336,9 +348,9 @@ function RelatedData(props) {
                 <List>
                     {data.map(ref => 
                         <InternalLink identifier={ref.lid} key={ref.lid} passHref>
-                            <ListItem button component="a" href={'?identifier=' + ref.lid}>
+                            <ListItemButton component="a" href={'?identifier=' + ref.lid}>
                                 <ListItemText primary={ref.name} primaryTypographyProps={{color: "primary"}}/>
-                            </ListItem>
+                            </ListItemButton>
                         </InternalLink>
                         )}
                 </List>
@@ -354,9 +366,9 @@ function LegacyDOIs(props) {
             <TangentAccordion title="Legacy DOIs">
                 <List>
                     {data.map(ref => 
-                        <ListItem button component={Link} key={ref.doi} href={'https://doi.org/' + ref.doi}>
+                        <ListItemButton component={Link} key={ref.doi} href={'https://doi.org/' + ref.doi}>
                             <ListItemText primary={`${ref.date}: ${ref.doi}`} primaryTypographyProps={{color: "primary"}}/>
-                        </ListItem>
+                        </ListItemButton>
                         )}
                 </List>
             </TangentAccordion>

@@ -1,8 +1,12 @@
-import { ThemeProvider } from "@material-ui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { getTheme } from "services/pages";
+import GlobalTheme from "GlobalTheme";
 
 export default function Themed(props) {
-    return <ThemeProvider theme={getTheme(props)}>
-        {props.children}
+    const theme = getTheme(props);
+    return <ThemeProvider theme={GlobalTheme}>
+        <ThemeProvider theme={outerTheme => theme(outerTheme)}>
+            {props.children}
+        </ThemeProvider>
     </ThemeProvider>
 }

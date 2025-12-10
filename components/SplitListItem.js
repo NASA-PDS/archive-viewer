@@ -1,31 +1,30 @@
-import { Grid, ListItem, Typography, makeStyles } from '@material-ui/core';
+import { ListItem, Typography, Box } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { styled } from '@mui/material/styles';
 import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-    metadataLabel: {
-        marginBottom: 'auto'
-    },
-    metadataValue: {
-        maxWidth: `calc(100vw - ${theme.spacing(3)}px)`,
-        wordWrap: 'break-word'
-    }
-}))
+const MetadataLabel = styled(Typography)({
+    marginBottom: 'auto'
+});
+
+const MetadataValue = styled(Grid)(({ theme }) => ({
+    maxWidth: `calc(100vw - ${theme.spacing(3)})`,
+    wordWrap: 'break-word'
+}));
 
 export function LabeledListItem({label, item}) {
-    const classes = useStyles()
     return <SplitListItem left={
-        <Typography variant="h6" className={classes.metadataLabel} >{label}</Typography>
+        <MetadataLabel variant="h6">{label}</MetadataLabel>
     } right = {item} />
 }
 
 export function SplitListItem({left, right}) {
-    const classes = useStyles()
-    return <ListItem disableGutters component={Grid} container direction="row" alignItems="flex-start" spacing={1}>
-    <Grid item sm={3} xs={12}>
+    return <ListItem disableGutters component={Grid} container direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+    <Grid size={{ xs: 12, sm: 3 }}>
         {left}
     </Grid>
-    <Grid item sm={9} xs={12} className={classes.metadataValue}>
+    <MetadataValue size={{ xs: 12, sm: 9 }}>
         {right}
-    </Grid>
+    </MetadataValue>
 </ListItem>
 }

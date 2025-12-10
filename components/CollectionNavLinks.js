@@ -1,5 +1,5 @@
-import { Button, List, Typography } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Button, List, Typography } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import React from 'react';
 import InternalLink from './InternalLink';
 import { HiddenMicrodataObject, HiddenMicrodataValue } from './pages/Dataset';

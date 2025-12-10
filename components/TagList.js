@@ -1,22 +1,14 @@
 import Router from "next/router"
-import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Link, Tooltip } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import TagSearch, { TagTypes } from 'components/TagSearch.js';
 import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-    header: {
-      display: 'inline-block',
-      height: '100%',
-      verticalAlign: "middle"
-    },
-    chip: {
-      margin: theme.spacing(0.5),
-    }
+const StyledChip = styled(Chip)(({ theme }) => ({
+    margin: theme.spacing(0.5),
 }));
   
 export function TagList({tags, type}) {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [currentTag, setTag] = React.useState(null);
     const openTag = (tag) => {
@@ -33,7 +25,7 @@ export function TagList({tags, type}) {
             {tags.map(tag => 
                 <Tooltip title="View Category Search" key={tag} >
                     <Link onClick={() => openTag(tag)}>
-                        <Chip className={classes.chip} clickable={true} color="primary" label={tag}/>
+                        <StyledChip clickable={true} color="primary" label={tag}/>
                     </Link>
                 </Tooltip>
             )}

@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import { familyLookup } from 'api/context';
 import { getFriendlyMissions } from 'api/mission';
 import { MissionHeader } from 'components/ContextHeaders';
@@ -16,10 +16,8 @@ import ErrorContext from './ErrorContext';
 
 const drawerWidth = 360;
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.default,
-    }
+const Root = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
 }));
 
 export default function MissionContext(props) {
@@ -28,7 +26,6 @@ export default function MissionContext(props) {
     const [mission, setMission] = useState(null)
     const [error, setError] = useState(null)
     const [warningDismissed, setWarningDismissed] = useState(false)
-    const classes = useStyles()
 
     const unpackFamily = results => {
         if(results.missions && results.missions.length > 0) { 
@@ -97,7 +94,7 @@ export default function MissionContext(props) {
 
     const headerProps = {lidvid, mission, instruments, spacecraft, instruments, targets, model}
     return (
-        <div className={classes.root}>
+        <Root>
             <MissionHeader page={pageType} pdsOnly={props.pdsOnly} {...headerProps}/>
             { mainContent }
             {/* <Snackbar open={mission && !mission.is_ready && !warningDismissed} >
@@ -119,6 +116,6 @@ export default function MissionContext(props) {
                     This mission is still being updated, so let us know if you can't find what you're looking for
                 </Alert>
             </Snackbar> */}
-        </div>
+        </Root>
     )
 }

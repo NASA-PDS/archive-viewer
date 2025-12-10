@@ -1,36 +1,38 @@
-import { Box, Collapse, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import CollectionList from 'components/CollectionList.js';
 import { ContextLink } from 'components/ContextLinks';
 import { Metadata } from "components/Metadata";
 import React, { useState } from 'react';
 import { TagTypes } from 'components/TagSearch.js';
 
-const useStyles = makeStyles((theme) => ({
-    table: {
-        border: 0
-    },
-    cell: {
-        border: 0
-    },
-    headerCell: {
-        paddingRight: theme.spacing(2)
-    }
+const StyledTable = styled(Table)({
+    border: 0
+});
+
+const StyledCell = styled(TableCell)({
+    border: 0
+});
+
+const HeaderCell = styled(TableCell)(({ theme }) => ({
+    paddingRight: theme.spacing(2)
 }));
 
 export default function DatasetTable({ groups }) {
-    const classes = useStyles();
     if(!groups || groups.length === 0) return null
     return (
-        <TableContainer>
-            <Table stickyHeader padding="none"  className={classes.table}>
-                <TableHead>
-                    <TableCell/>
-                    <TableCell className={classes.headerCell}>Title</TableCell>
-                    {/* <TableCell className={classes.headerCell}>Processing Level</TableCell> */}
-                    <TableCell className={classes.headerCell} padding="default">Published</TableCell>
-                    <TableCell className={classes.headerCell} padding="default">Start Date</TableCell>
-                    <TableCell className={classes.headerCell} padding="default">End Date</TableCell>
+        <TableContainer sx={{ marginTop: 2, marginBottom: 2 }}>
+            <StyledTable stickyHeader padding="none">
+                <TableHead sx={{ padding: 2 }}>
+                    <TableRow>
+                        <TableCell/>
+                        <HeaderCell>Title</HeaderCell>
+                        {/* <HeaderCell>Processing Level</HeaderCell> */}
+                        <HeaderCell>Published</HeaderCell>
+                        <HeaderCell>Start Date</HeaderCell>
+                        <HeaderCell>End Date</HeaderCell>
+                    </TableRow>
                 </TableHead>
                 <TableBody>
                     {groups.map(group => 
@@ -43,37 +45,36 @@ export default function DatasetTable({ groups }) {
                         </React.Fragment>
                     )}
                 </TableBody>
-            </Table>
+            </StyledTable>
         </TableContainer>
     );
 }
 
 function DatasetRow({dataset}) {
-    const classes = useStyles();
     const [open, setOpen] = useState(false)
 
     return <>
         <TableRow >
-            <TableCell className={classes.cell}>
+            <StyledCell>
                 <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                     {open ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
-            </TableCell>            
-            <TableCell className={classes.cell}>
+            </StyledCell>            
+            <StyledCell>
                 <ContextLink item={dataset}/>
-            </TableCell>
-            {/* <TableCell className={classes.cell}>
+            </StyledCell>
+            {/* <StyledCell>
                 {dataset.primary_result_processing_level}
-            </TableCell> */}
-            <TableCell className={classes.cell} padding="default">
+            </StyledCell> */}
+            <StyledCell>
                 {dataset.citation_publication_year}
-            </TableCell>
-            <TableCell className={classes.cell} padding="default">
+            </StyledCell>
+            <StyledCell>
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
-            </TableCell>
-            <TableCell className={classes.cell} padding="default">
+            </StyledCell>
+            <StyledCell>
                 {new Date(dataset.observation_start_date_time).toLocaleDateString()}
-            </TableCell>
+            </StyledCell>
         </TableRow>
         <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>

@@ -1,5 +1,8 @@
-import { Box, Container, Grid, IconButton, InputAdornment, makeStyles, TextField, ThemeProvider, Typography } from '@material-ui/core'
-import SendIcon from '@material-ui/icons/Send'
+import { Box, Container, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { ThemeProvider } from '@mui/material/styles'
+import Grid from '@mui/material/Grid2'
+import { styled } from '@mui/material/styles'
+import SendIcon from '@mui/icons-material/Send'
 import { ContextList } from 'components/ContextLinks'
 import GlobalContext from 'components/contexts/GlobalContext'
 import DarkTheme from 'DarkTheme'
@@ -77,67 +80,89 @@ const targets = [
     },
 ]
 
-const useStyles = makeStyles((theme) => ({
-    pageContainer: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4)
-    },
-    lidField: {
-        width: '100%',
-    },
-    appTitle: {
-        fontSize: '2rem',
-        textAlign: 'center',
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            fontSize: '3.5rem'
-        },
-    },
-    img: {
-        maxWidth: '150px',
-        
-        [theme.breakpoints.up('md')]: {
-            maxWidth: '200px'
-        },
-    },
-    starfield: {
-        display: 'block',
-        position: 'fixed',
-        zIndex: -1,
-        width: '100%',
-        height: '100%'
-    }
+const PageContainer = styled('div')(({ theme }) => ({
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4)
 }));
+
+const LidField = styled(TextField)({
+    width: '100%',
+});
+
+const AppTitle = styled(Typography)(({ theme }) => ({
+    fontSize: '2rem',
+    textAlign: 'center',
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+        fontSize: '3.5rem'
+    },
+}));
+
+const LogoImg = styled('img')(({ theme }) => ({
+    maxWidth: '150px',
+    [theme.breakpoints.up('md')]: {
+        maxWidth: '200px'
+    },
+}));
+
+const StarfieldCanvas = styled('canvas')({
+    display: 'block',
+    position: 'fixed',
+    zIndex: -1,
+    width: '100%',
+    height: '100%'
+});
 
 
 export default function Index(props) {
-    const classes = useStyles()
     return (
         <ThemeProvider theme={DarkTheme}>
             <GlobalContext>
                 <Starfield/>
-                <div className={classes.pageContainer}>
-                    <Grid container direction="row" alignItems="center" justify="center" style={{ minHeight: '80vh' }}>
-                        <Grid item md={6} xs={12} component="header">
+                <PageContainer>
+                    <Grid container direction="row" sx={{ alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
+                        <Grid size={{ xs: 12, md: 6 }} component="header">
                             <Box m={6}>
-                                <Grid container direction="row" alignItems="center" justify="center" spacing={3}>
-                                    <Grid item xs={6} component="img" src="/images/pds.svg" alt="PDS Logo" className={classes.img} />
-                                    <Grid item xs={6} component="img" src="/images/sbn.png" alt="SBN Logo" className={classes.img} />
-                                    <Typography xs={12} variant="h1" className={classes.appTitle}>Archive Navigator</Typography>
+                                <Grid container direction="row" spacing={3} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Grid 
+                                        size={6} 
+                                        component="img" 
+                                        src="/images/pds.svg" 
+                                        alt="PDS Logo"
+                                        sx={(theme) => ({
+                                            maxWidth: '150px',
+                                            [theme.breakpoints.up('md')]: {
+                                                maxWidth: '200px'
+                                            },
+                                        })}
+                                    />
+                                    <Grid 
+                                        size={6} 
+                                        component="img" 
+                                        src="/images/sbn.png" 
+                                        alt="SBN Logo"
+                                        sx={(theme) => ({
+                                            maxWidth: '150px',
+                                            [theme.breakpoints.up('md')]: {
+                                                maxWidth: '200px'
+                                            },
+                                        })}
+                                    />
+                                    <AppTitle variant="h1">Archive Navigator</AppTitle>
                                 </Grid>
                             </Box>
                         </Grid>
-                        <Grid item md={6} xs={12}  component="main">
+                        <Grid size={{ xs: 12, md: 6 }} component="main">
                             <Container>
-                                <LIDField />
-                                <Grid container direction="row" alignItems="flex-start">
-                                    <Grid item xs={6} component={ContextList} items={missions}/>
-                                    <Grid item xs={6} component={ContextList} items={targets}/>
+                                <LIDFieldComponent />
+                                <Grid container direction="row" sx={{ alignItems: 'flex-start' }}>
+                                    <Grid size={6} component={ContextList} items={missions}/>
+                                    <Grid size={6} component={ContextList} items={targets}/>
                                 </Grid>
                             </Container>
                         </Grid>
                     </Grid>
-                </div>
+                </PageContainer>
                 <style jsx global>{`
                     html {
                         background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
@@ -152,7 +177,6 @@ export default function Index(props) {
 }
 
 function Starfield() {
-    const classes = useStyles()
     const canvas = useRef(null)
     if(!canvas && !canvas.current) return
 
@@ -191,12 +215,11 @@ function Starfield() {
         }
     }, [])
 
-    return <canvas className={classes.starfield} width="1000" height="1000" id="starfield" ref={canvas}></canvas>
+    return <StarfieldCanvas width="1000" height="1000" id="starfield" ref={canvas}/>
 }
 
 
-function LIDField() {
-    const classes = useStyles()
+function LIDFieldComponent() {
     const router = useRouter()
     const [lid, setLid] = useState('')
     const [loading, setLoading] = useState(false)
@@ -232,12 +255,11 @@ function LIDField() {
 
     return (
         <form noValidate autoComplete="off" onSubmit={visitLid}>
-            <TextField
+            <LidField
                 label="LID"
                 placeholder="urn:nasa:pds"
                 helperText="Enter a Logical Identifier"
                 variant="outlined"
-                className={classes.lidField}
                 value={lid}
                 onChange={handleChange}
                 disabled={loading}

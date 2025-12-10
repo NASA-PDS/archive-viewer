@@ -1,45 +1,45 @@
-import { Container, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Container } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { styled } from '@mui/material/styles';
 import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-        width: "100%",
-        height: "100%"
-    },
+const Root = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
+    width: "100%",
+    height: "100%"
+}));
+
+const OuterPrimary = styled(Grid)(({ theme }) => ({
     [theme.breakpoints.up('xs')]: {
-        outerPrimary: {
-            paddingTop: theme.spacing(2),
-            paddingBottom: theme.spacing(2)
-        }
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2)
     },
     [theme.breakpoints.up('md')]: {
-        outerPrimary: {
-            padding: theme.spacing(2)
-        },
-        innerPrimary: {
-            paddingLeft: theme.spacing(2),
-            paddingRight: theme.spacing(2)
-        }
+        padding: theme.spacing(2)
     }
 }));
 
-export default function({primary, secondary, ...otherProps}) {
-    const classes = useStyles()
+const InnerPrimary = styled(Grid)(({ theme }) => ({
+    [theme.breakpoints.up('md')]: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2)
+    }
+}));
+
+export default function ResponsiveLayout({primary, secondary, ...otherProps}) {
     return (
-        <div className={classes.root}>
+        <Root>
         <Container maxWidth="lg" >
-            <Grid container direction="row" className={classes.outerPrimary} {...otherProps}>
-                <Grid item xs className={classes.innerPrimary}>
+            <OuterPrimary container direction="row" {...otherProps}>
+                <InnerPrimary size="grow">
                     {primary}
-                </Grid>
-                <Grid item xs={12} md={3} className={classes.innerPrimary}>
+                </InnerPrimary>
+                <InnerPrimary size={{ xs: 12, md: 3 }}>
                     {secondary}
-                </Grid>
-            </Grid>
+                </InnerPrimary>
+            </OuterPrimary>
         </Container>
-        </div>
+        </Root>
     )
 }

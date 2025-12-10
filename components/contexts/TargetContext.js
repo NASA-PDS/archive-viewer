@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import { TargetHeader } from 'components/ContextHeaders'
 import Target from 'components/pages/Target';
 import { types, pagePaths } from 'services/pages.js';
@@ -13,16 +13,13 @@ import MoreData from 'components/pages/MoreData';
 
 const drawerWidth = 360;
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.default,
-    }
+const Root = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
 }));
 
 export default function TargetContext({target, model, type, extraPath, ...otherProps}) {
     const [friendlyTarget, setFriendlyTarget] = useState(null)
     const [missions, setMissions] = useState(null)
-    const classes = useStyles()
 
     const targetUpdated = (target) => {
         setFriendlyTarget(target)
@@ -80,9 +77,9 @@ export default function TargetContext({target, model, type, extraPath, ...otherP
     }
 
     return (
-        <div className={classes.root}>
+        <Root>
             <TargetHeader page={pageType} target={friendlyTarget || target} pdsOnly={otherProps.pdsOnly}/>
             {mainContent}
-        </div>
+        </Root>
     )
 }
