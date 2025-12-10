@@ -92,7 +92,13 @@ function ContextLink({item, displayTag, active}) {
 }
 
 function nameFinder(item) {
-    return item.display_name ? item.display_name : item.title ? item.title : item.identifier
+    const existsAndIsString = (val) => val !== undefined && val !== null && (typeof val === 'string' || val instanceof String)
+    if(existsAndIsString(item.display_name)) return item.display_name
+    if(existsAndIsString(item.title)) return item.title
+    if(existsAndIsString(item.lidvid)) return item.lidvid
+    if(existsAndIsString(item.identifier)) return item.identifier
+    if(item.identifier instanceof Array && item.identifier.length > 0) return item.identifier[0]
+    return item + "";
 }
 
 function ContextCardList({items, sorter, ...otherProps}) {    
