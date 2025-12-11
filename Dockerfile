@@ -1,7 +1,7 @@
 # Dockerfile
 
 # base image
-FROM node:16-alpine
+FROM node:22-alpine
 
 # create & set working directory
 RUN mkdir -p /usr/src
@@ -16,4 +16,4 @@ RUN npm install
 # start app
 RUN npm run build
 EXPOSE 3000
-CMD npm run start
+CMD ["npm", "start"]
