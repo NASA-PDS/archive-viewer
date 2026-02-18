@@ -32,10 +32,10 @@ const missions = [
         identifier: 'urn:nasa:pds:context:investigation:mission.hayabusa',
         title: 'Hayabusa'
     },
-    {
-        identifier: 'urn:jaxa:darts:context:investigation:mission.hyb2',
-        title: 'Hayabusa 2'
-    },
+    // {
+    //     identifier: 'urn:jaxa:darts:context:investigation:mission.hyb2',
+    //     title: 'Hayabusa 2'
+    // },
     {
         identifier: 'urn:esa:psa:context:investigation:mission.international_rosetta_mission',
         title: 'Rosetta'
