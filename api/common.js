@@ -13,18 +13,40 @@ const defaultParameters = () => { return {
     start: 0
 }}
 
+function getServerAuthHeaders() {
+    if(typeof window !== 'undefined') {
+        return {}
+    }
+    const user = process.env.SOLR_USER
+    const pass = process.env.SOLR_PASS
+    if(!user || !pass) {
+        return {}
+    }
+    return {
+        Authorization: 'Basic ' + Buffer.from(`${user}:${pass}`).toString('base64')
+    }
+}
+
 // Base-level solr fetch function, that all other functions will eventually call. 
 // Recursively fetches all results for a particular Solr query
 export function httpGet(endpoint, params, withCount, continuingFrom) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
     continuingFrom = continuingFrom || []
+    if(typeof window !== 'undefined') {
+        const query = paramsWithDefaultsApplied?.q || null
+        console.info('[runtime-fetch:httpGet]', { endpoint, query, rows: paramsWithDefaultsApplied?.rows, start: paramsWithDefaultsApplied?.start })
+    }
     if(params.q === "") {
         // don't let poorly formed queries through
         return Promise.resolve([])
     }
 
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied, timeout: defaultTimeout }).then(response => {
+        web.get(endpoint, {
+            params: paramsWithDefaultsApplied,
+            timeout: defaultTimeout,
+            headers: getServerAuthHeaders()
+        }).then(response => {
             let fromSolr = response.data
             
             if(!fromSolr || !fromSolr.response) {
@@ -220,7 +242,7 @@ export function stitchWithWebFields(fields, route) {
         if(!previousResult || previousResult.length === 0) return Promise.resolve([])
 
         // for client side requests that are in pds-only mode, skip this step entirely
-        if(!!window && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
+        if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
             return Promise.resolve(previousResult)
         }
             

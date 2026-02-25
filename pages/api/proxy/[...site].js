@@ -48,7 +48,7 @@ async function handler(req, res) {
 
 function addAuthorization(proxyReq, req, res) {
     // add basic authorization header to request
-    let auth = 'Basic ' + Buffer.from(process.env.NEXT_PUBLIC_SOLR_USER + ':' + process.env.NEXT_PUBLIC_SOLR_PASS).toString('base64')
+    let auth = 'Basic ' + Buffer.from(process.env.SOLR_USER + ':' + process.env.SOLR_PASS).toString('base64')
     proxyReq.setHeader('Authorization', auth)
 }
 

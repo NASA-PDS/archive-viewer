@@ -1,16 +1,18 @@
-import { familyLookup } from 'api/context';
-import { getBundlesForCollection } from 'api/dataset';
-import ErrorMessage from 'components/Error.js';
 import { Bundle, Collection } from 'components/pages/Dataset';
 import React, { useEffect, useState } from 'react';
 import MissionContext from './MissionContext';
 import TargetContext from './TargetContext';
 import { types, contexts, resolveContext } from 'services/pages'
+import ErrorContext from './ErrorContext';
+import { familyLookup } from 'api/context';
+import { getBundlesForCollection } from 'api/dataset';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 export default function UnknownContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
-    const [missionFamily, setMissionFamily] = useState(null)
-    const [bundles, setBundles] = useState(null)
+    const prefetch = props.prefetch || {}
+    const [missionFamily, setMissionFamily] = useState(prefetch.family || null)
+    const [bundles, setBundles] = useState(prefetch.collectionBundles || null)
     const [error, setError] = useState(null)
 
     let target = null
@@ -19,15 +21,21 @@ export default function UnknownContext(props) {
     } 
     
     useEffect(() => {
-        familyLookup(model).then(results => {
-            if(results.missions && results.missions.length > 0) { 
-                setMissionFamily(results)
-            } 
-        }, setError)
-        if(type === types.COLLECTION) {
-            getBundlesForCollection(model).then(setBundles, setError)
+        if(prefetch.family) {
+            setMissionFamily(prefetch.family)
+        } else {
+            logPrefetchFallback('UnknownContext:familyLookup', { identifier: model?.identifier || null })
+            familyLookup(model).then(setMissionFamily, setError)
         }
-    }, [lidvid])
+        if(type === types.COLLECTION) {
+            if(prefetch.collectionBundles) {
+                setBundles(prefetch.collectionBundles)
+            } else {
+                logPrefetchFallback('UnknownContext:getBundlesForCollection', { identifier: model?.identifier || null })
+                getBundlesForCollection(model).then(setBundles, setError)
+            }
+        }
+    }, [lidvid, prefetch.family, prefetch.collectionBundles, model, type])
 
     if(!!error) {
         return <ErrorContext error={error} lidvid={lidvid}/>
@@ -39,7 +47,7 @@ export default function UnknownContext(props) {
     // make sure we're not in the middle of looking up bundles before presenting mission context though
     if([contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN, contexts.MISSION_INSTRUMENT_DATA, contexts.MISSION_MORE_DATA].includes(resolvedContext)
         && !(type === types.COLLECTION && !bundles)) {
-        return <MissionContext family={missionFamily} {...props}/>
+        return <MissionContext family={missionFamily} disableFamilyLookup={true} {...props}/>
     }
 
     if(!!target && [contexts.TARGET, contexts.TARGET_DERIVED_DATA, contexts.TARGET_MORE_DATA].includes(resolvedContext)) {
@@ -47,8 +55,8 @@ export default function UnknownContext(props) {
     }
 
     // Can't figure it out (yet?), just show stuff
-    if(type === types.BUNDLE) return <Bundle dataset={model} {...props}/>
-    if(type === types.COLLECTION) return <Collection dataset={model} {...props}/>
+    if(type === types.BUNDLE) return <Bundle dataset={model} prefetchedCollections={prefetch.bundleCollections} {...props}/>
+    if(type === types.COLLECTION) return <Collection dataset={model} prefetchedBundles={prefetch.collectionBundles} {...props}/>
 
     return <ErrorContext error={new Error('Unknown')} lidvid={lidvid}/>
 }

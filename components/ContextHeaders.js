@@ -95,7 +95,6 @@ function MissionHeaderComponent(props) {
 function MissionTabBar({lidvid, page, mission, spacecraft, model}) {
 
     if(!mission) { return <SkeletonTabBar tabCount={7}/>}
-    console.log('MissionTabBar', {lidvid, page, mission, spacecraft, model})
     let LID = new LogicalIdentifier(lidvid)
 
     let tabValue

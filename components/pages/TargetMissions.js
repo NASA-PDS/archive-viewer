@@ -1,22 +1,28 @@
 import { Typography } from '@mui/material';
-import { getMissionsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { MissionGroupedList } from 'components/GroupedList';
 import LoadingWrapper from 'components/LoadingWrapper';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
+import { getMissionsForTarget } from 'api/target';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 export default function TargetMissions(props) {
     const { target } = props
-    const [missions, setMissions] = useState(null)
+    const [missions, setMissions] = useState(props.prefetchedMissions || null)
 
     useEffect(() => {
-        getMissionsForTarget(target).then(setMissions, er => console.error(er))
+        if(props.prefetchedMissions) {
+            setMissions(props.prefetchedMissions)
+        } else {
+            logPrefetchFallback('TargetMissions:getMissionsForTarget', { identifier: target?.identifier || null })
+            getMissionsForTarget(target).then(setMissions, console.error)
+        }
 
         return function cleanup() {
             setMissions(null)
         }
-    }, [target])
+    }, [target, props.prefetchedMissions])
 
 
     return (

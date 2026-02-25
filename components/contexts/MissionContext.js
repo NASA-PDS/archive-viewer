@@ -1,6 +1,4 @@
 import { styled } from '@mui/material/styles';
-import { familyLookup } from 'api/context';
-import { getFriendlyMissions } from 'api/mission';
 import { MissionHeader } from 'components/ContextHeaders';
 import { Bundle, Collection } from 'components/pages/Dataset.js';
 import Instrument from 'components/pages/Instrument';
@@ -14,6 +12,8 @@ import React, { useEffect, useState } from 'react';
 import { pagePaths, types } from 'services/pages.js';
 import ErrorContext from './ErrorContext';
 import { contexts } from 'services/pages';
+import { familyLookup } from 'api/context';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 const drawerWidth = 360;
 
@@ -23,6 +23,7 @@ const Root = styled('div')(({ theme }) => ({
 
 export default function MissionContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
+    const prefetch = props.prefetch || {}
     const [family, setFamily] = useState(null)
     const [mission, setMission] = useState(null)
     const [error, setError] = useState(null)
@@ -37,9 +38,11 @@ export default function MissionContext(props) {
                 setFamily(results)
                 setMission(null)
                 setWarningDismissed(false)
-                getFriendlyMissions(results.missions).then(missions => {
-                    setMission(missions.find(mission => mission.identifier === newMissionLid))
-                })
+                if(prefetch.friendlyMission && prefetch.friendlyMission.identifier === newMissionLid) {
+                    setMission(prefetch.friendlyMission)
+                } else {
+                    setMission(results.missions.find(mission => mission.identifier === newMissionLid) || results.missions[0] || null)
+                }
             }
         } else {
             setError(new Error("Could not find mission context for LIDVID"))
@@ -47,10 +50,17 @@ export default function MissionContext(props) {
     }
 
     useEffect(() => {
+        if(props.disableFamilyLookup && !prefetch.family && !props.family) {
+            return
+        }
+
         // use the prefetched family if it's already there
-        if(!!props.family) {
+        if(!!prefetch.family) {
+            unpackFamily(prefetch.family)
+        } else if(!!props.family) {
             unpackFamily(props.family)
         } else {
+            logPrefetchFallback('MissionContext:familyLookup', { lidvid, type: model?.data_class || null })
             familyLookup(model).then(unpackFamily, setError)
         }
 
@@ -67,28 +77,28 @@ export default function MissionContext(props) {
     const { instruments, spacecraft, targets } = (family || {})
 
     let mainContent = null, pageType = null
-    if(!!extraPath && extraPath.length > 0) {
+        if(!!extraPath && extraPath.length > 0) {
         if(!!extraPath.includes(pagePaths[types.MISSIONTARGETS])) {
-            mainContent = <MissionTargets mission={model} targets={targets} {...otherProps} />
+            mainContent = <MissionTargets mission={model} targets={targets} prefetchedTargets={prefetch.missionTargets} {...otherProps} />
             pageType = types.MISSIONTARGETS
         } else if(!!extraPath.includes(pagePaths[types.MISSIONINSTRUMENTS])) {
-            mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} {...otherProps} />
+            mainContent = <MissionInstruments mission={model} spacecraft={spacecraft} instruments={instruments} prefetchedFriendlySpacecraft={prefetch.missionSpacecraft} prefetchedFriendlyInstruments={prefetch.missionInstruments} {...otherProps} />
             pageType = types.MISSIONINSTRUMENTS
         } else if(!!extraPath.includes(pagePaths[types.MISSIONTOOLS])) {
             mainContent = <MissionTools mission={model} instruments={instruments} />
             pageType = types.MISSIONTOOLS
         } else if(!!extraPath.includes(pagePaths[types.MOREDATA])) {
-            mainContent = <MoreData missions={[model]} targets={targets} context={contexts.MISSION_MORE_DATA} />
+            mainContent = <MoreData missions={[model]} targets={targets} context={contexts.MISSION_MORE_DATA} prefetchedDatasets={prefetch.moreDatasets} prefetchedCollectionsById={prefetch.moreDatasetCollectionsById} />
             pageType = types.MOREDATA
         }
     } else {
         pageType = type
         switch(type) {
-            case types.MISSION: mainContent = <Mission mission={model} {...otherProps}  />; break;
-            case types.INSTRUMENT: mainContent = <Instrument instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} {...otherProps}  />; break;
-            case types.SPACECRAFT: mainContent = <Spacecraft spacecraft={model} siblings={spacecraft} instruments={instruments} mission={mission} {...otherProps} />; break;
-            case types.BUNDLE: mainContent = <Bundle dataset={model} context={mission} {...otherProps}/>; break;
-            case types.COLLECTION: mainContent = <Collection dataset={model} context={mission} {...otherProps} />; break;
+            case types.MISSION: mainContent = <Mission mission={model} prefetchedPrimaryBundle={prefetch.primaryBundle} {...otherProps}  />; break;
+            case types.INSTRUMENT: mainContent = <Instrument instrument={model} siblings={instruments} spacecraft={spacecraft} mission={mission} prefetchedDatasets={prefetch.instrumentDatasets} prefetchedPrimaryBundle={prefetch.instrumentPrimaryBundle} prefetchedFriendlyInstruments={prefetch.instrumentSiblings} {...otherProps}  />; break;
+            case types.SPACECRAFT: mainContent = <Spacecraft spacecraft={model} siblings={spacecraft} instruments={instruments} mission={mission} prefetchedFriendlySpacecraft={prefetch.spacecraftSiblings} {...otherProps} />; break;
+            case types.BUNDLE: mainContent = <Bundle dataset={model} context={mission} prefetchedCollections={prefetch.bundleCollections} {...otherProps}/>; break;
+            case types.COLLECTION: mainContent = <Collection dataset={model} context={mission} prefetchedBundles={prefetch.collectionBundles} {...otherProps} />; break;
             default: console.error('unable to determine main content')
         }
     }

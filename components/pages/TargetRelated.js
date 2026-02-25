@@ -1,21 +1,27 @@
 import { Typography } from '@mui/material';
-import { getRelatedTargetsForTarget } from 'api/target';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { RelatedTargetGroupedList } from 'components/GroupedList';
 import LoadingWrapper from 'components/LoadingWrapper';
 import PrimaryLayout from 'components/PrimaryLayout';
 import React, { useEffect, useState } from 'react';
+import { getRelatedTargetsForTarget } from 'api/target';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 export default function TargetRelated(props) {
     const { target } = props
-    const [relatedTargets, setRelatedTargets] = useState(null)
+    const [relatedTargets, setRelatedTargets] = useState(props.prefetchedRelatedTargets || null)
 
     useEffect(() => {
-        getRelatedTargetsForTarget(target).then(setRelatedTargets, er => console.error(er))
+        if(props.prefetchedRelatedTargets) {
+            setRelatedTargets(props.prefetchedRelatedTargets)
+        } else {
+            logPrefetchFallback('TargetRelated:getRelatedTargetsForTarget', { identifier: target?.identifier || null })
+            getRelatedTargetsForTarget(target).then(setRelatedTargets, console.error)
+        }
         return function cleanup() { 
             setRelatedTargets(null)
         }
-    }, [props.target])
+    }, [props.target, props.prefetchedRelatedTargets])
 
     return (
         <PrimaryLayout primary={

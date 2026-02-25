@@ -91,7 +91,8 @@ const themes = {
 const defaultTheme = themeNames.dark
 
 export function setTheme(props, context) {
-    const cookies = cookie.parse(context.req.headers.cookie || '')
+    const requestCookies = context?.req?.headers?.cookie || ''
+    const cookies = cookie.parse(requestCookies)
     props.themeName = cookies.SBNTHEME || defaultTheme
 }
 export function getTheme (props) {

@@ -33,7 +33,7 @@ export function getDerivedDatasetsForTarget(target) {
 
 export function getRelatedTargetsForTarget(target) {
     // for client side requests that are in pds-only mode, skip this step entirely
-    if(!!window && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
+    if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
         return Promise.resolve([])
     }
 

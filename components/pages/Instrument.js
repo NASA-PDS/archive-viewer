@@ -1,6 +1,4 @@
 import { Button, Typography } from '@mui/material';
-import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument.js';
-import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
 import { InstrumentBreadcrumbs } from 'components/Breadcrumbs';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
@@ -10,29 +8,52 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
+import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument';
+import { getFriendlyInstrumentsForSpacecraft } from 'api/spacecraft';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
-export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly}) {
-    const [datasets, setDatasets] = useState(null)
-    const [instruments, setInstruments] = useState(siblings)
-    const [primaryBundle, setPrimaryBundle] = useState(null)
+export default function Instrument({mission, instrument, siblings, spacecraft, lidvid, pdsOnly, prefetchedDatasets, prefetchedPrimaryBundle, prefetchedFriendlyInstruments}) {
+    const [datasets, setDatasets] = useState(prefetchedDatasets || null)
+    const [instruments, setInstruments] = useState(prefetchedFriendlyInstruments || siblings)
+    const [primaryBundle, setPrimaryBundle] = useState(prefetchedPrimaryBundle || null)
 
     useEffect(() => {
-        getDatasetsForInstrument(instrument).then(setDatasets, console.error)
-        getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, console.error)
+        if(prefetchedDatasets) {
+            setDatasets(prefetchedDatasets)
+        } else {
+            logPrefetchFallback('Instrument:getDatasetsForInstrument', { identifier: instrument?.identifier || null })
+            getDatasetsForInstrument(instrument).then(setDatasets, console.error)
+        }
+
+        if(prefetchedPrimaryBundle) {
+            setPrimaryBundle(prefetchedPrimaryBundle)
+        } else if(!pdsOnly) {
+            logPrefetchFallback('Instrument:getPrimaryBundleForInstrument', { identifier: instrument?.identifier || null })
+            getPrimaryBundleForInstrument(instrument).then(setPrimaryBundle, console.error)
+        }
 
         return function cleanup() {
             setDatasets(null)
             setPrimaryBundle(null)
         }
-    }, [lidvid])
+    }, [lidvid, prefetchedDatasets, prefetchedPrimaryBundle, instrument, pdsOnly])
 
     useEffect(() => {
-        if(!!siblings && !!spacecraft) getFriendlyInstrumentsForSpacecraft(siblings, spacecraft).then(setInstruments, console.error)
+        if(prefetchedFriendlyInstruments) {
+            setInstruments(prefetchedFriendlyInstruments)
+        } else if(!!siblings) {
+            if(!!spacecraft) {
+                logPrefetchFallback('Instrument:getFriendlyInstrumentsForSpacecraft', { identifier: instrument?.identifier || null })
+                getFriendlyInstrumentsForSpacecraft(siblings, spacecraft).then(setInstruments, () => setInstruments(siblings))
+            } else {
+                setInstruments(siblings)
+            }
+        }
 
         return function cleanup() {
             setInstruments(null)
         }
-    }, [siblings, spacecraft])
+    }, [siblings, spacecraft, prefetchedFriendlyInstruments])
 
     const showPrimaryBundle = primaryBundle && !pdsOnly
     const showLabeledDatasets = datasets && datasets.some(dataset => !!dataset.relatedBy.label)

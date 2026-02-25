@@ -19,7 +19,7 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
     paddingRight: theme.spacing(2)
 }));
 
-export default function DatasetTable({ groups }) {
+export default function DatasetTable({ groups, prefetchedCollectionsById }) {
     if(!groups || groups.length === 0) return null
     return (
         <TableContainer sx={{ marginTop: 2, marginBottom: 2 }}>
@@ -41,7 +41,7 @@ export default function DatasetTable({ groups }) {
                                 <TableCell/>
                                 <TableCell colSpan={5}><Typography variant="h4">{group.name}</Typography></TableCell>
                             </TableRow>}
-                            {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier}/>)}
+                            {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier} prefetchedCollections={prefetchedCollectionsById?.[dataset.identifier]} />)}
                         </React.Fragment>
                     )}
                 </TableBody>
@@ -50,7 +50,7 @@ export default function DatasetTable({ groups }) {
     );
 }
 
-function DatasetRow({dataset}) {
+function DatasetRow({dataset, prefetchedCollections}) {
     const [open, setOpen] = useState(false)
 
     return <>
@@ -79,16 +79,16 @@ function DatasetRow({dataset}) {
         <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <DatasetSynopsis dataset={dataset}/>
+                <DatasetSynopsis dataset={dataset} prefetchedCollections={prefetchedCollections}/>
             </Collapse>
             </TableCell>
         </TableRow>
         </>
 }
 
-function DatasetSynopsis({dataset}) {
+function DatasetSynopsis({dataset, prefetchedCollections}) {
     return <Box p={2}>
         <Metadata model={dataset} tagType={TagTypes.dataset}/>
-        <CollectionList dataset={dataset} />
+        <CollectionList dataset={dataset} prefetchedCollections={prefetchedCollections} />
     </Box>
 }
