@@ -32,8 +32,15 @@ export function getDatasetsForMission(mission, spacecraft) {
         q: `(product_class:"Product_Bundle" AND (${[missionQuery, spacecraftQuery].filter(el => !!el).join(' OR ')}))`,
     }
     return httpGet(router.datasetCore, params)
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
+                // first just approve anything that explicitly has this context
+                const context = resolveContext(bundle)
+                if([contexts.MISSION_MORE_DATA, contexts.MORE_DATA].includes(context))
+                {
+                    return true
+                }
                 // filter out things that have one instrument
                 if (bundle.instrument_ref && bundle.instrument_ref.length === 1) {
                     return false
@@ -42,12 +49,10 @@ export function getDatasetsForMission(mission, spacecraft) {
                 if (mission.mission_bundle && bundle.identifier === mission.mission_bundle) {
                     return false
                 }
-                const context = resolveContext(bundle)
                 return [contexts.MISSION, contexts.MISSIONANDTARGET, contexts.MISSION_MORE_DATA, contexts.MORE_DATA, contexts.UNKNOWN].includes(context)
             }))
         })
         .then(stitchWithInternalReferences('instrument_ref', router.instrumentsWeb))
-        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
 }
 
 export function getFriendlyMissions(missions) {
