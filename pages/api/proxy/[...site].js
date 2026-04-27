@@ -1,8 +1,9 @@
 import { serviceAvailable } from 'api/common'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import runtime from 'services/runtime'
+import { getSolrBaseUrl } from 'services/solr'
 
-const localSolr = process.env.NEXT_PUBLIC_SUPPLEMENTAL_SOLR || 'https://sbnpds4.psi.edu/solr'
+const localSolr = getSolrBaseUrl()
 
 // Helper method to wait for a middleware to execute before continuing
 // And to throw an error when an error happens in a middleware

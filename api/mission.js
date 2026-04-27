@@ -16,7 +16,18 @@ export function getSpacecraftForMission(mission) {
 
 export function getPrimaryBundleForMission(mission) {
     if(!mission || !mission.mission_bundle) { return Promise.resolve(null) }
-    return initialLookup(mission.mission_bundle)
+    return initialLookup(mission.mission_bundle).then(
+        doc => doc,
+        err => {
+            if(err && err.message && err.message.includes('Nothing found with identifier')) {
+                return null
+            }
+            if(err && err.message === 'Superseded version' && err.superseded) {
+                return err.superseded
+            }
+            return Promise.reject(err)
+        }
+    )
 }
 
 export function getFriendlyTargetsForMission(targets, missionLid) {

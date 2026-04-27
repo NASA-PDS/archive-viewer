@@ -1,5 +1,6 @@
+import { getCoreSelectUrl, getWebCollectionSelectUrl } from 'services/solr'
+
 const isServer = typeof window === 'undefined'
-const localSolr = process.env.NEXT_PUBLIC_SUPPLEMENTAL_SOLR || 'https://sbnpds4.psi.edu/solr'
 const appOrigin = (typeof window !== "undefined" ? window.location.origin : 'http://localhost:3000')
 
 const webProxy = `${appOrigin}/api/proxy/web`
@@ -18,8 +19,8 @@ const toolsCollection = 'web-tools-alias'
 const targetMissionRelationshipTypesCollection = 'web-targetmissionrelationshiptypes-alias'
 const instrumentSpacecraftRelationshipTypesCollection = 'web-instrumentspacecraftrelationshiptypes-alias'
 
-const coreSelect = `${localSolr}/pds-alias/select`
-const webSelect = (collection) => `${localSolr}/${collection}/select`
+const coreSelect = getCoreSelectUrl()
+const webSelect = (collection) => getWebCollectionSelectUrl(collection)
 
 export default {
     heartbeat: isServer ? coreSelect : `${heartbeatProxy}`,

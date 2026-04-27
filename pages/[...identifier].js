@@ -1,11 +1,10 @@
-import { getMoreDatasetsForContext, initialLookup } from 'api/common';
+import { axiosGetWithRetry, getMoreDatasetsForContext, initialLookup } from 'api/common';
 import { familyLookup } from 'api/context';
 import { getBundlesForCollection, getCollectionsForDataset } from 'api/dataset';
 import { getDatasetsForInstrument, getPrimaryBundleForInstrument } from 'api/instrument';
 import { getFriendlyMissions, getFriendlyTargetsForMission, getPrimaryBundleForMission } from 'api/mission';
 import { getFriendlyInstrumentsForSpacecraft, getFriendlySpacecraft } from 'api/spacecraft';
 import { getDerivedDatasetsForTarget, getFriendlyTargets, getMissionsForTarget, getRelatedTargetsForTarget } from 'api/target';
-import web from 'axios';
 import MissionContext from 'components/contexts/MissionContext';
 import TargetContext from 'components/contexts/TargetContext';
 import UnknownContext from 'components/contexts/UnknownContext';
@@ -20,6 +19,9 @@ import GlobalContext from 'components/contexts/GlobalContext';
 import Themed from 'components/Themed';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
+import { getCoreSelectUrl } from 'services/solr'
+
+const staticPropsCacheEnabled = process.env.USE_STATIC_PROPS_CACHE === '1'
 // Set up logging - only on server side
 // if (typeof window === 'undefined') {
 //     const betterLogging = require('better-logging').default;
@@ -158,6 +160,21 @@ export async function getStaticProps(context) {
     const routePath = '/' + params.identifier.join('/')
     let initialLookupError
     let prefetchErrors = []
+    const cachedResponse = readStaticPropsCache(params.identifier)
+
+    if(cachedResponse) {
+        appendBuildReport({
+            phase: 'getStaticProps',
+            path: routePath,
+            lidvid,
+            type: cachedResponse?.props?.type || null,
+            status: 'cache_hit',
+            initialLookupError: null,
+            prefetchErrorCount: 0,
+            prefetchErrors: [],
+        })
+        return cachedResponse
+    }
 
     try {
         const result = await initialLookup(lidvid, false)
@@ -202,9 +219,12 @@ export async function getStaticProps(context) {
 
     setTheme(props, context)
 
-    return {
+    const response = {
         props
     }
+    writeStaticPropsCache(params.identifier, response)
+
+    return response
 
 }
 
@@ -472,15 +492,14 @@ function getSolrAuthHeader() {
 }
 
 async function fetchAllCoreTypeDocs() {
-    const localSolr = process.env.NEXT_PUBLIC_SUPPLEMENTAL_SOLR || 'https://sbnpds4.psi.edu/solr'
-    const endpoint = `${localSolr}/pds-alias/select`
+    const endpoint = getCoreSelectUrl()
     const rows = 1000
     const docs = []
     let start = 0
     let numFound = Number.POSITIVE_INFINITY
 
     while(start < numFound) {
-        const response = await web.get(endpoint, {
+        const response = await axiosGetWithRetry(endpoint, {
             params: {
                 wt: 'json',
                 q: '*:*',
@@ -512,6 +531,9 @@ async function fetchAllCoreTypeDocs() {
     return docs
 }
 
+// Keep low; all Solr fetches also share a global in-process cap (see services/solrHttpLimit.js)
+const DATASET_COLLECTION_PREFETCH_CONCURRENCY = 2
+
 async function buildDatasetCollectionsById(datasets, safePrefetch, labelPrefix) {
     const mapped = {}
     if(!Array.isArray(datasets) || datasets.length === 0) {
@@ -519,10 +541,15 @@ async function buildDatasetCollectionsById(datasets, safePrefetch, labelPrefix) 
     }
 
     const targets = datasets.filter(dataset => Array.isArray(dataset?.collection_ref) && dataset.collection_ref.length > 0)
-    const results = await Promise.all(targets.map(dataset => 
-        safePrefetch(`${labelPrefix}:${dataset.identifier}`, () => getCollectionsForDataset(dataset))
-            .then(collections => ({ identifier: dataset.identifier, collections }))
-    ))
+    const results = []
+    for (let i = 0; i < targets.length; i += DATASET_COLLECTION_PREFETCH_CONCURRENCY) {
+        const batch = targets.slice(i, i + DATASET_COLLECTION_PREFETCH_CONCURRENCY)
+        const batchResults = await Promise.all(batch.map(dataset => 
+            safePrefetch(`${labelPrefix}:${dataset.identifier}`, () => getCollectionsForDataset(dataset))
+                .then(collections => ({ identifier: dataset.identifier, collections }))
+        ))
+        results.push(...batchResults)
+    }
 
     results.forEach(result => {
         if(result?.collections !== undefined) {
@@ -544,11 +571,52 @@ function summarizeError(error) {
         name: error.name || null,
         code: error.code || error.errno || null,
         message: error.message || String(error),
+        solrRequest: error.solrRequest || null,
     }
 }
 
 function getBuildReportPath() {
     return process.env.STATIC_BUILD_REPORT_PATH || `${process.cwd()}/.next/static-build-report.ndjson`
+}
+
+function getStaticPropsCacheDir() {
+    return `${process.cwd()}/.next/static-props-cache`
+}
+
+function getStaticPropsCachePath(identifierSegments) {
+    return `${getStaticPropsCacheDir()}/${identifierSegments.map(encodeURIComponent).join('__')}.json`
+}
+
+function readStaticPropsCache(identifierSegments) {
+    if(!staticPropsCacheEnabled || typeof window !== 'undefined') {
+        return null
+    }
+    try {
+        const fs = require('fs')
+        const cachePath = getStaticPropsCachePath(identifierSegments)
+        if(!fs.existsSync(cachePath)) {
+            return null
+        }
+        return JSON.parse(fs.readFileSync(cachePath, 'utf8'))
+    } catch (error) {
+        console.log('Failed to read static props cache:', error?.message || error)
+        return null
+    }
+}
+
+function writeStaticPropsCache(identifierSegments, response) {
+    if(typeof window !== 'undefined') {
+        return
+    }
+    try {
+        const fs = require('fs')
+        const path = require('path')
+        const cachePath = getStaticPropsCachePath(identifierSegments)
+        fs.mkdirSync(path.dirname(cachePath), { recursive: true })
+        fs.writeFileSync(cachePath, JSON.stringify(response), 'utf8')
+    } catch (error) {
+        console.log('Failed to write static props cache:', error?.message || error)
+    }
 }
 
 function resetBuildReport() {

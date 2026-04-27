@@ -70,7 +70,18 @@ export function getSiblingInstruments(siblings, spacecraft) {
 
 export function getPrimaryBundleForInstrument(instrument) {
     if(!instrument || !instrument.instrument_bundle) { return Promise.resolve(null) }
-    return initialLookup(instrument.instrument_bundle)
+    return initialLookup(instrument.instrument_bundle).then(
+        doc => doc,
+        err => {
+            if(err && err.message && err.message.includes('Nothing found with identifier')) {
+                return null
+            }
+            if(err && err.message === 'Superseded version' && err.superseded) {
+                return err.superseded
+            }
+            return Promise.reject(err)
+        }
+    )
 }
 
 export function filterInstrumentsForSpacecraft(instruments, spacecraft) {

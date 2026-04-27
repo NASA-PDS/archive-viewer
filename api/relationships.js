@@ -73,6 +73,12 @@ const configureForType = (type) => {
 export function stitchWithRelationships(type, sourceLids) {
     return (results) => {
         if(!results || results.length === 0) return Promise.resolve([])
+        if(!Array.isArray(sourceLids) || sourceLids.length === 0) {
+            return Promise.resolve(results.map(doc => ({
+                ...doc,
+                relatedBy: unknownRelationship
+            })))
+        }
         // for client side requests that are in pds-only mode, skip this step entirely
         if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
             return Promise.resolve(results)
