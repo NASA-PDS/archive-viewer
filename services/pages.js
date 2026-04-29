@@ -14,7 +14,7 @@ export const types = {
     MISSIONINSTRUMENTS: 'missionInstruments',
     MISSIONTOOLS: 'missionTools',
     MISSIONBUNDLE: 'missionBundle',
-    MISSIONOTHER: 'missionOther',
+    MOREDATA: 'moreData',
     TARGETRELATED: 'targetRelated',
     TARGETDATA: 'targetData',
     TARGETMISSIONS: 'targetMissions',
@@ -26,7 +26,7 @@ export const pagePaths = {
     [types.MISSIONINSTRUMENTS]: 'instruments',
     [types.MISSIONTARGETS]: 'targets',
     [types.MISSIONTOOLS]: 'tools',
-    [types.MISSIONOTHER]: 'other',
+    [types.MOREDATA]: 'more',
     [types.TARGETRELATED]: 'related',
     [types.TARGETDATA]: 'data',
     [types.TARGETTOOLS]: 'tools',
@@ -34,9 +34,18 @@ export const pagePaths = {
 }
 
 export const contexts = {
+    // legacy settings
     MISSION: 'mission',
     TARGET: 'target',
     MISSIONANDTARGET: 'both',
+
+    // new settings
+    MISSION_INSTRUMENT_DATA: 'mission_instrument_data',
+    MISSION_MORE_DATA: 'mission_more_data',
+    TARGET_DERIVED_DATA: 'target_derived_data',
+    TARGET_MORE_DATA: 'target_more_data',
+    MORE_DATA: 'more_data',
+
     UNKNOWN: 'unknown'
 }
 
@@ -61,18 +70,13 @@ export const resolveType = function(fromSolr) {
 }
 
 export const resolveContext = (dataset, parentBundles) => {
-    switch(dataset.primary_context) {
-        case contexts.MISSION: return contexts.MISSION
-        case contexts.TARGET: return contexts.TARGET
-        case contexts.MISSIONANDTARGET: return contexts.MISSIONANDTARGET
-        case undefined: {
-            if(!!parentBundles) {
-                if(parentBundles.every(bundle => resolveContext(bundle) === contexts.MISSION)) return contexts.MISSION
-                if(parentBundles.every(bundle => resolveContext(bundle) === contexts.TARGET)) return contexts.TARGET
-            }
-            return contexts.UNKNOWN
+    if(!!dataset.primary_context) {
+        if(Object.values(contexts).includes(dataset.primary_context)) {
+            return dataset.primary_context
         }
     }
+
+    return contexts.UNKNOWN
 }
 
 const themeNames = {
@@ -87,7 +91,8 @@ const themes = {
 const defaultTheme = themeNames.dark
 
 export function setTheme(props, context) {
-    const cookies = cookie.parse(context.req.headers.cookie || '')
+    const requestCookies = context?.req?.headers?.cookie || ''
+    const cookies = cookie.parse(requestCookies)
     props.themeName = cookies.SBNTHEME || defaultTheme
 }
 export function getTheme (props) {

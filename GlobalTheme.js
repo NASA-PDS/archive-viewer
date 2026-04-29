@@ -68,6 +68,13 @@ const GlobalTheme = createTheme({
         h6: {
             fontSize: '1.3rem',
         },
+        subtitle1: {
+            fontSize: '1.3rem',
+            marginTop: -16,
+            marginBottom: 24,
+            fontWeight: 500,
+            color: '#C0C2C4'
+        },
     },
     components: {
         MuiAccordionSummary: {

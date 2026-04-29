@@ -14,7 +14,7 @@ export function getMissionsForTarget(target) {
         .then(stitchWithRelationships(relationshipTypes.fromTargetToMission, [target.identifier]))
 }
 
-export function getDatasetsForTarget(target) {
+export function getDerivedDatasetsForTarget(target) {
     let targetLid = new LID(target.identifier)
 
     let params = {
@@ -26,14 +26,14 @@ export function getDatasetsForTarget(target) {
         .then(datasets => {
             return Promise.resolve(datasets.filter(bundle => {
                 const context = resolveContext(bundle)
-                return [contexts.TARGET, contexts.MISSIONANDTARGET, contexts.UNKNOWN].includes(context)
+                return [contexts.TARGET, contexts.TARGET_DERIVED_DATA].includes(context)
             }))
         })
 }
 
 export function getRelatedTargetsForTarget(target) {
     // for client side requests that are in pds-only mode, skip this step entirely
-    if(!!window && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
+    if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
         return Promise.resolve([])
     }
 

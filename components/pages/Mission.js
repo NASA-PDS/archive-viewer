@@ -1,5 +1,4 @@
 import { Button, Typography } from '@mui/material';
-import { getPrimaryBundleForMission } from 'api/mission.js';
 import HTMLBox from 'components/HTMLBox';
 import InternalLink from 'components/InternalLink';
 import { Metadata } from "components/Metadata";
@@ -7,22 +6,28 @@ import PrimaryLayout from 'components/PrimaryLayout';
 import { LabeledListItem } from 'components/SplitListItem';
 import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
+import { getPrimaryBundleForMission } from 'api/mission';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 
-export default function Mission({mission, lidvid, pdsOnly}) {
-    const [primaryBundle, setPrimaryBundle] = useState(null)
+export default function Mission({mission, lidvid, pdsOnly, prefetchedPrimaryBundle}) {
+    const [primaryBundle, setPrimaryBundle] = useState(prefetchedPrimaryBundle || null)
 
     useEffect(() => {
-        if(!pdsOnly) { 
-            getPrimaryBundleForMission(mission).then((bundle) => {
-                setPrimaryBundle(bundle)
-            }, er => console.error(er))
+        if(prefetchedPrimaryBundle) {
+            setPrimaryBundle(prefetchedPrimaryBundle)
+            return
+        }
+
+        if(!pdsOnly) {
+            logPrefetchFallback('Mission:getPrimaryBundleForMission', { identifier: mission?.identifier || null })
+            getPrimaryBundleForMission(mission).then(setPrimaryBundle, console.error)
         }
 
         return function cleanup() { 
             setPrimaryBundle(null)
         }
-    }, [lidvid])
+    }, [lidvid, prefetchedPrimaryBundle, pdsOnly, mission])
 
     return (
         <PrimaryLayout primary={

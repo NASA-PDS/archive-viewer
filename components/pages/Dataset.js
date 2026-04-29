@@ -6,7 +6,6 @@ import FolderOutlined from '@mui/icons-material/FolderOutlined';
 import GetApp from '@mui/icons-material/GetApp';
 import OpenInNew from '@mui/icons-material/OpenInNew';
 import UnarchiveOutlined from '@mui/icons-material/UnarchiveOutlined';
-import { getBundlesForCollection } from 'api/dataset';
 import { DatasetBreadcrumbs } from 'components/Breadcrumbs';
 import CollectionNavLinks from 'components/CollectionNavLinks';
 import CollectionList from 'components/CollectionList.js';
@@ -21,6 +20,8 @@ import { TagTypes } from 'components/TagSearch.js';
 import TangentAccordion from 'components/TangentAccordion';
 import ActionButton from 'components/ActionButton';
 import React, { useEffect, useState } from 'react';
+import { getBundlesForCollection } from 'api/dataset';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 const MainTitle = styled(Typography)({
     marginTop: 0
@@ -91,15 +92,22 @@ const titles = {
     [types.PDS3]: "PDS3 Dataset"
 }
 
-function Dataset({dataset, mockup, context, pdsOnly, type}) {
+function Dataset({dataset, mockup, context, pdsOnly, type, prefetchedBundles, prefetchedCollections}) {
     
-    const [bundles, setBundles] = useState([])
+    const [bundles, setBundles] = useState(prefetchedBundles || [])
 
     useEffect(() => {
-        type === types.COLLECTION && getBundlesForCollection(dataset).then(result => {
-            setBundles(result)
-        }, console.error)
-    }, [dataset.identifier])
+        if(type !== types.COLLECTION) {
+            return
+        }
+
+        if(prefetchedBundles) {
+            setBundles(prefetchedBundles)
+        } else {
+            logPrefetchFallback('Dataset:getBundlesForCollection', { identifier: dataset?.identifier || null })
+            getBundlesForCollection(dataset).then(setBundles, console.error)
+        }
+    }, [dataset.identifier, type, prefetchedBundles])
 
     return (
         <PrimaryLayout itemScope itemType={type === types.BUNDLE ? "https://schema.org/DataCatalog" : "https://schema.org/Dataset" } primary={
@@ -120,7 +128,7 @@ function Dataset({dataset, mockup, context, pdsOnly, type}) {
             <BrowseLink dataset={dataset} type={type}/>
 
             { type === types.BUNDLE && 
-                <CollectionList dataset={dataset} />
+                <CollectionList dataset={dataset} prefetchedCollections={prefetchedCollections}/>
             }
             { type === types.COLLECTION && 
             <>

@@ -61,6 +61,9 @@ const groupByRelatedItems = (items, field) => {
 const groupByField = (items, field, order) => {
     if(!items) return []
     let insert = (item, groupName) => {
+        if(Array.isArray(groupName)) {
+            groupName = groupName[0]
+        }
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {!existingGroup.items.includes(item) && existingGroup.items.push(item)}
         else groups.push(new Group(groupName, [item], order ? order.findIndex(o => o === groupName) : 999 ))
@@ -78,6 +81,7 @@ const groupByField = (items, field, order) => {
 }
 
 const groupByFirstTag = (items) => {
+    if(!items) return []
     let insert = (item, groupName, order) => {
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
@@ -97,6 +101,9 @@ const groupByFirstTag = (items) => {
 
 const groupByLabelArray = (items, labels, order) => {
     let insert = (item, groupName) => {
+        if(Array.isArray(groupName)) {
+            groupName = groupName[0]
+        }
         let existingGroup = groups.find(group => group.name === groupName)
         if (!!existingGroup) {existingGroup.items.push(item)}
         else groups.push(new Group(groupName, [item], order.findIndex(o => o === groupName)))
@@ -109,8 +116,20 @@ const groupByLabelArray = (items, labels, order) => {
 
 }
 
+const groupByNothing = (items) => {
+    if(!items) return []
+    let group = new Group(miscGroupName, items, 999)
+    items.sort((a, b) => a.title.localeCompare(b.title))
+    items.forEach(item => {
+        if(!group.items.includes(item)) {
+            group.items.push(item)
+        }
+    })
+    return [group]
+}
+
 const downplayGroupsThreshold = 100
 const hiddenGroupsThreshold = 1000
 const miscGroupName = 'Other'
 
-export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}
+export { Group, groupByAttributedRelationship, groupByFirstTag, groupByRelatedItems, groupByLabelArray, groupByField, groupByNothing, downplayGroupsThreshold, hiddenGroupsThreshold, miscGroupName}

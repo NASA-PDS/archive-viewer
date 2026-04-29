@@ -2,29 +2,132 @@ import web from 'axios';
 import desolrize from 'services/desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
 import router from 'api/router.js'
-import { types, resolveType } from 'services/pages.js'
+import { runLimitedSolrRequest } from 'services/solrHttpLimit.js'
+import { types, resolveType, resolveContext, contexts } from 'services/pages.js'
 import { stitchWithTools } from './tools';
 
 const defaultFetchSize = 50
-const defaultTimeout = 10000
 const defaultParameters = () => { return {
     wt: 'json',
     rows: defaultFetchSize,
     start: 0
 }}
 
+function getSolrHttpTimeoutMs() {
+    const raw = process.env.SOLR_HTTP_TIMEOUT_MS
+    if(raw !== undefined && raw !== '') {
+        const n = Number.parseInt(raw, 10)
+        if(Number.isFinite(n) && n > 0) {
+            return n
+        }
+    }
+    return 10000
+}
+
+function getHttpMaxAttempts() {
+    if(typeof window !== 'undefined') {
+        return 3
+    }
+    const r = process.env.SOLR_HTTP_RETRIES
+    if(r !== undefined && r !== '') {
+        const n = Number.parseInt(r, 10)
+        if(Number.isFinite(n) && n >= 0) {
+            return n
+        }
+    }
+    if(process.env.NEXT_PHASE === 'phase-production-build') {
+        return 1
+    }
+    return 3
+}
+
+function isRetriableRequestError(err) {
+    if(!err) {
+        return false
+    }
+    const c = err.code
+    if(c === 'ECONNRESET' || c === 'ECONNABORTED' || c === 'ETIMEDOUT' || c === 'EPIPE' || c === 'ECONNREFUSED' || c === 'ENOTFOUND') {
+        return true
+    }
+    if(err.response && [429, 502, 503, 504].includes(err.response.status)) {
+        return true
+    }
+    if(err.response == null && err.request) {
+        return true
+    }
+    const msg = String(err.message || '').toLowerCase()
+    if(msg.includes('socket hang up') || msg.includes('network error') || msg.includes('timeout')) {
+        return true
+    }
+    return false
+}
+
+/**
+ * Resolves the same as axios.get, with limited concurrency to Solr and optional retries.
+ * Exported for build-time code paths (e.g. core Solr list) that use axios directly.
+ */
+export function axiosGetWithRetry(url, config) {
+    return runLimitedSolrRequest(() => {
+        const max = getHttpMaxAttempts()
+        function attempt(i) {
+            const started = Date.now()
+            return web.get(url, config).catch(err => {
+                err.solrRequest = {
+                    endpoint: url,
+                    q: config?.params?.q || null,
+                    fl: config?.params?.fl || null,
+                    rows: config?.params?.rows || null,
+                    start: config?.params?.start || null,
+                    timeout: config?.timeout || null,
+                    elapsedMs: Date.now() - started,
+                    attempt: i + 1,
+                    maxAttempts: max,
+                }
+                if(i >= max - 1 || !isRetriableRequestError(err)) {
+                    return Promise.reject(err)
+                }
+                const waitMs = 150 * (2 ** i)
+                return new Promise(r => setTimeout(r, waitMs)).then(() => attempt(i + 1))
+            })
+        }
+        return attempt(0)
+    })
+}
+
+function getServerAuthHeaders() {
+    if(typeof window !== 'undefined') {
+        return {}
+    }
+    const user = process.env.SOLR_USER
+    const pass = process.env.SOLR_PASS
+    if(!user || !pass) {
+        return {}
+    }
+    return {
+        Authorization: 'Basic ' + Buffer.from(`${user}:${pass}`).toString('base64')
+    }
+}
+
 // Base-level solr fetch function, that all other functions will eventually call. 
 // Recursively fetches all results for a particular Solr query
 export function httpGet(endpoint, params, withCount, continuingFrom) {
     const paramsWithDefaultsApplied = Object.assign(defaultParameters(), params)
     continuingFrom = continuingFrom || []
+    if(typeof window !== 'undefined') {
+        const query = paramsWithDefaultsApplied?.q || null
+        console.info('[runtime-fetch:httpGet]', { endpoint, query, rows: paramsWithDefaultsApplied?.rows, start: paramsWithDefaultsApplied?.start })
+    }
     if(params.q === "") {
         // don't let poorly formed queries through
         return Promise.resolve([])
     }
 
     return new Promise((resolve, reject) => 
-        web.get(endpoint, { params: paramsWithDefaultsApplied, timeout: defaultTimeout }).then(response => {
+        axiosGetWithRetry(endpoint, {
+            params: paramsWithDefaultsApplied,
+            timeout: getSolrHttpTimeoutMs(),
+            headers: getServerAuthHeaders()
+        }).then(response => {
             let fromSolr = response.data
             
             if(!fromSolr || !fromSolr.response) {
@@ -175,6 +278,25 @@ export function httpGetRelated(initialQuery, route, knownLids) {
         }, reject)
     })
 }
+
+export function getMoreDatasetsForContext(missions, targets, parentContext) {
+    const missionQuery = missions.map(mi => `investigation_ref:${new LID(mi.identifier).escapedLid}\\:\\:*`).join(' OR ')
+    const targetQuery = targets.map(ta => `target_ref:${new LID(ta.identifier).escapedLid}\\:\\:*`).join(' OR ')
+    let params = {
+        q: `(product_class:"Product_Bundle" AND (${[missionQuery, targetQuery].filter(el => !!el).join(' OR ')}))`,
+        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_start_date_time, primary_result_purpose'
+    }
+    return httpGet(router.datasetCore, params)
+        .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
+        .then(datasets => datasets.filter(bundle => {
+                const bundleContext = resolveContext(bundle)
+                // filter for things that are meant to appear on both More Data pages, or the parentContext's More Data page
+                return [contexts.MISSIONANDTARGET, parentContext, contexts.MORE_DATA, contexts.UNKNOWN].includes(bundleContext)
+            })
+        )
+        
+}
+
 function arraysEquivalent(arr1, arr2) {
     return arr1.length === arr2.length && arr1.every((el) => arr2.includes(el))
 }
@@ -202,7 +324,7 @@ export function stitchWithWebFields(fields, route) {
         if(!previousResult || previousResult.length === 0) return Promise.resolve([])
 
         // for client side requests that are in pds-only mode, skip this step entirely
-        if(!!window && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
+        if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
             return Promise.resolve(previousResult)
         }
             

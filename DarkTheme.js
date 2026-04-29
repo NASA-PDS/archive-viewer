@@ -18,13 +18,6 @@ const DarkTheme = (outerTheme) => createTheme({
     },
     components: {
         ...outerTheme.components,
-        // MuiTypography: {
-        //     styleOverrides: {
-        //         root: {
-        //             color: "#FDFDFD",
-        //         }
-        //     }
-        // },
         MuiPaper: {
             styleOverrides: {
                 root: {
@@ -37,7 +30,9 @@ const DarkTheme = (outerTheme) => createTheme({
         ...outerTheme.custom,
         raisedContent: "#474C53",
         raisedContentHover: "#656A6F",
-        externalLinkLocation: '/images/external.svg'
+        externalLinkLocation: '/images/external.svg',
+        insetShadowTop: 'inset 0 1px 3px rgba(255, 255, 255, 0.08)',
+        insetShadowBottom: 'inset 0 -1px 2px rgba(255, 255, 255, 0.04)',
     }
 });
 

@@ -14,6 +14,8 @@ This application interfaces directly with interfaces of the PDS Registry running
 
 The locations of these registries are set in environment variables. The defaults are set in `.env`, but you can override these values for testing, or to work around CORS issues (see below) by creating an adjacent file named **`.env.development.local`** and setting your own endpoints.
 
+Use `SUPPLEMENTAL_SOLR` as the single source of truth for the Solr base URL. Server-side code reads that value at runtime and the browser talks to Solr through this app's `/api/proxy/*` routes rather than calling Solr directly.
+
 ## Build and Deploy
 
 In the project directory, you can run:

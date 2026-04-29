@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material';
-import { getFriendlySpacecraft } from 'api/spacecraft.js';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { SpacecraftGroupedList } from 'components/GroupedList';
 import HTMLBox from 'components/HTMLBox';
@@ -7,19 +6,24 @@ import { Metadata } from "components/Metadata";
 import PrimaryLayout from 'components/PrimaryLayout';
 import { TagTypes } from 'components/TagSearch.js';
 import React, { useEffect, useState } from 'react';
+import { getFriendlySpacecraft } from 'api/spacecraft';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 export default function Spacecraft(props) {
-    const {spacecraft, siblings, mission} = props
-    const [relatedSpacecraft, setRelatedSpacecraft] = useState(siblings)
+    const {spacecraft, siblings, mission, prefetchedFriendlySpacecraft} = props
+    const [relatedSpacecraft, setRelatedSpacecraft] = useState(prefetchedFriendlySpacecraft || siblings)
 
     useEffect(() => {
-        if(siblings && siblings.length > 1) {
-            getFriendlySpacecraft(siblings).then(setRelatedSpacecraft, console.error)
+        if(prefetchedFriendlySpacecraft) {
+            setRelatedSpacecraft(prefetchedFriendlySpacecraft)
+        } else if(siblings && siblings.length > 1) {
+            logPrefetchFallback('Spacecraft:getFriendlySpacecraft', { identifier: spacecraft?.identifier || null })
+            getFriendlySpacecraft(siblings).then(setRelatedSpacecraft, () => setRelatedSpacecraft(siblings))
         }
         return function cleanup() {
             setRelatedSpacecraft(null)
         }
-    }, [siblings])
+    }, [siblings, prefetchedFriendlySpacecraft, spacecraft])
 
     return (
         <PrimaryLayout primary={   

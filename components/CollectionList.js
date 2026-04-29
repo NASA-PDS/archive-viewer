@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {getCollectionsForDataset} from 'api/dataset.js';
 import ErrorMessage from 'components/Error.js'
 import {SectionedTable} from 'components/SectionedTable.js'
 import { Card, Typography, CardContent, Box } from '@mui/material';
 import { groupByLabelArray } from 'services/groupings';
 import Loading from 'components/Loading.js';
 import { HiddenMicrodataObject, HiddenMicrodataValue } from 'components/pages/Dataset'
+import { getCollectionsForDataset } from 'api/dataset';
+import { logPrefetchFallback } from 'services/prefetchFallbackLog';
 
 const typeOrder = [
     "Data",
@@ -29,17 +30,28 @@ const purposeOrder = [
     "CHECKOUT",
 ]
 
-export default function CollectionList({dataset}) {
-    const [collections, setCollections] = useState([])
-    const [loaded, setLoaded] = useState(false) 
+export default function CollectionList({dataset, prefetchedCollections}) {
+    const [collections, setCollections] = useState(prefetchedCollections || [])
+    const [loaded, setLoaded] = useState(!!prefetchedCollections) 
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        getCollectionsForDataset(dataset).then(result => {
-            setCollections(result)
+        if(prefetchedCollections) {
+            setCollections(prefetchedCollections)
             setLoaded(true)
-        }, setError)
-    }, [dataset.identifier])
+        }
+        else {
+            setLoaded(false)
+            logPrefetchFallback('CollectionList:getCollectionsForDataset', { identifier: dataset?.identifier || null })
+            getCollectionsForDataset(dataset).then(result => {
+                setCollections(result)
+                setLoaded(true)
+            }, err => {
+                setError(err)
+                setLoaded(true)
+            })
+        }
+    }, [dataset.identifier, prefetchedCollections])
 
     if(error) {
         return <ErrorMessage error={error} />

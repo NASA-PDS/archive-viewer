@@ -1,8 +1,9 @@
 import { serviceAvailable } from 'api/common'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import runtime from 'services/runtime'
+import { getSolrBaseUrl } from 'services/solr'
 
-const localSolr = process.env.NEXT_PUBLIC_SUPPLEMENTAL_SOLR || 'https://sbnpds4.psi.edu/solr'
+const localSolr = getSolrBaseUrl()
 
 // Helper method to wait for a middleware to execute before continuing
 // And to throw an error when an error happens in a middleware
@@ -48,7 +49,7 @@ async function handler(req, res) {
 
 function addAuthorization(proxyReq, req, res) {
     // add basic authorization header to request
-    let auth = 'Basic ' + Buffer.from(process.env.NEXT_PUBLIC_SOLR_USER + ':' + process.env.NEXT_PUBLIC_SOLR_PASS).toString('base64')
+    let auth = 'Basic ' + Buffer.from(process.env.SOLR_USER + ':' + process.env.SOLR_PASS).toString('base64')
     proxyReq.setHeader('Authorization', auth)
 }
 
