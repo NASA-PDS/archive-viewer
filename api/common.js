@@ -290,6 +290,7 @@ export function getMoreDatasetsForContext(missions, targets, parentContext) {
         .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))
         .then(datasets => datasets.filter(bundle => {
                 const bundleContext = resolveContext(bundle)
+                // filter for things that are meant to appear on both More Data pages, or the parentContext's More Data page
                 return [contexts.MISSIONANDTARGET, parentContext, contexts.MORE_DATA, contexts.UNKNOWN].includes(bundleContext)
             })
         )
