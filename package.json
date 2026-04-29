@@ -16,7 +16,7 @@
     "cookie": "^1.1.1",
     "events": "^3.3.0",
     "http-proxy-middleware": "^3.0.0",
-    "next": "^16.0.8",
+    "next": "^16.2.4",
     "node-cache": "^5.1.2",
     "process": "^0.11.10",
     "react": "^19.2.1",
@@ -46,5 +46,10 @@
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.10.0"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.12"
+    }
   }
 }
