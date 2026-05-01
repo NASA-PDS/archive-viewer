@@ -19,7 +19,7 @@
     "next": "^16.2.4",
     "node-cache": "^5.1.2",
     "process": "^0.11.10",
-    "react": "^19.2.1",
+    "react": "^19.2.5",
     "react-dom": "^19.2.1",
     "sass": "^1.71.1",
     "serialize-error": "^8.1.0"
