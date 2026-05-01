@@ -22,7 +22,7 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "sass": "^1.71.1",
-    "serialize-error": "^8.1.0"
+    "serialize-error": "^13.0.1"
   },
   "scripts": {
     "dev": "next dev --webpack",
