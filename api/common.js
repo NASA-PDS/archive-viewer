@@ -28,13 +28,6 @@ function getHttpMaxAttempts() {
     if(typeof window !== 'undefined') {
         return 3
     }
-    const r = process.env.SOLR_HTTP_RETRIES
-    if(r !== undefined && r !== '') {
-        const n = Number.parseInt(r, 10)
-        if(Number.isFinite(n) && n >= 0) {
-            return n
-        }
-    }
     if(process.env.NEXT_PHASE === 'phase-production-build') {
         return 1
     }
@@ -69,20 +62,8 @@ function isRetriableRequestError(err) {
 export function axiosGetWithRetry(url, config) {
     return runLimitedSolrRequest(() => {
         const max = getHttpMaxAttempts()
-        function attempt(i) {
-            const started = Date.now()
+        async function attempt(i) {
             return web.get(url, config).catch(err => {
-                err.solrRequest = {
-                    endpoint: url,
-                    q: config?.params?.q || null,
-                    fl: config?.params?.fl || null,
-                    rows: config?.params?.rows || null,
-                    start: config?.params?.start || null,
-                    timeout: config?.timeout || null,
-                    elapsedMs: Date.now() - started,
-                    attempt: i + 1,
-                    maxAttempts: max,
-                }
                 if(i >= max - 1 || !isRetriableRequestError(err)) {
                     return Promise.reject(err)
                 }

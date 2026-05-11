@@ -21,16 +21,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router';
 import { getCoreSelectUrl } from 'services/solr'
 
-const staticPropsCacheEnabled = process.env.USE_STATIC_PROPS_CACHE === '1'
-// Set up logging - only on server side
-// if (typeof window === 'undefined') {
-//     const betterLogging = require('better-logging').default;
-//     const { Theme } = require('better-logging');
-//     betterLogging(console, {
-//         color: Theme.dark,
-//         format: ctx => `${ctx.date} ${ctx.time12} ${ctx.type} ${ctx.msg}`
-//     })
-// }
 function ProductPageContent({error, loaded, model, type, ...otherProps}) {
 
     if(error) {
@@ -92,26 +82,19 @@ function PageMetadata({pageTitle}) {
 export default ProductPage
 
 export async function getStaticPaths() {
-    resetBuildReport()
     const docs = (await fetchAllCoreTypeDocs()).map(normalizeCoreDoc)
     const keys = new Set()
     const paths = []
-    let parsedIdentifiers = 0
-    let skippedIdentifiers = 0
-    let skippedUnsupportedTypes = 0
 
     for (const doc of docs) {
         if(resolveType(doc) === types.UNKNOWN) {
-            skippedUnsupportedTypes += 1
             continue
         }
 
         const identifiers = getLidAndLidvid(doc)
         if(!identifiers) {
-            skippedIdentifiers += 1
             continue
         }
-        parsedIdentifiers += 1
         const [lid, lidvid] = identifiers
         const routeVariants = [lid]
 
@@ -132,15 +115,7 @@ export async function getStaticPaths() {
         }
     }
 
-    console.log(`getStaticPaths: generated ${paths.length} paths from ${docs.length} core records (parsed=${parsedIdentifiers}, skippedIdentifier=${skippedIdentifiers}, skippedUnsupportedType=${skippedUnsupportedTypes})`)
-    appendBuildReport({
-        phase: 'getStaticPaths',
-        docs: docs.length,
-        parsedIdentifiers,
-        skippedIdentifiers,
-        skippedUnsupportedTypes,
-        generatedPaths: paths.length
-    })
+    console.log(`getStaticPaths: generated ${paths.length} paths from ${docs.length} core records`)
     return {
         paths,
         fallback: 'blocking'
@@ -157,90 +132,35 @@ export async function getStaticProps(context) {
 
     const [lidvid, ...extraPath] = params.identifier
     let props = { lidvid, extraPath };
-    const routePath = '/' + params.identifier.join('/')
-    let initialLookupError
-    let prefetchErrors = []
-    const cachedResponse = readStaticPropsCache(params.identifier)
-
-    if(cachedResponse) {
-        appendBuildReport({
-            phase: 'getStaticProps',
-            path: routePath,
-            lidvid,
-            type: cachedResponse?.props?.type || null,
-            status: 'cache_hit',
-            initialLookupError: null,
-            prefetchErrorCount: 0,
-            prefetchErrors: [],
-        })
-        return cachedResponse
-    }
 
     try {
         const result = await initialLookup(lidvid, false)
-        
+
         props.loaded = true
         props.type = resolveType(result)
         props.model = result
         const prefetchResult = await prefetchForRoute(result, props.type, extraPath)
         props.prefetch = compactUndefined(prefetchResult.prefetch)
-        prefetchErrors = prefetchResult.errors
     } catch(err) {
         console.log(err)
-        initialLookupError = err
-
-        const summarized = summarizeError(err)
-        appendBuildReport({
-            phase: 'getStaticProps',
-            path: routePath,
-            lidvid,
-            type: null,
-            status: 'skipped_not_found',
-            initialLookupError: summarized,
-            prefetchErrorCount: 0,
-            prefetchErrors: [],
-        })
-
         return {
             notFound: true,
         }
     }
 
-    appendBuildReport({
-        phase: 'getStaticProps',
-        path: routePath,
-        lidvid,
-        type: props.type || null,
-        status: props.error ? 'error' : 'ok',
-        initialLookupError: summarizeError(initialLookupError),
-        prefetchErrorCount: prefetchErrors.length,
-        prefetchErrors,
-    })
-
     setTheme(props, context)
 
-    const response = {
-        props
-    }
-    writeStaticPropsCache(params.identifier, response)
-
-    return response
-
+    return { props }
 }
 
 async function prefetchForRoute(model, type, extraPath) {
     const prefetch = {}
-    const errors = []
     const hasSubPath = (pathType) => extraPath.includes(pagePaths[pathType])
     const safePrefetch = async (label, fn) => {
         try {
             return await fn()
         } catch (error) {
-            console.log('Prefetch failed:', error?.message || error)
-            errors.push({
-                step: label,
-                error: summarizeError(error)
-            })
+            console.log(`Prefetch failed (${label}):`, error?.message || error)
             return undefined
         }
     }
@@ -392,7 +312,7 @@ async function prefetchForRoute(model, type, extraPath) {
         }
     }
 
-    return { prefetch, errors }
+    return { prefetch }
 }
 
 function getTypeSpecificSubpaths(doc) {
@@ -558,98 +478,6 @@ async function buildDatasetCollectionsById(datasets, safePrefetch, labelPrefix) 
     })
 
     return mapped
-}
-
-function summarizeError(error) {
-    if(!error) {
-        return null
-    }
-    if(typeof error === 'string') {
-        return { message: error }
-    }
-    return {
-        name: error.name || null,
-        code: error.code || error.errno || null,
-        message: error.message || String(error),
-        solrRequest: error.solrRequest || null,
-    }
-}
-
-function getBuildReportPath() {
-    return process.env.STATIC_BUILD_REPORT_PATH || `${process.cwd()}/.next/static-build-report.ndjson`
-}
-
-function getStaticPropsCacheDir() {
-    return `${process.cwd()}/.next/static-props-cache`
-}
-
-function getStaticPropsCachePath(identifierSegments) {
-    return `${getStaticPropsCacheDir()}/${identifierSegments.map(encodeURIComponent).join('__')}.json`
-}
-
-function readStaticPropsCache(identifierSegments) {
-    if(!staticPropsCacheEnabled || typeof window !== 'undefined') {
-        return null
-    }
-    try {
-        const fs = require('fs')
-        const cachePath = getStaticPropsCachePath(identifierSegments)
-        if(!fs.existsSync(cachePath)) {
-            return null
-        }
-        return JSON.parse(fs.readFileSync(cachePath, 'utf8'))
-    } catch (error) {
-        console.log('Failed to read static props cache:', error?.message || error)
-        return null
-    }
-}
-
-function writeStaticPropsCache(identifierSegments, response) {
-    if(typeof window !== 'undefined') {
-        return
-    }
-    try {
-        const fs = require('fs')
-        const path = require('path')
-        const cachePath = getStaticPropsCachePath(identifierSegments)
-        fs.mkdirSync(path.dirname(cachePath), { recursive: true })
-        fs.writeFileSync(cachePath, JSON.stringify(response), 'utf8')
-    } catch (error) {
-        console.log('Failed to write static props cache:', error?.message || error)
-    }
-}
-
-function resetBuildReport() {
-    try {
-        if(typeof window !== 'undefined') {
-            return
-        }
-        const fs = require('fs')
-        const path = require('path')
-        const reportPath = getBuildReportPath()
-        fs.mkdirSync(path.dirname(reportPath), { recursive: true })
-        fs.writeFileSync(reportPath, '', 'utf8')
-    } catch (error) {
-        console.log('Failed to reset static build report:', error?.message || error)
-    }
-}
-
-function appendBuildReport(event) {
-    try {
-        if(typeof window !== 'undefined') {
-            return
-        }
-        const fs = require('fs')
-        const path = require('path')
-        const reportPath = getBuildReportPath()
-        fs.mkdirSync(path.dirname(reportPath), { recursive: true })
-        fs.appendFileSync(reportPath, JSON.stringify({
-            ts: new Date().toISOString(),
-            ...event
-        }) + '\n', 'utf8')
-    } catch (error) {
-        console.log('Failed to append static build report:', error?.message || error)
-    }
 }
 
 function compactUndefined(value) {
