@@ -54,6 +54,6 @@ export default class LogicalIdentifier {
     }
 
 }
-function escape(str) {
-    return str.replace(/:/g, '\\:')
+function escape(str = '') {
+    return String(str).replace(/([+\-&|!(){}\[\]^"~*?:\\/])/g, '\\$1')
 }

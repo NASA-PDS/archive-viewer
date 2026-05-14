@@ -218,6 +218,13 @@ function Starfield() {
     return <StarfieldCanvas width="1000" height="1000" id="starfield" ref={canvas}/>
 }
 
+function decodePathSegment(value) {
+    try {
+        return decodeURIComponent(value)
+    } catch {
+        return value
+    }
+}
 
 function LIDFieldComponent() {
     const router = useRouter()
@@ -226,8 +233,8 @@ function LIDFieldComponent() {
 
     useEffect(() => {
         const start = (url, other) => {
-            const destination = url ? url.split('/')[1] : ''
-            setLid(destination)
+            const destination = url ? url.split(/[?#]/)[0].split('/')[1] : ''
+            setLid(destination ? decodePathSegment(destination) : '')
             setLoading(true)
         }
         const end = () => {
@@ -250,7 +257,7 @@ function LIDFieldComponent() {
     }
     const visitLid = (event) => {
         event.preventDefault()
-        router.push('/' + lid)
+        router.push('/' + encodeURIComponent(lid.trim()))
     }
 
     return (

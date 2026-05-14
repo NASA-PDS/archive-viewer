@@ -36,13 +36,13 @@ const coreMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: 
 const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, on: { proxyReq: addAuthorization }, pathRewrite: rewriteWeb })
 
 async function handler(req, res) {
-    const site = req.query.site[0]
+    const site = Array.isArray(req.query.site) ? req.query.site[0] : req.query.site
     switch(site) {
         case 'internal': handleMessage(req.query.message); return res.status(200).send('OK')
         case 'web': return runMiddleware(req, res, webMiddleware)
         case 'heartbeat': return runMiddleware(req, res, coreMiddleware)
         case 'core': return runMiddleware(req, res, coreMiddleware)
-        default: res.status(400).send("Invalid proxy request to site " + site)
+        default: return res.status(400).json({ message: 'Invalid proxy request site' })
     }
 
 }
