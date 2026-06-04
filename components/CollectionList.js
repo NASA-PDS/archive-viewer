@@ -30,7 +30,7 @@ const purposeOrder = [
     "CHECKOUT",
 ]
 
-export default function CollectionList({dataset, prefetchedCollections}) {
+export default function CollectionList({dataset, prefetchedCollections, contextHint, targetHint}) {
     const [collections, setCollections] = useState(prefetchedCollections || [])
     const [loaded, setLoaded] = useState(!!prefetchedCollections) 
     const [error, setError] = useState(null)
@@ -71,7 +71,7 @@ export default function CollectionList({dataset, prefetchedCollections}) {
         <Card variant="outlined" >
             <CardContent p={1}>
             <Typography variant="h5">Data in this bundle</Typography>
-            <SectionedTable groups={groupByLabelArray(collections, collectionTypes, typeOrder)} separateBy="primary_result_purpose" orderBy={purposeOrder}/>
+            <SectionedTable groups={groupByLabelArray(collections, collectionTypes, typeOrder)} separateBy="primary_result_purpose" orderBy={purposeOrder} contextHint={contextHint} targetHint={targetHint}/>
             </CardContent>
         </Card>
         {collections.map(collection =>

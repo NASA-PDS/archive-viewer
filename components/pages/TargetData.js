@@ -43,7 +43,7 @@ export default function TargetData(props) {
                             <Skeleton width="100%" height={80}/>
                             <Skeleton width="100%" height={80}/>
                         </>}>
-                    <DatasetTable groups={groupByNothing(datasets)} prefetchedCollectionsById={props.prefetchedCollectionsById} />
+                    <DatasetTable groups={groupByNothing(datasets)} prefetchedCollectionsById={props.prefetchedCollectionsById} contextHint="target" targetHint={target.identifier} />
                 </LoadingWrapper>  
                 <HTMLBox markup={target.derived_html}/>        
             </>

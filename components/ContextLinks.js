@@ -51,7 +51,7 @@ const sortType = {
 }
 
 
-function ContextList({items, active, separateBy, orderBy}) {    
+function ContextList({items, active, separateBy, orderBy, ...otherProps}) {    
     if(!items || !items.length) { return null}
 
     if(!!separateBy) {
@@ -60,7 +60,7 @@ function ContextList({items, active, separateBy, orderBy}) {
             <>
                 {groups.map((group, index) => (
                     <div key={index}>
-                        <ContextList items={group.items} />
+                        <ContextList items={group.items} {...otherProps} />
                         { (index + 1) < groups.length && <Divider/> }
                     </div>
                 ))}
@@ -73,17 +73,17 @@ function ContextList({items, active, separateBy, orderBy}) {
         return (
             <MaterialList>
                 {items.map((item,idx) => 
-                    <ContextLink key={item.identifier + '' +  idx} item={item} active={active}/>
+                    <ContextLink key={item.identifier + '' +  idx} item={item} active={active} {...otherProps}/>
                 )}
             </MaterialList>
         )
     }
 }
 
-function ContextLink({item, displayTag, active}) {
+function ContextLink({item, displayTag, active, contextHint, targetHint}) {
     return (
         // <InternalLink identifier={item.identifier} passHref>
-        <ListItemButton component={InternalLink} identifier={item.identifier} selected={active === item.identifier}>
+        <ListItemButton component={InternalLink} identifier={item.identifier} contextHint={contextHint} targetHint={targetHint} selected={active === item.identifier}>
             <ListItemText primary={ nameFinder(item) + ((displayTag && !!item.tags) ? ` - ${item.tags[0]}` : '')} 
             slotProps={{ primary: { color: 'primary' } }}/>
         </ListItemButton>

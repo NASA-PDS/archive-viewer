@@ -19,7 +19,7 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
     paddingRight: theme.spacing(2)
 }));
 
-export default function DatasetTable({ groups, prefetchedCollectionsById }) {
+export default function DatasetTable({ groups, prefetchedCollectionsById, contextHint, targetHint }) {
     if(!groups || groups.length === 0) return null
     return (
         <TableContainer sx={{ marginTop: 2, marginBottom: 2 }}>
@@ -41,7 +41,7 @@ export default function DatasetTable({ groups, prefetchedCollectionsById }) {
                                 <TableCell/>
                                 <TableCell colSpan={5}><Typography variant="h4">{group.name}</Typography></TableCell>
                             </TableRow>}
-                            {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier} prefetchedCollections={prefetchedCollectionsById?.[dataset.identifier]} />)}
+                            {group.items.map(dataset => <DatasetRow dataset={dataset} key={dataset.identifier} prefetchedCollections={prefetchedCollectionsById?.[dataset.identifier]} contextHint={contextHint} targetHint={targetHint} />)}
                         </React.Fragment>
                     )}
                 </TableBody>
@@ -50,7 +50,7 @@ export default function DatasetTable({ groups, prefetchedCollectionsById }) {
     );
 }
 
-function DatasetRow({dataset, prefetchedCollections}) {
+function DatasetRow({dataset, prefetchedCollections, contextHint, targetHint}) {
     const [open, setOpen] = useState(false)
 
     return <>
@@ -61,7 +61,7 @@ function DatasetRow({dataset, prefetchedCollections}) {
                 </IconButton>
             </StyledCell>            
             <StyledCell>
-                <ContextLink item={dataset}/>
+                <ContextLink item={dataset} contextHint={contextHint} targetHint={targetHint}/>
             </StyledCell>
             {/* <StyledCell>
                 {dataset.primary_result_processing_level}
@@ -79,16 +79,16 @@ function DatasetRow({dataset, prefetchedCollections}) {
         <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <DatasetSynopsis dataset={dataset} prefetchedCollections={prefetchedCollections}/>
+                <DatasetSynopsis dataset={dataset} prefetchedCollections={prefetchedCollections} contextHint={contextHint} targetHint={targetHint}/>
             </Collapse>
             </TableCell>
         </TableRow>
         </>
 }
 
-function DatasetSynopsis({dataset, prefetchedCollections}) {
+function DatasetSynopsis({dataset, prefetchedCollections, contextHint, targetHint}) {
     return <Box p={2}>
         <Metadata model={dataset} tagType={TagTypes.dataset}/>
-        <CollectionList dataset={dataset} prefetchedCollections={prefetchedCollections} />
+        <CollectionList dataset={dataset} prefetchedCollections={prefetchedCollections} contextHint={contextHint} targetHint={targetHint} />
     </Box>
 }

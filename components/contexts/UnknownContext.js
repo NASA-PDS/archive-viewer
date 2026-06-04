@@ -7,9 +7,11 @@ import ErrorContext from './ErrorContext';
 import { familyLookup } from 'api/context';
 import { getBundlesForCollection } from 'api/dataset';
 import { logPrefetchFallback } from 'services/prefetchFallbackLog';
+import { useRouter } from 'next/router';
 
 export default function UnknownContext(props) {
     const {lidvid, model, type, extraPath, ...otherProps} = props
+    const router = useRouter()
     const prefetch = props.prefetch || {}
     const [missionFamily, setMissionFamily] = useState(prefetch.family || null)
     const [bundles, setBundles] = useState(prefetch.collectionBundles || null)
@@ -17,7 +19,7 @@ export default function UnknownContext(props) {
 
     let target = null
     if(missionFamily && missionFamily.targets && missionFamily.targets.length > 0) { 
-        target = missionFamily.targets[0]
+        target = missionFamily.targets.find(target => target.identifier === router.query.target) || missionFamily.targets[0]
     } 
     
     useEffect(() => {
@@ -42,16 +44,22 @@ export default function UnknownContext(props) {
     }
 
     const resolvedContext = resolveContext(model, bundles)
+    const prefersTargetContext = router.query.context === 'target'
+    const targetAllowedContexts = [contexts.TARGET, contexts.TARGET_DERIVED_DATA, contexts.TARGET_MORE_DATA, contexts.MISSIONANDTARGET, contexts.MORE_DATA]
+
+    if(!!target && prefersTargetContext && targetAllowedContexts.includes(resolvedContext)) {
+        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} parentBundles={bundles} {...otherProps} />
+    }
 
     // if dataset can go in either context, present the mission context
     // make sure we're not in the middle of looking up bundles before presenting mission context though
-    if([contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN, contexts.MISSION_INSTRUMENT_DATA, contexts.MISSION_MORE_DATA].includes(resolvedContext)
+    if([contexts.MISSION, contexts.MISSIONANDTARGET, contexts.UNKNOWN, contexts.MISSION_INSTRUMENT_DATA, contexts.MISSION_MORE_DATA, contexts.MORE_DATA].includes(resolvedContext)
         && !(type === types.COLLECTION && !bundles)) {
         return <MissionContext family={missionFamily} disableFamilyLookup={true} {...props}/>
     }
 
     if(!!target && [contexts.TARGET, contexts.TARGET_DERIVED_DATA, contexts.TARGET_MORE_DATA].includes(resolvedContext)) {
-        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} {...otherProps} />
+        return <TargetContext target={target} extraPath={extraPath} model={model} type={type} parentBundles={bundles} {...otherProps} />
     }
 
     // Can't figure it out (yet?), just show stuff

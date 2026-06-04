@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { TargetHeader } from 'components/ContextHeaders'
 import Target from 'components/pages/Target';
-import { types, pagePaths } from 'services/pages.js';
+import { types, pagePaths, resolveTargetDatasetPage } from 'services/pages.js';
 import TargetRelated from 'components/pages/TargetRelated';
 import TargetMissions from 'components/pages/TargetMissions';
 import TargetData from 'components/pages/TargetData';
@@ -19,7 +19,7 @@ const Root = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
 }));
 
-export default function TargetContext({target, model, type, extraPath, ...otherProps}) {
+export default function TargetContext({target, model, type, extraPath, parentBundles, ...otherProps}) {
     const prefetch = otherProps.prefetch || {}
     const [friendlyTarget, setFriendlyTarget] = useState(prefetch.friendlyTarget || null)
     const [missions, setMissions] = useState(prefetch.targetMissions || null)
@@ -87,11 +87,11 @@ export default function TargetContext({target, model, type, extraPath, ...otherP
         // main lid is for a dataset
         case types.BUNDLE: 
             mainContent = <Bundle dataset={model} context={target} prefetchedCollections={prefetch.bundleCollections} {...otherProps}/>
-            pageType=types.TARGETDATA
+            pageType = resolveTargetDatasetPage(model)
             break
         case types.COLLECTION: 
             mainContent = <Collection dataset={model} context={target} prefetchedBundles={prefetch.collectionBundles} {...otherProps} />
-            pageType=types.TARGETDATA
+            pageType = resolveTargetDatasetPage(model, parentBundles || prefetch.collectionBundles)
             break
             
     }

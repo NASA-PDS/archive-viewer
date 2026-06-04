@@ -69,14 +69,59 @@ export const resolveType = function(fromSolr) {
     return types.UNKNOWN;
 }
 
+const resolveParentBundleContext = (parentBundles) => {
+    const bundleContexts = (parentBundles || [])
+        .map(bundle => bundle.primary_context)
+        .filter(context => Object.values(contexts).includes(context))
+
+    if(bundleContexts.length > 0) {
+        const uniqueContexts = [...new Set(bundleContexts)]
+        if(uniqueContexts.length === 1) {
+            return uniqueContexts[0]
+        }
+        if(uniqueContexts.includes(contexts.MISSIONANDTARGET)) {
+            return contexts.MISSIONANDTARGET
+        }
+        if(uniqueContexts.includes(contexts.MORE_DATA)) {
+            return contexts.MORE_DATA
+        }
+        return uniqueContexts[0]
+    }
+
+    return null
+}
+
 export const resolveContext = (dataset, parentBundles) => {
+    const parentBundleContext = resolveParentBundleContext(parentBundles)
+    if(resolveType(dataset) === types.COLLECTION) {
+        if(parentBundleContext) {
+            return parentBundleContext
+        }
+        if(!!dataset.primary_context && Object.values(contexts).includes(dataset.primary_context)) {
+            return dataset.primary_context
+        }
+        return contexts.UNKNOWN
+    }
+
     if(!!dataset.primary_context) {
         if(Object.values(contexts).includes(dataset.primary_context)) {
             return dataset.primary_context
         }
     }
 
+    if(parentBundleContext) {
+        return parentBundleContext
+    }
+
     return contexts.UNKNOWN
+}
+
+export const resolveTargetDatasetPage = (dataset, parentBundles) => {
+    const context = resolveContext(dataset, parentBundles)
+    if([contexts.TARGET_MORE_DATA, contexts.MORE_DATA, contexts.MISSIONANDTARGET].includes(context)) {
+        return types.MOREDATA
+    }
+    return types.TARGETDATA
 }
 
 const themeNames = {

@@ -148,7 +148,7 @@ function SkeletonTabBar({tabCount}) {
 
 function LinkTab(props) {
     const {label, value, ...otherProps} = props
-    return <Tab label={label} value={value} component={InternalLink} {...otherProps}/>
+    return <Tab label={label} value={value} component={InternalLink} preserveContext={false} {...otherProps}/>
 }
 
 function TargetHeaderComponent(props) {

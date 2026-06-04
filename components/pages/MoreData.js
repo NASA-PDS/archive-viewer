@@ -35,6 +35,9 @@ export default function MoreData({missions, targets, context, prefetchedDatasets
     }, [missions, targets, prefetchedDatasets, context])
 
     const hasContent = (!!datasets && datasets.length > 0) || (!!primary?.other_html && primary.other_html.length > 0)
+    const linkContext = context === contexts.TARGET_MORE_DATA && primary
+        ? { contextHint: 'target', targetHint: primary.identifier }
+        : {}
 
     return (
         <PrimaryLayout primary={
@@ -45,7 +48,7 @@ export default function MoreData({missions, targets, context, prefetchedDatasets
                 <Typography variant="subtitle1" >Additional data related to this mission/target</Typography>
 
                 <LoadingWrapper model={datasets} showEmpty={!hasContent} >
-                    <DatasetTable groups={groupByFirstTag(datasets)} prefetchedCollectionsById={prefetchedCollectionsById} />
+                    <DatasetTable groups={groupByFirstTag(datasets)} prefetchedCollectionsById={prefetchedCollectionsById} {...linkContext} />
                 </LoadingWrapper>
 
                 {!!primary &&
