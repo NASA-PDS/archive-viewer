@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMAGE_TAG="${IMAGE_TAG:-sbnpsi/context-browser:staging}"
-ENV_FILE="${1:-.env.production.local}"
+IMAGE_TAG="${IMAGE_TAG:-sbnpsi/context-browser:latest}"
+ENV_FILE=".env.production.local"
 BUILD_ONLY="${BUILD_ONLY:-0}"
+FORCE_REBUILD="${FORCE_REBUILD:-0}"
 
-if [[ "${1:-}" == "--build-only" ]]; then
-  BUILD_ONLY=1
-  ENV_FILE="${2:-.env.production.local}"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --build-only)
+      BUILD_ONLY=1
+      ;;
+    --no-cache)
+      FORCE_REBUILD=1
+      ;;
+    *)
+      ENV_FILE="$1"
+      ;;
+  esac
+  shift
+done
+
+BUILD_ARGS=()
+if [[ "$FORCE_REBUILD" == "1" ]]; then
+  BUILD_ARGS+=(--no-cache)
 fi
 
 if [[ ! -f "$ENV_FILE" ]]; then
@@ -29,6 +45,7 @@ export SUPPLEMENTAL_SOLR="$SUPPLEMENTAL_SOLR_VALUE"
 docker buildx build \
   --platform linux/amd64 \
   --provenance=false \
+  "${BUILD_ARGS[@]}" \
   --secret id=SUPPLEMENTAL_SOLR,env=SUPPLEMENTAL_SOLR \
   --secret id=SOLR_USER,env=SOLR_USER \
   --secret id=SOLR_PASS,env=SOLR_PASS \
