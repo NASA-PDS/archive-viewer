@@ -22,12 +22,16 @@ set +a
 SOLR_USER_VALUE="${SOLR_USER:-}"
 SOLR_PASS_VALUE="${SOLR_PASS:-}"
 SUPPLEMENTAL_SOLR_VALUE="${SUPPLEMENTAL_SOLR:-${NEXT_PUBLIC_SUPPLEMENTAL_SOLR:-}}"
+export SOLR_USER="$SOLR_USER_VALUE"
+export SOLR_PASS="$SOLR_PASS_VALUE"
+export SUPPLEMENTAL_SOLR="$SUPPLEMENTAL_SOLR_VALUE"
 
 docker buildx build \
   --platform linux/amd64 \
-  --build-arg SUPPLEMENTAL_SOLR="${SUPPLEMENTAL_SOLR_VALUE}" \
-  --build-arg SOLR_USER="${SOLR_USER_VALUE}" \
-  --build-arg SOLR_PASS="${SOLR_PASS_VALUE}" \
+  --provenance=false \
+  --secret id=SUPPLEMENTAL_SOLR,env=SUPPLEMENTAL_SOLR \
+  --secret id=SOLR_USER,env=SOLR_USER \
+  --secret id=SOLR_PASS,env=SOLR_PASS \
   -t "$IMAGE_TAG" \
   .
 

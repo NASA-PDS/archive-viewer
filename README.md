@@ -18,6 +18,8 @@ Use `SUPPLEMENTAL_SOLR` as the single source of truth for the Solr base URL. Ser
 
 ## Build and Deploy
 
+Docker builds pass `SUPPLEMENTAL_SOLR`, `SOLR_USER`, and `SOLR_PASS` as BuildKit secrets so Next.js can statically generate and prefetch pages during `npm run build` without recording them as image or registry build args. Those values are not set as defaults in the final runtime image; deployment must provide the Solr endpoint and credentials when the container starts.
+
 In the project directory, you can run:
 
 ### `npm run dev`
