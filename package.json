@@ -15,7 +15,7 @@
     "better-logging": "^5.0.0",
     "cookie": "^1.1.1",
     "events": "^3.3.0",
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^3.0.7",
     "next": "^16.2.4",
     "node-cache": "^5.1.2",
     "process": "^0.11.10",
