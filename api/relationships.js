@@ -109,7 +109,7 @@ export function stitchWithRelationships(type, sourceLids) {
                 }
                 resolve(results)
             }, err => {
-                console.log(err)
+                console.warn('Relationship lookup failed:', err?.message || 'Unknown error')
                 //ignore error, throw in unknown relationships and return
                 for (let doc of results ) {
                     doc.relatedBy = unknownRelationship

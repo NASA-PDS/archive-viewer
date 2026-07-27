@@ -142,7 +142,7 @@ export async function getStaticProps(context) {
         const prefetchResult = await prefetchForRoute(result, props.type, extraPath)
         props.prefetch = compactUndefined(prefetchResult.prefetch)
     } catch(err) {
-        console.log(err)
+        console.warn('Initial lookup failed:', err?.message || 'Unknown error')
         return {
             notFound: true,
         }
