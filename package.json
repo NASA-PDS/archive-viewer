@@ -44,7 +44,7 @@
     ]
   },
   "devDependencies": {
-    "baseline-browser-mapping": "^2.10.0"
+    "baseline-browser-mapping": "^2.11.6"
   },
   "overrides": {
     "next": {
