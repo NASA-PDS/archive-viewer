@@ -394,6 +394,7 @@ function getContextsForModel(model) {
     const context = resolveContext(model)
     switch(context) {
         case contexts.MISSION:
+        case contexts.MISSION_BUNDLE:
         case contexts.MISSION_INSTRUMENT_DATA:
         case contexts.MISSION_MORE_DATA:
             return ['mission']

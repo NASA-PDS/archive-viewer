@@ -40,6 +40,8 @@ export const contexts = {
     MISSIONANDTARGET: 'both',
 
     // new settings
+    // The mission object's mission_bundle LID remains the authoritative link.
+    MISSION_BUNDLE: 'mission_bundle',
     MISSION_INSTRUMENT_DATA: 'mission_instrument_data',
     MISSION_MORE_DATA: 'mission_more_data',
     TARGET_DERIVED_DATA: 'target_derived_data',
