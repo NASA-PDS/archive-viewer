@@ -19,7 +19,7 @@ export function getDerivedDatasetsForTarget(target) {
 
     let params = {
         q: `(target_ref:${targetLid.escapedLid}\\:\\:* AND product_class:"Product_Bundle")`,
-        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_start_date_time, primary_result_purpose'
+        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_stop_date_time, primary_result_purpose'
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))

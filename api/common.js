@@ -265,7 +265,7 @@ export function getMoreDatasetsForContext(missions, targets, parentContext) {
     const targetQuery = targets.map(ta => `target_ref:${new LID(ta.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {
         q: `(product_class:"Product_Bundle" AND (${[missionQuery, targetQuery].filter(el => !!el).join(' OR ')}))`,
-        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_start_date_time, primary_result_purpose'
+        fl: 'identifier, title, description, collection_ref, collection_type, citation_publication_year, observation_start_date_time, observation_stop_date_time, primary_result_purpose'
     }
     return httpGet(router.datasetCore, params)
         .then(stitchWithWebFields(['display_name', 'tags', 'primary_context'], router.datasetWeb))

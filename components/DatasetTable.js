@@ -5,6 +5,7 @@ import CollectionList from 'components/CollectionList.js';
 import { ContextLink } from 'components/ContextLinks';
 import { Metadata } from "components/Metadata";
 import React, { useState } from 'react';
+import { formatDisplayDate } from 'services/dates';
 import { TagTypes } from 'components/TagSearch.js';
 
 const StyledTable = styled(Table)({
@@ -70,10 +71,10 @@ function DatasetRow({dataset, prefetchedCollections, contextHint, targetHint}) {
                 {dataset.citation_publication_year}
             </StyledCell>
             <StyledCell>
-                {new Date(dataset.observation_start_date_time).toLocaleDateString()}
+                {formatDisplayDate(dataset.observation_start_date_time, false, 'start') || 'Not available'}
             </StyledCell>
             <StyledCell>
-                {new Date(dataset.observation_start_date_time).toLocaleDateString()}
+                {formatDisplayDate(dataset.observation_stop_date_time, false, 'stop') || 'Not available'}
             </StyledCell>
         </TableRow>
         <TableRow>

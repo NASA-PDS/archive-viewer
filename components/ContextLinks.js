@@ -1,3 +1,4 @@
+import { formatDisplayDate, parseDisplayDate } from 'services/dates';
 import { Button, Card, CardContent, Divider, List as MaterialList, ListItemButton, ListItemText, ThemeProvider, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
@@ -47,7 +48,7 @@ const ImgPlaceholder = styled('div')(({ theme }) => ({
 
 const sortType = {
     name: (a, b) => nameFinder(a).localeCompare(nameFinder(b)),
-    date: (a, b) => new Date(a.start_date || 0) - new Date(b.start_date || 0)
+    date: (a, b) => (parseDisplayDate(a.start_date, 'start')?.getTime() ?? 0) - (parseDisplayDate(b.start_date, 'start')?.getTime() ?? 0)
 }
 
 
@@ -115,10 +116,12 @@ function ContextCardList({items, sorter, ...otherProps}) {
 
 function ContextCard({item, themeColorKey, actions, small, isMinor}) {
     const name = nameFinder(item)
-    const dateString = new Date(item.start_date).toLocaleDateString() + (item.end_date ? ('—' + new Date(item.end_date).toLocaleDateString()) : '')
+    const start = formatDisplayDate(item.start_date, false, 'start')
+    const end = formatDisplayDate(item.end_date, false, 'stop')
+    const dateString = start ? start + (end ? '—' + end : '') : (end ? 'Ends ' + end : null)
 
     let titleStyle = {marginTop: 0}
-    if(!!item.start_date) { titleStyle.marginBottom = 0 }
+    if(dateString) { titleStyle.marginBottom = 0 }
 
     const CardComponent = small ? SmallCard : StyledCard;
 
@@ -129,7 +132,7 @@ function ContextCard({item, themeColorKey, actions, small, isMinor}) {
                 { item.image_url ? <StyledImg src={item.image_url} alt={'Banner for ' + name} title={name}/> : <ImgPlaceholder />} 
                 <CardContentStyled p="1">
                     <Typography style={titleStyle} variant="h3" component="h2" gutterBottom>{name}</Typography>
-                    {item.start_date && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
+                    {dateString && <Typography variant="body2" color="textSecondary" gutterBottom> { dateString } </Typography> }
                     {!small && <Description model={item}/>}
                 </CardContentStyled>
                 { !isMinor && <Grid container direction='column' sx={{ alignItems: 'stretch', justifyContent: 'space-between', marginTop: 2, marginRight: 2, width: 'unset' }}>

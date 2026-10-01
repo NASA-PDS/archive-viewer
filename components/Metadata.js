@@ -1,3 +1,4 @@
+import { formatDisplayDate } from 'services/dates';
 import { List, Typography } from '@mui/material';
 import Description from 'components/Description';
 import React from 'react';
@@ -23,8 +24,10 @@ export function Metadata({ model, tagType }) {
 
 function TemporalMedatata({label, model}) {
     let times = []
-    if(!!model.observation_start_date_time) { times.push("Start Time: " + new Date(model.observation_start_date_time).toLocaleString()) }
-    if(!!model.observation_stop_date_time && model.observation_stop_date_time !== '3000-01-01T00:00:00Z') { times.push("Stop Time: " + new Date(model.observation_stop_date_time).toLocaleString()) }
+    const start = formatDisplayDate(model.observation_start_date_time, true, 'start')
+    const stop = formatDisplayDate(model.observation_stop_date_time, true, 'stop')
+    if(start) { times.push("Start Time: " + start) }
+    if(stop) { times.push("Stop Time: " + stop) }
     if(times.length === 0) { return null }
 
     return <MetadataItem label={label} item={times.join(' - ')} />
