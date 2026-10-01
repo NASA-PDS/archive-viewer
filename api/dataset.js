@@ -1,34 +1,24 @@
 import router from 'api/router.js'
 import LID from 'services/LogicalIdentifier.js'
 import {httpGet, httpGetIdentifiers, stitchWithWebFields} from 'api/common.js'
+import {mergeVersionedRecords} from 'services/versionedRecords.js'
 
-export function getCollectionsForDataset(dataset) {
-    if(!dataset.collection_ref || dataset.collection_ref.length === 0) { return new Promise((resolve, _) => resolve([]))}
-    let lids = dataset.collection_ref.map(str => new LID(str).lid)
+export async function getCollectionsForDataset(dataset) {
+    const references = dataset.collection_ref || []
+    if(references.length === 0) return []
+    const lids = [...new Set(references.map(str => new LID(str).lid))]
 
     let params = {
             fl: 'display_name,logical_identifier,document_flag',
             wt: 'ujson',
-            q: lids.reduce((query, lid) => query + `logical_identifier:"${new LID(lid).lidvid}" `, '')
+            // Fetch all available versions so each source can fall back independently.
+            q: lids.map(lid => `logical_identifier:"${new LID(lid).escapedLid}"`).join(' OR ')
         }
-    return new Promise((resolve, reject) => {
-        Promise.all([httpGetIdentifiers(router.datasetCore, lids, ['primary_result_purpose','collection_type']), httpGet(router.datasetWeb, params)]).then(results => {
-            let [coreDocs, webDocs] = results 
-            if(webDocs.length > 0) {
-                let toReturn = []
-                // combine documents by lid
-                for (let coreDoc of coreDocs ) {
-                    let consolidated = Object.assign({}, coreDoc)
-                    let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
-                    toReturn.push(Object.assign(consolidated, corresponding))
-                }
-                resolve(toReturn)
-            } else {
-                // can't find matching documents, so just return the results of original query
-                resolve(coreDocs)
-            }
-        })
-    })
+    const [coreDocs, webDocs] = await Promise.all([
+        httpGetIdentifiers(router.datasetCore, lids, ['version_id', 'primary_result_purpose', 'collection_type']),
+        httpGet(router.datasetWeb, params)
+    ])
+    return mergeVersionedRecords(references, coreDocs, webDocs)
 }
 
 export function getBundlesForCollection(dataset) {

@@ -1,6 +1,7 @@
 import web from 'axios';
 import desolrize from 'services/desolrize.js'
 import LID from 'services/LogicalIdentifier.js'
+import { createVersionedRecordLookup } from 'services/versionedRecords.js'
 import router from 'api/router.js'
 import { runLimitedSolrRequest } from 'services/solrHttpLimit.js'
 import { types, resolveType, resolveContext, contexts } from 'services/pages.js'
@@ -315,7 +316,8 @@ export function stitchWithWebFields(fields, route) {
             requests.push(stitchWithWebFields(fields, route)(previousResult.slice(defaultFetchSize)))
             previousResult = previousResult.slice(0, defaultFetchSize)
         }
-        let identifiers = previousResult.map(doc => doc.identifier)
+        // Keep the query broad enough to retrieve fallback versions in the same request.
+        let identifiers = [...new Set(previousResult.map(doc => new LID(doc.identifier).lid))]
         
         let params = {
             q: identifiers.reduce((query, lid) => query + 'logical_identifier:"' + lid + '" ', ''),
@@ -323,11 +325,15 @@ export function stitchWithWebFields(fields, route) {
         }
 
         requests.push(httpGet(route, params).then(webDocs => {
+            const findSupplemental = createVersionedRecordLookup(webDocs, 'logical_identifier')
             let toReturn = []
-            // combine documents by lid
+            // Prefer each core record's VID, falling back to latest supplemental metadata.
             for (let coreDoc of previousResult ) {
                 let consolidated = Object.assign({}, coreDoc)
-                let corresponding = webDocs.find(webUIdoc => new LID(webUIdoc.logical_identifier).lid === new LID(coreDoc.identifier).lid)
+                const identifier = new LID(coreDoc.identifier)
+                const version = identifier.vid || (Array.isArray(coreDoc.version_id) ? coreDoc.version_id[0] : coreDoc.version_id)
+                const reference = version ? `${identifier.lid}::${version}` : identifier.lid
+                let corresponding = findSupplemental(reference)
                 if(!!corresponding) {
                     toReturn.push(Object.assign(consolidated, corresponding))
                 } else {
