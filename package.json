@@ -21,7 +21,7 @@
     "process": "^0.11.10",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "sass": "^1.71.1"
+    "sass": "^1.102.0"
   },
   "scripts": {
     "dev": "next dev --webpack",
