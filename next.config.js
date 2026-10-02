@@ -1,4 +1,5 @@
 module.exports = {
+    distDir: process.env.NEXT_BUILD_DIR || '.next',
     output: 'standalone',
     turbopack: {},
     webpack: (config) => {

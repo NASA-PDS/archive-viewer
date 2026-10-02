@@ -5,6 +5,9 @@ npm-debug.log
 .env.development.local
 .env.production.local
 .next
+.next-smoke
+playwright-report
+test-results
 .git
 .gitignore
 .env.local

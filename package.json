@@ -11,23 +11,25 @@
     "@fontsource/roboto": "^5.0.0",
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
-    "axios": "^1.18.1",
+    "axios": "^1.20.0",
     "better-logging": "^5.0.0",
     "cookie": "^1.1.1",
     "events": "^3.3.0",
     "http-proxy-middleware": "^3.0.7",
-    "next": "^16.2.12",
+    "next": "^16.3.8",
     "node-cache": "^5.1.2",
     "process": "^0.11.10",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "sass": "^1.71.1"
+    "sass": "^1.105.1"
   },
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "test": "node --experimental-vm-modules --test tests/*.test.mjs"
+    "test": "node --experimental-vm-modules --test tests/*.test.mjs",
+    "test:smoke": "playwright test",
+    "test:smoke:headed": "playwright test --headed"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,12 +47,13 @@
     ]
   },
   "devDependencies": {
-    "baseline-browser-mapping": "^2.10.0"
+    "@playwright/test": "^1.63.0",
+    "baseline-browser-mapping": "^2.11.27"
   },
   "overrides": {
     "next": {
-      "postcss": "8.5.18",
-      "sharp": "0.35.0"
+      "postcss": "8.5.28",
+      "sharp": "0.35.5"
     }
   }
 }

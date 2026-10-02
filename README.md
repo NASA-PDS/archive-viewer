@@ -39,3 +39,42 @@ Compiles the application for use by NextJS, optimized for production.
 ### `npm run start`
 
 Runs the compiled production-ready application on port 3000.
+
+## Browser smoke tests
+
+After updating dependencies, run:
+
+```sh
+npm ci
+npx playwright install chromium # First run, or after upgrading Playwright
+npm test
+npm run test:smoke
+```
+
+The smoke command builds the production app in `.next-smoke`, starts it on
+`127.0.0.1:3100`, and starts a small Solr fixture on `127.0.0.1:3101`. Both ports
+must be free. The servers stop when the tests finish; your normal `.next` build
+and local Solr credentials are preserved. No production registry or credentials
+are required.
+
+Five journeys run in Chromium at desktop and mobile sizes: the home page and
+featured target navigation, keyboard submission of a versioned LID and reload,
+derived data table expansion and collection/bundle navigation, tag search
+through the real proxy, and light/dark cookie handling on a server-rendered
+search page. Tests fail on uncaught exceptions, console errors (including
+hydration errors), HTTP errors, failed requests, and unexpected external traffic.
+The fixture checks Basic auth and returns representative core and supplemental
+records, so the actual Axios requests and proxy middleware run during the tests.
+
+Third-party header widgets, reCAPTCHA, and Google Fonts are stubbed at their
+known URLs. These tests check application regressions; they do not validate
+those services, the live registry schema/content, or Firefox/Safari behavior.
+
+Use `npm run test:smoke:headed` to watch the tests. On failure, screenshots and
+traces are saved under `test-results/`; use `npx playwright show-report` for the
+HTML report or `npx playwright show-trace <trace.zip>` for a recorded trace.
+
+The separate Browser Smoke Tests workflow runs unit and browser tests on pull
+requests (including Dependabot updates) and manual dispatch. It uses Node 24,
+requires no registry credentials, and uploads the browser report and failure
+artifacts. Existing organization security and project workflows are unchanged.

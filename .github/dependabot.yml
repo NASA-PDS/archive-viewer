@@ -15,11 +15,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/docker/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "terraform"
-    directory: "/terraform/"
+    directory: "/"
     schedule:
       interval: "weekly"
