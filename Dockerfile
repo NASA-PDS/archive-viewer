@@ -2,7 +2,7 @@
 
 # Build on the host architecture so Next/SWC does not run through QEMU when
 # docker-push targets linux/amd64 from Apple Silicon.
-FROM --platform=$BUILDPLATFORM node:24-alpine AS builder
+FROM --platform=$BUILDPLATFORM node:26-alpine AS builder
 WORKDIR /usr/src
 
 COPY package*.json ./
@@ -26,7 +26,7 @@ RUN --mount=type=secret,id=SUPPLEMENTAL_SOLR,required=true \
     npm run build
 
 
-FROM node:24-alpine
+FROM node:26-alpine
 WORKDIR /usr/src
 
 # Next standalone output bundles a traced, minimal node_modules; we don't need
