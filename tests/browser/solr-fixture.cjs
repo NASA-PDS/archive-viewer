@@ -29,7 +29,7 @@ const core = [
     ...featured,
 ]
 const supplemental = {
-    'web-targets-alias': [{ identifier: targetLid, logical_identifier: `${targetLid}::1.0`, display_name: 'Bennu', tags: ['asteroid'], display_description: 'Supplemental Bennu description.', image_url: '/images/sbn.png' }],
+    'web-targets-alias': [{ identifier: targetLid, logical_identifier: `${targetLid}::1.0`, display_name: 'Bennu', tags: ['asteroid'], display_description: 'Supplemental Bennu description.', image_url: '/images/sbn.png', html1: '<details><summary>Legacy data sets</summary><p>Legacy introduction.</p><table><tbody><tr><td>Legacy table content.</td></tr></tbody></table><p>Legacy bottom note.</p></details><h3>Highlighted links:</h3><p><a href="#documentation">Instrument documentation</a></p>' }],
     'web-datasets-alias': [
         { logical_identifier: `${bundleLid}::1.0`, display_name: 'Bennu Sample Bundle', primary_context: 'target_derived_data' },
         { logical_identifier: `${collectionLid}::1.0`, display_name: 'Bennu Sample Collection', primary_context: 'target_derived_data' },

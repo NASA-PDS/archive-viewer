@@ -1,4 +1,5 @@
 import { useTheme } from '@mui/material';
+import { alpha, darken, lighten } from '@mui/material/styles';
 import React from 'react';
 
 class HTMLBoxClass extends React.Component {
@@ -7,6 +8,12 @@ class HTMLBoxClass extends React.Component {
     }
     render() {
         const {theme, markup} = this.props
+        // Match the opaque divider used by MUI TableCell.
+        const rowBorder = theme.vars?.palette?.TableCell?.border || (
+            theme.palette.mode === 'light'
+                ? lighten(alpha(theme.palette.divider, 1), 0.88)
+                : darken(alpha(theme.palette.divider, 1), 0.68)
+        )
         if(!!markup) {
             return <>
                 <div className="custom" dangerouslySetInnerHTML={this.createMarkup()} />
@@ -15,6 +22,44 @@ class HTMLBoxClass extends React.Component {
                         cursor: pointer;
                         color: ${theme.palette.primary.main};
                         text-decoration: none;
+                    }
+                    .custom details {
+                        margin: 24px 0;
+                    }
+                    .custom details > summary {
+                        display: list-item;
+                        list-style-position: inside;
+                        position: relative;
+                        isolation: isolate;
+                        padding: 20px 16px;
+                        border-bottom: 1px solid ${rowBorder};
+                        color: ${theme.palette.primary.main};
+                        font-family: ${theme.typography.fontFamily};
+                        font-size: ${theme.typography.body1.fontSize};
+                        line-height: ${theme.typography.body1.lineHeight};
+                        letter-spacing: ${theme.typography.body1.letterSpacing};
+                        font-weight: ${theme.typography.fontWeightRegular};
+                        cursor: pointer;
+                        outline: none;
+                    }
+                    /* Match the List gutters around the table's ListItemButton. */
+                    .custom details > summary::before {
+                        content: '';
+                        position: absolute;
+                        inset: 8px 0 9px;
+                        z-index: -1;
+                        transition: ${theme.transitions.create('background-color', { duration: theme.transitions.duration.shortest })};
+                    }
+                    .custom details > summary:hover::before {
+                        background-color: ${theme.palette.action.hover};
+                    }
+                    @media (hover: none) {
+                        .custom details > summary:hover::before {
+                            background-color: transparent;
+                        }
+                    }
+                    .custom details > summary:focus-visible::before {
+                        background-color: ${theme.palette.action.focus};
                     }
                     .custom table {
                         border: 0;

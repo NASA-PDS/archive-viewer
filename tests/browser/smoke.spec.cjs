@@ -103,3 +103,70 @@ test('light and dark theme cookies survive server rendering and hydration', asyn
     await expect(page.getByRole('heading', { name: 'Targets tagged with asteroid' })).toBeVisible()
     await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)')
 })
+
+// Compare with rendered MUI components so library/theme changes catch style drift.
+test('HTML disclosure matches the actual MUI divider, typography, and hover behavior', async ({ page, context, baseURL }) => {
+    const readStyle = (locator, keys, pseudo = null) => locator.evaluate(async (element, { keys, pseudo }) => {
+        getComputedStyle(element, pseudo).backgroundColor;
+        await Promise.allSettled(element.getAnimations({ subtree: true }).map(animation => animation.finished));
+        const style = getComputedStyle(element, pseudo);
+        return Object.fromEntries(keys.map(key => [key, style[key]]));
+    }, { keys, pseudo });
+    const typography = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'color'];
+    const transition = ['transitionProperty', 'transitionDuration', 'transitionDelay', 'transitionTimingFunction'];
+    const divider = ['borderBottomWidth', 'borderBottomStyle', 'borderBottomColor'];
+
+    await context.addCookies([{ name: 'SBNTHEME', value: 'dark', url: baseURL }]);
+    await page.goto('/search/Targets/asteroid');
+    const referenceButton = page.locator('.MuiListItemButton-root').first();
+    await expect(referenceButton).toBeVisible();
+    const expectedTypography = await readStyle(referenceButton.locator('.MuiTypography-root').first(), typography);
+    const expectedTransition = await readStyle(referenceButton, transition);
+    const buttonHeight = (await referenceButton.boundingBox()).height;
+    const gutters = await referenceButton.locator('..').evaluate(element => {
+        const style = getComputedStyle(element);
+        return parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    });
+    await referenceButton.hover();
+    const expectedHover = await readStyle(referenceButton, ['backgroundColor']);
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await referenceButton.focus();
+    await expect(referenceButton).toHaveClass(/Mui-focusVisible/);
+    const expectedFocus = await readStyle(referenceButton, ['backgroundColor']);
+
+    await page.goto(`/${targetLid}/data`);
+    const referenceCell = page.locator('.MuiTableCell-root').first();
+    await expect(referenceCell).toBeVisible();
+    const expectedDivider = await readStyle(referenceCell, divider);
+
+    await page.goto(`/${targetLid}`);
+    const details = page.locator('.custom details');
+    const summary = details.locator('summary');
+    await expect(summary).toBeVisible();
+    expect(await readStyle(summary, typography)).toEqual(expectedTypography);
+    expect(await readStyle(summary, divider)).toEqual(expectedDivider);
+    expect(await readStyle(summary, transition, '::before')).toEqual(expectedTransition);
+    expect((await summary.boundingBox()).height).toBeCloseTo(buttonHeight + gutters + parseFloat(expectedDivider.borderBottomWidth), 1);
+    expect(await summary.evaluate(element => getComputedStyle(element).display)).toBe('list-item');
+    expect(await summary.evaluate(element => getComputedStyle(element).listStyleType)).not.toBe('none');
+    await summary.hover();
+    await expect.poll(() => readStyle(summary, ['backgroundColor'], '::before')).toEqual(expectedHover);
+
+    await expect(details.locator('table')).toBeHidden();
+    await expect(page.getByRole('link', { name: 'Instrument documentation', exact: true })).toBeVisible();
+    const bounds = await summary.boundingBox();
+    await page.mouse.click(bounds.x + bounds.width - 10, bounds.y + bounds.height / 2);
+    await expect(details.locator('table')).toBeVisible();
+    await expect(details.getByText('Legacy introduction.', { exact: true })).toBeVisible();
+    await expect(details.getByText('Legacy bottom note.', { exact: true })).toBeVisible();
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await summary.focus();
+    expect(await summary.evaluate(element => element.matches(':focus-visible'))).toBe(true);
+    await expect.poll(() => readStyle(summary, ['backgroundColor'], '::before')).toEqual(expectedFocus);
+    await summary.press('Enter');
+    await expect(details.locator('table')).toBeHidden();
+    await summary.press('Space');
+    await expect(details.locator('table')).toBeVisible();
+});
