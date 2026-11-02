@@ -22,6 +22,34 @@ Docker builds pass `SUPPLEMENTAL_SOLR`, `SOLR_USER`, and `SOLR_PASS` as BuildKit
 
 Use `./docker-push.sh --no-cache` when you need to force a fresh static generation run, such as after changing the build-time Solr index. Combine it with `--build-only` to rebuild locally without pushing.
 
+### Package updates and releases
+
+Update dependencies with `npm update`, `npm audit fix`, or a targeted
+`npm install package@version`. Review the diff, run `npm audit`, `npm test`, and
+`npm run test:smoke`, then commit the package files and any required code changes.
+
+From the repository root on `main`, with a clean working tree:
+
+```sh
+npm version patch -m "Release v%s" # Use minor or major when appropriate
+./docker-push.sh --release --build-only # Verify the release image locally
+git push --follow-tags origin main
+./docker-push.sh --release
+```
+
+`npm version` updates `package.json` and `package-lock.json`, commits them, and
+creates an annotated Git tag, for example `v0.1.1`. The release Docker command
+requires that tag to point to HEAD and publishes `sbnpsi/context-browser:v0.1.1`
+and `sbnpsi/context-browser:latest` from the same build. Deploy the versioned tag
+when you need a specific release or rollback. No npm package is published.
+
+Run `docker login` first and provide `.env.production.local` (or pass another
+env-file path). Set `IMAGE_REPOSITORY` to override the release repository.
+Untracked temporary preview files must be moved out of the checkout before a
+release. If publishing fails, rerun the Docker command at the same tag; do not
+bump the version again. Without `--release`, the script retains its existing
+`IMAGE_TAG` behavior, defaulting to `sbnpsi/context-browser:latest`.
+
 In the project directory, you can run:
 
 ### `npm run dev`
