@@ -1,24 +1,8 @@
-import { serviceAvailable } from 'api/common'
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import { createSolrProxy } from 'services/solrProxy'
 import runtime from 'services/runtime'
 import { getSolrBaseUrl } from 'services/solr'
 
 const localSolr = getSolrBaseUrl()
-
-// Helper method to wait for a middleware to execute before continuing
-// And to throw an error when an error happens in a middleware
-function runMiddleware(req, res, fn) {
-    return new Promise((resolve, reject) => {
-        fn(req, res, (result) => {
-            if (result instanceof Error) {
-                return reject(result)
-            }
-
-            return resolve(result)
-        })
-    })
-
-}
 
 const rewriteWeb = (path) => {
     // console.log('Rewriting web request to ' + path)
@@ -28,29 +12,23 @@ const rewriteWeb = (path) => {
 }
 const rewriteCore = (path) => {
     // console.log('Rewriting backup core request to ' + path)
-    let parameters = path.replace('/api/proxy/core', '')
+    let parameters = path.replace(/^\/api\/proxy\/(?:core|heartbeat)/, '')
     return `/pds-alias/select${parameters}`
 }
 
-const coreMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, on: { proxyReq: addAuthorization }, pathRewrite: rewriteCore })
-const webMiddleware = createProxyMiddleware({ target: localSolr, changeOrigin: true, on: { proxyReq: addAuthorization }, pathRewrite: rewriteWeb })
+const coreProxy = createSolrProxy(localSolr, rewriteCore)
+const webProxy = createSolrProxy(localSolr, rewriteWeb)
 
 async function handler(req, res) {
     const site = Array.isArray(req.query.site) ? req.query.site[0] : req.query.site
     switch(site) {
         case 'internal': handleMessage(req.query.message); return res.status(200).send('OK')
-        case 'web': return runMiddleware(req, res, webMiddleware)
-        case 'heartbeat': return runMiddleware(req, res, coreMiddleware)
-        case 'core': return runMiddleware(req, res, coreMiddleware)
+        case 'web': return webProxy(req, res)
+        case 'heartbeat': return coreProxy(req, res)
+        case 'core': return coreProxy(req, res)
         default: return res.status(400).json({ message: 'Invalid proxy request site' })
     }
 
-}
-
-function addAuthorization(proxyReq, req, res) {
-    // add basic authorization header to request
-    let auth = 'Basic ' + Buffer.from(process.env.SOLR_USER + ':' + process.env.SOLR_PASS).toString('base64')
-    proxyReq.setHeader('Authorization', auth)
 }
 
 function handleMessage(message) {

@@ -26,6 +26,9 @@ class HTMLBoxClass extends React.Component {
                     .custom details {
                         margin: 24px 0;
                     }
+                    .custom details[open] {
+                        border-bottom: 1px solid ${rowBorder};
+                    }
                     .custom details > summary {
                         display: list-item;
                         list-style-position: inside;
