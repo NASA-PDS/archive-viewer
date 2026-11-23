@@ -6,6 +6,8 @@ import router from 'api/router.js'
 import { runLimitedSolrRequest } from 'services/solrHttpLimit.js'
 import { types, resolveType, resolveContext, contexts } from 'services/pages.js'
 import { stitchWithTools } from './tools';
+import { stitchWithRelationships, types as relationshipTypes } from 'api/relationships.js'
+import { downplayGroupsThreshold } from 'services/groupings.js'
 
 const defaultFetchSize = 50
 const defaultParameters = () => { return {
@@ -261,7 +263,28 @@ export function httpGetRelated(initialQuery, route, knownLids) {
     })
 }
 
-export function getMoreDatasetsForContext(missions, targets, parentContext) {
+export async function getMoreDatasetsForContext(missions, targets, parentContext) {
+    if(parentContext === contexts.MISSION_MORE_DATA) {
+        const targetsByMission = await Promise.all(missions.map(mission =>
+            stitchWithRelationships(relationshipTypes.fromMissionToTarget, [mission.identifier])(
+                targets.map(({ identifier }) => ({ identifier }))
+            )
+        ))
+        const eligibleTargets = new Set(targetsByMission.flat()
+            .filter(target => {
+                const order = target.relatedBy?.order
+                return Number.isInteger(order) && order < downplayGroupsThreshold
+            })
+            .map(target => target.identifier))
+        targets = targets.filter(target => eligibleTargets.has(target.identifier))
+    } else if(parentContext === contexts.TARGET_MORE_DATA) {
+        missions = missions.filter(mission => {
+            const order = mission.relatedBy?.order
+            return Number.isInteger(order) && order < downplayGroupsThreshold
+        })
+    }
+    if(missions.length === 0 && targets.length === 0) return []
+
     const missionQuery = missions.map(mi => `investigation_ref:${new LID(mi.identifier).escapedLid}\\:\\:*`).join(' OR ')
     const targetQuery = targets.map(ta => `target_ref:${new LID(ta.identifier).escapedLid}\\:\\:*`).join(' OR ')
     let params = {

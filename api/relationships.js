@@ -83,18 +83,16 @@ export function stitchWithRelationships(type, sourceLids) {
         if(typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pdsOnly') === 'true') {
             return Promise.resolve(results)
         }
-        return new Promise(async (resolve, _) => {
-            // ensure we have the relationship types ready
-            await bootstrap()
+        return bootstrap().then(() => {
             let {relationshipTypes, sourceType, relatedType} = configureForType(type)
 
-            let identifiers = results.map(doc => doc.identifier)
+            let identifiers = results.map(doc => new LID(doc.identifier).escapedLid)
             let params = {
                 q: `(${sourceLids.map(lid => sourceType + ':' + new LID(lid).escapedLid).join(' OR ')}) AND (` + identifiers.reduce((query, lid) => `${query.length > 0 ? query + " OR ": query}${relatedType}:"${lid}" `, '') + ')',
                 fl: `relationshipId,${sourceType},${relatedType},label`
             }
             // get attributed relationships
-            httpGet(router.relationships, params).then(webDocs => {
+            return httpGet(router.relationships, params).then(webDocs => {
                 for (let doc of results ) {
                     // find the relationship for each context object
                     let relationship = webDocs.find(webUIdoc => new LID(webUIdoc[relatedType]).lid === new LID(doc.identifier).lid)
@@ -107,15 +105,14 @@ export function stitchWithRelationships(type, sourceLids) {
                         doc.relatedBy = relationship
                     }
                 }
-                resolve(results)
-            }, err => {
-                console.warn('Relationship lookup failed:', err?.message || 'Unknown error')
-                //ignore error, throw in unknown relationships and return
-                for (let doc of results ) {
-                    doc.relatedBy = unknownRelationship
-                }
-                resolve(results)
+                return results
             })
+        }).catch(err => {
+            console.warn('Relationship lookup failed:', err?.message || 'Unknown error')
+            for (let doc of results ) {
+                doc.relatedBy = unknownRelationship
+            }
+            return results
         })
     }
 }

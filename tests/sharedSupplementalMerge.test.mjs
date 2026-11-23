@@ -6,6 +6,7 @@ import { createVersionedRecordLookup } from '../services/versionedRecords.js'
 
 const lid = 'urn:nasa:pds:example:data'
 const web = version => ({ logical_identifier: `${lid}::${version}`, display_name: `Display ${version}` })
+const contexts = { MISSION_MORE_DATA: 'mission_more_data', TARGET_MORE_DATA: 'target_more_data', UNKNOWN: 'unknown' }
 
 // Exercise the complete common.js module, including httpGet and batching, with
 // axios as the network boundary. Production modules keep their Next.js aliases.
@@ -21,21 +22,26 @@ async function loadCommonApi(get, browserSearch) {
         }, { context }))
     }
     stub('axios', { default: { get } })
-    stub('api/router.js', { default: {} })
-    stub('services/pages.js', { types: {}, contexts: {}, resolveType: () => {}, resolveContext: () => {} })
+    stub('api/router.js', { default: {
+        datasetCore: 'core', datasetWeb: 'web', relationships: 'relationships',
+        targetMissionRelationshipTypes: 'targetTypes', instrumentSpacecraftRelationshipTypes: 'instrumentTypes',
+    } })
+    stub('services/pages.js', { types: {}, contexts, resolveType: () => {}, resolveContext: () => contexts.UNKNOWN })
     stub('./tools', { stitchWithTools: result => result })
     async function link(specifier) {
-        const key = specifier === './LogicalIdentifier.js' ? 'services/LogicalIdentifier.js' : specifier
+        const key = ['./LogicalIdentifier.js', 'services/LogicalIdentifier'].includes(specifier)
+            ? 'services/LogicalIdentifier.js'
+            : specifier
         if(!modules.has(key)) {
             const source = await readFile(new URL(`../${key}`, import.meta.url), 'utf8')
             const module = new vm.SourceTextModule(source, { context })
             modules.set(key, module)
-            await module.link(link)
         }
         return modules.get(key)
     }
     const source = await readFile(new URL('../api/common.js', import.meta.url), 'utf8')
     const module = new vm.SourceTextModule(source, { context })
+    modules.set('api/common.js', module)
     await module.link(link)
     await module.evaluate()
     return module.namespace
@@ -44,6 +50,93 @@ async function loadCommonApi(get, browserSearch) {
 function response(docs, config) {
     return { data: { responseHeader: { params: config.params }, response: { numFound: docs.length, docs } } }
 }
+
+test('mission More Data matches direct investigation references or targets in major relationship groups', async () => {
+    const mission = { identifier: 'urn:nasa:pds:context:investigation:mission.near' }
+    const targets = ['eros', 'mathilde', 'earth', 'moon', 'unknown', 'comet', 'calibration'].map(name => ({
+        identifier: `urn:nasa:pds:context:target:${name}${name === 'eros' ? '::1.0' : ''}`,
+    }))
+    const relationshipTypes = [['Primary', 0], ['Secondary', 1], ['Ignore', 1000], ['Flyby', 99], ['Minor', 100]].map(([name, order]) => ({
+        name, order, relationshipId: name.toLowerCase(),
+    }))
+    const relationships = ['primary', 'secondary', 'ignore', 'ignore', null, 'flyby', 'minor']
+        .map((relationshipId, index) => ({
+            relationshipId, investigation: mission.identifier, target: targets[index].identifier.split('::')[0],
+        }))
+        .filter(relationship => relationship.relationshipId)
+    const bundles = [
+        ['near_bundle', 'investigation_ref', mission],
+        ['iue_bundle', 'target_ref', targets[0]],
+        ['mathilde_bundle', 'target_ref', targets[1]],
+        ['hayabusa2_bundle', 'target_ref', targets[2]],
+        ['ladee_bundle', 'target_ref', targets[3]],
+        ['unknown_bundle', 'target_ref', targets[4]],
+        ['flyby_bundle', 'target_ref', targets[5]],
+        ['minor_bundle', 'target_ref', targets[6]],
+    ]
+    const api = await loadCommonApi(async (route, config) => {
+        if(route === 'targetTypes') return response(relationshipTypes, config)
+        const query = config.params.q.replaceAll('\\', '')
+        if(route === 'relationships') {
+            return response(relationships.filter(rel => query.includes(`target:"${rel.target}"`)), config)
+        }
+        if(route !== 'core') return response([], config)
+        const matches = bundles
+            .filter(([, field, ref]) => query.includes(`${field}:${ref.identifier.split('::')[0]}::*`))
+            .map(([name]) => ({ identifier: `urn:nasa:pds:${name}` }))
+        return response(matches, config)
+    })
+
+    const missionResults = await api.getMoreDatasetsForContext([mission], targets, contexts.MISSION_MORE_DATA)
+    assert.deepEqual(Array.from(missionResults, row => row.identifier), [
+        'urn:nasa:pds:near_bundle', 'urn:nasa:pds:iue_bundle', 'urn:nasa:pds:mathilde_bundle', 'urn:nasa:pds:flyby_bundle',
+    ])
+    assert.ok(targets.every(target => !target.relatedBy))
+
+    const targetResults = await api.getMoreDatasetsForContext([], [targets[2]], contexts.TARGET_MORE_DATA)
+    assert.deepEqual(Array.from(targetResults, row => row.identifier), ['urn:nasa:pds:hayabusa2_bundle'])
+})
+
+test('mission More Data keeps the investigation query when relationship types are unavailable', async () => {
+    const mission = { identifier: 'urn:nasa:pds:context:investigation:mission.near' }
+    const earth = { identifier: 'urn:nasa:pds:context:target:earth' }
+    const api = await loadCommonApi(async (route, config) => {
+        if(route === 'targetTypes') throw { message: 'Unavailable', response: { status: 403 } }
+        if(route !== 'core') return response([], config)
+        assert.match(config.params.q, /investigation_ref:/)
+        assert.doesNotMatch(config.params.q, /target_ref:/)
+        return response([{ identifier: lid }], config)
+    })
+    const results = await api.getMoreDatasetsForContext([mission], [earth], contexts.MISSION_MORE_DATA)
+    assert.deepEqual(Array.from(results, row => row.identifier), [lid])
+})
+
+test('target More Data keeps direct target matches and only expands through major missions', async () => {
+    const target = { identifier: 'urn:nasa:pds:context:target:pan' }
+    const missions = [
+        { identifier: 'urn:nasa:pds:context:investigation:major', relatedBy: { order: 99 } },
+        { identifier: 'urn:nasa:pds:context:investigation:minor', relatedBy: { order: 100 } },
+        { identifier: 'urn:nasa:pds:context:investigation:ignored', relatedBy: { order: 1000 } },
+        { identifier: 'urn:nasa:pds:context:investigation:unclassified' },
+    ]
+    const bundles = [
+        { identifier: 'urn:nasa:pds:direct_bundle', target_ref: target.identifier, investigation_ref: missions[1].identifier },
+        ...missions.map(({ identifier }, index) => ({
+            identifier: `urn:nasa:pds:indirect_bundle_${index}`,
+            investigation_ref: identifier,
+        })),
+    ]
+    const api = await loadCommonApi(async (route, config) => {
+        if(route !== 'core') return response([], config)
+        const query = config.params.q.replaceAll('\\', '')
+        const matches = bundles.filter(bundle => ['target_ref', 'investigation_ref'].some(field =>
+            bundle[field] && query.includes(`${field}:${bundle[field]}::*`)
+        ))
+        return response(matches, config)
+    })
+    const results = await api.getMoreDatasetsForContext(missions, [target], contexts.TARGET_MORE_DATA)
+    assert.deepEqual(Array.from(results, row => row.identifier), ['urn:nasa:pds:direct_bundle', 'urn:nasa:pds:indirect_bundle_0'])
+})
 
 for(const [label, core, versions, expected] of [
     ['specified core VID wins over a newer supplemental version', { identifier: lid, version_id: '1.1' }, ['1.0', '1.2', '1.1'], '1.1'],

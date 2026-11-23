@@ -19,6 +19,7 @@ export default function MoreData({missions, targets, context, prefetchedDatasets
         : (targets && targets.length > 0 ? targets[0] : null)
 
     useEffect(() => {        
+        let active = true
         if(prefetchedDatasets) {
             setDatasets(prefetchedDatasets)
         } else {
@@ -27,9 +28,12 @@ export default function MoreData({missions, targets, context, prefetchedDatasets
                 missionCount: missions?.length || 0,
                 targetCount: targets?.length || 0
             })
-            getMoreDatasetsForContext(missions || [], targets || [], context).then(setDatasets, console.error)
+            getMoreDatasetsForContext(missions || [], targets || [], context).then(results => {
+                if(active) setDatasets(results)
+            }, console.error)
         }
         return function cleanup() {
+            active = false
             setDatasets(null)
         }
     }, [missions, targets, prefetchedDatasets, context])
